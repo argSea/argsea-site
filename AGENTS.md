@@ -1,10 +1,10 @@
 # AGENTS.md
 
 ## Purpose
-The argSea site/frontend — the public-facing web app that consumes the
-`argsea-site-api` backend. It owns the site's UI and client behavior; it does
-not own the API or its data model. Stack is not yet chosen: this repo is
-bootstrapped but does not yet contain an application scaffold.
+The argSea site/frontend — the public-facing "night harbor" site that consumes
+the `argsea-site-api` backend at build time. It owns the site's UI and client
+behavior; it does not own the API or its data model. Stack: Astro v5 static
+output with React islands, TypeScript, npm.
 
 ## Instruction Priority
 Resolve instructions in this order:
@@ -19,7 +19,8 @@ If instructions conflict, pause and ask.
 1. `AGENTS.md`
 2. assigned external session path, if one was given
 3. local `SESSION.md`, if present
-4. the repo-specific docs to read first (none yet — repo is a bootstrap)
+4. `design/design_handoff_argsea_portfolio/README.md` — the design contract
+   (tokens, per-page specs, approved copy) when touching anything visual
 5. only the files the task requires
 Read narrowly. Do not wander the repo.
 
@@ -36,24 +37,50 @@ Read narrowly. Do not wander the repo.
 - Keep diffs reviewable and tied to the task.
 - Update durable docs only when architecture/contracts materially change.
 - Plain English in responses and session notes.
-- The task that introduces the app scaffold must also update this `AGENTS.md`
-  (Repo Map + Verification Rules) and pin `language`/`tags` in the caravan
-  registry to match the chosen stack.
+- `design/` is a read-only reference: the `.dc.html` files are design-tool
+  prototypes, not production code. Extract copy/values from them; never
+  reuse their markup or `support.js`.
 
 ## Repo Map
-Bootstrap only — no application code yet:
-- `README.md` — what the repo is.
-- `.gitignore` — stack-agnostic ignores; extend when the scaffold lands.
-- `AGENTS.md` — this contract.
+- `astro.config.mjs` — static output + the React integration; nothing else.
+- `src/pages/` — the five routes: `index` (Hello), `projects`, `hobbies`,
+  `notes`, `404`.
+- `src/layouts/BaseLayout.astro` — shared shell: fonts, tokens, nav, footer.
+- `src/components/` — Astro chrome (`Nav`, `Footer`, `LighthouseMark`,
+  `WaveDivider`).
+- `src/components/islands/` — the only client-side JS: `ProjectsBoard`
+  (filter + postcard-back overlay), `NotesList` (letter overlay),
+  `NextHobbyChip` (cycling chip), plus their CSS and the shared Escape hook.
+- `src/lib/api.ts` — the data seam. The ONLY module that fetches. Build-time
+  only; never import it from an island (`src/lib/media.ts` is the
+  client-safe helper).
+- `src/data/fixtures/` — checked-in content matching the API wire format
+  exactly; used whenever `ARGSEA_API_URL` is unset.
+- `src/styles/global.css` — design tokens, shared classes, keyframes, and the
+  reduced-motion kill-switch (must stay last in the file).
+- `design/` — the design handoff (read-only reference).
 
 ## Architecture Defaults
-Undecided until the stack is chosen. Consumes the `argsea-site-api` HTTP API;
-keep API access behind a small client seam rather than scattering fetch calls.
+- Astro v5, `output: 'static'` — no SSR, no Node process in production.
+- React islands only where client state exists; everything else ships as
+  static HTML/CSS. New motion is CSS/SVG, not JS.
+- All API access goes through `src/lib/api.ts` (`ARGSEA_API_URL` set →
+  build-time fetch, `?published=true` on collections; unset → fixtures).
+  Footer quips, hero copy, and the dictionary come from the `SiteCopy`
+  singleton (`GET /1/copy`, plain text, per-field design-copy fallback).
+  Honor the API contract caveats documented in that module's header.
+- Rich text from the API is pre-sanitized HTML — render as-is, never
+  re-sanitize.
+- `prefers-reduced-motion: reduce` must disable all animation/transitions on
+  every page. Elements whose resting pose is a transform carry it as a base
+  style so the kill-switch never breaks layout.
+- Fonts are self-hosted via `@fontsource` packages — no CDN fonts.
 
 ## Verification Rules
-No build tooling exists yet — say so rather than claiming a run. Once the
-scaffold lands, replace this with the smallest useful lint/typecheck/test/build
-for the changed surface.
+- `npm run build` — must be green and emit all five pages into `dist/`.
+- `npm run check` — `astro check`, must report zero errors.
+- For visual/interactive changes: serve `dist/` and spot-check the affected
+  page (overlays open/close, filters, reduced-motion honored).
 
 ## Session Discipline
 - Small tasks: one agent.
