@@ -1,0 +1,41 @@
+---
+// Projects — static header, then the ProjectsBoard island owns the filter
+// chips, count line, postcard grid, and the postcard-back overlay.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectsBoard from '../components/islands/ProjectsBoard';
+import { getProjects } from '../lib/api';
+
+const projects = await getProjects();
+---
+<BaseLayout title="The projects · argsea.com" active="projects" quipKey="quipProjects">
+	<section class="head">
+		<h1 class="head__title fade-up fade-up--1">The projects</h1>
+		<p class="head__intro fade-up fade-up--2">Things I've built, shipped, or babysat into stability. Sorted by how proud I am, roughly. Click a postcard to flip it over.</p>
+	</section>
+	<ProjectsBoard client:load projects={projects} />
+</BaseLayout>
+
+<style>
+	.head {
+		padding: clamp(40px, 7vw, 64px) var(--gutter) 0;
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+	}
+
+	.head__title {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-size: clamp(32px, 5.5vw, 46px);
+		color: var(--text-strong);
+	}
+
+	.head__intro {
+		margin: 0;
+		font-size: clamp(16px, 2.3vw, 18px);
+		color: var(--text-body);
+		max-width: 560px;
+		line-height: 1.6;
+	}
+</style>

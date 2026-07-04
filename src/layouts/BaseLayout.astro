@@ -1,0 +1,42 @@
+---
+// Shared page shell: fonts, tokens, nav, footer. Every page renders inside
+// the .page column so the footer hugs the bottom on short pages.
+import '@fontsource/gloock';
+import '@fontsource-variable/newsreader/standard.css';
+import '@fontsource-variable/newsreader/standard-italic.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../styles/global.css';
+
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { getSiteCopy, type QuipField } from '../lib/api';
+
+interface Props {
+	title:   string;
+	active:  'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
+	quipKey: QuipField;
+}
+
+const { title, active, quipKey } = Astro.props;
+
+// The footer quip is per-page "signal flags" copy from the SiteCopy singleton
+const copy = await getSiteCopy();
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<div class="page">
+			<Nav active={active} />
+			<slot />
+			<Footer quip={copy[quipKey]} />
+		</div>
+	</body>
+</html>

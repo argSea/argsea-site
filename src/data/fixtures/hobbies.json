@@ -1,0 +1,46 @@
+[
+  {
+    "id": "fixture-hobby-1",
+    "name": "The home lab",
+    "dates": "2021 — present",
+    "active": true,
+    "epitaph": "",
+    "eulogy": "Plex server, HTPC, CachyOS on the desktop. The one hobby that survives every purge, because it's just the day job wearing pajamas. Current status: one tweak from perfect, as always.",
+    "order": 1,
+    "createdAt": "2026-07-01T12:00:00Z",
+    "updatedAt": "2026-07-01T12:00:00Z"
+  },
+  {
+    "id": "fixture-hobby-2",
+    "name": "Piano",
+    "dates": "2023 — 2024",
+    "active": false,
+    "epitaph": "† got good enough",
+    "eulogy": "Got far enough to feel good, which it turns out was the goal all along. Took music theory down with it. May rise again when the kid wants lessons.",
+    "order": 2,
+    "createdAt": "2026-07-01T12:00:01Z",
+    "updatedAt": "2026-07-01T12:00:01Z"
+  },
+  {
+    "id": "fixture-hobby-3",
+    "name": "Game development",
+    "dates": "2020",
+    "active": false,
+    "epitaph": "† shipped one",
+    "eulogy": "Made a cat/boat racing game for CS50 and retired at the top. Undefeated: one game made, one game finished.",
+    "order": 3,
+    "createdAt": "2026-07-01T12:00:02Z",
+    "updatedAt": "2026-07-01T12:00:02Z"
+  },
+  {
+    "id": "fixture-hobby-4",
+    "name": "Running",
+    "dates": "one summer",
+    "active": false,
+    "epitaph": "† it was a phase",
+    "eulogy": "The shoes were purchased. The shoes remain. We don't talk about the shoes.",
+    "order": 4,
+    "createdAt": "2026-07-01T12:00:03Z",
+    "updatedAt": "2026-07-01T12:00:03Z"
+  }
+]

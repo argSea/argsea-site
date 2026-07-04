@@ -1,0 +1,72 @@
+---
+import LighthouseMark from './LighthouseMark.astro';
+
+// Borderless nav: lighthouse mark + name on the left, mono links on the
+// right. `active` underlines the current page in gold; the 404 page passes
+// 'none'. Wrapping to two rows on narrow screens is accepted behavior.
+interface Props {
+	active: 'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
+}
+
+const { active } = Astro.props;
+
+const links = [
+	{ id: 'hello',    label: 'hello',    href: '/' },
+	{ id: 'projects', label: 'projects', href: '/projects' },
+	{ id: 'hobbies',  label: 'hobbies',  href: '/hobbies' },
+	{ id: 'notes',    label: 'notes',    href: '/notes' },
+];
+---
+<header class="site-nav">
+	<a class="brand" href="/">
+		<LighthouseMark width={24} height={28} tilt />
+		<span class="brand-name">Justin Smith</span>
+	</a>
+	<nav class="links">
+		{links.map((link) => (
+			<a href={link.href} class:list={[{ active: active === link.id }]}>{link.label}</a>
+		))}
+		<a href="/resume.pdf">resume ↗</a>
+	</nav>
+</header>
+
+<style>
+	.site-nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 14px;
+		padding: clamp(18px, 3vw, 30px) var(--gutter) 10px;
+	}
+
+	.brand {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.brand-name {
+		font-family: var(--font-display);
+		font-size: 19px;
+		color: var(--text-nav);
+	}
+
+	.links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: clamp(14px, 3vw, 32px);
+		font-family: var(--font-mono);
+		font-size: 13px;
+	}
+
+	.links a {
+		color: var(--periwinkle);
+	}
+
+	.links a.active {
+		color: var(--text-nav);
+		border-bottom: 2px solid var(--gold);
+		padding-bottom: 2px;
+	}
+</style>
