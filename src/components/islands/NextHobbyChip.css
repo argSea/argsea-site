@@ -1,0 +1,24 @@
+/* The gold dashed suggestion chip. Its resting tilt is a base transform so
+ * reduced-motion (which strips transitions) keeps the pose. */
+
+.next-chip {
+	padding: 7px 16px;
+	border: 1.5px dashed rgba(240, 217, 168, .6);
+	border-radius: 999px;
+	font-family: var(--font-mono);
+	font-size: 12.5px;
+	color: var(--gold);
+	cursor: pointer;
+	user-select: none;
+	background: none;
+	transform: rotate(-1deg);
+	transition: transform .15s;
+}
+
+.next-chip:hover {
+	transform: rotate(0deg) scale(1.04);
+}
+
+.next-chip:active {
+	transform: scale(.96);
+}
