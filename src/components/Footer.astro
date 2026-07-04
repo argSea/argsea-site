@@ -1,0 +1,51 @@
+---
+// Three items, space-between, wrapping: copyright · a per-page quip · social
+// links. Social hrefs are the design's placeholders until real ones land.
+interface Props {
+	quip: string;
+}
+
+const { quip } = Astro.props;
+---
+<footer class="site-footer">
+	<span class="copyright">© 2026 · argsea.com</span>
+	<span class="quip">{quip}</span>
+	<div class="socials">
+		<a href="#">github</a><a href="#">linkedin</a><a href="mailto:hello@argsea.com">email</a>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		margin-top: auto;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 12px;
+		padding: 26px var(--gutter) 24px;
+	}
+
+	.copyright {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--periwinkle-deep);
+	}
+
+	.quip {
+		font-size: 15px;
+		color: var(--text-quip);
+		font-style: italic;
+	}
+
+	.socials {
+		display: flex;
+		gap: 16px;
+		font-family: var(--font-mono);
+		font-size: 12px;
+	}
+
+	.socials a {
+		color: var(--periwinkle);
+	}
+</style>

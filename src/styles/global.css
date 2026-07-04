@@ -1,0 +1,325 @@
+/*
+ * Night-harbor global stylesheet.
+ *
+ * Owns the design tokens from the handoff README, the shared vocabulary used
+ * on more than one page (buttons, chips, postcards, overlays, labels), and the
+ * shared keyframes. Page-specific layout lives in each page's scoped styles;
+ * island-specific styles live next to each island.
+ *
+ * The reduced-motion kill-switch at the bottom of this file is a hard design
+ * requirement — keep it last so nothing re-enables motion after it.
+ */
+
+:root {
+	/* Colors */
+	--bg-top:           #11131f;
+	--bg-bottom:        #131628;
+	--card:             #1a1e33;
+	--card-alt:         #161a2c;
+	--overlay-card:     #1c2036;
+	--text-strong:      #f0f2fc;
+	--text-head:        #eef0fb;
+	--text-nav:         #e8ebfa;
+	--text-base:        #dde1f0;
+	--text-body:        #a5aed4;
+	--text-body-strong: #b8c0e0;
+	--text-soft:        #c3cbf2;
+	--text-quip:        #8f9be0;
+	--text-dim:         #7a83ad;
+	--periwinkle:       #93a0e8;
+	--periwinkle-deep:  #5f6ec4;
+	--gold:             #f0d9a8;
+	--btn-text-dark:    #151830;
+	--btn-text-gold:    #1b2033;
+	--border-card:      rgba(150, 160, 220, .2);
+	--border-chip:      rgba(150, 160, 220, .3);
+
+	/* Type */
+	--font-display: 'Gloock', serif;
+	--font-body:    'Newsreader Variable', 'Newsreader', serif;
+	--font-mono:    'IBM Plex Mono', monospace;
+
+	/* Shape & rhythm */
+	--gutter: clamp(20px, 5vw, 52px);
+}
+
+html {
+	background: var(--bg-bottom);
+}
+
+body {
+	margin: 0;
+	background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+}
+
+a {
+	text-decoration: none;
+}
+
+/* Every page mounts inside one of these */
+.page {
+	min-height: 100vh;
+	color: var(--text-base);
+	font-family: var(--font-body);
+	display: flex;
+	flex-direction: column;
+	overflow-x: hidden;
+}
+
+/* --- Shared text vocabulary --- */
+
+.section-label {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	letter-spacing: .14em;
+	color: var(--periwinkle);
+	text-transform: uppercase;
+}
+
+.mono-link {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--gold);
+}
+
+.mono-comment {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: var(--periwinkle-deep);
+}
+
+/* --- Buttons (signature offset-shadow style) --- */
+
+.btn {
+	padding: 13px 24px;
+	border-radius: 8px;
+	font-family: var(--font-mono);
+	font-size: 14px;
+	display: inline-flex;
+	cursor: pointer;
+	border: none;
+	background: none;
+}
+
+.btn--roomy {
+	padding: 13px 26px;
+}
+
+.btn--primary {
+	background: var(--periwinkle);
+	color: var(--btn-text-dark);
+	box-shadow: 3px 3px 0 rgba(240, 217, 168, .85);
+	transform: rotate(-.5deg);
+	transition: transform .2s, box-shadow .2s;
+}
+
+.btn--primary:hover {
+	transform: rotate(0deg) translateY(-2px);
+	box-shadow: 5px 5px 0 rgba(240, 217, 168, .85);
+}
+
+.btn--gold {
+	background: var(--gold);
+	color: var(--btn-text-gold);
+	box-shadow: 3px 3px 0 rgba(147, 160, 232, .6);
+	transform: rotate(-.5deg);
+	transition: transform .2s, box-shadow .2s;
+}
+
+.btn--gold:hover {
+	transform: rotate(0deg) translateY(-2px);
+	box-shadow: 5px 5px 0 rgba(147, 160, 232, .6);
+}
+
+.btn--outline {
+	border: 1px solid rgba(150, 160, 220, .4);
+	color: var(--text-soft);
+	transition: border-color .2s, transform .2s;
+}
+
+.btn--outline:hover {
+	border-color: rgba(240, 217, 168, .7);
+	transform: translateY(-2px);
+}
+
+/* --- Pill chips --- */
+
+.chip {
+	padding: 7px 16px;
+	border-radius: 999px;
+	font-family: var(--font-mono);
+	font-size: 12.5px;
+	cursor: pointer;
+	user-select: none;
+	transition: all .2s;
+	background: none;
+}
+
+.chip--idle {
+	border: 1px solid var(--border-chip);
+	color: var(--text-body);
+}
+
+.chip--active {
+	border: 1.5px dashed rgba(240, 217, 168, .6);
+	color: var(--gold);
+}
+
+/* --- Postcards (home preview + projects grid share these) --- */
+
+.postcard {
+	position: relative;
+	height: 100%;
+	box-sizing: border-box;
+	background: var(--card);
+	border: 1px solid var(--border-card);
+	border-radius: 12px;
+	padding: 26px 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 11px;
+	box-shadow: 0 10px 24px rgba(0, 0, 0, .35);
+}
+
+.postcard__title {
+	font-family: var(--font-display);
+	font-size: 21px;
+	color: var(--text-head);
+}
+
+.postcard__desc {
+	font-size: 15.5px;
+	line-height: 1.55;
+	color: var(--text-body);
+}
+
+.postcard__tags {
+	display: flex;
+	gap: 8px;
+	font-family: var(--font-mono);
+	font-size: 11.5px;
+	color: var(--periwinkle);
+	margin-top: auto;
+}
+
+/* --- Overlays (postcard back + letter share these) --- */
+
+.overlay-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(8, 10, 20, .72);
+	backdrop-filter: blur(5px);
+	z-index: 50;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: clamp(14px, 4vw, 40px);
+	animation: backdropIn .25s ease both;
+}
+
+.overlay-card {
+	max-height: 86vh;
+	overflow: auto;
+	background: var(--overlay-card);
+	border: 1px solid var(--border-chip);
+	border-radius: 14px;
+	box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+}
+
+.overlay-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 18px clamp(20px, 4vw, 32px);
+	border-bottom: 1.5px dashed rgba(150, 160, 220, .25);
+}
+
+.overlay-kicker {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	letter-spacing: .14em;
+	color: var(--periwinkle);
+	text-transform: uppercase;
+}
+
+.pill-close {
+	cursor: pointer;
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--text-body);
+	padding: 6px 12px;
+	border: 1px solid var(--border-chip);
+	border-radius: 999px;
+	transition: all .2s;
+	background: none;
+}
+
+.pill-close:hover {
+	color: var(--gold);
+	border-color: rgba(240, 217, 168, .6);
+}
+
+/* --- Page-load fade-up (header/hero elements, staggered) --- */
+
+.fade-up {
+	animation: fadeUp .7s ease both;
+}
+
+.fade-up--1 { animation-delay: .05s; }
+.fade-up--2 { animation-delay: .15s; }
+.fade-up--3 { animation-delay: .25s; }
+.fade-up--4 { animation-delay: .35s; }
+
+/* --- Shared keyframes --- */
+
+@keyframes fadeUp {
+	from { opacity: 0; transform: translateY(16px); }
+	to   { opacity: 1; transform: none; }
+}
+
+@keyframes drift {
+	0%, 100% { transform: translate(0, 0); }
+	25%      { transform: translate(9px, -14px); }
+	50%      { transform: translate(-7px, -22px); }
+	75%      { transform: translate(6px, -9px); }
+}
+
+@keyframes wiggle {
+	0%, 100% { transform: rotate(-2deg); }
+	50%      { transform: rotate(3deg); }
+}
+
+@keyframes wiggle14 {
+	0%, 100% { transform: rotate(11deg); }
+	50%      { transform: rotate(17deg); }
+}
+
+@keyframes swayChip {
+	0%, 100% { transform: rotate(-1deg); }
+	50%      { transform: rotate(1deg); }
+}
+
+@keyframes backdropIn {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+/* Firefly dots — positions are per-page, glow and drift are shared */
+.firefly {
+	position: absolute;
+	border-radius: 50%;
+	pointer-events: none;
+}
+
+/*
+ * REQUIRED on every page: reduced motion disables all animation/transitions.
+ * Elements whose resting pose is a transform (tilted cards, the tunnel arches)
+ * carry that transform as a base style so this rule never breaks layout.
+ */
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		animation: none !important;
+		transition: none !important;
+	}
+}
