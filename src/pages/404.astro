@@ -1,0 +1,148 @@
+---
+// 404 — uncharted waters. Centered copy above a tunnel of concentric arch
+// outlines rising from the bottom edge, with a pulsing gold glow inside.
+// Astro emits this as dist/404.html; serving it for unknown routes is nginx
+// config at cutover.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="404 · uncharted waters · argsea.com" active="none" quipKey="quip404">
+	<section class="void">
+		<div class="firefly ff-1"></div>
+		<div class="firefly ff-2"></div>
+		<div class="firefly ff-3"></div>
+
+		<div class="copy">
+			<div class="section-label fade-up fade-up--1">404 · uncharted waters</div>
+			<h1 class="copy__headline fade-up fade-up--2">This tunnel doesn't go anywhere. Yet.</h1>
+			<p class="copy__body fade-up fade-up--3">Tunnels are gateways to other worlds. This one is a gateway to a page that doesn't exist — which is technically also another world.</p>
+			<div class="copy__actions fade-up fade-up--4">
+				<a href="/" class="btn btn--primary">back to the light</a>
+				<a href="/projects" class="btn btn--outline">the projects</a>
+			</div>
+		</div>
+
+		<div class="tunnel">
+			<div class="arch arch-1"></div>
+			<div class="arch arch-2"></div>
+			<div class="arch arch-3"></div>
+			<div class="arch arch-4"></div>
+			<div class="arch arch-5"></div>
+			<div class="mouth"></div>
+			<div class="no-exit">no exit found</div>
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.void {
+		position: relative;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-end;
+		padding: clamp(40px, 7vw, 72px) var(--gutter) 0;
+		overflow: hidden;
+	}
+
+	.ff-1 { left: 16%;  top: 18%;    width: 4px; height: 4px; background: var(--gold);       box-shadow: 0 0 12px 3px rgba(240, 217, 168, .35); animation: drift 12s ease-in-out infinite; }
+	.ff-2 { right: 14%; top: 30%;    width: 4px; height: 4px; background: var(--periwinkle); box-shadow: 0 0 12px 3px rgba(147, 160, 232, .3);  animation: drift 15s ease-in-out 2s infinite; }
+	.ff-3 { left: 24%;  bottom: 22%; width: 4px; height: 4px; background: var(--periwinkle); box-shadow: 0 0 12px 3px rgba(147, 160, 232, .3);  animation: drift 10s ease-in-out 1s infinite; }
+
+	.copy {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 16px;
+		text-align: center;
+		margin-bottom: clamp(36px, 6vw, 56px);
+	}
+
+	.copy__headline {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-size: clamp(32px, 6vw, 54px);
+		line-height: 1.12;
+		color: var(--text-strong);
+		max-width: 640px;
+		text-wrap: balance;
+	}
+
+	.copy__body {
+		margin: 0;
+		font-size: clamp(16px, 2.3vw, 19px);
+		line-height: 1.6;
+		color: var(--text-body);
+		max-width: 480px;
+	}
+
+	.copy__actions {
+		display: flex;
+		gap: 14px;
+		flex-wrap: wrap;
+		justify-content: center;
+		margin-top: 6px;
+	}
+
+	.tunnel {
+		position: relative;
+		width: min(720px, 92vw);
+		height: clamp(200px, 34vw, 300px);
+		flex: none;
+	}
+
+	/*
+	 * The centering translateX lives in the base transform AND both keyframe
+	 * poses, so reduced-motion (which strips the animation) never shifts the
+	 * arches off-center.
+	 */
+	.arch {
+		position: absolute;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		border-bottom: none;
+		border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+	}
+
+	.arch-1 { width: 100%; height: 93%; border: 1.5px solid rgba(147, 160, 232, .14); border-bottom: none; animation: archIn .8s ease .1s both; }
+	.arch-2 { width: 83%;  height: 78%; border: 1.5px solid rgba(147, 160, 232, .22); border-bottom: none; animation: archIn .8s ease .2s both; }
+	.arch-3 { width: 67%;  height: 64%; border: 1.5px solid rgba(147, 160, 232, .32); border-bottom: none; animation: archIn .8s ease .3s both; }
+	.arch-4 { width: 53%;  height: 51%; border: 1.5px solid rgba(154, 146, 232, .45); border-bottom: none; animation: archIn .8s ease .4s both; }
+	.arch-5 { width: 40%;  height: 39%; border: 1.5px solid rgba(180, 164, 240, .58); border-bottom: none; animation: archIn .8s ease .5s both; }
+
+	@keyframes archIn {
+		from { opacity: 0; transform: translateX(-50%) scale(.92); }
+		to   { opacity: 1; transform: translateX(-50%) scale(1); }
+	}
+
+	.mouth {
+		position: absolute;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 28%;
+		height: 28%;
+		border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+		background: radial-gradient(ellipse at 50% 100%, rgba(240, 217, 168, .32) 0%, rgba(240, 217, 168, .06) 60%, transparent 80%);
+		animation: tunnelGlow 5s ease-in-out infinite;
+	}
+
+	.no-exit {
+		position: absolute;
+		bottom: 14px;
+		left: 50%;
+		transform: translateX(-50%);
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--gold);
+		opacity: .85;
+		animation: tunnelGlow 5s ease-in-out infinite;
+	}
+
+	@keyframes tunnelGlow {
+		0%, 100% { opacity: .55; }
+		50%      { opacity: 1; }
+	}
+</style>

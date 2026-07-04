@@ -1,0 +1,568 @@
+---
+// Hello — hero, wave-with-boat, postcards preview, cargo manifest, hobbies
+// preview, contact band, and the dictionary entry. The postcards preview is
+// data-driven (first three projects, proud order); hero copy and the
+// dictionary come from the SiteCopy singleton; the cargo manifest, hobbies
+// preview, and contact band are approved copy hardcoded by design.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LighthouseMark from '../components/LighthouseMark.astro';
+import WaveDivider from '../components/WaveDivider.astro';
+import { getProjects, getSiteCopy } from '../lib/api';
+
+const projects = await getProjects();
+const preview = projects.slice(0, 3);
+const copy = await getSiteCopy();
+
+// Dictionary presentation: the copy is one plain-text string; the numbered
+// sense markers ("1." …) get the periwinkle-deep treatment from the design.
+const dictSegments = copy.dict
+	.split(/(\d+\.)(?=\s)/)
+	.map((text) => ({ text, isMarker: /^\d+\.$/.test(text) }));
+
+const manifest = [
+	{ label: 'languages',      items: 'java · python · node.js · go · php' },
+	{ label: 'data & queues',  items: 'mongodb · redis · rabbitmq · varnish' },
+	{ label: 'infrastructure', items: 'kubernetes · docker · nginx · linux' },
+];
+
+const graveyardChips = [
+	{ text: 'piano † got good enough',   sway: 'swayChip 5s ease-in-out infinite' },
+	{ text: 'music theory † see piano',  sway: 'swayChip 6s ease-in-out 1s infinite' },
+	{ text: 'game dev † shipped one',    sway: 'swayChip 5.5s ease-in-out .5s infinite' },
+	{ text: 'running † it was a phase',  sway: 'swayChip 6.5s ease-in-out 1.5s infinite' },
+];
+---
+<BaseLayout title="Justin Smith · argsea.com" active="hello" quipKey="quipHello">
+	<!-- hero -->
+	<section class="hero">
+		<div class="firefly ff-1"></div>
+		<div class="firefly ff-2"></div>
+		<div class="firefly ff-3"></div>
+		<div class="firefly ff-4"></div>
+		<div class="postmark-circle">
+			<div class="postmark-circle__text">PITTSBURGH<br />PA · EST 2014<br />ARGSEA.COM</div>
+		</div>
+		<div class="hero__copy">
+			<div class="section-label fade-up fade-up--1">{copy.heroKicker}</div>
+			<h1 class="hero__headline fade-up fade-up--2">{copy.heroHeadline}</h1>
+			<p class="hero__body fade-up fade-up--3">{copy.heroBody}</p>
+			<div class="hero__actions fade-up fade-up--4">
+				<a href="/projects" class="btn btn--primary">the projects</a>
+				<a href="mailto:hello@argsea.com" class="btn btn--outline">say hi</a>
+			</div>
+		</div>
+	</section>
+
+	<WaveDivider />
+
+	<!-- postcards from production -->
+	<section class="postcards">
+		<div class="row-head">
+			<span class="section-label">Postcards from production</span>
+			<a href="/projects" class="mono-link">all projects →</a>
+		</div>
+		<div class="postcards__grid">
+			{preview.map((project, index) => (
+				<a href="/projects" class="postcard-link">
+					<div class:list={['postcard', `bob-home-${index}`]}>
+						{index === 0 && (
+							<div class="deco deco--stamp deco--stamp-gold">
+								<LighthouseMark width={18} height={22} variant="stamp" />
+							</div>
+						)}
+						{index === 1 && (
+							<div class="deco deco--postmark">DAILY<br />SINCE<br />1786</div>
+						)}
+						{index === 2 && (
+							<div class="deco deco--stamp deco--stamp-peri">☀&#xFE0E;</div>
+						)}
+						<div class:list={['postcard__title', { 'pad-postmark': index === 1, 'pad-stamp': index !== 1 }]}>{project.title}</div>
+						<div class="postcard__desc">{project.shortDesc}</div>
+						<div class="postcard__tags">
+							{project.tags.map((tag) => <span>{tag}</span>)}
+						</div>
+					</div>
+				</a>
+			))}
+		</div>
+	</section>
+
+	<!-- the cargo manifest -->
+	<section class="manifest">
+		<div class="manifest__head">
+			<span class="section-label">The cargo manifest</span>
+			<span class="manifest__aside">tools currently aboard</span>
+		</div>
+		<div class="manifest__grid">
+			{manifest.map((column) => (
+				<div class="manifest__col">
+					<span class="manifest__label">{column.label}</span>
+					<span class="manifest__items">{column.items}</span>
+				</div>
+			))}
+		</div>
+	</section>
+
+	<!-- hobbies, past & present (approved copy; the full graveyard is the data-driven page) -->
+	<section class="hobbies-preview">
+		<div class="row-head">
+			<span class="section-label">Hobbies, past & present</span>
+			<a href="/hobbies" class="mono-link">the full graveyard →</a>
+		</div>
+		<div class="hobbies-preview__grid">
+			<div class="panel panel--learning">
+				<span class="panel__label panel__label--gold">Currently learning</span>
+				<div class="panel__rows">
+					<div class="panel__row"><span class="panel__name">The home lab</span><span class="panel__tags">plex · htpc</span></div>
+					<div class="panel__row"><span class="panel__name">CachyOS tinkering</span><span class="panel__tags">linux · always</span></div>
+				</div>
+				<span class="panel__aside">One tweak from perfect, forever.</span>
+			</div>
+			<div class="panel panel--graveyard">
+				<span class="panel__label">The hobby graveyard</span>
+				<div class="panel__chips">
+					{graveyardChips.map((chip) => (
+						<span class="grave-chip" style={`animation:${chip.sway}`}>{chip.text}</span>
+					))}
+				</div>
+				<span class="panel__aside panel__aside--dim">Nothing here is dead. It's just resting until the next season of me.</span>
+			</div>
+		</div>
+		<div class="mono-comment">// the graveyard only grows. that's fine.</div>
+	</section>
+
+	<!-- contact band -->
+	<section class="contact">
+		<LighthouseMark width={30} height={34} />
+		<div class="contact__headline">Need a hand keeping your lights on?</div>
+		<div class="contact__aside">Backend, architecture, planning — or just to talk shop.</div>
+		<div class="contact__actions">
+			<a href="mailto:hello@argsea.com" class="btn btn--roomy btn--gold">say hi</a>
+			<a href="/resume.pdf" class="btn btn--roomy btn--outline">resume ↗</a>
+		</div>
+	</section>
+
+	<!-- the name, explained -->
+	<section class="dictionary">
+		<div class="dictionary__entry">
+			<div class="dictionary__head">
+				<span class="dictionary__word">argsea</span>
+				<span class="dictionary__pron">/ˈɑːrɡ·siː/ · noun</span>
+			</div>
+			<div class="dictionary__defs">
+				{dictSegments.map((segment) => segment.isMarker ? <span class="num">{segment.text}</span> : segment.text)}
+			</div>
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	/* --- hero --- */
+	.hero {
+		position: relative;
+		padding: clamp(56px, 9vw, 96px) var(--gutter) clamp(40px, 6vw, 64px);
+		overflow: hidden;
+	}
+
+	.ff-1 { right: 14%; top: 90px;  width: 5px; height: 5px; background: var(--gold);       box-shadow: 0 0 14px 4px rgba(240, 217, 168, .4);  animation: drift 11s ease-in-out infinite; }
+	.ff-2 { right: 32%; top: 220px; width: 4px; height: 4px; background: var(--periwinkle); box-shadow: 0 0 12px 3px rgba(147, 160, 232, .35); animation: drift 14s ease-in-out 2s infinite; }
+	.ff-3 { right: 9%;  top: 320px; width: 4px; height: 4px; background: var(--gold);       box-shadow: 0 0 12px 3px rgba(240, 217, 168, .3);  animation: drift 9s ease-in-out 1s infinite; }
+	.ff-4 { left: 8%; bottom: 60px; width: 4px; height: 4px; background: var(--periwinkle); box-shadow: 0 0 12px 3px rgba(147, 160, 232, .3);  animation: drift 13s ease-in-out 3s infinite; }
+
+	/* Resting tilt is a base transform: reduced-motion strips the sway, keeps the pose */
+	.postmark-circle {
+		position: absolute;
+		right: clamp(24px, 6vw, 72px);
+		top: 76px;
+		width: 110px;
+		height: 110px;
+		border: 1.5px dashed rgba(147, 160, 232, .4);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transform: rotate(12deg);
+		animation: postmarkSway 9s ease-in-out infinite;
+	}
+
+	.postmark-circle__text {
+		text-align: center;
+		font-family: var(--font-mono);
+		font-size: 10px;
+		letter-spacing: .14em;
+		color: var(--periwinkle);
+		line-height: 1.7;
+	}
+
+	@keyframes postmarkSway {
+		0%, 100% { transform: rotate(9deg); }
+		50%      { transform: rotate(15deg); }
+	}
+
+	@media (max-width: 760px) {
+		.postmark-circle { display: none; }
+	}
+
+	.hero__copy {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+		max-width: 720px;
+	}
+
+	.hero__headline {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-size: clamp(34px, 6.5vw, 58px);
+		line-height: 1.1;
+		color: var(--text-strong);
+		text-wrap: balance;
+	}
+
+	.hero__body {
+		margin: 0;
+		font-size: clamp(17px, 2.4vw, 20px);
+		line-height: 1.6;
+		color: var(--text-body);
+		font-weight: 300;
+	}
+
+	.hero__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		align-items: center;
+		margin-top: 4px;
+	}
+
+	/* --- shared section head row --- */
+	.row-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	/* --- postcards preview --- */
+	.postcards {
+		padding: clamp(28px, 5vw, 44px) var(--gutter) clamp(36px, 6vw, 56px);
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+	}
+
+	.postcards__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 22px;
+		align-items: stretch;
+	}
+
+	.postcard-link {
+		display: block;
+		transition: transform .25s;
+	}
+
+	.postcard-link:hover {
+		transform: translateY(-5px);
+	}
+
+	.pad-stamp    { padding-right: 40px; }
+	.pad-postmark { padding-right: 52px; }
+
+	.bob-home-0 { transform: rotate(-1deg); animation: bobHomeA 7s ease-in-out infinite; }
+	.bob-home-1 { transform: rotate(.7deg); animation: bobHomeB 8s ease-in-out .5s infinite; }
+	.bob-home-2 { transform: rotate(-.5deg); animation: bobHomeC 6.5s ease-in-out 1s infinite; }
+
+	@keyframes bobHomeA {
+		0%, 100% { transform: rotate(-1deg) translateY(0); }
+		50%      { transform: rotate(-.4deg) translateY(-4px); }
+	}
+
+	@keyframes bobHomeB {
+		0%, 100% { transform: rotate(.7deg) translateY(0); }
+		50%      { transform: rotate(.2deg) translateY(-5px); }
+	}
+
+	@keyframes bobHomeC {
+		0%, 100% { transform: rotate(-.5deg) translateY(0); }
+		50%      { transform: rotate(-1deg) translateY(-3px); }
+	}
+
+	/* Corner decorations wiggle independently of the card bob */
+	.deco {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.deco--stamp {
+		top: 12px;
+		right: 12px;
+		width: 34px;
+		height: 42px;
+		border-radius: 3px;
+	}
+
+	.deco--stamp-gold {
+		border: 1.5px solid rgba(240, 217, 168, .5);
+		animation: wiggle 6s ease-in-out infinite;
+	}
+
+	.deco--stamp-peri {
+		border: 1.5px solid rgba(147, 160, 232, .5);
+		font-size: 16px;
+		animation: wiggle 5.5s ease-in-out 1s infinite;
+	}
+
+	.deco--postmark {
+		top: 10px;
+		right: 10px;
+		width: 52px;
+		height: 52px;
+		border: 1.2px dashed rgba(147, 160, 232, .45);
+		border-radius: 50%;
+		font-family: var(--font-mono);
+		font-size: 7.5px;
+		letter-spacing: .1em;
+		color: var(--periwinkle);
+		text-align: center;
+		line-height: 1.6;
+		animation: wiggle14 7s ease-in-out infinite;
+	}
+
+	/* --- cargo manifest --- */
+	.manifest {
+		padding: 0 var(--gutter) clamp(36px, 6vw, 56px);
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.manifest__head {
+		display: flex;
+		align-items: baseline;
+		gap: 14px;
+		flex-wrap: wrap;
+	}
+
+	.manifest__aside {
+		font-size: 15px;
+		color: var(--periwinkle-deep);
+		font-style: italic;
+	}
+
+	.manifest__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		gap: 18px 28px;
+	}
+
+	.manifest__col {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		border-top: 1px solid var(--border-card);
+		padding-top: 12px;
+	}
+
+	.manifest__label {
+		font-family: var(--font-mono);
+		font-size: 11.5px;
+		letter-spacing: .12em;
+		color: var(--periwinkle-deep);
+		text-transform: uppercase;
+	}
+
+	.manifest__items {
+		font-family: var(--font-mono);
+		font-size: 13.5px;
+		color: var(--text-soft);
+		line-height: 1.8;
+	}
+
+	/* --- hobbies preview --- */
+	.hobbies-preview {
+		padding: clamp(28px, 5vw, 44px) var(--gutter) clamp(24px, 4vw, 32px);
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.hobbies-preview__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 22px;
+		align-items: stretch;
+	}
+
+	.panel {
+		padding: 24px 26px;
+		border-radius: 12px;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		transition: transform .25s;
+	}
+
+	.panel:hover {
+		transform: rotate(0deg);
+	}
+
+	.panel--learning {
+		background: rgba(240, 217, 168, .06);
+		border: 1.5px dashed rgba(240, 217, 168, .4);
+		transform: rotate(-.3deg);
+	}
+
+	.panel--graveyard {
+		background: var(--card-alt);
+		border: 1px solid rgba(150, 160, 220, .18);
+		transform: rotate(.3deg);
+	}
+
+	.panel__label {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		letter-spacing: .12em;
+		color: var(--periwinkle);
+		text-transform: uppercase;
+	}
+
+	.panel__label--gold {
+		color: var(--gold);
+	}
+
+	.panel__rows {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.panel__row {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 12px;
+		flex-wrap: wrap;
+	}
+
+	.panel__name {
+		font-family: var(--font-display);
+		font-size: 20px;
+		color: var(--text-strong);
+	}
+
+	.panel__tags {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--periwinkle);
+	}
+
+	.panel__aside {
+		font-size: 14.5px;
+		color: var(--text-body);
+		font-style: italic;
+	}
+
+	.panel__aside--dim {
+		color: var(--text-dim);
+	}
+
+	.panel__chips {
+		display: flex;
+		gap: 9px;
+		flex-wrap: wrap;
+	}
+
+	.grave-chip {
+		padding: 6px 14px;
+		border: 1px solid var(--border-chip);
+		border-radius: 999px;
+		font-family: var(--font-mono);
+		font-size: 12.5px;
+		color: var(--text-body);
+	}
+
+	/* --- contact band --- */
+	.contact {
+		padding: clamp(40px, 7vw, 72px) var(--gutter) clamp(28px, 5vw, 48px);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 18px;
+		text-align: center;
+	}
+
+	.contact__headline {
+		font-family: var(--font-display);
+		font-size: clamp(24px, 4.5vw, 34px);
+		color: var(--text-strong);
+		max-width: 560px;
+		line-height: 1.2;
+		text-wrap: balance;
+	}
+
+	.contact__aside {
+		font-size: 17px;
+		color: var(--text-body);
+		font-style: italic;
+		max-width: 460px;
+	}
+
+	.contact__actions {
+		display: flex;
+		gap: 14px;
+		flex-wrap: wrap;
+		justify-content: center;
+		margin-top: 4px;
+	}
+
+	/* --- dictionary entry --- */
+	.dictionary {
+		display: flex;
+		justify-content: center;
+		padding: 0 var(--gutter) clamp(28px, 5vw, 44px);
+	}
+
+	.dictionary__entry {
+		max-width: 520px;
+		border-top: 1px solid rgba(150, 160, 220, .18);
+		padding-top: 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.dictionary__head {
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
+		flex-wrap: wrap;
+	}
+
+	.dictionary__word {
+		font-family: var(--font-display);
+		font-size: 22px;
+		color: var(--text-strong);
+	}
+
+	.dictionary__pron {
+		font-family: var(--font-mono);
+		font-size: 12.5px;
+		color: var(--periwinkle-deep);
+	}
+
+	.dictionary__defs {
+		font-size: 15.5px;
+		line-height: 1.7;
+		color: var(--text-body);
+	}
+
+	.dictionary__defs .num {
+		color: var(--periwinkle-deep);
+	}
+</style>

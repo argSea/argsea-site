@@ -1,0 +1,58 @@
+---
+// Notes — static header and closing line; the NotesList island owns the
+// clickable rows and the letter overlay.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NotesList from '../components/islands/NotesList';
+import { getNotes } from '../lib/api';
+
+const notes = await getNotes();
+---
+<BaseLayout title="Notes · argsea.com" active="notes" quipKey="quipNotes">
+	<section class="head">
+		<h1 class="head__title fade-up fade-up--1">Notes</h1>
+		<p class="head__intro fade-up fade-up--2">Occasional writing about systems, software, and whatever the current hobby is. No schedule. No newsletter. No promises.</p>
+	</section>
+
+	<section class="list">
+		<NotesList client:load notes={notes} />
+		<div class="list__closing">Three notes so far. The bar for "blog" is five. We'll see.</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.head {
+		padding: clamp(40px, 7vw, 64px) var(--gutter) 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+	}
+
+	.head__title {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-size: clamp(32px, 5.5vw, 46px);
+		color: var(--text-strong);
+	}
+
+	.head__intro {
+		margin: 0;
+		font-size: clamp(16px, 2.3vw, 18px);
+		color: var(--text-body);
+		max-width: 560px;
+		line-height: 1.6;
+	}
+
+	.list {
+		padding: 16px var(--gutter) clamp(40px, 7vw, 64px);
+		display: flex;
+		flex-direction: column;
+	}
+
+	.list__closing {
+		padding: 24px 0 0;
+		font-size: 15px;
+		color: var(--periwinkle-deep);
+		font-style: italic;
+	}
+</style>
