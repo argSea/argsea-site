@@ -1,27 +1,18 @@
 ---
-// The lighthouse mark, extracted from the design handoff. Two drawings exist:
-// the full mark (gold lamp, window lines, wave) used in the nav and contact
-// band, and a simplified stamp version used inside postcard stamps.
+// The lighthouse mark from the design handoff: gold lamp, window lines, wave.
+// Used in the nav and the contact band. (Postcard stamps render their own
+// motifs via the islands' Stamp component.)
 interface Props {
-	width:    number;
-	height:   number;
-	variant?: 'mark' | 'stamp';
-	tilt?:    boolean;
+	width:  number;
+	height: number;
+	tilt?:  boolean;
 }
 
-const { width, height, variant = 'mark', tilt = false } = Astro.props;
+const { width, height, tilt = false } = Astro.props;
 ---
-{variant === 'mark' ? (
-	<svg width={width} height={height} viewBox="0 0 26 30" fill="none" style={tilt ? 'transform:rotate(-4deg)' : undefined}>
-		<path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" />
-		<rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4" />
-		<path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4" />
-		<path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none" />
-	</svg>
-) : (
-	<svg width={width} height={height} viewBox="0 0 26 30" fill="none">
-		<path d="M13 4 L17 11 L9 11 Z" fill="#f0d9a8" />
-		<rect x="10" y="11" width="6" height="12" fill="none" stroke="#93a0e8" stroke-width="1.6" />
-		<path d="M7 26 q6 -3 12 0" stroke="#5f6ec4" stroke-width="1.6" fill="none" />
-	</svg>
-)}
+<svg width={width} height={height} viewBox="0 0 26 30" fill="none" style={tilt ? 'transform:rotate(-4deg)' : undefined}>
+	<path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" />
+	<rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4" />
+	<path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4" />
+	<path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none" />
+</svg>

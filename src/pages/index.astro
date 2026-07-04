@@ -1,12 +1,14 @@
 ---
 // Hello — hero, wave-with-boat, postcards preview, cargo manifest, hobbies
 // preview, contact band, and the dictionary entry. The postcards preview is
-// data-driven (first three projects, proud order); hero copy and the
-// dictionary come from the SiteCopy singleton; the cargo manifest, hobbies
-// preview, and contact band are approved copy hardcoded by design.
+// data-driven (first three projects, proud order) and opens the postcard-back
+// overlay in place; hero copy and the dictionary come from the SiteCopy
+// singleton; the cargo manifest, hobbies preview, and contact band are
+// approved copy hardcoded by design.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LighthouseMark from '../components/LighthouseMark.astro';
 import WaveDivider from '../components/WaveDivider.astro';
+import HomePostcards from '../components/islands/HomePostcards';
 import { getProjects, getSiteCopy } from '../lib/api';
 
 const projects = await getProjects();
@@ -61,30 +63,7 @@ const graveyardChips = [
 			<span class="section-label">Postcards from production</span>
 			<a href="/projects" class="mono-link">all projects →</a>
 		</div>
-		<div class="postcards__grid">
-			{preview.map((project, index) => (
-				<a href="/projects" class="postcard-link">
-					<div class:list={['postcard', `bob-home-${index}`]}>
-						{index === 0 && (
-							<div class="deco deco--stamp deco--stamp-gold">
-								<LighthouseMark width={18} height={22} variant="stamp" />
-							</div>
-						)}
-						{index === 1 && (
-							<div class="deco deco--postmark">DAILY<br />SINCE<br />1786</div>
-						)}
-						{index === 2 && (
-							<div class="deco deco--stamp deco--stamp-peri">☀&#xFE0E;</div>
-						)}
-						<div class:list={['postcard__title', { 'pad-postmark': index === 1, 'pad-stamp': index !== 1 }]}>{project.title}</div>
-						<div class="postcard__desc">{project.shortDesc}</div>
-						<div class="postcard__tags">
-							{project.tags.map((tag) => <span>{tag}</span>)}
-						</div>
-					</div>
-				</a>
-			))}
-		</div>
+		<HomePostcards client:load projects={preview} />
 	</section>
 
 	<!-- the cargo manifest -->
@@ -251,87 +230,6 @@ const graveyardChips = [
 		display: flex;
 		flex-direction: column;
 		gap: 18px;
-	}
-
-	.postcards__grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-		gap: 22px;
-		align-items: stretch;
-	}
-
-	.postcard-link {
-		display: block;
-		transition: transform .25s;
-	}
-
-	.postcard-link:hover {
-		transform: translateY(-5px);
-	}
-
-	.pad-stamp    { padding-right: 40px; }
-	.pad-postmark { padding-right: 52px; }
-
-	.bob-home-0 { transform: rotate(-1deg); animation: bobHomeA 7s ease-in-out infinite; }
-	.bob-home-1 { transform: rotate(.7deg); animation: bobHomeB 8s ease-in-out .5s infinite; }
-	.bob-home-2 { transform: rotate(-.5deg); animation: bobHomeC 6.5s ease-in-out 1s infinite; }
-
-	@keyframes bobHomeA {
-		0%, 100% { transform: rotate(-1deg) translateY(0); }
-		50%      { transform: rotate(-.4deg) translateY(-4px); }
-	}
-
-	@keyframes bobHomeB {
-		0%, 100% { transform: rotate(.7deg) translateY(0); }
-		50%      { transform: rotate(.2deg) translateY(-5px); }
-	}
-
-	@keyframes bobHomeC {
-		0%, 100% { transform: rotate(-.5deg) translateY(0); }
-		50%      { transform: rotate(-1deg) translateY(-3px); }
-	}
-
-	/* Corner decorations wiggle independently of the card bob */
-	.deco {
-		position: absolute;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.deco--stamp {
-		top: 12px;
-		right: 12px;
-		width: 34px;
-		height: 42px;
-		border-radius: 3px;
-	}
-
-	.deco--stamp-gold {
-		border: 1.5px solid rgba(240, 217, 168, .5);
-		animation: wiggle 6s ease-in-out infinite;
-	}
-
-	.deco--stamp-peri {
-		border: 1.5px solid rgba(147, 160, 232, .5);
-		font-size: 16px;
-		animation: wiggle 5.5s ease-in-out 1s infinite;
-	}
-
-	.deco--postmark {
-		top: 10px;
-		right: 10px;
-		width: 52px;
-		height: 52px;
-		border: 1.2px dashed rgba(147, 160, 232, .45);
-		border-radius: 50%;
-		font-family: var(--font-mono);
-		font-size: 7.5px;
-		letter-spacing: .1em;
-		color: var(--periwinkle);
-		text-align: center;
-		line-height: 1.6;
-		animation: wiggle14 7s ease-in-out infinite;
 	}
 
 	/* --- cargo manifest --- */

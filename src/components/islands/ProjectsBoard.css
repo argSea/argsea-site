@@ -1,4 +1,4 @@
-/* Projects board — filter row, postcard grid, and the postcard-back overlay. */
+/* Projects board — filter row and the postcard grid. */
 
 .filter-row {
 	display: flex;
@@ -22,15 +22,6 @@
 	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 	gap: 22px;
 	align-items: stretch;
-}
-
-.card-wrap {
-	cursor: pointer;
-	transition: transform .25s;
-}
-
-.card-wrap:hover {
-	transform: translateY(-5px);
 }
 
 /* The grid's type runs slightly smaller than the homepage preview cards */
@@ -73,133 +64,4 @@
 @keyframes cardEnterB {
 	from { opacity: 0; }
 	to   { opacity: 1; }
-}
-
-/* --- The back of the postcard --- */
-
-.postcard-back {
-	width: min(860px, 100%);
-	animation: cardInPostcard .35s ease both;
-}
-
-@keyframes cardInPostcard {
-	from { opacity: 0; transform: rotate(-3deg) translateY(34px) scale(.96); }
-	to   { opacity: 1; transform: rotate(0deg) translateY(0) scale(1); }
-}
-
-.postcard-back__cols {
-	display: flex;
-	flex-wrap: wrap;
-	gap: clamp(20px, 4vw, 36px);
-	padding: clamp(20px, 4vw, 32px);
-}
-
-.postcard-back__left {
-	flex: 1.5;
-	min-width: 280px;
-	display: flex;
-	flex-direction: column;
-	gap: 14px;
-}
-
-.postcard-back__title {
-	font-family: var(--font-display);
-	font-size: clamp(24px, 4vw, 32px);
-	color: var(--text-strong);
-	line-height: 1.15;
-}
-
-.postcard-back__body {
-	display: flex;
-	flex-direction: column;
-	gap: 14px;
-}
-
-.postcard-back__body p {
-	margin: 0;
-	font-size: 16.5px;
-	line-height: 1.65;
-	color: var(--text-body-strong);
-}
-
-.postcard-back__moral {
-	font-size: 15px;
-	color: var(--text-quip);
-	font-style: italic;
-	margin-top: 4px;
-}
-
-.postcard-back__right {
-	flex: 1;
-	min-width: 220px;
-	border-left: 1.5px dashed rgba(150, 160, 220, .25);
-	padding-left: clamp(18px, 3vw, 28px);
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
-}
-
-.stamp-frame {
-	align-self: flex-end;
-	width: 52px;
-	height: 64px;
-	border: 1.5px solid rgba(240, 217, 168, .55);
-	border-radius: 3px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	animation: wiggle 6s ease-in-out infinite;
-}
-
-/* Instant-photo paper frame around the project image */
-.photo-print {
-	background: #e8e6df;
-	padding: 8px 8px 26px;
-	border-radius: 2px;
-	box-shadow: 0 6px 16px rgba(0, 0, 0, .35);
-	transform: rotate(-1.5deg);
-}
-
-.photo-print img {
-	display: block;
-	width: 100%;
-	height: 130px;
-	object-fit: cover;
-}
-
-.photo-print__blank {
-	width: 100%;
-	height: 130px;
-	background: rgba(0, 0, 0, .06);
-}
-
-.address-block {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-	font-family: var(--font-mono);
-	font-size: 13px;
-	line-height: 1.7;
-}
-
-.address-block__label {
-	color: var(--periwinkle-deep);
-}
-
-.address-block__label--spaced {
-	margin-top: 6px;
-}
-
-.address-block__value {
-	color: var(--text-soft);
-}
-
-.postcard-back__tags {
-	display: flex;
-	gap: 8px;
-	flex-wrap: wrap;
-	margin-top: auto;
-	font-family: var(--font-mono);
-	font-size: 11.5px;
-	color: var(--periwinkle);
 }

@@ -167,6 +167,16 @@ a {
 
 /* --- Postcards (home preview + projects grid share these) --- */
 
+/* Clickable card wrapper: lift on hover, bob lives on the inner card */
+.card-wrap {
+	cursor: pointer;
+	transition: transform .25s;
+}
+
+.card-wrap:hover {
+	transform: translateY(-5px);
+}
+
 .postcard {
 	position: relative;
 	height: 100%;
@@ -201,6 +211,24 @@ a {
 	color: var(--periwinkle);
 	margin-top: auto;
 }
+
+/* Corner stamp placement + title clearance, by stamp shape */
+.stamp-corner {
+	position: absolute;
+}
+
+.stamp-corner--rect {
+	top: 12px;
+	right: 12px;
+}
+
+.stamp-corner--circle {
+	top: 10px;
+	right: 10px;
+}
+
+.postcard__title--stamp-rect   { padding-right: 40px; }
+.postcard__title--stamp-circle { padding-right: 52px; }
 
 /* --- Overlays (postcard back + letter share these) --- */
 
@@ -290,11 +318,6 @@ a {
 	50%      { transform: rotate(3deg); }
 }
 
-@keyframes wiggle14 {
-	0%, 100% { transform: rotate(11deg); }
-	50%      { transform: rotate(17deg); }
-}
-
 @keyframes swayChip {
 	0%, 100% { transform: rotate(-1deg); }
 	50%      { transform: rotate(1deg); }
@@ -314,8 +337,11 @@ a {
 
 /*
  * REQUIRED on every page: reduced motion disables all animation/transitions.
- * Elements whose resting pose is a transform (tilted cards, the tunnel arches)
- * carry that transform as a base style so this rule never breaks layout.
+ * The !important declarations are what make this rule beat inline styles and
+ * component/island styles (which the bundler may append after this file) —
+ * its position here is convention, not the mechanism. Elements whose resting
+ * pose is a transform (tilted cards, the tunnel arches) carry that transform
+ * as a base style so this rule never breaks layout.
  */
 @media (prefers-reduced-motion: reduce) {
 	*, *::before, *::after {
