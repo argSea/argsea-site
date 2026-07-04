@@ -13,7 +13,10 @@ Thumbs.db
 # Logs
 *.log
 
-# Dependency & build output (stack TBD — extend when the scaffold lands)
+# Dependency & build output
 node_modules/
 dist/
 build/
+
+# Astro generated types/cache
+.astro/
