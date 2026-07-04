@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&amp;family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+html{background:#131628}
+body{margin:0;background:linear-gradient(180deg,#11131f 0%,#131628 100%)}
+a{text-decoration:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes drift{0%,100%{transform:translate(0,0)}25%{transform:translate(9px,-14px)}50%{transform:translate(-7px,-22px)}75%{transform:translate(6px,-9px)}}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+@keyframes waveSlide{to{background-position-x:-53px}}
+@keyframes bobA{0%,100%{transform:rotate(-1deg) translateY(0)}50%{transform:rotate(-.4deg) translateY(-4px)}}
+@keyframes bobB{0%,100%{transform:rotate(.7deg) translateY(0)}50%{transform:rotate(.2deg) translateY(-5px)}}
+@keyframes bobC{0%,100%{transform:rotate(-.5deg) translateY(0)}50%{transform:rotate(-1deg) translateY(-3px)}}
+@keyframes wiggle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
+@keyframes wiggle14{0%,100%{transform:rotate(11deg)}50%{transform:rotate(17deg)}}
+@keyframes postmarkSway{0%,100%{transform:rotate(9deg)}50%{transform:rotate(15deg)}}
+@keyframes sail{0%{left:-60px}100%{left:102%}}
+@keyframes bobBoat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-3px) rotate(2deg)}}
+@keyframes wakeRipple{to{background-position-x:-53px}}
+.boat-wake{position:absolute;top:15px;width:110px;height:18px;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(240,217,168,0.5)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;animation:wakeRipple 2.2s linear infinite;pointer-events:none}
+@keyframes swayChip{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
+@media(max-width:760px){[data-hide-mobile]{display:none !important}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;color:#dde1f0;font-family:'Newsreader',serif;display:flex;flex-direction:column;overflow-x:hidden">
+
+  <!-- nav -->
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:clamp(18px,3vw,30px) clamp(20px,5vw,52px) 10px">
+    <a href="Hello.dc.html" style="display:flex;align-items:center;gap:12px">
+      <span style="position:relative;display:inline-flex">
+        <svg width="24" height="28" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
+      </span>
+      <span style="font-family:'Gloock',serif;font-size:19px;color:#e8ebfa">Justin Smith</span>
+    </a>
+    <div style="display:flex;flex-wrap:wrap;gap:clamp(14px,3vw,32px);font-family:'IBM Plex Mono',monospace;font-size:13px">
+      <a href="Hello.dc.html" style="color:#e8ebfa;border-bottom:2px solid #f0d9a8;padding-bottom:2px">hello</a>
+      <a href="Projects.dc.html" style="color:#93a0e8">projects</a>
+      <a href="Hobbies.dc.html" style="color:#93a0e8">hobbies</a>
+      <a href="Notes.dc.html" style="color:#93a0e8">notes</a>
+      <a href="#" style="color:#93a0e8">resume ↗</a>
+    </div>
+  </div>
+
+  <!-- hero -->
+  <div style="position:relative;padding:clamp(56px,9vw,96px) clamp(20px,5vw,52px) clamp(40px,6vw,64px);overflow:hidden">
+    <div style="position:absolute;right:14%;top:90px;width:5px;height:5px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 14px 4px rgba(240,217,168,.4);animation:drift 11s ease-in-out infinite"></div>
+    <div style="position:absolute;right:32%;top:220px;width:4px;height:4px;border-radius:50%;background:#93a0e8;box-shadow:0 0 12px 3px rgba(147,160,232,.35);animation:drift 14s ease-in-out 2s infinite"></div>
+    <div style="position:absolute;right:9%;top:320px;width:4px;height:4px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 12px 3px rgba(240,217,168,.3);animation:drift 9s ease-in-out 1s infinite"></div>
+    <div style="position:absolute;left:8%;bottom:60px;width:4px;height:4px;border-radius:50%;background:#93a0e8;box-shadow:0 0 12px 3px rgba(147,160,232,.3);animation:drift 13s ease-in-out 3s infinite"></div>
+    <div data-hide-mobile style="position:absolute;right:clamp(24px,6vw,72px);top:76px;width:110px;height:110px;border:1.5px dashed rgba(147,160,232,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:postmarkSway 9s ease-in-out infinite">
+      <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#93a0e8;line-height:1.7">PITTSBURGH<br>PA · EST 2014<br>ARGSEA.COM</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px;max-width:720px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase;animation:fadeUp .7s ease .05s both">Hiya — senior software engineer, Pittsburgh PA</div>
+      <div style="font-family:'Gloock',serif;font-size:clamp(34px,6.5vw,58px);line-height:1.1;color:#f0f2fc;text-wrap:balance;animation:fadeUp .7s ease .15s both">I help keep the lights on behind the news.</div>
+      <div style="font-size:clamp(17px,2.4vw,20px);line-height:1.6;color:#a5aed4;font-weight:300;animation:fadeUp .7s ease .25s both">Backend engineering at the Post-Gazette: building, planning, a healthy amount of boxes-and-arrows. Dad the rest of the time. Serial picker-upper of hobbies.</div>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:4px;animation:fadeUp .7s ease .35s both">
+        <a href="Projects.dc.html" style="padding:13px 24px;background:#93a0e8;color:#151830;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:14px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);display:inline-flex;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">the projects</a>
+        <a href="mailto:hello@argsea.com" style="padding:13px 24px;border:1px solid rgba(150,160,220,.4);color:#c3cbf2;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:14px;display:inline-flex;transition:border-color .2s,transform .2s" style-hover="border-color:rgba(240,217,168,.7);transform:translateY(-2px)">say hi</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- wave with boat -->
+  <div style="position:relative;height:18px;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x">
+    <div style="position:absolute;top:-15px;left:-60px;animation:sail 70s linear infinite">
+      <div class="boat-wake" style="right:24px;mask-image:linear-gradient(90deg,transparent,black 70%);-webkit-mask-image:linear-gradient(90deg,transparent,black 70%)"></div>
+      <svg width="30" height="24" viewBox="0 0 30 24" fill="none" style="position:relative;animation:bobBoat 3s ease-in-out infinite"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>
+    </div>
+  </div>
+
+  <!-- postcards preview -->
+  <div style="padding:clamp(28px,5vw,44px) clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Postcards from production</span>
+      <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">all projects →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px;align-items:stretch">
+      <a href="Projects.dc.html" style="display:block;transition:transform .25s" style-hover="transform:translateY(-5px)">
+        <div style="position:relative;height:100%;box-sizing:border-box;background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:26px 24px;display:flex;flex-direction:column;gap:11px;box-shadow:0 10px 24px rgba(0,0,0,.35);animation:bobA 7s ease-in-out infinite">
+          <div style="position:absolute;top:12px;right:12px;width:34px;height:42px;border:1.5px solid rgba(240,217,168,.5);border-radius:3px;display:flex;align-items:center;justify-content:center;animation:wiggle 6s ease-in-out infinite"><svg width="18" height="22" viewBox="0 0 26 30" fill="none"><path d="M13 4 L17 11 L9 11 Z" fill="#f0d9a8"></path><rect x="10" y="11" width="6" height="12" fill="none" stroke="#93a0e8" stroke-width="1.6"></rect><path d="M7 26 q6 -3 12 0" stroke="#5f6ec4" stroke-width="1.6" fill="none"></path></svg></div>
+          <div style="font-family:'Gloock',serif;font-size:21px;color:#eef0fb;padding-right:40px">The Great Un-monolithing</div>
+          <div style="font-size:15.5px;line-height:1.55;color:#a5aed4">One giant app became many small, well-behaved services. Readers never noticed. That was the point.</div>
+          <div style="display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;margin-top:auto"><span>kubernetes</span><span>python</span><span>rabbitmq</span></div>
+        </div>
+      </a>
+      <a href="Projects.dc.html" style="display:block;transition:transform .25s" style-hover="transform:translateY(-5px)">
+        <div style="position:relative;height:100%;box-sizing:border-box;background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:26px 24px;display:flex;flex-direction:column;gap:11px;box-shadow:0 10px 24px rgba(0,0,0,.35);animation:bobB 8s ease-in-out .5s infinite">
+          <div style="position:absolute;top:10px;right:10px;width:52px;height:52px;border:1.2px dashed rgba(147,160,232,.45);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.1em;color:#93a0e8;text-align:center;line-height:1.6;animation:wiggle14 7s ease-in-out infinite">DAILY<br>SINCE<br>1786</div>
+          <div style="font-family:'Gloock',serif;font-size:21px;color:#eef0fb;padding-right:52px">Newsroom plumbing</div>
+          <div style="font-size:15.5px;line-height:1.55;color:#a5aed4">A publishing workflow a real paper runs on, every day, deadlines and all.</div>
+          <div style="display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;margin-top:auto"><span>rest</span><span>mongodb</span><span>nginx</span></div>
+        </div>
+      </a>
+      <a href="Projects.dc.html" style="display:block;transition:transform .25s" style-hover="transform:translateY(-5px)">
+        <div style="position:relative;height:100%;box-sizing:border-box;background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:26px 24px;display:flex;flex-direction:column;gap:11px;box-shadow:0 10px 24px rgba(0,0,0,.35);animation:bobC 6.5s ease-in-out 1s infinite">
+          <div style="position:absolute;top:12px;right:12px;width:34px;height:42px;border:1.5px solid rgba(147,160,232,.5);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:16px;animation:wiggle 5.5s ease-in-out 1s infinite">☀</div>
+          <div style="font-family:'Gloock',serif;font-size:21px;color:#eef0fb;padding-right:40px">100k good mornings</div>
+          <div style="font-size:15.5px;line-height:1.55;color:#a5aed4">An automated newsletter that beats the sunrise into six figures of inboxes.</div>
+          <div style="display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;margin-top:auto"><span>php</span><span>redis</span><span>linux</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- cargo manifest -->
+  <div style="padding:0 clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">The cargo manifest</span>
+      <span style="font-size:15px;color:#5f6ec4;font-style:italic">tools currently aboard</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px 28px">
+      <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(150,160,220,.2);padding-top:12px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">languages</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:#c3cbf2;line-height:1.8">java · python · node.js · go · php</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(150,160,220,.2);padding-top:12px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">data &amp; queues</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:#c3cbf2;line-height:1.8">mongodb · redis · rabbitmq · varnish</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(150,160,220,.2);padding-top:12px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">infrastructure</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:#c3cbf2;line-height:1.8">kubernetes · docker · nginx · linux</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- hobby ledger preview -->
+  <div style="padding:clamp(28px,5vw,44px) clamp(20px,5vw,52px) clamp(24px,4vw,32px);display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Hobbies, past &amp; present</span>
+      <a href="Hobbies.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">the full graveyard →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;align-items:stretch">
+      <div style="padding:24px 26px;background:rgba(240,217,168,.06);border:1.5px dashed rgba(240,217,168,.4);border-radius:12px;transform:rotate(-.3deg);display:flex;flex-direction:column;gap:12px;transition:transform .25s" style-hover="transform:rotate(0deg)">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:#f0d9a8;text-transform:uppercase">Currently learning</span>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><span style="font-family:'Gloock',serif;font-size:20px;color:#f0f2fc">The home lab</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#93a0e8">plex · htpc</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><span style="font-family:'Gloock',serif;font-size:20px;color:#f0f2fc">CachyOS tinkering</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#93a0e8">linux · always</span></div>
+        </div>
+        <span style="font-size:14.5px;color:#a5aed4;font-style:italic">One tweak from perfect, forever.</span>
+      </div>
+      <div style="padding:24px 26px;background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;transform:rotate(.3deg);display:flex;flex-direction:column;gap:12px;transition:transform .25s" style-hover="transform:rotate(0deg)">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:#93a0e8;text-transform:uppercase">The hobby graveyard</span>
+        <div style="display:flex;gap:9px;flex-wrap:wrap">
+          <span style="padding:6px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;animation:swayChip 5s ease-in-out infinite">piano † got good enough</span>
+          <span style="padding:6px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;animation:swayChip 6s ease-in-out 1s infinite">music theory † see piano</span>
+          <span style="padding:6px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;animation:swayChip 5.5s ease-in-out .5s infinite">game dev † shipped one</span>
+          <span style="padding:6px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;animation:swayChip 6.5s ease-in-out 1.5s infinite">running † it was a phase</span>
+        </div>
+        <span style="font-size:14.5px;color:#7a83ad;font-style:italic">Nothing here is dead. It's just resting until the next season of me.</span>
+      </div>
+    </div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// the graveyard only grows. that's fine.</div>
+  </div>
+
+  <!-- contact band -->
+  <div style="padding:clamp(40px,7vw,72px) clamp(20px,5vw,52px) clamp(28px,5vw,48px);display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center">
+    <svg width="30" height="34" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
+    <div style="font-family:'Gloock',serif;font-size:clamp(24px,4.5vw,34px);color:#f0f2fc;max-width:560px;line-height:1.2;text-wrap:balance">Need a hand keeping your lights on?</div>
+    <div style="font-size:17px;color:#a5aed4;font-style:italic;max-width:460px">Backend, architecture, planning — or just to talk shop.</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:4px">
+      <a href="mailto:hello@argsea.com" style="padding:13px 26px;background:#f0d9a8;color:#1b2033;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:14px;box-shadow:3px 3px 0 rgba(147,160,232,.6);transform:rotate(-.5deg);display:inline-flex;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(147,160,232,.6)">say hi</a>
+      <a href="#" style="padding:13px 26px;border:1px solid rgba(150,160,220,.4);color:#c3cbf2;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:14px;display:inline-flex;transition:border-color .2s,transform .2s" style-hover="border-color:rgba(240,217,168,.7);transform:translateY(-2px)">resume ↗</a>
+    </div>
+  </div>
+
+  <!-- the name, explained -->
+  <div style="display:flex;justify-content:center;padding:0 clamp(20px,5vw,52px) clamp(28px,5vw,44px)">
+    <div style="max-width:520px;border-top:1px solid rgba(150,160,220,.18);padding-top:24px;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+        <span style="font-family:'Gloock',serif;font-size:22px;color:#f0f2fc">argsea</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#5f6ec4">/ˈɑːrɡ·siː/ · noun</span>
+      </div>
+      <div style="font-size:15.5px;line-height:1.7;color:#a5aed4"><span style="color:#5f6ec4">1.</span> the Argo, but for one. <span style="color:#5f6ec4">2.</span> <span style="font-family:'IBM Plex Mono',monospace;font-size:13.5px">argc</span>, but forever. <span style="color:#5f6ec4">3.</span> a sea of water, or of stars. <span style="color:#5f6ec4">4.</span> <span style="font-style:italic">informal</span> — what a method signature becomes if I'm not supervised.</div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:26px clamp(20px,5vw,52px) 24px">
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · argsea.com</span>
+    <span style="font-size:15px;color:#8f9be0;font-style:italic">The boats run on schedule. Ish.</span>
+    <div style="display:flex;gap:16px;font-family:'IBM Plex Mono',monospace;font-size:12px">
+      <a href="#" style="color:#93a0e8">github</a><a href="#" style="color:#93a0e8">linkedin</a><a href="mailto:hello@argsea.com" style="color:#93a0e8">email</a>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&amp;family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+html{background:#131628}
+body{margin:0;background:linear-gradient(180deg,#11131f 0%,#131628 100%)}
+a{text-decoration:none}
+input,textarea,select,button{font:inherit}
+input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes drift{0%,100%{transform:translate(0,0)}25%{transform:translate(9px,-14px)}50%{transform:translate(-7px,-22px)}75%{transform:translate(6px,-9px)}}
+@keyframes wiggle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
+@keyframes postmarkSway{0%,100%{transform:rotate(9deg)}50%{transform:rotate(15deg)}}
+@keyframes swayChip{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
+@keyframes bobBoat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-3px) rotate(2deg)}}
+@keyframes sail{0%{left:-40px}100%{left:102%}}
+@keyframes lampPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,14px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes overlayIn{from{opacity:0;transform:rotate(-2deg) translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes backdropIn{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;color:#dde1f0;font-family:'Newsreader',serif;overflow-x:hidden">
+
+<!-- ============ LOGIN ============ -->
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="Login" style="min-height:100vh;position:relative;display:flex;align-items:center;justify-content:center;padding:clamp(20px,5vw,52px);box-sizing:border-box;overflow:hidden">
+    <div style="position:absolute;right:16%;top:18%;width:5px;height:5px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 14px 4px rgba(240,217,168,.4);animation:drift 11s ease-in-out infinite"></div>
+    <div style="position:absolute;left:14%;top:30%;width:4px;height:4px;border-radius:50%;background:#93a0e8;box-shadow:0 0 12px 3px rgba(147,160,232,.35);animation:drift 14s ease-in-out 2s infinite"></div>
+    <div style="position:absolute;left:22%;bottom:18%;width:4px;height:4px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 12px 3px rgba(240,217,168,.3);animation:drift 9s ease-in-out 1s infinite"></div>
+    <div style="position:absolute;right:20%;bottom:26%;width:4px;height:4px;border-radius:50%;background:#93a0e8;box-shadow:0 0 12px 3px rgba(147,160,232,.3);animation:drift 13s ease-in-out 3s infinite"></div>
+    <div style="position:absolute;right:clamp(24px,8vw,120px);top:64px;width:110px;height:110px;border:1.5px dashed rgba(147,160,232,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:postmarkSway 9s ease-in-out infinite">
+      <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#93a0e8;line-height:1.7">CREW<br>ONLY ·<br>ARGSEA.COM</div>
+    </div>
+    <div style="width:min(420px,100%);background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:clamp(28px,5vw,40px);box-sizing:border-box;box-shadow:0 10px 24px rgba(0,0,0,.35);transform:rotate(-.8deg);display:flex;flex-direction:column;gap:18px;animation:fadeUp .7s ease .05s both">
+      <div style="display:flex;justify-content:center">
+        <svg width="34" height="40" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
+      </div>
+      <div style="text-align:center;display:flex;flex-direction:column;gap:8px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">argsea · crew only</span>
+        <span style="font-family:'Gloock',serif;font-size:27px;color:#f0f2fc;line-height:1.2">The Harbormaster's Office</span>
+        <span style="font-size:15px;color:#7a83ad;font-style:italic">State your name and business.</span>
+      </div>
+      <form onSubmit="{{ login }}" style="display:flex;flex-direction:column;gap:12px;margin:0">
+        <input type="text" placeholder="who goes there?" autoComplete="username" value="{{ user }}" onChange="{{ setUser }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:12px 14px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:14px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+        <input type="password" placeholder="passphrase" autoComplete="current-password" value="{{ pass }}" onChange="{{ setPass }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:12px 14px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:14px;outline:none;letter-spacing:.1em" style-focus="border-color:rgba(240,217,168,.6)">
+        <sc-if value="{{ loginError }}" hint-placeholder-val="{{ false }}">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">{{ loginError }}</span>
+        </sc-if>
+        <button type="submit" style="padding:13px 24px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:14px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">unlock the office</button>
+      </form>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;text-align:center">// tokens expire. whimsy doesn't.</span>
+    </div>
+    <div style="position:absolute;bottom:22px;left:0;right:0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · argsea.com · back office</div>
+  </div>
+</sc-if>
+
+<!-- ============ APP SHELL ============ -->
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;min-height:100vh;align-items:stretch">
+
+    <!-- sidebar -->
+    <div style="width:236px;flex-shrink:0;border-right:1px solid rgba(150,160,220,.15);display:flex;flex-direction:column;gap:6px;padding:26px 18px 20px;box-sizing:border-box;position:sticky;top:0;height:100vh;overflow-y:auto">
+      <div style="display:flex;align-items:center;gap:11px;padding:0 6px 18px">
+        <svg width="24" height="28" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
+        <div style="display:flex;flex-direction:column">
+          <span style="font-family:'Gloock',serif;font-size:17px;color:#e8ebfa">argsea</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">harbormaster</span>
+        </div>
+      </div>
+      <sc-for list="{{ navItems }}" as="nv" hint-placeholder-count="6">
+        <div onClick="{{ nv.onClick }}" style="{{ nv.style }}" style-hover="color:#e8ebfa"><span style="width:18px;display:inline-block;text-align:center">{{ nv.glyph }}</span>{{ nv.label }}</div>
+      </sc-for>
+
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:14px;padding-top:20px">
+        <div style="background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;transform:rotate(-.4deg)">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase">the lantern</span>
+          <sc-if value="{{ deploying }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="position:relative;height:20px;overflow:visible;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x bottom">
+                <div style="{{ boatStyle }}">
+                  <svg width="22" height="18" viewBox="0 0 30 24" fill="none" style="animation:bobBoat 1.2s ease-in-out infinite"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>
+                </div>
+              </div>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#f0d9a8">{{ deployMsg }}</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ notDeploying }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ deploy }}" style="padding:11px 14px;background:#f0d9a8;color:#1b2033;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;box-shadow:3px 3px 0 rgba(147,160,232,.6);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(147,160,232,.6)">{{ deployVerb }}</button>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">last hoisted: {{ lastDeploy }}</span>
+          </sc-if>
+        </div>
+        <div onClick="{{ logout }}" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#7a83ad;cursor:pointer;padding:4px 6px;transition:color .2s" style-hover="color:#f0d9a8">← go ashore</div>
+      </div>
+    </div>
+
+    <!-- main -->
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+      <div style="flex:1;padding:clamp(28px,4vw,48px) clamp(22px,4vw,52px) 24px;box-sizing:border-box;max-width:1060px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:26px">
+
+        <!-- ===== DASHBOARD ===== -->
+        <sc-if value="{{ isDash }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="The bridge" style="display:flex;flex-direction:column;gap:26px">
+            <div style="display:flex;flex-direction:column;gap:10px;animation:fadeUp .7s ease .05s both">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the bridge · {{ dateLine }}</span>
+              <span style="font-family:'Gloock',serif;font-size:clamp(30px,4.5vw,42px);color:#f0f2fc;line-height:1.15">{{ greeting }}, {{ keeperName }}.</span>
+              <span style="font-size:16.5px;color:#a5aed4;font-style:italic">All quiet on the water. Mostly.</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;animation:fadeUp .7s ease .15s both">
+              <sc-for list="{{ stats }}" as="st" hint-placeholder-count="4">
+                <div style="{{ st.style }}" style-hover="transform:rotate(0deg)">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">{{ st.label }}</span>
+                  <span style="font-family:'Gloock',serif;font-size:30px;color:#f0f2fc">{{ st.value }}</span>
+                  <span style="font-size:13.5px;color:#7a83ad;font-style:italic">{{ st.sub }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="position:relative;height:18px;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x">
+              <div style="position:absolute;top:-15px;left:-40px;animation:sail 45s linear infinite">
+                <svg width="30" height="24" viewBox="0 0 30 24" fill="none" style="animation:bobBoat 3s ease-in-out infinite"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;align-items:start;animation:fadeUp .7s ease .25s both">
+              <div style="background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:11px;box-shadow:0 10px 24px rgba(0,0,0,.35)">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the ship's log</span>
+                <div style="display:flex;flex-direction:column;gap:11px">
+                  <sc-for list="{{ activity }}" as="ac" hint-placeholder-count="4">
+                    <div style="display:flex;gap:12px;align-items:baseline;border-top:1px solid rgba(150,160,220,.12);padding-top:11px">
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;width:80px;flex-shrink:0">{{ ac.t }}</span>
+                      <span style="font-size:14.5px;color:#a5aed4;line-height:1.5">{{ ac.msg }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:22px">
+                <div style="background:rgba(240,217,168,.06);border:1.5px dashed rgba(240,217,168,.4);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;transform:rotate(.3deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">quick errands</span>
+                  <div style="display:flex;flex-direction:column;gap:9px">
+                    <sc-for list="{{ quickActions }}" as="qa" hint-placeholder-count="4">
+                      <div onClick="{{ qa.onClick }}" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#c3cbf2;cursor:pointer;transition:color .2s,transform .2s" style-hover="color:#f0d9a8;transform:translateX(4px)">→ {{ qa.label }}</div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:10px;transform:rotate(-.3deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">harbor conditions</span>
+                  <div style="display:flex;flex-direction:column;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.7">
+                    <span style="color:#a5aed4">api · <span style="color:#f0d9a8">● steady</span></span>
+                    <span style="color:#a5aed4">media store · <span style="color:#f0d9a8">● steady</span></span>
+                    <span style="color:#a5aed4">newsletter cron · <span style="color:#f0d9a8">● ambitious</span></span>
+                    <span style="color:#a5aed4">home lab · <span style="color:#93a0e8">● one tweak from perfect</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ===== POSTCARDS (projects) ===== -->
+        <sc-if value="{{ isProjects }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="Postcards admin" style="display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;animation:fadeUp .7s ease .05s both">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the rack</span>
+                <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Postcards from production</span>
+                <span style="font-size:15.5px;color:#a5aed4;font-style:italic">{{ projCountLine }}</span>
+              </div>
+              <button onClick="{{ newProject }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ new postcard</button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px;animation:fadeUp .7s ease .15s both">
+              <sc-for list="{{ projRows }}" as="p" hint-placeholder-count="6">
+                <div style="{{ p.rowStyle }}" style-hover="transform:rotate(0deg)">
+                  <div style="position:absolute;top:14px;right:16px;width:26px;height:32px;border:1.5px solid rgba(240,217,168,.4);border-radius:3px;display:flex;align-items:center;justify-content:center;animation:wiggle 6s ease-in-out infinite">
+                    <svg width="13" height="16" viewBox="0 0 26 30" fill="none"><path d="M13 4 L17 11 L9 11 Z" fill="#f0d9a8"></path><rect x="10" y="11" width="6" height="12" fill="none" stroke="#93a0e8" stroke-width="1.6"></rect><path d="M7 26 q6 -3 12 0" stroke="#5f6ec4" stroke-width="1.6" fill="none"></path></svg>
+                  </div>
+                  <div style="{{ p.thumbStyle }}"><div style="{{ p.thumbImgStyle }}"></div></div>
+                  <div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1">
+                    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+                      <span style="font-family:'Gloock',serif;font-size:19px;color:#eef0fb">{{ p.title }}</span>
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ p.cat }}</span>
+                    </div>
+                    <span style="font-size:14.5px;color:#a5aed4;line-height:1.5">{{ p.desc }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8">{{ p.tagsText }}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0;padding-right:36px">
+                    <span onClick="{{ p.onToggle }}" style="{{ p.statusStyle }}">{{ p.statusLabel }}</span>
+                    <span onClick="{{ p.onEdit }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">edit</span>
+                    <span onClick="{{ p.onDel }}" style="{{ p.delStyle }}">{{ p.delLabel }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// drafts stay in the rack. published cards catch the next boat out.</span>
+          </div>
+        </sc-if>
+
+        <!-- ===== GRAVEYARD (hobbies) ===== -->
+        <sc-if value="{{ isHobbies }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="Graveyard admin" style="display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;animation:fadeUp .7s ease .05s both">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">groundskeeping</span>
+                <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">The hobby graveyard</span>
+                <span style="font-size:15.5px;color:#a5aed4;font-style:italic">Move things between learning and resting. No judgment either way.</span>
+              </div>
+              <button onClick="{{ newHobby }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ pick something up</button>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:12px;animation:fadeUp .7s ease .15s both">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">currently learning</span>
+              <sc-for list="{{ activeHobbies }}" as="h" hint-placeholder-count="2">
+                <div style="{{ h.rowStyle }}" style-hover="transform:rotate(0deg)">
+                  <div style="display:flex;flex-direction:column;gap:4px;min-width:0;flex:1">
+                    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+                      <span style="font-family:'Gloock',serif;font-size:19px;color:#f0f2fc">{{ h.name }}</span>
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8">{{ h.dates }}</span>
+                    </div>
+                    <span style="font-size:14.5px;color:#a5aed4;font-style:italic;line-height:1.5">{{ h.eulogy }}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0">
+                    <span onClick="{{ h.onEdit }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">edit</span>
+                    <span onClick="{{ h.onToggle }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#a5aed4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">retire †</span>
+                  </div>
+                </div>
+              </sc-for>
+
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase;margin-top:10px">resting</span>
+              <sc-for list="{{ restingHobbies }}" as="h" hint-placeholder-count="4">
+                <div style="{{ h.rowStyle }}" style-hover="transform:rotate(0deg)">
+                  <div style="display:flex;flex-direction:column;gap:4px;min-width:0;flex:1">
+                    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+                      <span style="font-family:'Gloock',serif;font-size:19px;color:#eef0fb">{{ h.name }}</span>
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4">{{ h.epitaph }} · {{ h.dates }}</span>
+                    </div>
+                    <span style="font-size:14.5px;color:#7a83ad;font-style:italic;line-height:1.5">{{ h.eulogy }}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0">
+                    <span onClick="{{ h.onEdit }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">edit</span>
+                    <span onClick="{{ h.onToggle }}" style="padding:7px 14px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;transition:transform .2s" style-hover="transform:scale(1.04)">revive ↺</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;transform:rotate(.3deg);animation:fadeUp .7s ease .25s both">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the "next: ???" pool</span>
+              <span style="font-size:14px;color:#7a83ad;font-style:italic">Suggestions the graveyard chip cycles through. Feed it responsibly.</span>
+              <div style="display:flex;gap:9px;flex-wrap:wrap">
+                <sc-for list="{{ suggestionChips }}" as="sg" hint-placeholder-count="6">
+                  <span style="padding:6px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;display:inline-flex;align-items:center;gap:8px;animation:swayChip 5.5s ease-in-out infinite">{{ sg.label }}<span onClick="{{ sg.onRemove }}" style="cursor:pointer;color:#5f6ec4;transition:color .2s" style-hover="color:#f0d9a8">✕</span></span>
+                </sc-for>
+              </div>
+              <form onSubmit="{{ addSuggestion }}" style="display:flex;gap:10px;margin:0;flex-wrap:wrap">
+                <input type="text" placeholder="blacksmithing? kayaking?" value="{{ newSuggestion }}" onChange="{{ setNewSuggestion }}" style="flex:1;min-width:180px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 12px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                <button type="submit" style="padding:9px 16px;border:1.5px dashed rgba(240,217,168,.5);background:none;color:#f0d9a8;border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;transition:transform .2s" style-hover="transform:scale(1.04)">+ tempt fate</button>
+              </form>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// the graveyard only grows. that's fine.</span>
+          </div>
+        </sc-if>
+
+        <!-- ===== WRITING DESK (notes) ===== -->
+        <sc-if value="{{ isNotes }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="Writing desk" style="display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;animation:fadeUp .7s ease .05s both">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the writing desk</span>
+                <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Notes</span>
+                <span style="font-size:15.5px;color:#a5aed4;font-style:italic">{{ notesCountLine }}</span>
+              </div>
+              <button onClick="{{ newNote }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ new note</button>
+            </div>
+            <div style="display:flex;flex-direction:column;animation:fadeUp .7s ease .15s both">
+              <sc-for list="{{ noteRows }}" as="n" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;border-bottom:1px solid rgba(150,160,220,.15);padding:18px 10px;transition:background .2s,transform .2s" style-hover="background:rgba(150,160,220,.05);transform:translateX(6px)">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;width:90px;flex-shrink:0">{{ n.date }}</span>
+                  <div style="{{ n.thumbStyle }}"><div style="{{ n.thumbImgStyle }}"></div></div>
+                  <div style="display:flex;flex-direction:column;gap:3px;min-width:0;flex:1">
+                    <span style="font-family:'Gloock',serif;font-size:18px;color:#eef0fb">{{ n.title }}</span>
+                    <span style="font-size:14px;color:#7a83ad;font-style:italic">{{ n.teaser }}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0">
+                    <span onClick="{{ n.onToggle }}" style="{{ n.statusStyle }}">{{ n.statusLabel }}</span>
+                    <span onClick="{{ n.onEdit }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">edit</span>
+                    <span onClick="{{ n.onDel }}" style="{{ n.delStyle }}">{{ n.delLabel }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <span style="font-size:15px;color:#7a83ad;font-style:italic">{{ blogBarLine }}</span>
+          </div>
+        </sc-if>
+
+        <!-- ===== SIGNAL FLAGS (site copy) ===== -->
+        <sc-if value="{{ isCopy }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="Signal flags" style="display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the flag locker</span>
+              <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Signal flags</span>
+              <span style="font-size:15.5px;color:#a5aed4;font-style:italic">The little lines of copy that fly over every page.</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;align-items:start;animation:fadeUp .7s ease .15s both">
+              <div style="background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 24px rgba(0,0,0,.35);transform:rotate(-.3deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">footer quips · one per page</span>
+                <sc-for list="{{ quipFields }}" as="q" hint-placeholder-count="5">
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">{{ q.label }}</span>
+                    <input type="text" data-key="{{ q.key }}" value="{{ q.value }}" onChange="{{ setCopy }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  </label>
+                </sc-for>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:22px">
+                <div style="background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 24px rgba(0,0,0,.35);transform:rotate(.3deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the hero</span>
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">kicker</span>
+                    <input type="text" data-key="heroKicker" value="{{ copy.heroKicker }}" onChange="{{ setCopy }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.08em;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  </label>
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">headline</span>
+                    <input type="text" data-key="heroHeadline" value="{{ copy.heroHeadline }}" onChange="{{ setCopy }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#f0f2fc;font-family:'Gloock',serif;font-size:17px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  </label>
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">intro</span>
+                    <textarea data-key="heroBody" value="{{ copy.heroBody }}" onChange="{{ setCopy }}" rows="3" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+                  </label>
+                </div>
+                <div style="background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px;transform:rotate(-.3deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
+                  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+                    <span style="font-family:'Gloock',serif;font-size:19px;color:#f0f2fc">argsea</span>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4">/ˈɑːrɡ·siː/ · noun · the dictionary entry</span>
+                  </div>
+                  <textarea data-key="dict" value="{{ copy.dict }}" onChange="{{ setCopy }}" rows="4" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.6;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+                </div>
+              </div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// saved as you type. flies on the next lantern hoist.</span>
+          </div>
+        </sc-if>
+
+        <!-- ===== DARKROOM (media) ===== -->
+        <sc-if value="{{ isMedia }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="Darkroom" style="display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;animation:fadeUp .7s ease .05s both">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the darkroom</span>
+                <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Prints &amp; scans</span>
+                <span style="font-size:15.5px;color:#a5aed4;font-style:italic">{{ mediaCountLine }} Handle by the edges.</span>
+              </div>
+              <button onClick="{{ addMedia }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ develop a print</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:20px;animation:fadeUp .7s ease .15s both">
+              <sc-for list="{{ mediaTiles }}" as="m" hint-placeholder-count="6">
+                <div style="{{ m.tileStyle }}" style-hover="transform:rotate(0deg) translateY(-4px)">
+                  <div style="{{ m.imgStyle }}"></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 4px 4px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3d4468;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.name }}</span>
+                    <span onClick="{{ m.onDel }}" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a86b8;cursor:pointer;flex-shrink:0;transition:color .2s" style-hover="color:#b0483a">{{ m.delLabel }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// originals live in the media store. these are the harbor copies.</span>
+          </div>
+        </sc-if>
+
+      </div>
+
+      <!-- footer -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:20px clamp(22px,4vw,52px) 22px;border-top:1px solid rgba(150,160,220,.1)">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · argsea.com · back office</span>
+        <span style="font-size:15px;color:#8f9be0;font-style:italic">The harbormaster is also the intern.</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">signed in as {{ keeperName }} · jwt, allegedly</span>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ============ EDIT OVERLAY ============ -->
+<sc-if value="{{ edit }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ cancelEdit }}" style="position:fixed;inset:0;background:rgba(8,10,20,.72);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,40px);z-index:50;animation:backdropIn .25s ease both">
+    <div onClick="{{ stopProp }}" style="width:min(680px,100%);max-height:86vh;overflow-y:auto;background:#1c2036;border:1px solid rgba(150,160,220,.25);border-radius:14px;padding:clamp(22px,4vw,34px);box-sizing:border-box;box-shadow:0 30px 80px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:16px;animation:overlayIn .35s ease both">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">{{ editKicker }}</span>
+        <span onClick="{{ cancelEdit }}" style="padding:6px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">close ✕</span>
+      </div>
+
+      <!-- project fields -->
+      <sc-if value="{{ editProject }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">title</span>
+            <input type="text" data-field="title" value="{{ draft.title }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#f0f2fc;font-family:'Gloock',serif;font-size:18px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+          </label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">berth (category)</span>
+              <select data-field="cat" value="{{ draft.cat }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                <option value="backend">backend</option>
+                <option value="games">games</option>
+                <option value="this website">this website</option>
+                <option value="tinkering">tinkering</option>
+              </select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">tags · comma separated</span>
+              <input type="text" data-field="tagsText" value="{{ draft.tagsText }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">front of card · short description</span>
+            <textarea data-field="desc" value="{{ draft.desc }}" onChange="{{ setField }}" rows="2" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">moral of the story</span>
+            <input type="text" data-field="moral" value="{{ draft.moral }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+          </label>
+          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the address block</span>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
+              <label style="display:flex;flex-direction:column;gap:6px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">to:</span>
+                <input type="text" data-field="to" value="{{ draft.to }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+              </label>
+              <label style="display:flex;flex-direction:column;gap:6px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">from:</span>
+                <input type="text" data-field="from" value="{{ draft.from }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+              </label>
+              <label style="display:flex;flex-direction:column;gap:6px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">postmarked:</span>
+                <input type="text" data-field="year" value="{{ draft.year }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+              </label>
+            </div>
+          </div>
+          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the photo print · one per card</span>
+            <div style="display:flex;gap:14px;flex-wrap:wrap">
+              <sc-for list="{{ printOptions }}" as="po" hint-placeholder-count="5">
+                <div onClick="{{ po.onPick }}" style="{{ po.style }}">
+                  <div style="{{ po.imgStyle }}"></div>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#3d4468;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ po.name }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- hobby fields -->
+      <sc-if value="{{ editHobby }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">hobby</span>
+              <input type="text" data-field="name" value="{{ draft.name }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#f0f2fc;font-family:'Gloock',serif;font-size:18px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">dates</span>
+              <input type="text" data-field="dates" value="{{ draft.dates }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">epitaph · shows on the headstone</span>
+            <input type="text" data-field="epitaph" value="{{ draft.epitaph }}" onChange="{{ setField }}" placeholder="† it was a phase" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">eulogy</span>
+            <textarea data-field="eulogy" value="{{ draft.eulogy }}" onChange="{{ setField }}" rows="3" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+          </label>
+        </div>
+      </sc-if>
+
+      <!-- note fields -->
+      <sc-if value="{{ editNote }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px">
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">title</span>
+              <input type="text" data-field="title" value="{{ draft.title }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#f0f2fc;font-family:'Gloock',serif;font-size:18px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">date</span>
+              <input type="text" data-field="date" value="{{ draft.date }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">teaser · one line</span>
+            <input type="text" data-field="teaser" value="{{ draft.teaser }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">the note itself</span>
+            <textarea data-field="body" value="{{ draft.body }}" onChange="{{ setField }}" rows="9" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:13px 14px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15.5px;line-height:1.65;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+          </label>
+          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the photo print · one per note</span>
+            <div style="display:flex;gap:14px;flex-wrap:wrap">
+              <sc-for list="{{ printOptions }}" as="po" hint-placeholder-count="5">
+                <div onClick="{{ po.onPick }}" style="{{ po.style }}">
+                  <div style="{{ po.imgStyle }}"></div>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#3d4468;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ po.name }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">— signs itself "— j" on the way out</span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasRevs }}" hint-placeholder-val="{{ false }}">
+        <div style="border-top:1px solid rgba(150,160,220,.18);padding-top:14px;display:flex;flex-direction:column;gap:11px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">earlier printings · last 5 kept</span>
+          <sc-for list="{{ revRows }}" as="rv" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ rv.t }}</span>
+                <span style="font-size:14px;color:#a5aed4;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rv.summary }}</span>
+              </div>
+              <span onClick="{{ rv.onRestore }}" style="padding:6px 13px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8;cursor:pointer;transition:transform .2s;flex-shrink:0" style-hover="transform:scale(1.04)">roll back ↺</span>
+            </div>
+          </sc-for>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">// rolling back loads that printing into the form — file it to keep it.</span>
+        </div>
+      </sc-if>
+
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding-top:4px">
+        <button onClick="{{ saveEdit }}" style="padding:12px 22px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">{{ saveLabel }}</button>
+        <span onClick="{{ cancelEdit }}" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#7a83ad;cursor:pointer;transition:color .2s" style-hover="color:#e8ebfa">never mind</span>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ============ TOAST ============ -->
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#1c2036;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;padding:11px 22px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8;box-shadow:0 10px 30px rgba(0,0,0,.5);z-index:80;animation:toastIn .3s ease both;white-space:nowrap">{{ toast }}</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startLoggedIn&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;behavior&quot;},&quot;keeperName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;keeper&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;behavior&quot;},&quot;deployVerb&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;hoist the lantern&quot;,&quot;options&quot;:[&quot;hoist the lantern&quot;,&quot;light the beacon&quot;,&quot;set sail&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;behavior&quot;}}">
+class Component extends DCLogic {
+  state = {
+    screen: (this.props && this.props.startLoggedIn) ? 'dash' : 'login',
+    user: '', pass: '', loginError: null,
+    projects: [
+      { title: 'The Great Un-monolithing', cat: 'backend', tags: ['kubernetes','python','rabbitmq'], status: 'published', img: 'unmonolith-diagram.png',
+        desc: 'One giant app became many small, well-behaved services. Readers never noticed. That was the point.',
+        moral: 'Moral: the best migrations are the boring ones.',
+        to: 'everyone who reads the news without thinking about queues', from: 'justin, from inside the cluster', year: '2024 — ongoing' },
+      { title: 'Newsroom plumbing', cat: 'backend', tags: ['rest','mongodb','nginx'], status: 'published', img: 'newsroom-pipes.jpg',
+        desc: 'A publishing workflow a real paper runs on, every day, deadlines and all.',
+        moral: 'Moral: if they never think about you, you did it right.',
+        to: 'the 6pm deadline', from: 'the pipes beneath the newsroom', year: '2016 — ongoing' },
+      { title: '100k good mornings', cat: 'backend', tags: ['php','redis','linux'], status: 'published', img: 'sunrise-newsletter.png',
+        desc: 'An automated newsletter that beats the sunrise into six figures of inboxes.',
+        moral: 'Moral: automation is just kindness to your future self, scheduled.',
+        to: '100,000 people who are not awake yet', from: 'a cron job with ambition', year: '2018 — ongoing' },
+      { title: 'Meo Wave Race', cat: 'games', tags: ['unity','c#','blender'], status: 'published', img: 'meo-wave-race-title.png',
+        desc: 'A cat/boat racing game for the CS50 final. The cat is the boat. Ask me anything.',
+        moral: 'Moral: retire at the top.',
+        to: 'anyone who says scope creep is inevitable', from: 'a cat that is also a boat', year: '2020' },
+      { title: 'This website', cat: 'this website', tags: ['html','whimsy'], status: 'published',
+        desc: "The site you're on. Rebuilt whenever the mood strikes, which is often.",
+        moral: 'Moral: the portfolio is also the hobby.',
+        to: 'future justin, who will redesign this', from: 'present justin, who is sorry', year: '2026 edition' },
+      { title: 'The home lab', cat: 'tinkering', tags: ['plex','linux','cachyos'], status: 'draft', img: 'homelab-rack.jpg',
+        desc: 'Plex, HTPC, and a small fleet of machines that mostly behave.',
+        moral: 'Moral: some hobbies are load-bearing.',
+        to: 'the family, who just wanted to watch a movie', from: 'the server closet', year: '2021 — forever' },
+    ],
+    hobbies: [
+      { name: 'The home lab', dates: '2021 — present', epitaph: '', eulogy: 'One tweak from perfect, forever.', active: true },
+      { name: 'CachyOS tinkering', dates: 'always', epitaph: '', eulogy: 'The hobby that survives every purge, because it is just the day job wearing a hat.', active: true },
+      { name: 'Piano', dates: '2023 — 2024', epitaph: '† got good enough', eulogy: 'Learned enough to be dangerous at family gatherings, then quietly closed the lid.', active: false },
+      { name: 'Music theory', dates: '2023 — 2024', epitaph: '† see piano', eulogy: 'See piano.', active: false },
+      { name: 'Game development', dates: '2020', epitaph: '† shipped one', eulogy: 'Shipped one game. Retired undefeated.', active: false },
+      { name: 'Running', dates: 'one summer', epitaph: '† it was a phase', eulogy: 'It was a phase. The shoes remain, as evidence.', active: false },
+    ],
+    notes: [
+      { date: 'jun 2026', title: 'What re-architecting taught me about not architecting', status: 'published',
+        teaser: 'Sometimes the best system design is the meeting where you talk everyone out of a new system.',
+        body: 'The most valuable architecture work I did last year produced zero diagrams...' },
+      { date: 'apr 2026', title: 'CachyOS, three months in', status: 'published', img: 'homelab-rack.jpg',
+        teaser: 'A review from someone who will absolutely distro-hop again and lie about it.',
+        body: 'Three months on CachyOS and everything works, which is deeply unsettling...' },
+      { date: 'feb 2026', title: 'The queue is the product', status: 'published',
+        teaser: 'Notes on message queues after a decade of them quietly running the news.',
+        body: 'A decade of publishing systems has convinced me the real product is not the website or the app...' },
+      { date: '—', title: 'The home lab ate my weekend', status: 'draft',
+        teaser: 'A confession, with uptime charts.',
+        body: '' },
+    ],
+    copy: {
+      quipHello: 'The boats run on schedule. Ish.',
+      quipProjects: 'Every project was, at some point, a terrible idea that worked.',
+      quipHobbies: 'Flowers welcome. Watering optional.',
+      quipNotes: 'Written by a human, edited by deadline.',
+      quip404: 'You are the first person to find this exact wrong URL. Probably.',
+      heroKicker: 'HIYA — SENIOR SOFTWARE ENGINEER, PITTSBURGH PA',
+      heroHeadline: 'I help keep the lights on behind the news.',
+      heroBody: 'Backend engineering at the Post-Gazette: building, planning, a healthy amount of boxes-and-arrows. Dad the rest of the time. Serial picker-upper of hobbies.',
+      dict: '1. the Argo, but for one. 2. argc, but forever. 3. a sea of water, or of stars. 4. informal — what a method signature becomes if I\u2019m not supervised.',
+    },
+    media: [
+      { name: 'unmonolith-diagram.png', tone: 0 },
+      { name: 'newsroom-pipes.jpg', tone: 1 },
+      { name: 'sunrise-newsletter.png', tone: 2 },
+      { name: 'meo-wave-race-title.png', tone: 3 },
+      { name: 'lighthouse-mark.svg', tone: 4 },
+      { name: 'homelab-rack.jpg', tone: 5 },
+      { name: 'boat.svg', tone: 2 },
+      { name: 'postcard-scan-01.jpg', tone: 1 },
+    ],
+    suggestions: ['blacksmithing?','sourdough?','birdwatching?','3d printing?','kayaking?','chess?','fermenting things?','ham radio?'],
+    newSuggestion: '',
+    activity: [
+      { t: 'yesterday', msg: 'lantern hoisted — site rebuilt in 41s, zero complaints from the sea' },
+      { t: '2 days ago', msg: 'note "What re-architecting taught me…" published' },
+      { t: '4 days ago', msg: 'hobby "Running" moved to the graveyard (again)' },
+      { t: 'last week', msg: 'postcard "This website" edited 11 times. it counts.' },
+    ],
+    edit: null, confirmDel: null,
+    deploying: false, deployPct: 0, lastDeploy: 'yesterday, 9:12 pm',
+    toast: null,
+  };
+
+  gradients = [
+    'linear-gradient(135deg,#2a3054,#5f6ec4)',
+    'linear-gradient(135deg,#1f2440,#93a0e8)',
+    'linear-gradient(135deg,#3a3350,#f0d9a8)',
+    'linear-gradient(135deg,#232a4d,#7a83ad)',
+    'linear-gradient(135deg,#1a1e33,#5f6ec4)',
+    'linear-gradient(135deg,#2d2a45,#c3cbf2)',
+  ];
+
+  toneGrad(name) {
+    const m = this.state.media.find((x) => x.name === name);
+    return m ? this.gradients[m.tone % 6] : this.gradients[0];
+  }
+
+  thumbStyles(img) {
+    if (!img) return { thumbStyle: { display: 'none' }, thumbImgStyle: {} };
+    return {
+      thumbStyle: { background: '#e8e6df', borderRadius: '3px', padding: '4px 4px 9px', transform: 'rotate(-2deg)', flexShrink: 0, boxShadow: '0 4px 10px rgba(0,0,0,.3)' },
+      thumbImgStyle: { width: '46px', height: '34px', borderRadius: '1px', background: this.toneGrad(img) },
+    };
+  }
+
+  snapLabel() {
+    return 'today · ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
+  }
+
+  componentDidMount() {
+    this.onKey = (e) => { if (e.key === 'Escape' && this.state.edit) this.setState({ edit: null }); };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.onKey);
+    clearInterval(this.deployTimer); clearTimeout(this.toastTimer); clearTimeout(this.delTimer);
+  }
+
+  showToast(msg) {
+    clearTimeout(this.toastTimer);
+    this.setState({ toast: msg });
+    this.toastTimer = setTimeout(() => this.setState({ toast: null }), 2600);
+  }
+  log(msg) {
+    this.setState((s) => ({ activity: [{ t: 'just now', msg }, ...s.activity].slice(0, 6) }));
+  }
+
+  greeting() {
+    const h = new Date().getHours();
+    if (h < 5) return 'Still up';
+    if (h < 12) return 'Good morning';
+    if (h < 18) return 'Good afternoon';
+    return 'Good evening';
+  }
+
+  navStyle(active) {
+    return {
+      display: 'flex', alignItems: 'center', gap: '10px',
+      fontFamily: "'IBM Plex Mono', monospace", fontSize: '13px',
+      padding: '9px 10px', borderRadius: '8px', cursor: 'pointer',
+      transition: 'color .2s, background .2s',
+      color: active ? '#e8ebfa' : '#93a0e8',
+      background: active ? 'rgba(150,160,220,.08)' : 'none',
+      borderLeft: active ? '2px solid #f0d9a8' : '2px solid transparent',
+    };
+  }
+
+  rowStyle(i, kind) {
+    const tilts = ['-.4deg', '.35deg', '-.25deg', '.45deg', '-.5deg', '.3deg'];
+    const base = {
+      position: 'relative', display: 'flex', alignItems: 'center', gap: '18px',
+      flexWrap: 'wrap', justifyContent: 'space-between',
+      borderRadius: '12px', padding: '20px 24px', boxSizing: 'border-box',
+      transform: `rotate(${tilts[i % 6]})`, transition: 'transform .25s',
+      boxShadow: '0 10px 24px rgba(0,0,0,.35)',
+    };
+    if (kind === 'gold') return { ...base, background: 'rgba(240,217,168,.06)', border: '1.5px dashed rgba(240,217,168,.4)', boxShadow: 'none' };
+    if (kind === 'alt') return { ...base, background: '#161a2c', border: '1px solid rgba(150,160,220,.18)', boxShadow: 'none' };
+    return { ...base, background: '#1a1e33', border: '1px solid rgba(150,160,220,.2)' };
+  }
+
+  pillStatus(published) {
+    return {
+      padding: '7px 14px', borderRadius: '999px', cursor: 'pointer',
+      fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px',
+      transition: 'all .2s', userSelect: 'none',
+      border: published ? '1.5px dashed rgba(240,217,168,.6)' : '1px solid rgba(150,160,220,.3)',
+      color: published ? '#f0d9a8' : '#7a83ad',
+    };
+  }
+
+  delStyle(hot) {
+    return {
+      padding: '7px 14px', borderRadius: '999px', cursor: 'pointer',
+      fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px',
+      transition: 'all .2s', userSelect: 'none',
+      border: hot ? '1.5px solid rgba(210,110,90,.8)' : '1px solid rgba(150,160,220,.2)',
+      color: hot ? '#e08a72' : '#5f6ec4',
+    };
+  }
+
+  askDelete(key, doIt) {
+    if (this.state.confirmDel === key) {
+      clearTimeout(this.delTimer);
+      this.setState({ confirmDel: null });
+      doIt();
+    } else {
+      clearTimeout(this.delTimer);
+      this.setState({ confirmDel: key });
+      this.delTimer = setTimeout(() => this.setState({ confirmDel: null }), 2800);
+    }
+  }
+
+  deploy() {
+    if (this.state.deploying) return;
+    this.setState({ deploying: true, deployPct: 0 });
+    this.deployTimer = setInterval(() => {
+      this.setState((s) => {
+        const pct = s.deployPct + 1.6 + Math.random() * 1.8;
+        if (pct >= 100) {
+          clearInterval(this.deployTimer);
+          setTimeout(() => {
+            this.setState({ deploying: false, lastDeploy: 'just now' });
+            this.log('lantern hoisted — site rebuilt, lights on');
+            this.showToast('⚓ hoisted. the site sails with the new cargo.');
+          }, 500);
+          return { deployPct: 100 };
+        }
+        return { deployPct: pct };
+      });
+    }, 90);
+  }
+
+  openEdit(type, idx) {
+    const s = this.state;
+    let draft;
+    if (type === 'project') {
+      draft = idx == null
+        ? { title: '', cat: 'backend', tagsText: '', desc: '', moral: 'Moral: ', to: '', from: '', year: '2026', img: null }
+        : { ...s.projects[idx], tagsText: s.projects[idx].tags.join(', ') };
+    } else if (type === 'hobby') {
+      draft = idx == null
+        ? { name: '', dates: '2026 — present', epitaph: '', eulogy: '', active: true }
+        : { ...s.hobbies[idx] };
+    } else {
+      draft = idx == null
+        ? { date: 'jul 2026', title: '', teaser: '', body: '', status: 'draft', img: null }
+        : { ...s.notes[idx] };
+    }
+    this.setState({ edit: { type, idx, draft } });
+  }
+
+  saveEdit() {
+    const { type, idx, draft } = this.state.edit;
+    if (type === 'project') {
+      const item = { ...draft, tags: (draft.tagsText || '').split(',').map((t) => t.trim()).filter(Boolean) };
+      delete item.tagsText;
+      delete item.revs;
+      if (!item.status) item.status = 'draft';
+      this.setState((s) => {
+        const projects = [...s.projects];
+        if (idx == null) { item.revs = []; projects.unshift(item); }
+        else {
+          const { revs, ...snap } = projects[idx];
+          item.revs = [{ t: this.snapLabel(), data: snap }, ...(revs || [])].slice(0, 5);
+          projects[idx] = item;
+        }
+        return { projects, edit: null };
+      });
+      this.log(`postcard "${draft.title || 'untitled'}" ${idx == null ? 'added to the rack' : 'edited'}`);
+      this.showToast(idx == null ? '✉ new postcard in the rack' : '✉ postcard filed');
+    } else if (type === 'hobby') {
+      this.setState((s) => {
+        const hobbies = [...s.hobbies];
+        if (idx == null) hobbies.unshift(draft); else hobbies[idx] = draft;
+        return { hobbies, edit: null };
+      });
+      this.log(`hobby "${draft.name || 'untitled'}" ${idx == null ? 'picked up. here we go again.' : 'edited'}`);
+      this.showToast(idx == null ? '† a new hobby enters the cycle' : '† groundskeeping done');
+    } else {
+      const item = { ...draft };
+      delete item.revs;
+      this.setState((s) => {
+        const notes = [...s.notes];
+        if (idx == null) { item.revs = []; notes.unshift(item); }
+        else {
+          const { revs, ...snap } = notes[idx];
+          item.revs = [{ t: this.snapLabel(), data: snap }, ...(revs || [])].slice(0, 5);
+          notes[idx] = item;
+        }
+        return { notes, edit: null };
+      });
+      this.log(`note "${draft.title || 'untitled'}" ${idx == null ? 'drafted' : 'edited'}`);
+      this.showToast('✎ filed at the writing desk');
+    }
+  }
+
+  renderVals() {
+    const s = this.state;
+    const scr = s.screen;
+    const nav = [
+      { id: 'dash', glyph: '✦', label: 'the bridge' },
+      { id: 'projects', glyph: '✉', label: 'postcards' },
+      { id: 'hobbies', glyph: '†', label: 'the graveyard' },
+      { id: 'notes', glyph: '✎', label: 'writing desk' },
+      { id: 'copy', glyph: '⚑', label: 'signal flags' },
+      { id: 'media', glyph: '❏', label: 'the darkroom' },
+    ];
+
+    const pubProj = s.projects.filter((p) => p.status === 'published').length;
+    const pubNotes = s.notes.filter((n) => n.status === 'published').length;
+    const resting = s.hobbies.filter((h) => !h.active).length;
+
+    const statTilts = ['-.6deg', '.4deg', '-.3deg', '.5deg'];
+    const stats = [
+      { label: 'ships sighted', value: '1,204', sub: 'visitors this week. one was mom.' },
+      { label: 'lighthouse uptime', value: '99.98%', sub: 'the .02 was planned. mostly.' },
+      { label: 'postcards', value: `${pubProj} / ${s.projects.length}`, sub: 'published / in the rack' },
+      { label: 'graveyard census', value: String(resting), sub: 'resting. none dead.' },
+    ].map((st, i) => ({
+      ...st,
+      style: {
+        background: '#1a1e33', border: '1px solid rgba(150,160,220,.2)', borderRadius: '12px',
+        padding: '20px 22px', display: 'flex', flexDirection: 'column', gap: '7px',
+        boxShadow: '0 10px 24px rgba(0,0,0,.35)', transform: `rotate(${statTilts[i]})`, transition: 'transform .25s',
+      },
+    }));
+
+    const projRows = s.projects.map((p, i) => {
+      const key = 'proj-' + i;
+      const hot = s.confirmDel === key;
+      return {
+        ...p, tagsText: p.tags.join(' · '),
+        ...this.thumbStyles(p.img),
+        rowStyle: this.rowStyle(i),
+        statusLabel: p.status === 'published' ? '● published' : '○ draft',
+        statusStyle: this.pillStatus(p.status === 'published'),
+        onToggle: () => {
+          this.setState((st) => {
+            const projects = [...st.projects];
+            projects[i] = { ...projects[i], status: projects[i].status === 'published' ? 'draft' : 'published' };
+            return { projects };
+          });
+          this.showToast(p.status === 'published' ? '○ pulled back into the rack' : '● stamped and published');
+        },
+        onEdit: () => this.openEdit('project', i),
+        delLabel: hot ? 'sure? scuttle.' : 'scuttle',
+        delStyle: this.delStyle(hot),
+        onDel: () => this.askDelete(key, () => {
+          this.setState((st) => ({ projects: st.projects.filter((_, j) => j !== i) }));
+          this.log(`postcard "${p.title}" scuttled. a moment of silence.`);
+          this.showToast('🌊 scuttled. the sea keeps its secrets.');
+        }),
+      };
+    });
+
+    const hobbyRow = (h) => {
+      const i = s.hobbies.indexOf(h);
+      return {
+        ...h,
+        rowStyle: this.rowStyle(i, h.active ? 'gold' : 'alt'),
+        onEdit: () => this.openEdit('hobby', i),
+        onToggle: () => {
+          this.setState((st) => {
+            const hobbies = [...st.hobbies];
+            hobbies[i] = { ...hobbies[i], active: !hobbies[i].active, epitaph: hobbies[i].active ? (hobbies[i].epitaph || '† resting') : '' };
+            return { hobbies };
+          });
+          this.log(h.active ? `hobby "${h.name}" retired to the graveyard` : `hobby "${h.name}" revived. season ${Math.floor(Math.random() * 4) + 2}.`);
+          this.showToast(h.active ? '† laid to rest. gently.' : '↺ back from the graveyard');
+        },
+      };
+    };
+
+    const suggestionChips = s.suggestions.map((sg, i) => ({
+      label: sg,
+      onRemove: () => {
+        this.setState((st) => ({ suggestions: st.suggestions.filter((_, j) => j !== i) }));
+        this.showToast('fate un-tempted');
+      },
+    }));
+
+    const noteRows = s.notes.map((n, i) => {
+      const key = 'note-' + i;
+      const hot = s.confirmDel === key;
+      return {
+        ...n,
+        ...this.thumbStyles(n.img),
+        statusLabel: n.status === 'published' ? '● published' : '○ draft',
+        statusStyle: this.pillStatus(n.status === 'published'),
+        onToggle: () => {
+          this.setState((st) => {
+            const notes = [...st.notes];
+            notes[i] = { ...notes[i], status: notes[i].status === 'published' ? 'draft' : 'published', date: notes[i].date === '—' ? 'jul 2026' : notes[i].date };
+            return { notes };
+          });
+          this.showToast(n.status === 'published' ? '○ back to the desk drawer' : '● posted. no promises broken yet.');
+        },
+        onEdit: () => this.openEdit('note', i),
+        delLabel: hot ? 'sure? burn it.' : 'burn',
+        delStyle: this.delStyle(hot),
+        onDel: () => this.askDelete(key, () => {
+          this.setState((st) => ({ notes: st.notes.filter((_, j) => j !== i) }));
+          this.showToast('🕯 burned. it never happened.');
+        }),
+      };
+    });
+
+    const quipFields = [
+      { key: 'quipHello', label: 'hello' }, { key: 'quipProjects', label: 'projects' },
+      { key: 'quipHobbies', label: 'hobbies' }, { key: 'quipNotes', label: 'notes' },
+      { key: 'quip404', label: '404' },
+    ].map((q) => ({ ...q, value: s.copy[q.key] }));
+
+    const mediaTilts = ['-1.2deg', '.9deg', '-.6deg', '1.1deg', '-.9deg', '.7deg'];
+    const mediaTiles = s.media.map((m, i) => {
+      const key = 'media-' + i;
+      const hot = s.confirmDel === key;
+      return {
+        name: m.name,
+        tileStyle: {
+          background: '#e8e6df', borderRadius: '4px', padding: '10px 10px 6px',
+          boxShadow: '0 10px 24px rgba(0,0,0,.35)', transform: `rotate(${mediaTilts[i % 6]})`,
+          transition: 'transform .25s', display: 'flex', flexDirection: 'column',
+        },
+        imgStyle: { height: '120px', borderRadius: '2px', background: this.gradients[m.tone % 6] },
+        delLabel: hot ? 'sure?' : '✕',
+        onDel: () => this.askDelete(key, () => {
+          this.setState((st) => ({ media: st.media.filter((_, j) => j !== i) }));
+          this.showToast('print left out in the sun');
+        }),
+      };
+    });
+
+    const e = s.edit;
+    const editKickers = { project: 'postcard · ', hobby: 'headstone · ', note: 'note · ' };
+    const noteBlogLine = pubNotes >= 5
+      ? `${pubNotes} published. it's officially a blog now. condolences.`
+      : `${pubNotes} published. the bar for "blog" is five. ${5 - pubNotes} to go — no rush.`;
+
+    let printOptions = [], revRows = [], hasRevs = false;
+    if (e && (e.type === 'project' || e.type === 'note')) {
+      const sel = e.draft.img || null;
+      printOptions = [{ name: 'no print', img: null }, ...s.media.map((m) => ({ name: m.name, img: m.name }))].map((o) => ({
+        name: o.name,
+        onPick: () => this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, img: o.img } } })),
+        style: {
+          display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center', cursor: 'pointer',
+          background: '#e8e6df', borderRadius: '4px', padding: '6px 6px 5px',
+          transform: sel === o.img ? 'rotate(0deg)' : 'rotate(-1.2deg)', transition: 'transform .2s, outline-color .2s',
+          outline: sel === o.img ? '2px dashed rgba(240,217,168,.9)' : '2px dashed transparent', outlineOffset: '3px',
+        },
+        imgStyle: o.img
+          ? { width: '64px', height: '48px', borderRadius: '2px', background: this.toneGrad(o.img) }
+          : { width: '64px', height: '48px', borderRadius: '2px', background: '#131728', border: '1px dashed rgba(95,110,196,.5)', boxSizing: 'border-box' },
+      }));
+      const list = e.type === 'project' ? s.projects : s.notes;
+      const revs = (e.idx != null && list[e.idx] && list[e.idx].revs) || [];
+      hasRevs = revs.length > 0;
+      revRows = revs.map((rv) => ({
+        t: rv.t,
+        summary: '\u201C' + (rv.data.title || 'untitled') + '\u201D — ' + ((rv.data.desc || rv.data.teaser || '').slice(0, 70) || 'no description'),
+        onRestore: () => {
+          const d = e.type === 'project' ? { ...rv.data, tagsText: (rv.data.tags || []).join(', ') } : { ...rv.data };
+          this.setState((st) => ({ edit: { ...st.edit, draft: d } }));
+          this.showToast('↺ earlier printing loaded — file it to keep it');
+        },
+      }));
+    }
+
+    const nowDate = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toLowerCase();
+
+    return {
+      // screens
+      isLogin: scr === 'login', isApp: scr !== 'login',
+      isDash: scr === 'dash', isProjects: scr === 'projects', isHobbies: scr === 'hobbies',
+      isNotes: scr === 'notes', isCopy: scr === 'copy', isMedia: scr === 'media',
+      // login
+      user: s.user, pass: s.pass, loginError: s.loginError,
+      setUser: (ev) => this.setState({ user: ev.target.value, loginError: null }),
+      setPass: (ev) => this.setState({ pass: ev.target.value, loginError: null }),
+      login: (ev) => {
+        ev.preventDefault();
+        if (!s.user.trim()) { this.setState({ loginError: 'the harbor needs a name.' }); return; }
+        if (!s.pass) { this.setState({ loginError: 'no passphrase, no lantern.' }); return; }
+        this.setState({ screen: 'dash', loginError: null });
+        this.showToast('⚓ welcome back, keeper. token stowed.');
+      },
+      logout: () => this.setState({ screen: 'login', pass: '' }),
+      keeperName: (s.user && s.user.trim()) || (this.props.keeperName ?? 'keeper'),
+      // nav
+      navItems: nav.map((n) => ({ ...n, style: this.navStyle(scr === n.id), onClick: () => this.setState({ screen: n.id, confirmDel: null }) })),
+      // deploy
+      deploying: s.deploying, notDeploying: !s.deploying,
+      deploy: () => this.deploy(),
+      deployVerb: this.props.deployVerb ?? 'hoist the lantern',
+      deployMsg: s.deployPct >= 100 ? 'docking…' : `rebuilding · ${Math.floor(s.deployPct)}%`,
+      lastDeploy: s.lastDeploy,
+      boatStyle: { position: 'absolute', top: '-8px', left: `calc(${Math.min(s.deployPct, 96)}% - 11px)`, transition: 'left .12s linear' },
+      // dashboard
+      greeting: this.greeting(), dateLine: nowDate,
+      stats, activity: s.activity,
+      quickActions: [
+        { label: 'write a new postcard', onClick: () => { this.setState({ screen: 'projects' }); this.openEdit('project', null); } },
+        { label: 'draft a note', onClick: () => { this.setState({ screen: 'notes' }); this.openEdit('note', null); } },
+        { label: 'pick up a hobby (again)', onClick: () => { this.setState({ screen: 'hobbies' }); this.openEdit('hobby', null); } },
+        { label: 'hoist the lantern', onClick: () => this.deploy() },
+      ],
+      // projects
+      projRows,
+      projCountLine: `${s.projects.length} in the rack · ${pubProj} published · ${s.projects.length - pubProj} waiting for a stamp`,
+      newProject: () => this.openEdit('project', null),
+      // hobbies
+      activeHobbies: s.hobbies.filter((h) => h.active).map(hobbyRow),
+      restingHobbies: s.hobbies.filter((h) => !h.active).map(hobbyRow),
+      newHobby: () => this.openEdit('hobby', null),
+      suggestionChips, newSuggestion: s.newSuggestion,
+      setNewSuggestion: (ev) => this.setState({ newSuggestion: ev.target.value }),
+      addSuggestion: (ev) => {
+        ev.preventDefault();
+        const v = s.newSuggestion.trim();
+        if (!v) return;
+        this.setState((st) => ({ suggestions: [...st.suggestions, v.endsWith('?') ? v : v + '?'], newSuggestion: '' }));
+        this.showToast('the pool deepens');
+      },
+      // notes
+      noteRows, newNote: () => this.openEdit('note', null),
+      notesCountLine: 'No schedule. No newsletter. No promises. Just drafts.',
+      blogBarLine: noteBlogLine,
+      // copy
+      copy: s.copy, quipFields,
+      setCopy: (ev) => {
+        const k = ev.target.dataset.key, v = ev.target.value;
+        this.setState((st) => ({ copy: { ...st.copy, [k]: v } }));
+      },
+      // media
+      mediaTiles,
+      mediaCountLine: `${s.media.length} prints hanging to dry.`,
+      addMedia: () => {
+        this.setState((st) => ({ media: [{ name: `fresh-scan-${String(st.media.length + 1).padStart(2, '0')}.jpg`, tone: Math.floor(Math.random() * 6) }, ...st.media] }));
+        this.showToast('🖼 developing… done. that was fast.');
+      },
+      // edit overlay
+      edit: e, draft: e ? e.draft : {},
+      printOptions, hasRevs, revRows,
+      editProject: e && e.type === 'project', editHobby: e && e.type === 'hobby', editNote: e && e.type === 'note',
+      editKicker: e ? (editKickers[e.type] + (e.idx == null ? 'a fresh one' : 'editing')) : '',
+      saveLabel: e && e.idx == null ? 'file it' : 'save changes',
+      setField: (ev) => {
+        const f = ev.target.dataset.field, v = ev.target.value;
+        this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, [f]: v } } }));
+      },
+      saveEdit: () => this.saveEdit(),
+      cancelEdit: () => this.setState({ edit: null }),
+      stopProp: (ev) => ev.stopPropagation(),
+      // toast
+      toast: s.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>
