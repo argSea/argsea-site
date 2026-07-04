@@ -1,0 +1,19 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Dependency & build output (stack TBD — extend when the scaffold lands)
+node_modules/
+dist/
+build/
