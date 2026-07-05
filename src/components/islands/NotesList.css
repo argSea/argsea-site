@@ -24,6 +24,27 @@
 	color: var(--periwinkle-deep);
 }
 
+/* Small tilted photo print in the row — the resting tilt is a base transform
+   so reduced-motion (which only strips animation) keeps it */
+.note-row__print {
+	flex: none;
+	align-self: center;
+	display: inline-block;
+	background: #e8e6df;
+	border-radius: 3px;
+	padding: 4px 4px 9px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, .3);
+	transform: rotate(-2deg);
+}
+
+.note-row__print img {
+	display: block;
+	width: 46px;
+	height: 34px;
+	border-radius: 1px;
+	object-fit: cover;
+}
+
 .note-row__middle {
 	display: flex;
 	flex-direction: column;
@@ -74,6 +95,25 @@
 	font-size: clamp(24px, 4vw, 30px);
 	color: var(--text-strong);
 	line-height: 1.2;
+}
+
+/* The letter's larger snapshot, framed like the postcard-back photo print */
+.letter__print {
+	align-self: flex-start;
+	width: min(260px, 70%);
+	box-sizing: border-box;
+	background: #e8e6df;
+	padding: 8px 8px 24px;
+	border-radius: 2px;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, .35);
+	transform: rotate(-1.5deg);
+}
+
+.letter__print img {
+	display: block;
+	width: 100%;
+	height: 150px;
+	object-fit: cover;
 }
 
 .letter__body {

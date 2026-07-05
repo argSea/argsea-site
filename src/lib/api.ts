@@ -21,6 +21,7 @@ import projectsFixture from '../data/fixtures/projects.json';
 import hobbiesFixture from '../data/fixtures/hobbies.json';
 import notesFixture from '../data/fixtures/notes.json';
 import siteCopyFixture from '../data/fixtures/siteCopy.json';
+import keeperProfileFixture from '../data/fixtures/keeperProfile.json';
 
 export type Category = 'backend' | 'games' | 'this website' | 'tinkering';
 export type Status = 'draft' | 'published' | 'archived';
@@ -54,6 +55,8 @@ export interface Project {
 	slug:         string;
 	image:        string | null; // nullable media name
 	stamp?:       Stamp | null;  // absent → the design's default stamp
+	order:        number;        // the keeper's manual sort key; the API sends the list pre-sorted
+	featured:     boolean;       // on the mantel → homepage postcards preview
 	status:       Status;
 	publishedAt:  string;
 	createdAt:    string;
@@ -105,15 +108,31 @@ export interface SiteCopy {
 /** The per-page footer quip fields of SiteCopy. */
 export type QuipField = 'quipHello' | 'quipProjects' | 'quipHobbies' | 'quipNotes' | 'quip404';
 
+// The keeper's papers: the public profile subset of the keeper's user document
+// (GET /1/user/{id}/profile — never username/password/role). The contact band,
+// footer socials, and the note sign-off read from these at build time.
+export interface KeeperProfile {
+	name:     string;
+	pronouns: string;
+	location: string;
+	title:    string;
+	bio:      string;
+	email:    string;
+	github:   string;  // host path, e.g. "github.com/argsea" — no scheme on the wire
+	linkedin: string;
+	signoff:  string;  // how notes end, e.g. "— j"
+}
+
 export interface ContentSource {
 	getProjects(): Promise<Project[]>;
 	getHobbies(): Promise<Hobby[]>;
 	getNotes(): Promise<Note[]>;
 	getSiteCopy(): Promise<SiteCopy>;
+	getKeeperProfile(): Promise<KeeperProfile>;
 }
 
 class ApiSource implements ContentSource {
-	constructor(private readonly baseUrl: string) {}
+	constructor(private readonly baseUrl: string, private readonly keeperId: string) {}
 
 	/** Fetch a bare collection from the API; throws on any non-2xx so a broken build never ships empty pages. */
 	private async list<T>(path: string): Promise<T[]> {
@@ -138,6 +157,19 @@ class ApiSource implements ContentSource {
 		}
 		return await res.json() as SiteCopy;
 	}
+
+	/** The profile route is public (no auth, no ?published flag) but needs the keeper's user id from build config. */
+	async getKeeperProfile(): Promise<KeeperProfile> {
+		if (!this.keeperId) {
+			throw new Error('argsea api: ARGSEA_KEEPER_ID must be set alongside ARGSEA_API_URL — a live build must not ship the fixture profile');
+		}
+		const url = `${this.baseUrl}/1/user/${this.keeperId}/profile`;
+		const res = await fetch(url);
+		if (!res.ok) {
+			throw new Error(`argsea api: GET ${url} responded ${res.status}`);
+		}
+		return await res.json() as KeeperProfile;
+	}
 }
 
 class FixtureSource implements ContentSource {
@@ -145,17 +177,20 @@ class FixtureSource implements ContentSource {
 	getHobbies(): Promise<Hobby[]> { return Promise.resolve(hobbiesFixture as Hobby[]); }
 	getNotes(): Promise<Note[]> { return Promise.resolve(notesFixture as Note[]); }
 	getSiteCopy(): Promise<SiteCopy> { return Promise.resolve(siteCopyFixture as SiteCopy); }
+	getKeeperProfile(): Promise<KeeperProfile> { return Promise.resolve(keeperProfileFixture as KeeperProfile); }
 }
 
 // ARGSEA_API_URL set → build against the live API; unset → checked-in fixtures.
+// ARGSEA_KEEPER_ID rides alongside it: the keeper's user id for the profile route.
 // import.meta.env carries .env-file values, process.env carries the shell's.
 const API_URL = (import.meta.env.ARGSEA_API_URL ?? process.env.ARGSEA_API_URL ?? '').replace(/\/+$/, '');
+const KEEPER_ID = (import.meta.env.ARGSEA_KEEPER_ID ?? process.env.ARGSEA_KEEPER_ID ?? '').trim();
 
-const source: ContentSource = API_URL ? new ApiSource(API_URL) : new FixtureSource();
+const source: ContentSource = API_URL ? new ApiSource(API_URL, KEEPER_ID) : new FixtureSource();
 
-/** Projects in API order — the keeper sorts them "by how proud I am, roughly". */
-export function getProjects(): Promise<Project[]> {
-	return source.getProjects();
+/** Projects by the keeper's manual `order` key (ties: createdAt) — the API pre-sorts, this just holds fixtures to the same rule. */
+export async function getProjects(): Promise<Project[]> {
+	return (await source.getProjects()).sort((a, b) => a.order - b.order || a.createdAt.localeCompare(b.createdAt));
 }
 
 /** Hobbies by their manual `order` key: the headstones are arranged by hand. */
@@ -176,6 +211,15 @@ let siteCopyPromise: Promise<SiteCopy> | undefined;
 export function getSiteCopy(): Promise<SiteCopy> {
 	siteCopyPromise ??= source.getSiteCopy().then(withCopyDefaults);
 	return siteCopyPromise;
+}
+
+// Memoized for the same reason as SiteCopy: the footer asks on every page.
+let keeperProfilePromise: Promise<KeeperProfile> | undefined;
+
+/** The keeper's papers — served as the API returns them, no fixture backfill of cleared fields. */
+export function getKeeperProfile(): Promise<KeeperProfile> {
+	keeperProfilePromise ??= source.getKeeperProfile();
+	return keeperProfilePromise;
 }
 
 /** Fill empty/missing SiteCopy fields from the approved design copy. */

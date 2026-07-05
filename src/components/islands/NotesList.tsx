@@ -1,15 +1,19 @@
 // The stateful part of the Notes page: the list rows and the letter overlay.
-// Content arrives as build-time props; the only state is which note is open.
+// Notes with an image carry a photo print — a small tilted thumbnail in the
+// row, a larger snapshot in the letter (design v4). Content and the keeper's
+// sign-off arrive as build-time props; the only state is which note is open.
 import { useState } from 'react';
 import type { Note } from '../../lib/api';
+import { mediaUrl } from '../../lib/media';
 import { useEscapeKey } from './useEscapeKey';
 import './NotesList.css';
 
 interface Props {
-	notes: Note[];
+	notes:   Note[];
+	signoff: string;
 }
 
-export default function NotesList({ notes }: Props) {
+export default function NotesList({ notes, signoff }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 
 	const close = () => setOpenId(null);
@@ -34,6 +38,11 @@ export default function NotesList({ notes }: Props) {
 					}}
 				>
 					<span className="note-row__date">{note.date}</span>
+					{note.image && (
+						<span className="note-row__print">
+							<img src={mediaUrl(note.image)} alt="" />
+						</span>
+					)}
 					<span className="note-row__middle">
 						<span className="note-row__title">{note.title}</span>
 						<span className="note-row__teaser">{note.teaser}</span>
@@ -51,9 +60,14 @@ export default function NotesList({ notes }: Props) {
 						</div>
 						<div className="letter__content">
 							<div className="letter__title">{open.title}</div>
+							{open.image && (
+								<div className="letter__print">
+									<img src={mediaUrl(open.image)} alt={open.title} />
+								</div>
+							)}
 							{/* body is sanitized HTML from the API — rendered as-is by contract */}
 							<div className="letter__body" dangerouslySetInnerHTML={{ __html: open.body }} />
-							<div className="letter__signature">— j</div>
+							<div className="letter__signature">{signoff}</div>
 						</div>
 					</div>
 				</div>

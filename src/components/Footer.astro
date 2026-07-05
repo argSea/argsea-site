@@ -1,17 +1,26 @@
 ---
 // Three items, space-between, wrapping: copyright · a per-page quip · social
-// links. Social hrefs are the design's placeholders until real ones land.
+// links. The socials come from the keeper's profile; a cleared field drops
+// its link rather than shipping a dead href.
+import { getKeeperProfile } from '../lib/api';
+
 interface Props {
 	quip: string;
 }
 
 const { quip } = Astro.props;
+const keeper = await getKeeperProfile();
+
+// The profile stores socials as host paths ("github.com/argsea"); links need a scheme
+const withScheme = (link: string) => /^https?:\/\//.test(link) ? link : `https://${link}`;
 ---
 <footer class="site-footer">
 	<span class="copyright">© 2026 · argsea.com</span>
 	<span class="quip">{quip}</span>
 	<div class="socials">
-		<a href="#">github</a><a href="#">linkedin</a><a href="mailto:hello@argsea.com">email</a>
+		{keeper.github && <a href={withScheme(keeper.github)}>github</a>}
+		{keeper.linkedin && <a href={withScheme(keeper.linkedin)}>linkedin</a>}
+		{keeper.email && <a href={`mailto:${keeper.email}`}>email</a>}
 	</div>
 </footer>
 

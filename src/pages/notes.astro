@@ -1,11 +1,13 @@
 ---
 // Notes — static header and closing line; the NotesList island owns the
-// clickable rows and the letter overlay.
+// clickable rows and the letter overlay. The sign-off under each letter is
+// the keeper's, from their profile.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NotesList from '../components/islands/NotesList';
-import { getNotes } from '../lib/api';
+import { getNotes, getKeeperProfile } from '../lib/api';
 
 const notes = await getNotes();
+const keeper = await getKeeperProfile();
 ---
 <BaseLayout title="Notes · argsea.com" active="notes" quipKey="quipNotes">
 	<section class="head">
@@ -14,7 +16,7 @@ const notes = await getNotes();
 	</section>
 
 	<section class="list">
-		<NotesList client:load notes={notes} />
+		<NotesList client:load notes={notes} signoff={keeper.signoff} />
 		<div class="list__closing">Three notes so far. The bar for "blog" is five. We'll see.</div>
 	</section>
 </BaseLayout>
