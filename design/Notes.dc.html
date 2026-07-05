@@ -51,6 +51,9 @@ a{text-decoration:none}
     <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
       <div onClick="{{ n.onClick }}" style="display:flex;gap:clamp(14px,3vw,28px);align-items:baseline;flex-wrap:wrap;padding:24px clamp(4px,1vw,12px);border-bottom:1px solid rgba(150,160,220,.14);cursor:pointer;transition:background .2s,transform .2s" style-hover="background:rgba(150,160,220,.05);transform:translateX(6px)">
         <span style="flex:none;width:110px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#5f6ec4">{{ n.date }}</span>
+        <sc-if value="{{ n.printStyle }}" hint-placeholder-val="{{ false }}">
+          <span style="{{ n.printStyle }}"><span style="{{ n.printImgStyle }}"></span></span>
+        </sc-if>
         <span style="display:flex;flex-direction:column;gap:6px;min-width:230px;flex:1">
           <span style="font-family:'Gloock',serif;font-size:clamp(19px,3vw,24px);color:#eef0fb">{{ n.title }}</span>
           <span style="font-size:15.5px;color:#a5aed4;line-height:1.55">{{ n.teaser }}</span>
@@ -71,6 +74,11 @@ a{text-decoration:none}
         </div>
         <div style="padding:clamp(24px,5vw,36px);display:flex;flex-direction:column;gap:16px">
           <div style="font-family:'Gloock',serif;font-size:clamp(24px,4vw,30px);color:#f0f2fc;line-height:1.2">{{ open.title }}</div>
+          <sc-if value="{{ open.hasPrint }}" hint-placeholder-val="{{ false }}">
+            <div style="align-self:flex-start;background:#e8e6df;padding:8px 8px 24px;border-radius:2px;box-shadow:0 6px 16px rgba(0,0,0,.35);transform:rotate(-1.5deg);width:min(260px,70%)">
+              <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ open.slotId }}" shape="rect" placeholder="drop a snapshot" style="display:block;width:100%;height:150px" hint-size="100%,150px"></x-import>
+            </div>
+          </sc-if>
           <div style="font-size:17px;line-height:1.7;color:#b8c0e0">{{ open.p1 }}</div>
           <div style="font-size:17px;line-height:1.7;color:#b8c0e0">{{ open.p2 }}</div>
           <div style="font-size:17px;line-height:1.7;color:#b8c0e0">{{ open.p3 }}</div>
@@ -101,7 +109,7 @@ class Component extends DCLogic {
       p1: 'The most valuable architecture work I did last year produced zero diagrams. It was a meeting where we decided not to build a new system, because the old one was fine and the problem was actually a missing index.',
       p2: 'Nobody frames that. There is no conference talk called "We Kept The Thing." But keeping the thing — understanding it well enough to defend it — is harder than replacing it, and pays better.',
       p3: 'So my current architecture checklist starts with one question: what if we did nothing? It is amazing how often "nothing" is a strong candidate.' },
-    { date: 'apr 2026', title: 'CachyOS, three months in',
+    { date: 'apr 2026', title: 'CachyOS, three months in', print: true,
       teaser: 'A review from someone who will absolutely distro-hop again and lie about it.',
       p1: 'Three months on CachyOS and everything works, which is deeply unsettling. A Linux desktop is supposed to be a relationship with problems. This one just... boots.',
       p2: 'I have compensated by inventing problems: kernel flavors, shader pre-caching, a systemd unit that exists purely because I wanted to write one.',
@@ -120,8 +128,18 @@ class Component extends DCLogic {
   componentWillUnmount() { window.removeEventListener('keydown', this.onKey); }
 
   renderVals() {
-    const notes = this.notesData.map((n, i) => ({ ...n, onClick: () => this.setState({ openIdx: i }) }));
-    const open = this.state.openIdx == null ? null : this.notesData[this.state.openIdx];
+    const notes = this.notesData.map((n, i) => ({
+      ...n,
+      onClick: () => this.setState({ openIdx: i }),
+      printStyle: n.print ? { background: '#e8e6df', borderRadius: '3px', padding: '4px 4px 9px', transform: 'rotate(-2deg)', flexShrink: 0, alignSelf: 'center', display: 'inline-block', boxShadow: '0 4px 10px rgba(0,0,0,.3)' } : null,
+      printImgStyle: { display: 'block', width: '46px', height: '34px', borderRadius: '1px', background: 'linear-gradient(135deg,#2d2a45,#c3cbf2)' },
+    }));
+    const openN = this.state.openIdx == null ? null : this.notesData[this.state.openIdx];
+    const open = openN ? {
+      ...openN,
+      hasPrint: !!openN.print,
+      slotId: 'note-' + openN.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    } : null;
     return {
       notes, open,
       closeOverlay: () => this.setState({ openIdx: null }),

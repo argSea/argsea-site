@@ -28,6 +28,8 @@ a{text-decoration:none}
 @keyframes bobBoat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-3px) rotate(2deg)}}
 @keyframes wakeRipple{to{background-position-x:-53px}}
 .boat-wake{position:absolute;top:15px;width:110px;height:18px;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(240,217,168,0.5)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;animation:wakeRipple 2.2s linear infinite;pointer-events:none}
+@keyframes backdropIn{from{opacity:0}to{opacity:1}}
+@keyframes cardIn{from{opacity:0;transform:rotate(-3deg) translateY(34px) scale(.96)}to{opacity:1;transform:rotate(0deg) translateY(0) scale(1)}}
 @keyframes swayChip{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
 @media(max-width:760px){[data-hide-mobile]{display:none !important}}
 </style>
@@ -87,32 +89,64 @@ a{text-decoration:none}
       <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">all projects →</a>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px;align-items:stretch">
-      <a href="Projects.dc.html" style="display:block;transition:transform .25s" style-hover="transform:translateY(-5px)">
+      <div onClick="{{ openCard0 }}" style="display:block;cursor:pointer;transition:transform .25s" style-hover="transform:translateY(-5px)">
         <div style="position:relative;height:100%;box-sizing:border-box;background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:26px 24px;display:flex;flex-direction:column;gap:11px;box-shadow:0 10px 24px rgba(0,0,0,.35);animation:bobA 7s ease-in-out infinite">
           <div style="position:absolute;top:12px;right:12px;width:34px;height:42px;border:1.5px solid rgba(240,217,168,.5);border-radius:3px;display:flex;align-items:center;justify-content:center;animation:wiggle 6s ease-in-out infinite"><svg width="18" height="22" viewBox="0 0 26 30" fill="none"><path d="M13 4 L17 11 L9 11 Z" fill="#f0d9a8"></path><rect x="10" y="11" width="6" height="12" fill="none" stroke="#93a0e8" stroke-width="1.6"></rect><path d="M7 26 q6 -3 12 0" stroke="#5f6ec4" stroke-width="1.6" fill="none"></path></svg></div>
           <div style="font-family:'Gloock',serif;font-size:21px;color:#eef0fb;padding-right:40px">The Great Un-monolithing</div>
           <div style="font-size:15.5px;line-height:1.55;color:#a5aed4">One giant app became many small, well-behaved services. Readers never noticed. That was the point.</div>
           <div style="display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;margin-top:auto"><span>kubernetes</span><span>python</span><span>rabbitmq</span></div>
         </div>
-      </a>
-      <a href="Projects.dc.html" style="display:block;transition:transform .25s" style-hover="transform:translateY(-5px)">
+      </div>
+      <div onClick="{{ openCard1 }}" style="display:block;cursor:pointer;transition:transform .25s" style-hover="transform:translateY(-5px)">
         <div style="position:relative;height:100%;box-sizing:border-box;background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:26px 24px;display:flex;flex-direction:column;gap:11px;box-shadow:0 10px 24px rgba(0,0,0,.35);animation:bobB 8s ease-in-out .5s infinite">
           <div style="position:absolute;top:10px;right:10px;width:52px;height:52px;border:1.2px dashed rgba(147,160,232,.45);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.1em;color:#93a0e8;text-align:center;line-height:1.6;animation:wiggle14 7s ease-in-out infinite">DAILY<br>SINCE<br>1786</div>
           <div style="font-family:'Gloock',serif;font-size:21px;color:#eef0fb;padding-right:52px">Newsroom plumbing</div>
           <div style="font-size:15.5px;line-height:1.55;color:#a5aed4">A publishing workflow a real paper runs on, every day, deadlines and all.</div>
           <div style="display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;margin-top:auto"><span>rest</span><span>mongodb</span><span>nginx</span></div>
         </div>
-      </a>
-      <a href="Projects.dc.html" style="display:block;transition:transform .25s" style-hover="transform:translateY(-5px)">
+      </div>
+      <div onClick="{{ openCard2 }}" style="display:block;cursor:pointer;transition:transform .25s" style-hover="transform:translateY(-5px)">
         <div style="position:relative;height:100%;box-sizing:border-box;background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:26px 24px;display:flex;flex-direction:column;gap:11px;box-shadow:0 10px 24px rgba(0,0,0,.35);animation:bobC 6.5s ease-in-out 1s infinite">
           <div style="position:absolute;top:12px;right:12px;width:34px;height:42px;border:1.5px solid rgba(147,160,232,.5);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:16px;animation:wiggle 5.5s ease-in-out 1s infinite">☀</div>
           <div style="font-family:'Gloock',serif;font-size:21px;color:#eef0fb;padding-right:40px">100k good mornings</div>
           <div style="font-size:15.5px;line-height:1.55;color:#a5aed4">An automated newsletter that beats the sunrise into six figures of inboxes.</div>
           <div style="display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;margin-top:auto"><span>php</span><span>redis</span><span>linux</span></div>
         </div>
-      </a>
+      </div>
     </div>
   </div>
+
+  <!-- overlay: the back of the postcard -->
+  <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeOverlay }}" style="position:fixed;inset:0;background:rgba(8,10,20,.72);backdrop-filter:blur(5px);z-index:50;display:flex;align-items:center;justify-content:center;padding:clamp(14px,4vw,40px);animation:backdropIn .25s ease both">
+      <div onClick="{{ stopProp }}" style="width:min(860px,100%);max-height:86vh;overflow:auto;background:#1c2036;border:1px solid rgba(150,160,220,.3);border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:cardIn .35s ease both">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(20px,4vw,32px);border-bottom:1.5px dashed rgba(150,160,220,.25)">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Postcard · from production</span>
+          <span onClick="{{ closeOverlay }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#a5aed4;padding:6px 12px;border:1px solid rgba(150,160,220,.3);border-radius:999px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">close ✕</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:clamp(20px,4vw,36px);padding:clamp(20px,4vw,32px)">
+          <div style="flex:1.5;min-width:280px;display:flex;flex-direction:column;gap:14px">
+            <div style="font-family:'Gloock',serif;font-size:clamp(24px,4vw,32px);color:#f0f2fc;line-height:1.15">{{ open.title }}</div>
+            <div style="font-size:16.5px;line-height:1.65;color:#b8c0e0">{{ open.details1 }}</div>
+            <div style="font-size:16.5px;line-height:1.65;color:#b8c0e0">{{ open.details2 }}</div>
+            <div style="font-size:15px;color:#8f9be0;font-style:italic;margin-top:4px">{{ open.moral }}</div>
+            <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8;margin-top:8px">see all projects →</a>
+          </div>
+          <div style="flex:1;min-width:220px;border-left:1.5px dashed rgba(150,160,220,.25);padding-left:clamp(18px,3vw,28px);display:flex;flex-direction:column;gap:16px">
+            <div style="background:#e8e6df;padding:8px 8px 26px;border-radius:2px;box-shadow:0 6px 16px rgba(0,0,0,.35);transform:rotate(-1.5deg)">
+              <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ open.slotId }}" shape="rect" placeholder="drop a snapshot" style="display:block;width:100%;height:130px" hint-size="100%,130px"></x-import>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7">
+              <span style="color:#5f6ec4">to:</span><span style="color:#c3cbf2">{{ open.to }}</span>
+              <span style="color:#5f6ec4;margin-top:6px">from:</span><span style="color:#c3cbf2">{{ open.from }}</span>
+              <span style="color:#5f6ec4;margin-top:6px">postmarked:</span><span style="color:#c3cbf2">{{ open.year }}</span>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8">{{ open.tagsText }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
 
   <!-- cargo manifest -->
   <div style="padding:0 clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column;gap:16px">
@@ -198,5 +232,54 @@ a{text-decoration:none}
 </div>
 
 </x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { openIdx: null };
+
+  projects = [
+    { title: 'The Great Un-monolithing',
+      tags: ['kubernetes', 'python', 'rabbitmq'],
+      details1: 'The old system was one enormous application that did everything and feared nothing, least of all my weekends. We took it apart piece by piece: a message queue in the middle, services around it, Kubernetes herding the containers.',
+      details2: 'The success metric was silence. No reader ever noticed a thing — the paper published every single day while we swapped the engine mid-flight.',
+      moral: 'Moral: the best migrations are the boring ones.',
+      to: 'everyone who reads the news without thinking about queues', from: 'justin, from inside the cluster', year: '2024 — ongoing' },
+    { title: 'Newsroom plumbing',
+      tags: ['rest', 'mongodb', 'nginx'],
+      details1: "Reporters write, editors edit, and somewhere between 'done' and 'published' lives an entire hidden city of pipes. I designed and built a good chunk of that city: APIs, storage, caching, the works.",
+      details2: 'It runs on deadlines that do not move for anybody. The plumbing holds. Mostly nobody knows it exists, which is exactly how plumbing should work.',
+      moral: 'Moral: if they never think about you, you did it right.',
+      to: 'the 6pm deadline', from: 'the pipes beneath the newsroom', year: '2016 — ongoing' },
+    { title: '100k good mornings',
+      tags: ['php', 'redis', 'linux'],
+      details1: 'Every morning, before coffee exists, an automated system assembles the day\u2019s news and delivers it to over 100,000 inboxes. It has done this more reliably than I get out of bed.',
+      details2: 'The fun part was making it boring: retries, queues, monitoring, and a healthy paranoia about what happens at 4am when nobody is watching.',
+      moral: 'Moral: automation is just kindness to your future self, scheduled.',
+      to: '100,000 people who are not awake yet', from: 'a cron job with ambition', year: '2018 — ongoing' },
+  ];
+
+  componentDidMount() {
+    this.onKey = (e) => { if (e.key === 'Escape') this.setState({ openIdx: null }); };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); }
+
+  renderVals() {
+    const openP = this.state.openIdx == null ? null : this.projects[this.state.openIdx];
+    const open = openP ? {
+      ...openP,
+      tagsText: openP.tags.join('  ·  '),
+      slotId: 'proj-' + openP.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    } : null;
+    return {
+      open,
+      openCard0: () => this.setState({ openIdx: 0 }),
+      openCard1: () => this.setState({ openIdx: 1 }),
+      openCard2: () => this.setState({ openIdx: 2 }),
+      closeOverlay: () => this.setState({ openIdx: null }),
+      stopProp: (e) => e.stopPropagation(),
+    };
+  }
+}
+</script>
 </body>
 </html>
