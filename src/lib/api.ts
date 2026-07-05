@@ -70,6 +70,7 @@ export interface Hobby {
 	active:    boolean;
 	epitaph:   string;
 	eulogy:    string;
+	tags:      string[];
 	order:     number;  // the keeper's manual sort key
 	createdAt: string;
 	updatedAt: string;

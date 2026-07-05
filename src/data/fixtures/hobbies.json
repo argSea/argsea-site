@@ -6,6 +6,7 @@
     "active": true,
     "epitaph": "",
     "eulogy": "Plex server, HTPC, CachyOS on the desktop. The one hobby that survives every purge, because it's just the day job wearing pajamas. Current status: one tweak from perfect, as always.",
+    "tags": ["plex", "htpc"],
     "order": 1,
     "createdAt": "2026-07-01T12:00:00Z",
     "updatedAt": "2026-07-01T12:00:00Z"
@@ -17,6 +18,7 @@
     "active": false,
     "epitaph": "† got good enough",
     "eulogy": "Got far enough to feel good, which it turns out was the goal all along. Took music theory down with it. May rise again when the kid wants lessons.",
+    "tags": ["music"],
     "order": 2,
     "createdAt": "2026-07-01T12:00:01Z",
     "updatedAt": "2026-07-01T12:00:01Z"
@@ -28,6 +30,7 @@
     "active": false,
     "epitaph": "† shipped one",
     "eulogy": "Made a cat/boat racing game for CS50 and retired at the top. Undefeated: one game made, one game finished.",
+    "tags": ["c", "cs50"],
     "order": 3,
     "createdAt": "2026-07-01T12:00:02Z",
     "updatedAt": "2026-07-01T12:00:02Z"
@@ -39,6 +42,7 @@
     "active": false,
     "epitaph": "† it was a phase",
     "eulogy": "The shoes were purchased. The shoes remain. We don't talk about the shoes.",
+    "tags": ["cardio"],
     "order": 4,
     "createdAt": "2026-07-01T12:00:03Z",
     "updatedAt": "2026-07-01T12:00:03Z"
