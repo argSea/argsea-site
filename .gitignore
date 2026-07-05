@@ -20,3 +20,8 @@ build/
 
 # Astro generated types/cache
 .astro/
+
+# Playwright artifacts
+e2e-dist/
+test-results/
+playwright-report/

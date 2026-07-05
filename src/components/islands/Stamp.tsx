@@ -96,16 +96,18 @@ export default function Stamp({ stamp, scale = 1 }: Props) {
 		)
 		: <MotifSvg motif={st.motif} ink={st.ink} size={18 * scale} />;
 
+	// data-stamp marks the rendered stamp: the styles are inline, so it is the
+	// only stable hook for tests to assert a stamp's presence (or absence)
 	if (st.shape === 'circle') {
 		return (
-			<div style={{ width: 52 * scale, height: 52 * scale, boxSizing: 'border-box', border: `1.2px dashed ${st.ink}73`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wiggle 7s ease-in-out infinite', flexShrink: 0 }}>
+			<div data-stamp="circle" style={{ width: 52 * scale, height: 52 * scale, boxSizing: 'border-box', border: `1.2px dashed ${st.ink}73`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wiggle 7s ease-in-out infinite', flexShrink: 0 }}>
 				{content}
 			</div>
 		);
 	}
 
 	return (
-		<div style={{ width: 34 * scale, height: 42 * scale, boxSizing: 'border-box', border: `1.5px solid ${st.ink}80`, borderRadius: 3, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wiggle 6s ease-in-out infinite', flexShrink: 0 }}>
+		<div data-stamp="rect" style={{ width: 34 * scale, height: 42 * scale, boxSizing: 'border-box', border: `1.5px solid ${st.ink}80`, borderRadius: 3, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wiggle 6s ease-in-out infinite', flexShrink: 0 }}>
 			{content}
 			{st.cents && (
 				<span style={{ position: 'absolute', top: 1.5 * scale, right: 2.5 * scale, fontFamily: MONO, fontSize: 6.5 * scale, color: st.ink }}>{st.cents}</span>

@@ -24,10 +24,17 @@
 	align-items: stretch;
 }
 
-/* The grid's type runs slightly smaller than the homepage preview cards */
-.postcard__title--grid { font-size: 20px; }
+/* The grid's type runs slightly smaller than the homepage preview cards;
+   the title clears the 0.9-scale corner stamp regardless of its shape */
+.postcard__title--grid { font-size: 20px; padding-right: 48px; }
 .postcard__desc--grid  { font-size: 15px; }
 .postcard__tags--grid  { padding-top: 8px; }
+
+/* One corner slot for both stamp shapes — the grid stamp sits at 0.9 scale */
+.stamp-corner--grid {
+	top: 12px;
+	right: 14px;
+}
 
 /*
  * Six resting poses from the design. The base transform carries the resting

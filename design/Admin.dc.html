@@ -27,6 +27,9 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,14px)}to{opacity:1;transform:translate(-50%,0)}}
 @keyframes overlayIn{from{opacity:0;transform:rotate(-2deg) translateY(18px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes backdropIn{from{opacity:0}to{opacity:1}}
+@keyframes fishArc{0%,82%{transform:translateY(16px) rotate(-8deg);opacity:0}86%{transform:translateY(-8px) rotate(-14deg);opacity:1}90%{transform:translateY(-13px) rotate(0deg);opacity:1}94%{transform:translateY(0px) rotate(18deg);opacity:1}96%,100%{transform:translateY(16px) rotate(24deg);opacity:0}}
+@keyframes bubblePop{from{opacity:0;transform:translateY(6px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes tailSwish{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-8deg)}}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </helmet>
@@ -62,6 +65,9 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
       </form>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;text-align:center">// tokens expire. whimsy doesn't.</span>
     </div>
+    <div style="position:absolute;bottom:52px;left:-40px;animation:sail 38s linear infinite;pointer-events:none">
+      <svg width="30" height="24" viewBox="0 0 30 24" fill="none" style="animation:bobBoat 3s ease-in-out infinite"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>
+    </div>
     <div style="position:absolute;bottom:22px;left:0;right:0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · argsea.com · back office</div>
   </div>
 </sc-if>
@@ -73,17 +79,30 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
     <!-- sidebar -->
     <div style="width:236px;flex-shrink:0;border-right:1px solid rgba(150,160,220,.15);display:flex;flex-direction:column;gap:6px;padding:26px 18px 20px;box-sizing:border-box;position:sticky;top:0;height:100vh;overflow-y:auto">
       <div style="display:flex;align-items:center;gap:11px;padding:0 6px 18px">
-        <svg width="24" height="28" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
+        <svg width="24" height="28" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
         <div style="display:flex;flex-direction:column">
           <span style="font-family:'Gloock',serif;font-size:17px;color:#e8ebfa">argsea</span>
           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">harbormaster</span>
         </div>
       </div>
       <sc-for list="{{ navItems }}" as="nv" hint-placeholder-count="6">
-        <div onClick="{{ nv.onClick }}" style="{{ nv.style }}" style-hover="color:#e8ebfa"><span style="width:18px;display:inline-block;text-align:center">{{ nv.glyph }}</span>{{ nv.label }}</div>
+        <div onClick="{{ nv.onClick }}" style="{{ nv.style }}" style-hover="color:#e8ebfa;transform:translateX(4px)"><span style="width:18px;display:inline-block;text-align:center">{{ nv.glyph }}</span>{{ nv.label }}</div>
       </sc-for>
 
-      <div style="margin-top:auto;display:flex;flex-direction:column;gap:14px;padding-top:20px">
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:20px">
+        <div style="position:relative;display:flex;justify-content:flex-end;padding:0 12px;height:32px">
+          <sc-if value="{{ catSay }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;right:46px;bottom:24px;background:#1c2036;border:1px solid rgba(150,160,220,.35);border-radius:10px 10px 2px 10px;padding:6px 11px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#c3cbf2;white-space:nowrap;animation:bubblePop .2s ease both;z-index:5">{{ catSay }}</div>
+          </sc-if>
+          <div onClick="{{ pokeCat }}" title="the harbor cat" style="cursor:pointer;transition:transform .2s" style-hover="transform:translateY(-2px)">
+            <svg width="36" height="30" viewBox="0 0 34 30" fill="none">
+              <path d="M26 28 C31.5 27 32.5 22 29.5 19.5" stroke="#93a0e8" stroke-width="1.4" fill="none" stroke-linecap="round" style="transform-origin:26px 28px;animation:tailSwish 4s ease-in-out infinite"></path>
+              <path d="M7 28 C5 22 7.5 16 12 14 L11.5 8.5 L14.8 11.8 L18.2 11.8 L21.5 8.5 L21 14 C25.5 16 28 22 26 28 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.4" stroke-linejoin="round"></path>
+              <circle cx="14" cy="16.5" r="1" fill="#f0d9a8"></circle>
+              <circle cx="19" cy="16.5" r="1" fill="#f0d9a8"></circle>
+            </svg>
+          </div>
+        </div>
         <div style="background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;transform:rotate(-.4deg)">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase">the lantern</span>
           <sc-if value="{{ deploying }}" hint-placeholder-val="{{ false }}">
@@ -99,6 +118,13 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
           <sc-if value="{{ notDeploying }}" hint-placeholder-val="{{ true }}">
             <button onClick="{{ deploy }}" style="padding:11px 14px;background:#f0d9a8;color:#1b2033;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;box-shadow:3px 3px 0 rgba(147,160,232,.6);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(147,160,232,.6)">{{ deployVerb }}</button>
             <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">last hoisted: {{ lastDeploy }}</span>
+            <sc-if value="{{ isDirty }}" hint-placeholder-val="{{ true }}">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#f0d9a8">◍ {{ dirtyLine }}</span>
+            </sc-if>
+            <sc-if value="{{ isClean }}" hint-placeholder-val="{{ false }}">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">○ nothing new aboard</span>
+            </sc-if>
+            <span onClick="{{ rollback }}" style="{{ rollbackStyle }}" style-hover="color:#f0d9a8">{{ rollbackLabel }}</span>
           </sc-if>
         </div>
         <div onClick="{{ logout }}" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#7a83ad;cursor:pointer;padding:4px 6px;transition:color .2s" style-hover="color:#f0d9a8">← go ashore</div>
@@ -106,7 +132,10 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
     </div>
 
     <!-- main -->
-    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;position:relative">
+      <div style="position:absolute;right:12%;top:10%;width:4px;height:4px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 12px 3px rgba(240,217,168,.35);animation:drift 12s ease-in-out infinite;pointer-events:none"></div>
+      <div style="position:absolute;left:8%;top:38%;width:3px;height:3px;border-radius:50%;background:#93a0e8;box-shadow:0 0 10px 3px rgba(147,160,232,.3);animation:drift 15s ease-in-out 3s infinite;pointer-events:none"></div>
+      <div style="position:absolute;right:22%;bottom:16%;width:3px;height:3px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 10px 3px rgba(240,217,168,.28);animation:drift 10s ease-in-out 1.5s infinite;pointer-events:none"></div>
       <div style="flex:1;padding:clamp(28px,4vw,48px) clamp(22px,4vw,52px) 24px;box-sizing:border-box;max-width:1060px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:26px">
 
         <!-- ===== DASHBOARD ===== -->
@@ -115,7 +144,7 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
             <div style="display:flex;flex-direction:column;gap:10px;animation:fadeUp .7s ease .05s both">
               <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the bridge · {{ dateLine }}</span>
               <span style="font-family:'Gloock',serif;font-size:clamp(30px,4.5vw,42px);color:#f0f2fc;line-height:1.15">{{ greeting }}, {{ keeperName }}.</span>
-              <span style="font-size:16.5px;color:#a5aed4;font-style:italic">All quiet on the water. Mostly.</span>
+              <span style="font-size:16.5px;color:#a5aed4;font-style:italic">{{ harborWeather }}</span>
             </div>
 
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;animation:fadeUp .7s ease .15s both">
@@ -129,6 +158,12 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
             </div>
 
             <div style="position:relative;height:18px;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x">
+              <div style="position:absolute;left:64%;top:-4px;animation:fishArc 13s ease-in-out infinite;pointer-events:none">
+                <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><path d="M2 7 C6 2 12 2 16 7 C12 12 6 12 2 7 Z" fill="#93a0e8"></path><path d="M16 7 L19 3 L19 11 Z" fill="#5f6ec4"></path><circle cx="6" cy="6" r="0.9" fill="#131628"></circle></svg>
+              </div>
+              <div style="position:absolute;left:28%;top:-2px;animation:fishArc 17s ease-in-out 6s infinite;pointer-events:none">
+                <svg width="15" height="11" viewBox="0 0 20 14" fill="none"><path d="M2 7 C6 2 12 2 16 7 C12 12 6 12 2 7 Z" fill="#5f6ec4"></path><path d="M16 7 L19 3 L19 11 Z" fill="#93a0e8"></path><circle cx="6" cy="6" r="0.9" fill="#131628"></circle></svg>
+              </div>
               <div style="position:absolute;top:-15px;left:-40px;animation:sail 45s linear infinite">
                 <svg width="30" height="24" viewBox="0 0 30 24" fill="none" style="animation:bobBoat 3s ease-in-out infinite"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>
               </div>
@@ -144,6 +179,20 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
                       <span style="font-size:14.5px;color:#a5aed4;line-height:1.5">{{ ac.msg }}</span>
                     </div>
                   </sc-for>
+                </div>
+              </div>
+              <div style="background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:13px;box-shadow:0 10px 24px rgba(0,0,0,.35);transform:rotate(.25deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">harbor traffic · this week</span>
+                <div style="display:flex;align-items:flex-end;gap:7px;height:64px">
+                  <sc-for list="{{ trafficBars }}" as="tb" hint-placeholder-count="7">
+                    <div style="{{ tb.style }}" title="{{ tb.title }}"></div>
+                  </sc-for>
+                </div>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">1,204 ships sighted · busiest: thursday</span>
+                <div style="display:flex;flex-direction:column;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.7;border-top:1px solid rgba(150,160,220,.12);padding-top:11px">
+                  <span style="color:#a5aed4">top postcard · <span style="color:#f0d9a8">"Meo Wave Race" — 214 flips</span></span>
+                  <span style="color:#a5aed4">top note · <span style="color:#c3cbf2">"The queue is the product" — 178 reads</span></span>
+                  <span style="color:#a5aed4">ports of origin · <span style="color:#c3cbf2">search 44% · direct 31% · fediverse 25%</span></span>
                 </div>
               </div>
               <div style="display:flex;flex-direction:column;gap:22px">
@@ -180,12 +229,24 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
               </div>
               <button onClick="{{ newProject }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ new postcard</button>
             </div>
+            <div style="background:rgba(240,217,168,.06);border:1.5px dashed rgba(240,217,168,.4);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;transform:rotate(.3deg);transition:transform .25s;animation:fadeUp .7s ease .1s both" style-hover="transform:rotate(0deg)">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">on the mantel · featured on the home page</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ featuredCountLine }}</span>
+              </div>
+              <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+                <sc-for list="{{ featuredChips }}" as="f" hint-placeholder-count="3">
+                  <span style="padding:6px 14px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#f0d9a8;display:inline-flex;align-items:center;gap:8px;animation:swayChip 5.5s ease-in-out infinite">★ {{ f.label }}<span onClick="{{ f.onRemove }}" style="cursor:pointer;color:#5f6ec4;transition:color .2s" style-hover="color:#f0d9a8">✕</span></span>
+                </sc-for>
+                <sc-if value="{{ mantelHasRoom }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:13.5px;color:#7a83ad;font-style:italic">room on the mantel — pin a card with ☆ below</span>
+                </sc-if>
+              </div>
+            </div>
             <div style="display:flex;flex-direction:column;gap:14px;animation:fadeUp .7s ease .15s both">
               <sc-for list="{{ projRows }}" as="p" hint-placeholder-count="6">
                 <div style="{{ p.rowStyle }}" style-hover="transform:rotate(0deg)">
-                  <div style="position:absolute;top:14px;right:16px;width:26px;height:32px;border:1.5px solid rgba(240,217,168,.4);border-radius:3px;display:flex;align-items:center;justify-content:center;animation:wiggle 6s ease-in-out infinite">
-                    <svg width="13" height="16" viewBox="0 0 26 30" fill="none"><path d="M13 4 L17 11 L9 11 Z" fill="#f0d9a8"></path><rect x="10" y="11" width="6" height="12" fill="none" stroke="#93a0e8" stroke-width="1.6"></rect><path d="M7 26 q6 -3 12 0" stroke="#5f6ec4" stroke-width="1.6" fill="none"></path></svg>
-                  </div>
+                  <div style="position:absolute;top:12px;right:14px">{{ p.stampEl }}</div>
                   <div style="{{ p.thumbStyle }}"><div style="{{ p.thumbImgStyle }}"></div></div>
                   <div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1">
                     <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
@@ -196,7 +257,11 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
                     <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8">{{ p.tagsText }}</span>
                   </div>
                   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0;padding-right:36px">
+                    <span onClick="{{ p.onUp }}" title="move up the rack" style="padding:7px 11px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">↑</span>
+                    <span onClick="{{ p.onDown }}" title="move down the rack" style="padding:7px 11px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">↓</span>
+                    <span onClick="{{ p.onFeat }}" style="{{ p.featStyle }}">{{ p.featLabel }}</span>
                     <span onClick="{{ p.onToggle }}" style="{{ p.statusStyle }}">{{ p.statusLabel }}</span>
+                    <span onClick="{{ p.onPeek }}" title="preview as it would sail" style="padding:7px 14px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">peek</span>
                     <span onClick="{{ p.onEdit }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">edit</span>
                     <span onClick="{{ p.onDel }}" style="{{ p.delStyle }}">{{ p.delLabel }}</span>
                   </div>
@@ -231,6 +296,8 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
                     <span style="font-size:14.5px;color:#a5aed4;font-style:italic;line-height:1.5">{{ h.eulogy }}</span>
                   </div>
                   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0">
+                    <span onClick="{{ h.onUp }}" title="move up" style="padding:7px 11px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">↑</span>
+                    <span onClick="{{ h.onDown }}" title="move down" style="padding:7px 11px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">↓</span>
                     <span onClick="{{ h.onEdit }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">edit</span>
                     <span onClick="{{ h.onToggle }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#a5aed4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">retire †</span>
                   </div>
@@ -248,6 +315,8 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
                     <span style="font-size:14.5px;color:#7a83ad;font-style:italic;line-height:1.5">{{ h.eulogy }}</span>
                   </div>
                   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0">
+                    <span onClick="{{ h.onUp }}" title="move up" style="padding:7px 11px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">↑</span>
+                    <span onClick="{{ h.onDown }}" title="move down" style="padding:7px 11px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">↓</span>
                     <span onClick="{{ h.onEdit }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">edit</span>
                     <span onClick="{{ h.onToggle }}" style="padding:7px 14px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;transition:transform .2s" style-hover="transform:scale(1.04)">revive ↺</span>
                   </div>
@@ -294,6 +363,7 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
                   </div>
                   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0">
                     <span onClick="{{ n.onToggle }}" style="{{ n.statusStyle }}">{{ n.statusLabel }}</span>
+                    <span onClick="{{ n.onPeek }}" title="preview as it would sail" style="padding:7px 14px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">peek</span>
                     <span onClick="{{ n.onEdit }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">edit</span>
                     <span onClick="{{ n.onDel }}" style="{{ n.delStyle }}">{{ n.delLabel }}</span>
                   </div>
@@ -353,6 +423,71 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
           </div>
         </sc-if>
 
+        <!-- ===== THE KEEPER (profile) ===== -->
+        <sc-if value="{{ isKeeper }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="The keeper" style="display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the keeper's papers</span>
+              <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Who's running this lighthouse</span>
+              <span style="font-size:15.5px;color:#a5aed4;font-style:italic">The office uses these to address you properly, whatever your login says.</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;align-items:start;animation:fadeUp .7s ease .15s both">
+              <div style="background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 24px rgba(0,0,0,.35);transform:rotate(-.3deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">identity papers</span>
+                <label style="display:flex;flex-direction:column;gap:6px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">name · what the harbor calls you</span>
+                  <input type="text" data-key="name" value="{{ keeper.name }}" onChange="{{ setKeeper }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#f0f2fc;font-family:'Gloock',serif;font-size:17px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                </label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">pronouns</span>
+                    <input type="text" data-key="pronouns" value="{{ keeper.pronouns }}" onChange="{{ setKeeper }}" placeholder="he/him" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  </label>
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">home port</span>
+                    <input type="text" data-key="location" value="{{ keeper.location }}" onChange="{{ setKeeper }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  </label>
+                </div>
+                <label style="display:flex;flex-direction:column;gap:6px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">day job · rank</span>
+                  <input type="text" data-key="title" value="{{ keeper.title }}" onChange="{{ setKeeper }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                </label>
+                <label style="display:flex;flex-direction:column;gap:6px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">the short version · one-line bio</span>
+                  <textarea data-key="bio" value="{{ keeper.bio }}" onChange="{{ setKeeper }}" rows="3" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+                </label>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:22px">
+                <div style="background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 24px rgba(0,0,0,.35);transform:rotate(.3deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">lines ashore</span>
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">email</span>
+                    <input type="text" data-key="email" value="{{ keeper.email }}" onChange="{{ setKeeper }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  </label>
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">github</span>
+                    <input type="text" data-key="github" value="{{ keeper.github }}" onChange="{{ setKeeper }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  </label>
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">linkedin</span>
+                    <input type="text" data-key="linkedin" value="{{ keeper.linkedin }}" onChange="{{ setKeeper }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  </label>
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">sign-off · how notes end</span>
+                    <input type="text" data-key="signoff" value="{{ keeper.signoff }}" onChange="{{ setKeeper }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  </label>
+                </div>
+                <div style="background:rgba(240,217,168,.06);border:1.5px dashed rgba(240,217,168,.4);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:8px;transform:rotate(-.3deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">how the office sees you</span>
+                  <span style="font-size:15.5px;color:#dde1f0;line-height:1.6">"{{ greeting }}, <span style="color:#f0d9a8">{{ keeperName }}</span>."</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// greetings, the footer, and note sign-offs all read from these papers.</span>
+                </div>
+              </div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// saved as you type. the lighthouse always knows its keeper.</span>
+          </div>
+        </sc-if>
+
         <!-- ===== DARKROOM (media) ===== -->
         <sc-if value="{{ isMedia }}" hint-placeholder-val="{{ false }}">
           <div data-screen-label="Darkroom" style="display:flex;flex-direction:column;gap:22px">
@@ -363,11 +498,18 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
                 <span style="font-size:15.5px;color:#a5aed4;font-style:italic">{{ mediaCountLine }} Handle by the edges.</span>
               </div>
               <button onClick="{{ addMedia }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ develop a print</button>
+              <input type="file" accept="image/*" multiple ref="{{ mediaInputRef }}" onChange="{{ onFilePick }}" style="display:none">
             </div>
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:20px;animation:fadeUp .7s ease .15s both">
+              <div onClick="{{ addMedia }}" onDragOver="{{ mediaDragOver }}" onDragLeave="{{ mediaDragLeave }}" onDrop="{{ mediaDrop }}" style="{{ dropTileStyle }}">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#93a0e8;text-align:center;line-height:1.8;pointer-events:none">drop a photo here<br>or click to develop</span>
+              </div>
               <sc-for list="{{ mediaTiles }}" as="m" hint-placeholder-count="6">
                 <div style="{{ m.tileStyle }}" style-hover="transform:rotate(0deg) translateY(-4px)">
                   <div style="{{ m.imgStyle }}"></div>
+                  <sc-if value="{{ m.usageLabel }}" hint-placeholder-val="{{ false }}">
+                    <span style="position:absolute;top:16px;left:16px;background:rgba(19,23,40,.85);border:1px solid rgba(240,217,168,.4);border-radius:999px;padding:3px 9px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#f0d9a8">{{ m.usageLabel }}</span>
+                  </sc-if>
                   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 4px 4px">
                     <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3d4468;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.name }}</span>
                     <span onClick="{{ m.onDel }}" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a86b8;cursor:pointer;flex-shrink:0;transition:color .2s" style-hover="color:#b0483a">{{ m.delLabel }}</span>
@@ -384,7 +526,7 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
       <!-- footer -->
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:20px clamp(22px,4vw,52px) 22px;border-top:1px solid rgba(150,160,220,.1)">
         <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · argsea.com · back office</span>
-        <span style="font-size:15px;color:#8f9be0;font-style:italic">The harbormaster is also the intern.</span>
+        <span onClick="{{ nextProverb }}" title="crack another proverb" style="font-size:15px;color:#8f9be0;font-style:italic;cursor:pointer;user-select:none;transition:color .2s" style-hover="color:#f0d9a8">{{ proverb }} ↻</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">signed in as {{ keeperName }} · jwt, allegedly</span>
       </div>
     </div>
@@ -427,6 +569,10 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
             <textarea data-field="desc" value="{{ draft.desc }}" onChange="{{ setField }}" rows="2" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
           </label>
           <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">back of card · the full story</span>
+            <textarea data-field="body" value="{{ draft.body }}" onChange="{{ setField }}" rows="6" placeholder="the long version — what happened, what broke, what you'd do differently. renders when a card is flipped over." style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:13px 14px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15.5px;line-height:1.65;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
             <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">moral of the story</span>
             <input type="text" data-field="moral" value="{{ draft.moral }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
           </label>
@@ -445,6 +591,27 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">postmarked:</span>
                 <input type="text" data-field="year" value="{{ draft.year }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
               </label>
+            </div>
+          </div>
+          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the stamp · top-right corner</span>
+              <span onClick="{{ rerollStamp }}" style="padding:7px 15px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transition:transform .2s" style-hover="transform:scale(1.04)">⚄ surprise me</span>
+            </div>
+            <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+              <div style="width:96px;height:96px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px">{{ stampPreview }}</div>
+              <div style="display:flex;flex-direction:column;gap:9px;flex:1;min-width:230px">
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <sc-for list="{{ stampShapeChips }}" as="c" hint-placeholder-count="2"><span onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</span></sc-for>
+                  <sc-for list="{{ stampInkChips }}" as="c" hint-placeholder-count="2"><span onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</span></sc-for>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <sc-for list="{{ stampMotifChips }}" as="c" hint-placeholder-count="7"><span onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</span></sc-for>
+                </div>
+                <sc-if value="{{ stampIsText }}" hint-placeholder-val="{{ false }}">
+                  <input type="text" value="{{ stampText }}" onChange="{{ setStampText }}" placeholder="AIR MAIL" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                </sc-if>
+              </div>
             </div>
           </div>
           <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
@@ -533,7 +700,7 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
               <span onClick="{{ rv.onRestore }}" style="padding:6px 13px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8;cursor:pointer;transition:transform .2s;flex-shrink:0" style-hover="transform:scale(1.04)">roll back ↺</span>
             </div>
           </sc-for>
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">// rolling back loads that printing into the form — file it to keep it.</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">// rolling back loads that printing — status travels with it — file it to keep it.</span>
         </div>
       </sc-if>
 
@@ -541,6 +708,60 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
         <button onClick="{{ saveEdit }}" style="padding:12px 22px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">{{ saveLabel }}</button>
         <span onClick="{{ cancelEdit }}" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#7a83ad;cursor:pointer;transition:color .2s" style-hover="color:#e8ebfa">never mind</span>
       </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ============ PEEK OVERLAY ============ -->
+<sc-if value="{{ peek }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closePeek }}" style="position:fixed;inset:0;background:rgba(8,10,20,.72);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,40px);z-index:60;animation:backdropIn .25s ease both">
+    <div onClick="{{ stopProp }}" style="width:min(820px,100%);max-height:86vh;overflow-y:auto;background:#1c2036;border:1px solid rgba(150,160,220,.3);border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:overlayIn .35s ease both">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px clamp(20px,4vw,30px);border-bottom:1.5px dashed rgba(150,160,220,.25)">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">peek · {{ peekStatusLine }}</span>
+        <span onClick="{{ closePeek }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#a5aed4;padding:6px 12px;border:1px solid rgba(150,160,220,.3);border-radius:999px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">close ✕</span>
+      </div>
+      <sc-if value="{{ peekProject }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:clamp(20px,4vw,36px);padding:clamp(20px,4vw,30px)">
+          <div style="flex:1.5;min-width:260px;display:flex;flex-direction:column;gap:14px">
+            <div style="font-family:'Gloock',serif;font-size:clamp(24px,4vw,32px);color:#f0f2fc;line-height:1.15">{{ peekD.title }}</div>
+            <div style="font-size:16.5px;line-height:1.65;color:#b8c0e0">{{ peekD.desc }}</div>
+            <sc-if value="{{ peekBody }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:16.5px;line-height:1.65;color:#b8c0e0;white-space:pre-line">{{ peekBody }}</div>
+            </sc-if>
+            <div style="font-size:15px;color:#8f9be0;font-style:italic;margin-top:4px">{{ peekD.moral }}</div>
+          </div>
+          <div style="flex:1;min-width:200px;border-left:1.5px dashed rgba(150,160,220,.25);padding-left:clamp(18px,3vw,28px);display:flex;flex-direction:column;gap:16px">
+            <sc-if value="{{ peekPrintStyle }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#e8e6df;padding:8px 8px 26px;border-radius:2px;box-shadow:0 6px 16px rgba(0,0,0,.35);transform:rotate(-1.5deg)">
+                <div style="{{ peekPrintStyle }}"></div>
+              </div>
+            </sc-if>
+            <div style="display:flex;flex-direction:column;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7">
+              <span style="color:#5f6ec4">to:</span><span style="color:#c3cbf2">{{ peekD.to }}</span>
+              <span style="color:#5f6ec4;margin-top:6px">from:</span><span style="color:#c3cbf2">{{ peekD.from }}</span>
+              <span style="color:#5f6ec4;margin-top:6px">postmarked:</span><span style="color:#c3cbf2">{{ peekD.year }}</span>
+            </div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;margin-top:auto">{{ peekTags }}</div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ peekNote }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:clamp(22px,4vw,32px);display:flex;flex-direction:column;gap:14px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">{{ peekD.date }}</span>
+          <div style="font-family:'Gloock',serif;font-size:clamp(24px,4vw,30px);color:#f0f2fc;line-height:1.2">{{ peekD.title }}</div>
+          <div style="font-size:16px;color:#8f9be0;font-style:italic">{{ peekD.teaser }}</div>
+          <sc-if value="{{ peekPrintStyle }}" hint-placeholder-val="{{ false }}">
+            <div style="align-self:flex-start;background:#e8e6df;padding:8px 8px 24px;border-radius:2px;box-shadow:0 6px 16px rgba(0,0,0,.35);transform:rotate(-1.5deg);width:min(260px,70%)">
+              <div style="{{ peekPrintStyle }}"></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ peekBody }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:17px;line-height:1.7;color:#b8c0e0;white-space:pre-line">{{ peekBody }}</div>
+          </sc-if>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#93a0e8;margin-top:8px">— j</div>
+        </div>
+      </sc-if>
+      <div style="padding:0 clamp(20px,4vw,30px) 18px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// rendered as the site would show it. drafts sail only when published + hoisted.</div>
     </div>
   </div>
 </sc-if>
@@ -559,26 +780,32 @@ class Component extends DCLogic {
     user: '', pass: '', loginError: null,
     projects: [
       { title: 'The Great Un-monolithing', cat: 'backend', tags: ['kubernetes','python','rabbitmq'], status: 'published', img: 'unmonolith-diagram.png',
+        stamp: { shape: 'rect', motif: 'lighthouse', ink: '#f0d9a8', cents: '3¢' },
         desc: 'One giant app became many small, well-behaved services. Readers never noticed. That was the point.',
         moral: 'Moral: the best migrations are the boring ones.',
         to: 'everyone who reads the news without thinking about queues', from: 'justin, from inside the cluster', year: '2024 — ongoing' },
       { title: 'Newsroom plumbing', cat: 'backend', tags: ['rest','mongodb','nginx'], status: 'published', img: 'newsroom-pipes.jpg',
+        stamp: { shape: 'circle', motif: 'text', ink: '#93a0e8', text: 'DAILY SINCE 1786' },
         desc: 'A publishing workflow a real paper runs on, every day, deadlines and all.',
         moral: 'Moral: if they never think about you, you did it right.',
         to: 'the 6pm deadline', from: 'the pipes beneath the newsroom', year: '2016 — ongoing' },
       { title: '100k good mornings', cat: 'backend', tags: ['php','redis','linux'], status: 'published', img: 'sunrise-newsletter.png',
+        stamp: { shape: 'rect', motif: 'sun', ink: '#f0d9a8', cents: '5¢' },
         desc: 'An automated newsletter that beats the sunrise into six figures of inboxes.',
         moral: 'Moral: automation is just kindness to your future self, scheduled.',
         to: '100,000 people who are not awake yet', from: 'a cron job with ambition', year: '2018 — ongoing' },
       { title: 'Meo Wave Race', cat: 'games', tags: ['unity','c#','blender'], status: 'published', img: 'meo-wave-race-title.png',
+        stamp: { shape: 'rect', motif: 'boat', ink: '#93a0e8', cents: '8¢' },
         desc: 'A cat/boat racing game for the CS50 final. The cat is the boat. Ask me anything.',
         moral: 'Moral: retire at the top.',
         to: 'anyone who says scope creep is inevitable', from: 'a cat that is also a boat', year: '2020' },
       { title: 'This website', cat: 'this website', tags: ['html','whimsy'], status: 'published',
+        stamp: { shape: 'circle', motif: 'lighthouse', ink: '#f0d9a8' },
         desc: "The site you're on. Rebuilt whenever the mood strikes, which is often.",
         moral: 'Moral: the portfolio is also the hobby.',
         to: 'future justin, who will redesign this', from: 'present justin, who is sorry', year: '2026 edition' },
       { title: 'The home lab', cat: 'tinkering', tags: ['plex','linux','cachyos'], status: 'draft', img: 'homelab-rack.jpg',
+        stamp: { shape: 'rect', motif: 'moon', ink: '#93a0e8', cents: '1¢' },
         desc: 'Plex, HTPC, and a small fleet of machines that mostly behave.',
         moral: 'Moral: some hobbies are load-bearing.',
         to: 'the family, who just wanted to watch a movie', from: 'the server closet', year: '2021 — forever' },
@@ -626,6 +853,8 @@ class Component extends DCLogic {
       { name: 'boat.svg', tone: 2 },
       { name: 'postcard-scan-01.jpg', tone: 1 },
     ],
+    featured: ['The Great Un-monolithing', 'Meo Wave Race', 'This website'],
+    dragMedia: false,
     suggestions: ['blacksmithing?','sourdough?','birdwatching?','3d printing?','kayaking?','chess?','fermenting things?','ham radio?'],
     newSuggestion: '',
     activity: [
@@ -634,10 +863,20 @@ class Component extends DCLogic {
       { t: '4 days ago', msg: 'hobby "Running" moved to the graveyard (again)' },
       { t: 'last week', msg: 'postcard "This website" edited 11 times. it counts.' },
     ],
-    edit: null, confirmDel: null,
+    keeper: {
+      name: 'Justin', pronouns: 'he/him', location: 'Pittsburgh, PA',
+      title: 'Senior Software Engineer, Post-Gazette',
+      bio: 'Backend engineer keeping the lights on behind the news. Dad. Serial picker-upper of hobbies.',
+      email: 'hello@argsea.com', github: 'github.com/argsea', linkedin: 'linkedin.com/in/argsea',
+      signoff: '— j',
+    },
+    edit: null, confirmDel: null, peek: null, changesSinceDeploy: 3,
+    catSay: null, proverbIdx: 0,
     deploying: false, deployPct: 0, lastDeploy: 'yesterday, 9:12 pm',
     toast: null,
   };
+
+  mediaInputRef = React.createRef();
 
   gradients = [
     'linear-gradient(135deg,#2a3054,#5f6ec4)',
@@ -650,7 +889,49 @@ class Component extends DCLogic {
 
   toneGrad(name) {
     const m = this.state.media.find((x) => x.name === name);
+    if (m && m.url) return `url("${m.url}") center/cover`;
     return m ? this.gradients[m.tone % 6] : this.gradients[0];
+  }
+
+  addFiles(fileList) {
+    const files = Array.from(fileList || []).filter((f) => f.type.startsWith('image/') || /\.(png|jpe?g|gif|svg|webp)$/i.test(f.name));
+    if (!files.length) { this.showToast('the darkroom only develops images'); return; }
+    const tiles = files.map((f) => ({ name: f.name, url: URL.createObjectURL(f), tone: Math.floor(Math.random() * 6) }));
+    this.setState((s) => ({ media: [...tiles, ...s.media] }));
+    this.log(files.length === 1 ? `print "${files[0].name}" developed in the darkroom` : `${files.length} prints developed in the darkroom`);
+    this.showToast(files.length === 1 ? '🖼 developed. hang it to dry.' : `🖼 ${files.length} prints developed`);
+  }
+
+  moveProj(i, dir) {
+    this.setState((s) => {
+      const j = i + dir;
+      if (j < 0 || j >= s.projects.length) return {};
+      const projects = [...s.projects];
+      [projects[i], projects[j]] = [projects[j], projects[i]];
+      return { projects };
+    });
+  }
+
+  moveHobby(i, dir) {
+    this.setState((s) => {
+      const hobbies = [...s.hobbies];
+      const group = hobbies.map((h, j) => ({ h, j })).filter((x) => x.h.active === hobbies[i].active).map((x) => x.j);
+      const pos = group.indexOf(i);
+      const tgt = group[pos + dir];
+      if (tgt == null) return {};
+      [hobbies[i], hobbies[tgt]] = [hobbies[tgt], hobbies[i]];
+      return { hobbies };
+    });
+  }
+
+  featPill(feat) {
+    return {
+      padding: '7px 12px', borderRadius: '999px', cursor: 'pointer',
+      fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px',
+      transition: 'all .2s', userSelect: 'none',
+      border: feat ? '1.5px dashed rgba(240,217,168,.6)' : '1px solid rgba(150,160,220,.2)',
+      color: feat ? '#f0d9a8' : '#5f6ec4',
+    };
   }
 
   thumbStyles(img) {
@@ -661,17 +942,113 @@ class Component extends DCLogic {
     };
   }
 
+  catQuotes = ['mrrp.', 'the sea provides.', 'deploy it, coward.', 'i knocked the token off the desk.', 'feed me, keeper.', 'the fish are unionizing.', 'i have read your drafts. no comment.'];
+  proverbs = [
+    'The harbormaster is also the intern.',
+    'A tidy harbor is a suspicious harbor.',
+    'Red sky at night, deploy delight.',
+    'Never trust a quiet queue.',
+    'Any port in a stack trace.',
+    'The lighthouse shines both ways.',
+    'Six drafts make a fleet.',
+  ];
+  weatherLines = [
+    'All quiet on the water. Mostly.',
+    'Seas calm. Coffee strong.',
+    'Light fog inland. Morale high.',
+    'Winds from the west. Backlog from everywhere.',
+    "Tide's out. So are the bugs. Probably.",
+    'Small craft advisory: the home lab is tinkering again.',
+  ];
+  weatherLine = this.weatherLines[Math.floor(Math.random() * this.weatherLines.length)];
+
+  pokeCat() {
+    clearTimeout(this.catTimer);
+    const others = this.catQuotes.filter((q) => q !== this.state.catSay);
+    this.setState({ catSay: others[Math.floor(Math.random() * others.length)] });
+    this.catTimer = setTimeout(() => this.setState({ catSay: null }), 2600);
+  }
+
+  motifIds = ['lighthouse', 'boat', 'sun', 'wave', 'moon', 'anchor'];
+  postmarkTexts = ['DAILY SINCE 1786', 'AIR MAIL', 'PAR AVION', 'FIRST CLASS', 'VIA HARBOR', 'SHIPPED IT'];
+  defaultStamp = { shape: 'rect', motif: 'lighthouse', ink: '#f0d9a8', cents: '3¢' };
+
+  randomStamp() {
+    const pick = (a) => a[Math.floor(Math.random() * a.length)];
+    const ink = pick(['#f0d9a8', '#93a0e8']);
+    if (Math.random() < 0.35) {
+      return { shape: 'circle', motif: Math.random() < 0.5 ? 'text' : pick(this.motifIds), ink, text: pick(this.postmarkTexts) };
+    }
+    return { shape: 'rect', motif: pick(this.motifIds), ink, cents: pick(['1¢', '2¢', '3¢', '5¢', '8¢', '12¢']) };
+  }
+
+  stampMotifSvg(motif, ink, size) {
+    const e = React.createElement;
+    const alt = ink === '#f0d9a8' ? '#93a0e8' : '#f0d9a8';
+    const p = (d, extra) => e('path', { d, stroke: ink, strokeWidth: 1.6, fill: 'none', strokeLinecap: 'round', ...extra });
+    const base = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none' };
+    if (motif === 'lighthouse') return e('svg', { ...base, viewBox: '0 0 26 30', height: size * 1.15 },
+      e('path', { key: 1, d: 'M13 4 L17 11 L9 11 Z', fill: ink }),
+      e('rect', { key: 2, x: 10, y: 11, width: 6, height: 12, stroke: alt, strokeWidth: 1.6, fill: 'none' }),
+      p('M7 26 q6 -3 12 0', { key: 3, stroke: '#5f6ec4' }));
+    if (motif === 'boat') return e('svg', { ...base, viewBox: '0 0 30 24' },
+      e('path', { key: 1, d: 'M4 15 L26 15 L21 22 L9 22 Z', fill: alt }),
+      p('M15 15 V3', { key: 2, stroke: '#5f6ec4', strokeWidth: 1.5 }),
+      e('path', { key: 3, d: 'M15 3 L24 13 L15 13 Z', fill: ink }));
+    if (motif === 'sun') return e('svg', base,
+      e('circle', { key: 1, cx: 12, cy: 12, r: 4.5, stroke: ink, strokeWidth: 1.6 }),
+      p('M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6L17.3 6.7M6.7 17.3l-2.1 2.1', { key: 2 }));
+    if (motif === 'wave') return e('svg', base,
+      p('M2 9q2.5-4 5 0t5 0t5 0t5 0', { key: 1 }),
+      p('M2 15q2.5-4 5 0t5 0t5 0t5 0', { key: 2 }));
+    if (motif === 'moon') return e('svg', base,
+      e('path', { key: 1, d: 'M15.5 3a9 9 0 1 0 5.5 15.5A8 8 0 0 1 15.5 3', stroke: ink, strokeWidth: 1.6, fill: 'none', strokeLinejoin: 'round' }),
+      e('circle', { key: 2, cx: 18, cy: 7, r: 1, fill: alt }));
+    return e('svg', base,
+      e('circle', { key: 1, cx: 12, cy: 5, r: 2.2, stroke: ink, strokeWidth: 1.6 }),
+      p('M12 7.2V19M8.5 10.5h7M4.5 13.5a7.5 7.5 0 0 0 15 0M4.5 13.5l-1.6 1.8M4.5 13.5l2.2 1M19.5 13.5l1.6 1.8M19.5 13.5l-2.2 1', { key: 2 }));
+  }
+
+  renderStamp(stamp, scale = 1) {
+    const e = React.createElement;
+    const st = stamp || this.defaultStamp;
+    const ink = st.ink || '#f0d9a8';
+    const mono = "'IBM Plex Mono', monospace";
+    const words = (st.text || 'AIR MAIL').trim().split(/\s+/);
+    const content = st.motif === 'text'
+      ? e('div', { style: { fontFamily: mono, fontSize: 7.5 * scale, letterSpacing: '.1em', color: ink, textAlign: 'center', lineHeight: 1.6, textTransform: 'uppercase', overflow: 'hidden' } },
+          ...words.flatMap((w, i) => i ? [e('br', { key: 'b' + i }), w] : [w]))
+      : this.stampMotifSvg(st.motif, ink, 18 * scale);
+    if (st.shape === 'circle') {
+      return e('div', { style: { width: 52 * scale, height: 52 * scale, boxSizing: 'border-box', border: `1.2px dashed ${ink}73`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wiggle 7s ease-in-out infinite', flexShrink: 0 } }, content);
+    }
+    return e('div', { style: { width: 34 * scale, height: 42 * scale, boxSizing: 'border-box', border: `1.5px solid ${ink}80`, borderRadius: 3, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wiggle 6s ease-in-out infinite', flexShrink: 0 } },
+      content,
+      st.cents ? e('span', { key: 'c', style: { position: 'absolute', top: 1.5 * scale, right: 2.5 * scale, fontFamily: mono, fontSize: 6.5 * scale, color: ink } }, st.cents) : null);
+  }
+
+  updateStamp(patch) {
+    this.setState((st) => {
+      const cur = st.edit.draft.stamp || this.defaultStamp;
+      return { edit: { ...st.edit, draft: { ...st.edit.draft, stamp: { ...cur, ...patch } } } };
+    });
+  }
+
   snapLabel() {
     return 'today · ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
   }
 
   componentDidMount() {
-    this.onKey = (e) => { if (e.key === 'Escape' && this.state.edit) this.setState({ edit: null }); };
+    this.onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      if (this.state.peek) this.setState({ peek: null });
+      else if (this.state.edit) this.setState({ edit: null });
+    };
     window.addEventListener('keydown', this.onKey);
   }
   componentWillUnmount() {
     window.removeEventListener('keydown', this.onKey);
-    clearInterval(this.deployTimer); clearTimeout(this.toastTimer); clearTimeout(this.delTimer);
+    clearInterval(this.deployTimer); clearTimeout(this.toastTimer); clearTimeout(this.delTimer); clearTimeout(this.catTimer);
   }
 
   showToast(msg) {
@@ -681,6 +1058,10 @@ class Component extends DCLogic {
   }
   log(msg) {
     this.setState((s) => ({ activity: [{ t: 'just now', msg }, ...s.activity].slice(0, 6) }));
+    if (!/lantern/.test(msg)) this.markDirty();
+  }
+  markDirty() {
+    this.setState((s) => ({ changesSinceDeploy: s.changesSinceDeploy + 1 }));
   }
 
   greeting() {
@@ -758,7 +1139,7 @@ class Component extends DCLogic {
         if (pct >= 100) {
           clearInterval(this.deployTimer);
           setTimeout(() => {
-            this.setState({ deploying: false, lastDeploy: 'just now' });
+            this.setState({ deploying: false, lastDeploy: 'just now', changesSinceDeploy: 0 });
             this.log('lantern hoisted — site rebuilt, lights on');
             this.showToast('⚓ hoisted. the site sails with the new cargo.');
           }, 500);
@@ -774,7 +1155,7 @@ class Component extends DCLogic {
     let draft;
     if (type === 'project') {
       draft = idx == null
-        ? { title: '', cat: 'backend', tagsText: '', desc: '', moral: 'Moral: ', to: '', from: '', year: '2026', img: null }
+        ? { title: '', cat: 'backend', tagsText: '', desc: '', body: '', moral: 'Moral: ', to: '', from: '', year: '2026', img: null, stamp: this.randomStamp() }
         : { ...s.projects[idx], tagsText: s.projects[idx].tags.join(', ') };
     } else if (type === 'hobby') {
       draft = idx == null
@@ -789,7 +1170,7 @@ class Component extends DCLogic {
   }
 
   saveEdit() {
-    const { type, idx, draft } = this.state.edit;
+    const { type, idx, draft, restored } = this.state.edit;
     if (type === 'project') {
       const item = { ...draft, tags: (draft.tagsText || '').split(',').map((t) => t.trim()).filter(Boolean) };
       delete item.tagsText;
@@ -803,10 +1184,12 @@ class Component extends DCLogic {
           item.revs = [{ t: this.snapLabel(), data: snap }, ...(revs || [])].slice(0, 5);
           projects[idx] = item;
         }
-        return { projects, edit: null };
+        const featured = idx != null ? s.featured.map((t) => (t === s.projects[idx].title ? item.title : t)) : s.featured;
+        return { projects, featured, edit: null };
       });
       this.log(`postcard "${draft.title || 'untitled'}" ${idx == null ? 'added to the rack' : 'edited'}`);
-      this.showToast(idx == null ? '✉ new postcard in the rack' : '✉ postcard filed');
+      const projStatus = (item.status === 'published') ? 'published ●' : 'a draft ○';
+      this.showToast(idx == null ? '✉ new postcard in the rack' : restored ? `↺ earlier printing filed — it's now ${projStatus}` : '✉ postcard filed');
     } else if (type === 'hobby') {
       this.setState((s) => {
         const hobbies = [...s.hobbies];
@@ -829,7 +1212,7 @@ class Component extends DCLogic {
         return { notes, edit: null };
       });
       this.log(`note "${draft.title || 'untitled'}" ${idx == null ? 'drafted' : 'edited'}`);
-      this.showToast('✎ filed at the writing desk');
+      this.showToast(restored ? `↺ earlier printing filed — it's now ${item.status === 'published' ? 'published ●' : 'a draft ○'}` : '✎ filed at the writing desk');
     }
   }
 
@@ -843,6 +1226,7 @@ class Component extends DCLogic {
       { id: 'notes', glyph: '✎', label: 'writing desk' },
       { id: 'copy', glyph: '⚑', label: 'signal flags' },
       { id: 'media', glyph: '❏', label: 'the darkroom' },
+      { id: 'keeper', glyph: '☸', label: 'the keeper' },
     ];
 
     const pubProj = s.projects.filter((p) => p.status === 'published').length;
@@ -869,8 +1253,19 @@ class Component extends DCLogic {
       const hot = s.confirmDel === key;
       return {
         ...p, tagsText: p.tags.join(' · '),
+        stampEl: this.renderStamp(p.stamp, 0.78),
         ...this.thumbStyles(p.img),
         rowStyle: this.rowStyle(i),
+        onUp: () => this.moveProj(i, -1),
+        onDown: () => this.moveProj(i, 1),
+        featLabel: s.featured.includes(p.title) ? '★ on the mantel' : '☆ feature',
+        featStyle: this.featPill(s.featured.includes(p.title)),
+        onFeat: () => {
+          const feat = s.featured.includes(p.title);
+          if (!feat && s.featured.length >= 3) { this.showToast('the mantel only fits three — take one down first'); return; }
+          this.setState((st) => ({ featured: feat ? st.featured.filter((t) => t !== p.title) : [...st.featured, p.title] }));
+          this.showToast(feat ? '☆ taken down from the mantel' : '★ up on the mantel');
+        },
         statusLabel: p.status === 'published' ? '● published' : '○ draft',
         statusStyle: this.pillStatus(p.status === 'published'),
         onToggle: () => {
@@ -879,13 +1274,15 @@ class Component extends DCLogic {
             projects[i] = { ...projects[i], status: projects[i].status === 'published' ? 'draft' : 'published' };
             return { projects };
           });
+          this.markDirty();
           this.showToast(p.status === 'published' ? '○ pulled back into the rack' : '● stamped and published');
         },
         onEdit: () => this.openEdit('project', i),
+        onPeek: () => this.setState({ peek: { type: 'project', idx: i } }),
         delLabel: hot ? 'sure? scuttle.' : 'scuttle',
         delStyle: this.delStyle(hot),
         onDel: () => this.askDelete(key, () => {
-          this.setState((st) => ({ projects: st.projects.filter((_, j) => j !== i) }));
+          this.setState((st) => ({ projects: st.projects.filter((_, j) => j !== i), featured: st.featured.filter((t) => t !== p.title) }));
           this.log(`postcard "${p.title}" scuttled. a moment of silence.`);
           this.showToast('🌊 scuttled. the sea keeps its secrets.');
         }),
@@ -897,6 +1294,8 @@ class Component extends DCLogic {
       return {
         ...h,
         rowStyle: this.rowStyle(i, h.active ? 'gold' : 'alt'),
+        onUp: () => this.moveHobby(i, -1),
+        onDown: () => this.moveHobby(i, 1),
         onEdit: () => this.openEdit('hobby', i),
         onToggle: () => {
           this.setState((st) => {
@@ -932,9 +1331,11 @@ class Component extends DCLogic {
             notes[i] = { ...notes[i], status: notes[i].status === 'published' ? 'draft' : 'published', date: notes[i].date === '—' ? 'jul 2026' : notes[i].date };
             return { notes };
           });
+          this.markDirty();
           this.showToast(n.status === 'published' ? '○ back to the desk drawer' : '● posted. no promises broken yet.');
         },
         onEdit: () => this.openEdit('note', i),
+        onPeek: () => this.setState({ peek: { type: 'note', idx: i } }),
         delLabel: hot ? 'sure? burn it.' : 'burn',
         delStyle: this.delStyle(hot),
         onDel: () => this.askDelete(key, () => {
@@ -954,19 +1355,29 @@ class Component extends DCLogic {
     const mediaTiles = s.media.map((m, i) => {
       const key = 'media-' + i;
       const hot = s.confirmDel === key;
+      const usedBy = s.projects.filter((p) => p.img === m.name).length + s.notes.filter((n) => n.img === m.name).length;
       return {
         name: m.name,
+        usageLabel: usedBy ? `on ${usedBy} card${usedBy > 1 ? 's' : ''}` : null,
         tileStyle: {
+          position: 'relative',
           background: '#e8e6df', borderRadius: '4px', padding: '10px 10px 6px',
           boxShadow: '0 10px 24px rgba(0,0,0,.35)', transform: `rotate(${mediaTilts[i % 6]})`,
           transition: 'transform .25s', display: 'flex', flexDirection: 'column',
         },
-        imgStyle: { height: '120px', borderRadius: '2px', background: this.gradients[m.tone % 6] },
+        imgStyle: { height: '120px', borderRadius: '2px', background: m.url ? `url("${m.url}") center/cover` : this.gradients[m.tone % 6] },
         delLabel: hot ? 'sure?' : '✕',
-        onDel: () => this.askDelete(key, () => {
-          this.setState((st) => ({ media: st.media.filter((_, j) => j !== i) }));
-          this.showToast('print left out in the sun');
-        }),
+        onDel: () => {
+          if (usedBy && s.confirmDel !== key) this.showToast(`⚠ still glued to ${usedBy} card${usedBy > 1 ? 's' : ''} — click again to tear it off`);
+          this.askDelete(key, () => {
+            this.setState((st) => ({
+              media: st.media.filter((_, j) => j !== i),
+              projects: st.projects.map((p) => (p.img === m.name ? { ...p, img: null } : p)),
+              notes: st.notes.map((n) => (n.img === m.name ? { ...n, img: null } : n)),
+            }));
+            this.showToast(usedBy ? 'print torn off its cards and left in the sun' : 'print left out in the sun');
+          });
+        },
       };
     });
 
@@ -1000,10 +1411,30 @@ class Component extends DCLogic {
         summary: '\u201C' + (rv.data.title || 'untitled') + '\u201D — ' + ((rv.data.desc || rv.data.teaser || '').slice(0, 70) || 'no description'),
         onRestore: () => {
           const d = e.type === 'project' ? { ...rv.data, tagsText: (rv.data.tags || []).join(', ') } : { ...rv.data };
-          this.setState((st) => ({ edit: { ...st.edit, draft: d } }));
+          this.setState((st) => ({ edit: { ...st.edit, draft: d, restored: true } }));
           this.showToast('↺ earlier printing loaded — file it to keep it');
         },
       }));
+    }
+
+    let stampPreview = null, stampShapeChips = [], stampInkChips = [], stampMotifChips = [], stampIsText = false, stampText = '';
+    if (e && e.type === 'project') {
+      const stp = e.draft.stamp || this.defaultStamp;
+      stampPreview = this.renderStamp(stp, 1.5);
+      const chip = (sel) => ({
+        padding: '6px 13px', borderRadius: '999px', fontFamily: "'IBM Plex Mono', monospace",
+        fontSize: '11.5px', cursor: 'pointer', userSelect: 'none', transition: 'all .2s',
+        border: sel ? '1.5px dashed rgba(240,217,168,.6)' : '1px solid rgba(150,160,220,.3)',
+        color: sel ? '#f0d9a8' : '#a5aed4',
+      });
+      stampShapeChips = [{ id: 'rect', label: 'stamp' }, { id: 'circle', label: 'postmark' }]
+        .map((o) => ({ label: o.label, style: chip(stp.shape === o.id), onClick: () => this.updateStamp({ shape: o.id, cents: stp.cents || '3¢' }) }));
+      stampInkChips = [{ v: '#f0d9a8', label: 'gold ink' }, { v: '#93a0e8', label: 'periwinkle ink' }]
+        .map((o) => ({ label: o.label, style: chip(stp.ink === o.v), onClick: () => this.updateStamp({ ink: o.v }) }));
+      stampMotifChips = [...this.motifIds, 'text']
+        .map((m) => ({ label: m === 'text' ? 'words' : m, style: chip(stp.motif === m), onClick: () => this.updateStamp({ motif: m, text: stp.text || 'AIR MAIL' }) }));
+      stampIsText = stp.motif === 'text';
+      stampText = stp.text || '';
     }
 
     const nowDate = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toLowerCase();
@@ -1012,7 +1443,7 @@ class Component extends DCLogic {
       // screens
       isLogin: scr === 'login', isApp: scr !== 'login',
       isDash: scr === 'dash', isProjects: scr === 'projects', isHobbies: scr === 'hobbies',
-      isNotes: scr === 'notes', isCopy: scr === 'copy', isMedia: scr === 'media',
+      isNotes: scr === 'notes', isCopy: scr === 'copy', isMedia: scr === 'media', isKeeper: scr === 'keeper',
       // login
       user: s.user, pass: s.pass, loginError: s.loginError,
       setUser: (ev) => this.setState({ user: ev.target.value, loginError: null }),
@@ -1025,7 +1456,12 @@ class Component extends DCLogic {
         this.showToast('⚓ welcome back, keeper. token stowed.');
       },
       logout: () => this.setState({ screen: 'login', pass: '' }),
-      keeperName: (s.user && s.user.trim()) || (this.props.keeperName ?? 'keeper'),
+      keeperName: (s.keeper.name && s.keeper.name.trim()) || (s.user && s.user.trim()) || (this.props.keeperName ?? 'keeper'),
+      keeper: s.keeper,
+      setKeeper: (ev) => {
+        const k = ev.target.dataset.key, v = ev.target.value;
+        this.setState((st) => ({ keeper: { ...st.keeper, [k]: v } }));
+      },
       // nav
       navItems: nav.map((n) => ({ ...n, style: this.navStyle(scr === n.id), onClick: () => this.setState({ screen: n.id, confirmDel: null }) })),
       // deploy
@@ -1034,10 +1470,40 @@ class Component extends DCLogic {
       deployVerb: this.props.deployVerb ?? 'hoist the lantern',
       deployMsg: s.deployPct >= 100 ? 'docking…' : `rebuilding · ${Math.floor(s.deployPct)}%`,
       lastDeploy: s.lastDeploy,
+      isDirty: s.changesSinceDeploy > 0,
+      isClean: s.changesSinceDeploy === 0,
+      dirtyLine: `${s.changesSinceDeploy} change${s.changesSinceDeploy === 1 ? '' : 's'} aboard since last hoist`,
+      rollbackLabel: s.confirmDel === 'rollback' ? '↩ sure? sail backwards.' : '↩ re-hoist the previous lantern',
+      rollbackStyle: {
+        fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', cursor: 'pointer',
+        color: s.confirmDel === 'rollback' ? '#f0d9a8' : '#7a83ad', transition: 'color .2s', userSelect: 'none',
+      },
+      rollback: () => this.askDelete('rollback', () => {
+        this.setState({ lastDeploy: 'just now · rolled back' });
+        this.log('previous lantern re-hoisted — instant rollback, no rebuild');
+        this.showToast('↩ previous lantern re-hoisted. the old lights are back on.');
+      }),
       boatStyle: { position: 'absolute', top: '-8px', left: `calc(${Math.min(s.deployPct, 96)}% - 11px)`, transition: 'left .12s linear' },
+      // whimsy
+      catSay: s.catSay,
+      pokeCat: () => this.pokeCat(),
+      harborWeather: this.weatherLine,
+      proverb: this.proverbs[s.proverbIdx % this.proverbs.length],
+      nextProverb: () => this.setState((st) => ({ proverbIdx: st.proverbIdx + 1 })),
       // dashboard
       greeting: this.greeting(), dateLine: nowDate,
       stats, activity: s.activity,
+      trafficBars: [
+        { d: 'mon', v: 142 }, { d: 'tue', v: 180 }, { d: 'wed', v: 121 }, { d: 'thu', v: 238 },
+        { d: 'fri', v: 164 }, { d: 'sat', v: 98 }, { d: 'sun', v: 187 },
+      ].map((b) => ({
+        title: `${b.d} · ${b.v} ships`,
+        style: {
+          flex: 1, height: `${Math.round((b.v / 238) * 100)}%`, minHeight: '6px',
+          borderRadius: '3px 3px 0 0',
+          background: b.v === 238 ? 'linear-gradient(180deg,#f0d9a8,#8f7f4d)' : 'linear-gradient(180deg,#93a0e8,#3b4374)',
+        },
+      })),
       quickActions: [
         { label: 'write a new postcard', onClick: () => { this.setState({ screen: 'projects' }); this.openEdit('project', null); } },
         { label: 'draft a note', onClick: () => { this.setState({ screen: 'notes' }); this.openEdit('note', null); } },
@@ -1048,6 +1514,9 @@ class Component extends DCLogic {
       projRows,
       projCountLine: `${s.projects.length} in the rack · ${pubProj} published · ${s.projects.length - pubProj} waiting for a stamp`,
       newProject: () => this.openEdit('project', null),
+      featuredChips: s.featured.map((t) => ({ label: t, onRemove: () => { this.setState((st) => ({ featured: st.featured.filter((x) => x !== t) })); this.showToast('☆ taken down from the mantel'); } })),
+      featuredCountLine: `${s.featured.length} of 3 spots filled`,
+      mantelHasRoom: s.featured.length < 3,
       // hobbies
       activeHobbies: s.hobbies.filter((h) => h.active).map(hobbyRow),
       restingHobbies: s.hobbies.filter((h) => !h.active).map(hobbyRow),
@@ -1074,13 +1543,25 @@ class Component extends DCLogic {
       // media
       mediaTiles,
       mediaCountLine: `${s.media.length} prints hanging to dry.`,
-      addMedia: () => {
-        this.setState((st) => ({ media: [{ name: `fresh-scan-${String(st.media.length + 1).padStart(2, '0')}.jpg`, tone: Math.floor(Math.random() * 6) }, ...st.media] }));
-        this.showToast('🖼 developing… done. that was fast.');
+      addMedia: () => { const el = this.mediaInputRef && this.mediaInputRef.current; if (el) el.click(); },
+      mediaInputRef: this.mediaInputRef,
+      onFilePick: (ev) => { this.addFiles(ev.target.files); ev.target.value = ''; },
+      mediaDragOver: (ev) => { ev.preventDefault(); if (!s.dragMedia) this.setState({ dragMedia: true }); },
+      mediaDragLeave: () => { if (s.dragMedia) this.setState({ dragMedia: false }); },
+      mediaDrop: (ev) => { ev.preventDefault(); this.setState({ dragMedia: false }); this.addFiles(ev.dataTransfer && ev.dataTransfer.files); },
+      dropTileStyle: {
+        minHeight: '158px', borderRadius: '4px', boxSizing: 'border-box', cursor: 'pointer',
+        border: s.dragMedia ? '1.5px dashed rgba(240,217,168,.9)' : '1.5px dashed rgba(147,160,232,.4)',
+        background: s.dragMedia ? 'rgba(240,217,168,.07)' : 'rgba(147,160,232,.04)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'border-color .2s, background .2s',
       },
       // edit overlay
       edit: e, draft: e ? e.draft : {},
       printOptions, hasRevs, revRows,
+      stampPreview, stampShapeChips, stampInkChips, stampMotifChips, stampIsText, stampText,
+      rerollStamp: () => this.updateStamp(this.randomStamp()),
+      setStampText: (ev) => this.updateStamp({ text: ev.target.value }),
       editProject: e && e.type === 'project', editHobby: e && e.type === 'hobby', editNote: e && e.type === 'note',
       editKicker: e ? (editKickers[e.type] + (e.idx == null ? 'a fresh one' : 'editing')) : '',
       saveLabel: e && e.idx == null ? 'file it' : 'save changes',
@@ -1091,6 +1572,23 @@ class Component extends DCLogic {
       saveEdit: () => this.saveEdit(),
       cancelEdit: () => this.setState({ edit: null }),
       stopProp: (ev) => ev.stopPropagation(),
+      // peek overlay
+      peek: s.peek,
+      peekD: (s.peek ? (s.peek.type === 'project' ? s.projects[s.peek.idx] : s.notes[s.peek.idx]) : null) || {},
+      peekProject: !!s.peek && s.peek.type === 'project',
+      peekNote: !!s.peek && s.peek.type === 'note',
+      peekBody: (s.peek && (s.peek.type === 'project' ? s.projects[s.peek.idx] : s.notes[s.peek.idx]).body) || '',
+      peekTags: (s.peek && s.peek.type === 'project' && s.projects[s.peek.idx].tags.join('  ·  ')) || '',
+      peekStatusLine: s.peek
+        ? ((s.peek.type === 'project' ? s.projects[s.peek.idx] : s.notes[s.peek.idx]).status === 'published'
+            ? 'published — this is live'
+            : 'draft — only you can see this')
+        : '',
+      peekPrintStyle: (() => {
+        const d = s.peek ? (s.peek.type === 'project' ? s.projects[s.peek.idx] : s.notes[s.peek.idx]) : null;
+        return d && d.img ? { width: '100%', height: '140px', borderRadius: '1px', background: this.toneGrad(d.img) } : null;
+      })(),
+      closePeek: () => this.setState({ peek: null }),
       // toast
       toast: s.toast,
     };

@@ -1,9 +1,9 @@
 // The back of the postcard — the project overlay shared by the Projects grid
 // and the homepage preview. The homepage variant adds a "see all projects →"
-// link under the moral (updated Hello design).
+// link under the moral (updated Hello design). No stamp back here: stamps
+// live on the card fronts only (design v4).
 import type { Project } from '../../lib/api';
 import { mediaUrl } from '../../lib/media';
-import Stamp from './Stamp';
 import './PostcardOverlay.css';
 
 interface Props {
@@ -29,9 +29,6 @@ export default function PostcardOverlay({ project, showSeeAll = false, onClose }
 						{showSeeAll && <a className="postcard-back__see-all" href="/projects">see all projects →</a>}
 					</div>
 					<div className="postcard-back__right">
-						<div className="postcard-back__stamp">
-							<Stamp stamp={project.stamp} scale={1.5} />
-						</div>
 						<div className="photo-print">
 							{project.image
 								? <img src={mediaUrl(project.image)} alt={project.title} />

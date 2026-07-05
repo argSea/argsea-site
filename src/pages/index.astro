@@ -1,19 +1,24 @@
 ---
 // Hello — hero, wave-with-boat, postcards preview, cargo manifest, hobbies
 // preview, contact band, and the dictionary entry. The postcards preview is
-// data-driven (first three projects, proud order) and opens the postcard-back
-// overlay in place; hero copy and the dictionary come from the SiteCopy
-// singleton; the cargo manifest, hobbies preview, and contact band are
-// approved copy hardcoded by design.
+// the mantel: the featured projects, or the first three by order so the
+// section never empties. It opens the postcard-back overlay in place; hero
+// copy and the dictionary come from the SiteCopy singleton; the say-hi email
+// is the keeper's; the cargo manifest and hobbies preview are approved copy
+// hardcoded by design.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LighthouseMark from '../components/LighthouseMark.astro';
 import WaveDivider from '../components/WaveDivider.astro';
 import HomePostcards from '../components/islands/HomePostcards';
-import { getProjects, getSiteCopy } from '../lib/api';
+import { getProjects, getSiteCopy, getKeeperProfile } from '../lib/api';
 
 const projects = await getProjects();
-const preview = projects.slice(0, 3);
+// The list arrives order-sorted; the cap is defensive — the admin owns the
+// mantel-fits-three rule, the site just refuses to overflow it
+const featured = projects.filter((project) => project.featured);
+const preview = (featured.length > 0 ? featured : projects).slice(0, 3);
 const copy = await getSiteCopy();
+const keeper = await getKeeperProfile();
 
 // Dictionary presentation: the copy is one plain-text string; the numbered
 // sense markers ("1." …) get the periwinkle-deep treatment from the design.
@@ -50,7 +55,7 @@ const graveyardChips = [
 			<p class="hero__body fade-up fade-up--3">{copy.heroBody}</p>
 			<div class="hero__actions fade-up fade-up--4">
 				<a href="/projects" class="btn btn--primary">the projects</a>
-				<a href="mailto:hello@argsea.com" class="btn btn--outline">say hi</a>
+				<a href={`mailto:${keeper.email}`} class="btn btn--outline">say hi</a>
 			</div>
 		</div>
 	</section>
@@ -116,7 +121,7 @@ const graveyardChips = [
 		<div class="contact__headline">Need a hand keeping your lights on?</div>
 		<div class="contact__aside">Backend, architecture, planning — or just to talk shop.</div>
 		<div class="contact__actions">
-			<a href="mailto:hello@argsea.com" class="btn btn--roomy btn--gold">say hi</a>
+			<a href={`mailto:${keeper.email}`} class="btn btn--roomy btn--gold">say hi</a>
 			<a href="/resume.pdf" class="btn btn--roomy btn--outline">resume ↗</a>
 		</div>
 	</section>

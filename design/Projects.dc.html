@@ -63,7 +63,8 @@ a{text-decoration:none}
     <sc-for list="{{ shown }}" as="p" hint-placeholder-count="6">
       <div style="{{ p.wrapStyle }}" style-hover="transform:translateY(-5px)" onClick="{{ p.onClick }}">
         <div style="{{ p.style }}">
-          <div style="font-family:'Gloock',serif;font-size:20px;color:#eef0fb">{{ p.title }}</div>
+          <div style="position:absolute;top:12px;right:14px">{{ p.stampEl }}</div>
+          <div style="font-family:'Gloock',serif;font-size:20px;color:#eef0fb;padding-right:48px">{{ p.title }}</div>
           <div style="font-size:15px;line-height:1.55;color:#a5aed4">{{ p.desc }}</div>
           <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;margin-top:auto;padding-top:8px">{{ p.tagsText }}</div>
         </div>
@@ -87,7 +88,6 @@ a{text-decoration:none}
             <div style="font-size:15px;color:#8f9be0;font-style:italic;margin-top:4px">{{ open.moral }}</div>
           </div>
           <div style="flex:1;min-width:220px;border-left:1.5px dashed rgba(150,160,220,.25);padding-left:clamp(18px,3vw,28px);display:flex;flex-direction:column;gap:16px">
-            <div style="align-self:flex-end;width:52px;height:64px;border:1.5px solid rgba(240,217,168,.55);border-radius:3px;display:flex;align-items:center;justify-content:center;animation:wiggle 6s ease-in-out infinite"><svg width="26" height="32" viewBox="0 0 26 30" fill="none"><path d="M13 3 L17 10 L9 10 Z" fill="#f0d9a8"></path><rect x="10" y="10" width="6" height="13" fill="none" stroke="#93a0e8" stroke-width="1.6"></rect><path d="M7 27 q6 -3 12 0" stroke="#5f6ec4" stroke-width="1.6" fill="none"></path></svg></div>
             <div style="background:#e8e6df;padding:8px 8px 26px;border-radius:2px;box-shadow:0 6px 16px rgba(0,0,0,.35);transform:rotate(-1.5deg)">
               <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ open.slotId }}" shape="rect" placeholder="drop a snapshot" style="display:block;width:100%;height:130px" hint-size="100%,130px"></x-import>
             </div>
@@ -165,6 +165,60 @@ class Component extends DCLogic {
       to: 'the family, who just wanted to watch a movie', from: 'the server closet', year: '2021 — forever' },
   ];
 
+  stamps = {
+    'The Great Un-monolithing': { shape: 'rect', motif: 'lighthouse', ink: '#f0d9a8', cents: '3¢' },
+    'Newsroom plumbing': { shape: 'circle', motif: 'text', ink: '#93a0e8', text: 'DAILY SINCE 1786' },
+    '100k good mornings': { shape: 'rect', motif: 'sun', ink: '#f0d9a8', cents: '5¢' },
+    'Meo Wave Race': { shape: 'rect', motif: 'boat', ink: '#93a0e8', cents: '8¢' },
+    'This website': { shape: 'circle', motif: 'lighthouse', ink: '#f0d9a8' },
+    'The home lab': { shape: 'rect', motif: 'moon', ink: '#93a0e8', cents: '1¢' },
+  };
+
+  stampMotifSvg(motif, ink, size) {
+    const e = React.createElement;
+    const alt = ink === '#f0d9a8' ? '#93a0e8' : '#f0d9a8';
+    const p = (d, extra) => e('path', { d, stroke: ink, strokeWidth: 1.6, fill: 'none', strokeLinecap: 'round', ...extra });
+    const base = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none' };
+    if (motif === 'lighthouse') return e('svg', { ...base, viewBox: '0 0 26 30', height: size * 1.15 },
+      e('path', { key: 1, d: 'M13 4 L17 11 L9 11 Z', fill: ink }),
+      e('rect', { key: 2, x: 10, y: 11, width: 6, height: 12, stroke: alt, strokeWidth: 1.6, fill: 'none' }),
+      p('M7 26 q6 -3 12 0', { key: 3, stroke: '#5f6ec4' }));
+    if (motif === 'boat') return e('svg', { ...base, viewBox: '0 0 30 24' },
+      e('path', { key: 1, d: 'M4 15 L26 15 L21 22 L9 22 Z', fill: alt }),
+      p('M15 15 V3', { key: 2, stroke: '#5f6ec4', strokeWidth: 1.5 }),
+      e('path', { key: 3, d: 'M15 3 L24 13 L15 13 Z', fill: ink }));
+    if (motif === 'sun') return e('svg', base,
+      e('circle', { key: 1, cx: 12, cy: 12, r: 4.5, stroke: ink, strokeWidth: 1.6 }),
+      p('M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6L17.3 6.7M6.7 17.3l-2.1 2.1', { key: 2 }));
+    if (motif === 'wave') return e('svg', base,
+      p('M2 9q2.5-4 5 0t5 0t5 0t5 0', { key: 1 }),
+      p('M2 15q2.5-4 5 0t5 0t5 0t5 0', { key: 2 }));
+    if (motif === 'moon') return e('svg', base,
+      e('path', { key: 1, d: 'M15.5 3a9 9 0 1 0 5.5 15.5A8 8 0 0 1 15.5 3', stroke: ink, strokeWidth: 1.6, fill: 'none', strokeLinejoin: 'round' }),
+      e('circle', { key: 2, cx: 18, cy: 7, r: 1, fill: alt }));
+    return e('svg', base,
+      e('circle', { key: 1, cx: 12, cy: 5, r: 2.2, stroke: ink, strokeWidth: 1.6 }),
+      p('M12 7.2V19M8.5 10.5h7M4.5 13.5a7.5 7.5 0 0 0 15 0M4.5 13.5l-1.6 1.8M4.5 13.5l2.2 1M19.5 13.5l1.6 1.8M19.5 13.5l-2.2 1', { key: 2 }));
+  }
+
+  renderStamp(stamp, scale = 1) {
+    const e = React.createElement;
+    const st = stamp || { shape: 'rect', motif: 'lighthouse', ink: '#f0d9a8', cents: '3¢' };
+    const ink = st.ink || '#f0d9a8';
+    const mono = "'IBM Plex Mono', monospace";
+    const words = (st.text || 'AIR MAIL').trim().split(/\s+/);
+    const content = st.motif === 'text'
+      ? e('div', { style: { fontFamily: mono, fontSize: 7.5 * scale, letterSpacing: '.1em', color: ink, textAlign: 'center', lineHeight: 1.6, textTransform: 'uppercase', overflow: 'hidden' } },
+          ...words.flatMap((w, i) => i ? [e('br', { key: 'b' + i }), w] : [w]))
+      : this.stampMotifSvg(st.motif, ink, 18 * scale);
+    if (st.shape === 'circle') {
+      return e('div', { style: { width: 52 * scale, height: 52 * scale, boxSizing: 'border-box', border: `1.2px dashed ${ink}73`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wiggle 7s ease-in-out infinite', flexShrink: 0 } }, content);
+    }
+    return e('div', { style: { width: 34 * scale, height: 42 * scale, boxSizing: 'border-box', border: `1.5px solid ${ink}80`, borderRadius: 3, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wiggle 6s ease-in-out infinite', flexShrink: 0 } },
+      content,
+      st.cents ? e('span', { key: 'c', style: { position: 'absolute', top: 1.5 * scale, right: 2.5 * scale, fontFamily: mono, fontSize: 6.5 * scale, color: ink } }, st.cents) : null);
+  }
+
   quips = {
     all: 'nothing hidden yet',
     backend: 'the day-job greatest hits',
@@ -196,6 +250,7 @@ class Component extends DCLogic {
     const shown = visible.map((p, i) => ({
       ...p,
       style: this.cardStyle(p.anim),
+      stampEl: this.renderStamp(this.stamps[p.title], 0.9),
       wrapStyle: {
         cursor: 'pointer', transition: 'transform .25s',
         animation: `${enterName} .45s ease ${i * 0.07}s both`,
