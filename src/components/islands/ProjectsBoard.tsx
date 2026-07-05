@@ -4,7 +4,7 @@
 // `filter` and `open` state.
 import { useState } from 'react';
 import type { Project } from '../../lib/api';
-import Stamp, { resolveStamp } from './Stamp';
+import Stamp from './Stamp';
 import PostcardOverlay from './PostcardOverlay';
 import { useEscapeKey } from './useEscapeKey';
 import './ProjectsBoard.css';
@@ -66,34 +66,32 @@ export default function ProjectsBoard({ projects }: Props) {
 			</div>
 
 			<div className="projects-grid">
-				{visible.map((project, index) => {
-					const stamp = resolveStamp(project.stamp);
-					return (
-						<div
-							key={project.id}
-							className="card-wrap"
-							style={{ animation: `${enterName} .45s ease ${index * 0.07}s both` }}
-							role="button"
-							tabIndex={0}
-							onClick={() => setOpenId(project.id)}
-							onKeyDown={(event) => {
-								if (event.key === 'Enter' || event.key === ' ') {
-									event.preventDefault();
-									setOpenId(project.id);
-								}
-							}}
-						>
-							<div className={`postcard ${BOB_CLASSES[projects.indexOf(project) % BOB_CLASSES.length]}`}>
-								<div className={`stamp-corner stamp-corner--${stamp.shape}`}>
-									<Stamp stamp={stamp} />
-								</div>
-								<div className={`postcard__title postcard__title--grid postcard__title--stamp-${stamp.shape}`}>{project.title}</div>
-								<div className="postcard__desc postcard__desc--grid">{project.shortDesc}</div>
-								<div className="postcard__tags postcard__tags--grid">{project.tags.join('  ·  ')}</div>
+				{visible.map((project, index) => (
+					<div
+						key={project.id}
+						className="card-wrap"
+						style={{ animation: `${enterName} .45s ease ${index * 0.07}s both` }}
+						role="button"
+						tabIndex={0}
+						onClick={() => setOpenId(project.id)}
+						onKeyDown={(event) => {
+							if (event.key === 'Enter' || event.key === ' ') {
+								event.preventDefault();
+								setOpenId(project.id);
+							}
+						}}
+					>
+						<div className={`postcard ${BOB_CLASSES[projects.indexOf(project) % BOB_CLASSES.length]}`}>
+							{/* The grid renders stamps a touch smaller than the homepage preview (design v4) */}
+							<div className="stamp-corner stamp-corner--grid">
+								<Stamp stamp={project.stamp} scale={0.9} />
 							</div>
+							<div className="postcard__title postcard__title--grid">{project.title}</div>
+							<div className="postcard__desc postcard__desc--grid">{project.shortDesc}</div>
+							<div className="postcard__tags postcard__tags--grid">{project.tags.join('  ·  ')}</div>
 						</div>
-					);
-				})}
+					</div>
+				))}
 			</div>
 
 			{open && <PostcardOverlay project={open} onClose={close} />}
