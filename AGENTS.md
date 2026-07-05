@@ -69,9 +69,12 @@ Read narrowly. Do not wander the repo.
   static HTML/CSS. New motion is CSS/SVG, not JS.
 - All API access goes through `src/lib/api.ts` (`ARGSEA_API_URL` set →
   build-time fetch, `?published=true` on collections; unset → fixtures).
-  Footer quips, hero copy, and the dictionary come from the `SiteCopy`
-  singleton (`GET /1/copy`, plain text, per-field design-copy fallback).
-  Honor the API contract caveats documented in that module's header.
+  `ARGSEA_KEEPER_ID` rides alongside it — the keeper's user id for the public
+  profile route that feeds the say-hi email, footer socials, and the note
+  sign-off; a live build without it fails loud rather than shipping the
+  fixture profile. Footer quips, hero copy, and the dictionary come from the
+  `SiteCopy` singleton (`GET /1/copy`, plain text, per-field design-copy
+  fallback). Honor the API contract caveats documented in that module's header.
 - Rich text from the API is pre-sanitized HTML — render as-is, never
   re-sanitize.
 - `prefers-reduced-motion: reduce` must disable all animation/transitions on
@@ -82,6 +85,11 @@ Read narrowly. Do not wander the repo.
 ## Verification Rules
 - `npm run build` — must be green and emit all five pages into `dist/`.
 - `npm run check` — `astro check`, must report zero errors.
+- `npm run test:e2e` — the Playwright suite; bakes three static builds under
+  `e2e-dist/` (fixtures, plus featured/fallback against `e2e/mock-api.mjs`)
+  and asserts stamps, note prints, the featured mantel and its fallback,
+  keeper-driven copy, and reduced motion. Needs a one-time
+  `npx playwright install chromium`.
 - For visual/interactive changes: serve `dist/` and spot-check the affected
   page (overlays open/close, filters, reduced-motion honored).
 
