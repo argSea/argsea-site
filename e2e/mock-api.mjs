@@ -1,4 +1,4 @@
-// Build-time mock of the argsea-site-api, used only by e2e/global-setup.ts.
+// Build-time mock of the argsea-site-api, used only by e2e/bake.mjs.
 // Serves the checked-in fixtures over the real wire routes so ApiSource is
 // exercised end-to-end, with one twist per mode:
 //   featured  — the mantel moves to the LAST three projects by order, so a
@@ -19,7 +19,7 @@ const fixturesDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', '
 
 const fixture = (name) => JSON.parse(readFileSync(join(fixturesDir, `${name}.json`), 'utf8'));
 
-export const MOCK_KEEPER = {
+const MOCK_KEEPER = {
 	name:     'Mock Keeper',
 	pronouns: 'they/them',
 	location: 'The Test Harbor',

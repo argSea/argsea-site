@@ -101,7 +101,6 @@
 .letter__print {
 	align-self: flex-start;
 	width: min(260px, 70%);
-	box-sizing: border-box;
 	background: #e8e6df;
 	padding: 8px 8px 24px;
 	border-radius: 2px;
