@@ -3,7 +3,11 @@
     "id": "fixture-project-1",
     "title": "The Great Un-monolithing",
     "category": "backend",
-    "tags": ["kubernetes", "python", "rabbitmq"],
+    "tags": [
+      "kubernetes",
+      "python",
+      "rabbitmq"
+    ],
     "shortDesc": "One giant app became many small, well-behaved services. Readers never noticed. That was the point.",
     "body": "<p>The old system was one enormous application that did everything and feared nothing, least of all my weekends. We took it apart piece by piece: a message queue in the middle, services around it, Kubernetes herding the containers.</p><p>The success metric was silence. No reader ever noticed a thing — the paper published every single day while we swapped the engine mid-flight.</p>",
     "moral": "Moral: the best migrations are the boring ones.",
@@ -12,6 +16,12 @@
     "postmarked": "2024 — ongoing",
     "slug": "the-great-un-monolithing",
     "image": null,
+    "stamp": {
+      "shape": "rect",
+      "motif": "lighthouse",
+      "ink": "#f0d9a8",
+      "cents": "3¢"
+    },
     "status": "published",
     "publishedAt": "2026-07-01T12:00:00Z",
     "createdAt": "2026-07-01T12:00:00Z",
@@ -21,7 +31,11 @@
     "id": "fixture-project-2",
     "title": "Newsroom plumbing",
     "category": "backend",
-    "tags": ["rest", "mongodb", "nginx"],
+    "tags": [
+      "rest",
+      "mongodb",
+      "nginx"
+    ],
     "shortDesc": "A publishing workflow a real paper runs on, every day, deadlines and all.",
     "body": "<p>Reporters write, editors edit, and somewhere between 'done' and 'published' lives an entire hidden city of pipes. I designed and built a good chunk of that city: APIs, storage, caching, the works.</p><p>It runs on deadlines that do not move for anybody. The plumbing holds. Mostly nobody knows it exists, which is exactly how plumbing should work.</p>",
     "moral": "Moral: if they never think about you, you did it right.",
@@ -30,6 +44,12 @@
     "postmarked": "2016 — ongoing",
     "slug": "newsroom-plumbing",
     "image": null,
+    "stamp": {
+      "shape": "circle",
+      "motif": "text",
+      "ink": "#93a0e8",
+      "text": "DAILY SINCE 1786"
+    },
     "status": "published",
     "publishedAt": "2026-07-01T12:00:01Z",
     "createdAt": "2026-07-01T12:00:01Z",
@@ -39,7 +59,11 @@
     "id": "fixture-project-3",
     "title": "100k good mornings",
     "category": "backend",
-    "tags": ["php", "redis", "linux"],
+    "tags": [
+      "php",
+      "redis",
+      "linux"
+    ],
     "shortDesc": "An automated newsletter that beats the sunrise into six figures of inboxes.",
     "body": "<p>Every morning, before coffee exists, an automated system assembles the day’s news and delivers it to over 100,000 inboxes. It has done this more reliably than I get out of bed.</p><p>The fun part was making it boring: retries, queues, monitoring, and a healthy paranoia about what happens at 4am when nobody is watching.</p>",
     "moral": "Moral: automation is just kindness to your future self, scheduled.",
@@ -48,6 +72,12 @@
     "postmarked": "2018 — ongoing",
     "slug": "100k-good-mornings",
     "image": null,
+    "stamp": {
+      "shape": "rect",
+      "motif": "sun",
+      "ink": "#f0d9a8",
+      "cents": "5¢"
+    },
     "status": "published",
     "publishedAt": "2026-07-01T12:00:02Z",
     "createdAt": "2026-07-01T12:00:02Z",
@@ -57,7 +87,11 @@
     "id": "fixture-project-4",
     "title": "Meo Wave Race",
     "category": "games",
-    "tags": ["unity", "c#", "blender"],
+    "tags": [
+      "unity",
+      "c#",
+      "blender"
+    ],
     "shortDesc": "A cat/boat racing game for the CS50 final. The cat is the boat. Ask me anything.",
     "body": "<p>For the CS50 final I made a racing game where a cat is also a boat. I modeled the cat. I modeled the waves. I wrote shaders. I regret nothing.</p><p>It shipped, it runs, and it remains my entire game development career: one game made, one game finished, undefeated.</p>",
     "moral": "Moral: retire at the top.",
@@ -66,6 +100,12 @@
     "postmarked": "2020",
     "slug": "meo-wave-race",
     "image": null,
+    "stamp": {
+      "shape": "rect",
+      "motif": "boat",
+      "ink": "#93a0e8",
+      "cents": "8¢"
+    },
     "status": "published",
     "publishedAt": "2026-07-01T12:00:03Z",
     "createdAt": "2026-07-01T12:00:03Z",
@@ -75,7 +115,11 @@
     "id": "fixture-project-5",
     "title": "This website",
     "category": "this website",
-    "tags": ["meta", "html", "whimsy"],
+    "tags": [
+      "meta",
+      "html",
+      "whimsy"
+    ],
     "shortDesc": "The site you're on. Rebuilt whenever the mood strikes, which is often.",
     "body": "<p>You are here. Previous versions had a space theme and a particle system that heated homes across Pittsburgh. This one has a lighthouse, postcards, and a hobby graveyard.</p><p>It gets rebuilt whenever the mood strikes, which historically is often. Consider this postcard a snapshot of a moving target.</p>",
     "moral": "Moral: the portfolio is also the hobby.",
@@ -84,6 +128,11 @@
     "postmarked": "2026 edition",
     "slug": "this-website",
     "image": null,
+    "stamp": {
+      "shape": "circle",
+      "motif": "lighthouse",
+      "ink": "#f0d9a8"
+    },
     "status": "published",
     "publishedAt": "2026-07-01T12:00:04Z",
     "createdAt": "2026-07-01T12:00:04Z",
@@ -93,7 +142,11 @@
     "id": "fixture-project-6",
     "title": "The home lab",
     "category": "tinkering",
-    "tags": ["plex", "linux", "cachyos"],
+    "tags": [
+      "plex",
+      "linux",
+      "cachyos"
+    ],
     "shortDesc": "Plex, HTPC, and a small fleet of machines that mostly behave.",
     "body": "<p>A Plex server, an HTPC, CachyOS on the desktop, and a small fleet of machines that mostly behave. This is the one hobby that survives every purge, because it is just the day job wearing pajamas.</p><p>Current status, as always: one tweak from perfect. The tweak changes weekly. Perfect remains at a fixed distance, like the horizon.</p>",
     "moral": "Moral: some hobbies are load-bearing.",
@@ -102,6 +155,12 @@
     "postmarked": "2021 — forever",
     "slug": "the-home-lab",
     "image": null,
+    "stamp": {
+      "shape": "rect",
+      "motif": "moon",
+      "ink": "#93a0e8",
+      "cents": "1¢"
+    },
     "status": "published",
     "publishedAt": "2026-07-01T12:00:05Z",
     "createdAt": "2026-07-01T12:00:05Z",

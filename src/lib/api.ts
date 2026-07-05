@@ -25,6 +25,20 @@ import siteCopyFixture from '../data/fixtures/siteCopy.json';
 export type Category = 'backend' | 'games' | 'this website' | 'tinkering';
 export type Status = 'draft' | 'published' | 'archived';
 
+export type StampShape = 'rect' | 'circle';
+export type StampMotif = 'lighthouse' | 'boat' | 'sun' | 'wave' | 'moon' | 'anchor' | 'text';
+export type StampInk = '#f0d9a8' | '#93a0e8';
+
+// A postcard's corner stamp/postmark, designed per-project in the admin.
+// Optional on the wire — older documents may not carry one.
+export interface Stamp {
+	shape:  StampShape;
+	motif:  StampMotif;
+	ink:    StampInk;
+	cents?: string;  // rect stamps only, e.g. "3¢"
+	text?:  string;  // motif 'text' only, ≤40 chars
+}
+
 // Wire types mirror the argsea-site-api domain structs field-for-field.
 export interface Project {
 	id:           string;
@@ -39,6 +53,7 @@ export interface Project {
 	postmarked:   string;      // freeform display string
 	slug:         string;
 	image:        string | null; // nullable media name
+	stamp?:       Stamp | null;  // absent → the design's default stamp
 	status:       Status;
 	publishedAt:  string;
 	createdAt:    string;

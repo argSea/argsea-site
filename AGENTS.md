@@ -49,15 +49,18 @@ Read narrowly. Do not wander the repo.
 - `src/components/` — Astro chrome (`Nav`, `Footer`, `LighthouseMark`,
   `WaveDivider`).
 - `src/components/islands/` — the only client-side JS: `ProjectsBoard`
-  (filter + postcard-back overlay), `NotesList` (letter overlay),
-  `NextHobbyChip` (cycling chip), plus their CSS and the shared Escape hook.
+  (filter + grid), `HomePostcards` (homepage preview), the shared
+  `PostcardOverlay` and `Stamp` (per-project stamps/postmarks from data),
+  `NotesList` (letter overlay), `NextHobbyChip` (cycling chip), plus their
+  CSS and the shared Escape hook.
 - `src/lib/api.ts` — the data seam. The ONLY module that fetches. Build-time
   only; never import it from an island (`src/lib/media.ts` is the
   client-safe helper).
 - `src/data/fixtures/` — checked-in content matching the API wire format
   exactly; used whenever `ARGSEA_API_URL` is unset.
 - `src/styles/global.css` — design tokens, shared classes, keyframes, and the
-  reduced-motion kill-switch (must stay last in the file).
+  reduced-motion kill-switch (wins via `!important` over inline and
+  component/island styles — file position is convention, not the mechanism).
 - `design/` — the design handoff (read-only reference).
 
 ## Architecture Defaults
