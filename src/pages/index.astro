@@ -4,13 +4,14 @@
 // the mantel: the featured projects, or the first three by order so the
 // section never empties. It opens the postcard-back overlay in place; hero
 // copy and the dictionary come from the SiteCopy singleton; the say-hi email
-// is the keeper's; the cargo manifest and hobbies preview are approved copy
-// hardcoded by design.
+// is the keeper's; the cargo manifest is approved copy hardcoded by design. The
+// hobbies preview is data-driven: active hobbies fill "currently learning",
+// resting ones become graveyard chips.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LighthouseMark from '../components/LighthouseMark.astro';
 import WaveDivider from '../components/WaveDivider.astro';
 import HomePostcards from '../components/islands/HomePostcards';
-import { getProjects, getSiteCopy, getKeeperProfile } from '../lib/api';
+import { getProjects, getSiteCopy, getKeeperProfile, getHobbies } from '../lib/api';
 
 const projects = await getProjects();
 // The list arrives order-sorted; the cap is defensive — the admin owns the
@@ -32,12 +33,23 @@ const manifest = [
 	{ label: 'infrastructure', items: 'kubernetes · docker · nginx · linux' },
 ];
 
-const graveyardChips = [
-	{ text: 'piano † got good enough',   sway: 'swayChip 5s ease-in-out infinite' },
-	{ text: 'music theory † see piano',  sway: 'swayChip 6s ease-in-out 1s infinite' },
-	{ text: 'game dev † shipped one',    sway: 'swayChip 5.5s ease-in-out .5s infinite' },
-	{ text: 'running † it was a phase',  sway: 'swayChip 6.5s ease-in-out 1.5s infinite' },
+// The list arrives order-sorted: active hobbies are the mantel, resting ones
+// the graveyard. Sways cycle through hand-tuned timings so the chips don't beat
+// in unison.
+const hobbies = await getHobbies();
+const learning = hobbies.filter((hobby) => hobby.active);
+const resting = hobbies.filter((hobby) => !hobby.active);
+
+const sways = [
+	'swayChip 5s ease-in-out infinite',
+	'swayChip 6s ease-in-out 1s infinite',
+	'swayChip 5.5s ease-in-out .5s infinite',
+	'swayChip 6.5s ease-in-out 1.5s infinite',
 ];
+const graveyardChips = resting.map((hobby, index) => ({
+	text: `${hobby.name} ${hobby.epitaph}`.trim(),
+	sway: sways[index % sways.length],
+}));
 ---
 <BaseLayout title="Justin Smith · argsea.com" active="hello" quipKey="quipHello">
 	<!-- hero -->
@@ -87,7 +99,7 @@ const graveyardChips = [
 		</div>
 	</section>
 
-	<!-- hobbies, past & present (approved copy; the full graveyard is the data-driven page) -->
+	<!-- hobbies preview: active hobbies fill the mantel, resting ones the graveyard -->
 	<section class="hobbies-preview">
 		<div class="row-head">
 			<span class="section-label">Hobbies, past & present</span>
@@ -97,8 +109,9 @@ const graveyardChips = [
 			<div class="panel panel--learning">
 				<span class="panel__label panel__label--gold">Currently learning</span>
 				<div class="panel__rows">
-					<div class="panel__row"><span class="panel__name">The home lab</span><span class="panel__tags">plex · htpc</span></div>
-					<div class="panel__row"><span class="panel__name">CachyOS tinkering</span><span class="panel__tags">linux · always</span></div>
+					{learning.map((hobby) => (
+						<div class="panel__row"><span class="panel__name">{hobby.name}</span><span class="panel__tags">{(hobby.tags ?? []).join(' · ')}</span></div>
+					))}
 				</div>
 				<span class="panel__aside">One tweak from perfect, forever.</span>
 			</div>
