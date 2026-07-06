@@ -4,10 +4,12 @@
 // the keeper's, from their profile.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NotesList from '../components/islands/NotesList';
-import { getNotes, getKeeperProfile } from '../lib/api';
+import { getNotes, getKeeperProfile, getSiteCopy } from '../lib/api';
 
 const notes = await getNotes();
 const keeper = await getKeeperProfile();
+const copy = await getSiteCopy();
+const catAboard = copy.eggs.cat && copy.catLocs.notes;
 ---
 <BaseLayout title="Notes · argsea.com" active="notes" quipKey="quipNotes">
 	<section class="head">
@@ -16,7 +18,7 @@ const keeper = await getKeeperProfile();
 	</section>
 
 	<section class="list">
-		<NotesList client:load notes={notes} signoff={keeper.signoff} />
+		<NotesList client:load notes={notes} signoff={keeper.signoff} catAboard={catAboard} />
 		<div class="list__closing">Three notes so far. The bar for "blog" is five. We'll see.</div>
 	</section>
 </BaseLayout>

@@ -73,9 +73,17 @@
 
 /* --- The note, as a letter --- */
 
-.letter {
+/* The wrapper owns width, entry, and positioning so the perched cat can hang
+   over the letter's top edge (the card itself scrolls, so nothing may overflow it) */
+.letter-wrap {
+	position: relative;
 	width: min(680px, 100%);
 	animation: cardInLetter .35s ease both;
+}
+
+.letter {
+	width: 100%;
+	box-sizing: border-box;
 }
 
 @keyframes cardInLetter {

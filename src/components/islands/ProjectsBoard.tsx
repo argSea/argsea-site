@@ -26,10 +26,11 @@ const QUIPS: Record<Filter, string> = {
 const BOB_CLASSES = ['bob-p1', 'bob-p2', 'bob-p3', 'bob-p4', 'bob-p5', 'bob-p6'];
 
 interface Props {
-	projects: Project[];
+	projects:  Project[];
+	catAboard: boolean;
 }
 
-export default function ProjectsBoard({ projects }: Props) {
+export default function ProjectsBoard({ projects, catAboard }: Props) {
 	const [filter, setFilter] = useState<Filter>('all');
 	const [openId, setOpenId] = useState<string | null>(null);
 	// Alternates between two identical enter keyframes so consecutive filter
@@ -94,7 +95,7 @@ export default function ProjectsBoard({ projects }: Props) {
 				))}
 			</div>
 
-			{open && <PostcardOverlay project={open} onClose={close} />}
+			{open && <PostcardOverlay project={open} catAboard={catAboard} onClose={close} />}
 		</>
 	);
 }

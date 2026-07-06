@@ -1,0 +1,84 @@
+/* The harbor cat and its speech bubble. The context modifiers carry the perch
+   positions from the design; the host element only needs position: relative.
+   Resting poses are the keyframes' 0% states, so the reduced-motion
+   kill-switch leaves the cat sitting naturally. */
+
+.harbor-cat {
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+	filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .45));
+	animation: catSettle .4s ease both;
+}
+
+.harbor-cat--postcard,
+.harbor-cat--note {
+	top: -50px;
+	left: 34px;
+	width: 64px;
+	height: 74px;
+	z-index: 3;
+}
+
+.harbor-cat--wreck {
+	top: -48px;
+	right: 30px;
+	width: 60px;
+	height: 68px;
+	z-index: 4;
+}
+
+.harbor-cat__svg {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+	cursor: pointer;
+}
+
+.harbor-cat__tail {
+	transform-origin: 45px 56px;
+	animation: catTailSway 4.5s ease-in-out infinite;
+}
+
+.harbor-cat__eyes {
+	transform-origin: 30px 31px;
+	animation: catBlink 6s ease-in-out infinite;
+}
+
+.harbor-cat__bubble {
+	position: absolute;
+	left: calc(100% + 8px);
+	top: 14px;
+	white-space: nowrap;
+	background: var(--overlay-card);
+	border: 1px solid rgba(150, 160, 220, .4);
+	border-radius: 11px 11px 11px 2px;
+	padding: 6px 12px;
+	font-family: var(--font-mono);
+	font-size: 11.5px;
+	color: var(--text-soft);
+	box-shadow: 0 8px 20px rgba(0, 0, 0, .45);
+	animation: catBubbleIn .2s ease both;
+	z-index: 4;
+}
+
+@keyframes catSettle {
+	from { opacity: 0; transform: translateY(10px); }
+	to   { opacity: 1; transform: none; }
+}
+
+@keyframes catTailSway {
+	0%, 100% { transform: rotate(0deg); }
+	50%      { transform: rotate(-11deg); }
+}
+
+@keyframes catBlink {
+	0%, 90%, 100% { transform: scaleY(1); }
+	95%           { transform: scaleY(.12); }
+}
+
+@keyframes catBubbleIn {
+	from { opacity: 0; transform: translateY(6px) scale(.92); }
+	to   { opacity: 1; transform: none; }
+}

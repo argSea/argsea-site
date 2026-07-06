@@ -89,21 +89,48 @@ export interface Note {
 	updatedAt:   string;
 }
 
+// The smuggler's hold master switches: which easter eggs are live. Absent on
+// the wire reads as on — an older copy document must not silently sink an egg.
+export interface EggToggles {
+	bottle: boolean;
+	cat:    boolean;
+	lights: boolean;
+}
+
+// Where the harbor cat is allowed to perch, per location.
+export interface CatLocs {
+	postcards: boolean;
+	notes:     boolean;
+	p404:      boolean;
+}
+
+// An entry in the light list: a real lighthouse for the 404 wreck report.
+export interface Lighthouse {
+	name: string;
+	pos:  string;  // display coordinates, e.g. "51°23′N 9°36′W"
+	line: string;  // the one-liner the coordinate flip reveals
+}
+
 // The "signal flags" singleton: the little lines of copy that fly over every
-// page. All fields are plain text — the API does not sanitize them as HTML,
-// so render them as text, never with set:html.
+// page, plus the smuggler's hold (easter-egg toggles and their content). All
+// text fields are plain text — the API does not sanitize them as HTML, so
+// render them as text, never with set:html.
 export interface SiteCopy {
-	id:           string;
-	quipHello:    string;
-	quipProjects: string;
-	quipHobbies:  string;
-	quipNotes:    string;
-	quip404:      string;
-	heroKicker:   string;
-	heroHeadline: string;
-	heroBody:     string;
-	dict:         string;
-	updatedAt:    string;
+	id:             string;
+	quipHello:      string;
+	quipProjects:   string;
+	quipHobbies:    string;
+	quipNotes:      string;
+	quip404:        string;
+	heroKicker:     string;
+	heroHeadline:   string;
+	heroBody:       string;
+	dict:           string;
+	eggs:           EggToggles;
+	catLocs:        CatLocs;
+	bottleProverbs: string[];    // emptied by the keeper = the bottle egg is off
+	lighthouses:    Lighthouse[]; // emptied = plain "last position: 404", no flip
+	updatedAt:      string;
 }
 
 /** The per-page footer quip fields of SiteCopy. */
@@ -227,10 +254,19 @@ export function getKeeperProfile(): Promise<KeeperProfile> {
 function withCopyDefaults(copy: SiteCopy): SiteCopy {
 	const defaults = siteCopyFixture as SiteCopy;
 	const merged = { ...copy };
-	for (const key of Object.keys(defaults) as (keyof SiteCopy)[]) {
+	// Generic over the key so the per-field assignment typechecks; only absent
+	// fields backfill — an emptied array is the keeper turning an egg off.
+	const backfill = <K extends keyof SiteCopy>(key: K) => {
 		if (!merged[key]) {
 			merged[key] = defaults[key];
 		}
+	};
+	for (const key of Object.keys(defaults) as (keyof SiteCopy)[]) {
+		backfill(key);
 	}
+	// The toggle objects merge per-field: a document from before a toggle
+	// existed reads as on, while an explicit false stays false.
+	merged.eggs = { ...defaults.eggs, ...copy.eggs };
+	merged.catLocs = { ...defaults.catLocs, ...copy.catLocs };
 	return merged;
 }
