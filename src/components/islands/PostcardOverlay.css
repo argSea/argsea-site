@@ -1,8 +1,16 @@
 /* The back of the postcard — shared by the Projects grid and homepage preview. */
 
-.postcard-back {
+/* The wrapper owns width, entry, and positioning so the perched cat can hang
+   over the card's top edge (the card itself scrolls, so nothing may overflow it) */
+.postcard-back-wrap {
+	position: relative;
 	width: min(860px, 100%);
 	animation: cardInPostcard .35s ease both;
+}
+
+.postcard-back {
+	width: 100%;
+	box-sizing: border-box;
 }
 
 @keyframes cardInPostcard {

@@ -1,0 +1,150 @@
+/* The sailing boat (moved here from WaveDivider when the boat became
+   pokeable) and the message-in-a-bottle drop. Everything positions against
+   the [data-wave] strip the divider renders. */
+
+.boat-track {
+	position: absolute;
+	top: -15px;
+	left: -60px;
+	animation: sail 70s linear infinite;
+	padding: 8px;
+}
+
+.boat-track--pokeable {
+	cursor: pointer;
+}
+
+.boat {
+	position: relative;
+	animation: bobBoat 3s ease-in-out infinite;
+}
+
+.boat-wake {
+	position: absolute;
+	top: 23px;
+	right: 32px;
+	width: 110px;
+	height: 18px;
+	background: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(240,217,168,0.5)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;
+	animation: wakeRipple 2.2s linear infinite;
+	pointer-events: none;
+	mask-image: linear-gradient(90deg, transparent, black 70%);
+	-webkit-mask-image: linear-gradient(90deg, transparent, black 70%);
+}
+
+@keyframes sail {
+	0%   { left: -60px; }
+	100% { left: 102%; }
+}
+
+@keyframes bobBoat {
+	0%, 100% { transform: translateY(0) rotate(-2deg); }
+	50%      { transform: translateY(-3px) rotate(2deg); }
+}
+
+@keyframes wakeRipple {
+	to { background-position-x: -53px; }
+}
+
+/* --- the bottle, where the boat dropped it --- */
+
+.bottle-drop {
+	position: absolute;
+	top: -4px;
+	z-index: 40;
+}
+
+.bottle-drop__splash {
+	position: absolute;
+	left: 2px;
+	top: 8px;
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	border: 1.5px solid rgba(240, 217, 168, .55);
+	animation: splash .6s ease-out both;
+	pointer-events: none;
+}
+
+.bottle {
+	animation: bottleBob 2.6s ease-in-out infinite;
+	overflow: visible;
+}
+
+/* Resting tilt lives in the base transform so reduced motion keeps the pose */
+.bottle-note {
+	position: absolute;
+	bottom: 34px;
+	left: -96px;
+	width: 216px;
+	cursor: pointer;
+	transform: rotate(-1.2deg);
+	transform-origin: 50% 100%;
+	animation: noteRise .5s ease .15s both;
+}
+
+.bottle-note__paper {
+	position: relative;
+	background: #ece7d8;
+	color: #2a2417;
+	border: 1px solid #d8cfb6;
+	border-radius: 3px;
+	padding: 15px 17px 14px;
+	box-shadow: 0 12px 28px rgba(0, 0, 0, .45);
+}
+
+.bottle-note__kicker {
+	font-family: var(--font-mono);
+	font-size: 9.5px;
+	letter-spacing: .16em;
+	color: #a08b5a;
+	text-transform: uppercase;
+	margin-bottom: 7px;
+}
+
+.bottle-note__proverb {
+	font-family: var(--font-body);
+	font-size: 15.5px;
+	line-height: 1.5;
+	font-style: italic;
+}
+
+.bottle-note__foot {
+	margin-top: 10px;
+	font-family: var(--font-mono);
+	font-size: 10px;
+	color: #a08b5a;
+	display: flex;
+	justify-content: space-between;
+}
+
+.bottle-note__hint {
+	opacity: .7;
+}
+
+.bottle-note__nib {
+	position: absolute;
+	left: 50%;
+	bottom: -7px;
+	width: 14px;
+	height: 14px;
+	background: #ece7d8;
+	border-right: 1px solid #d8cfb6;
+	border-bottom: 1px solid #d8cfb6;
+	transform: translateX(-50%) rotate(45deg);
+}
+
+@keyframes bottleBob {
+	0%, 100% { transform: translateY(0) rotate(-6deg); }
+	50%      { transform: translateY(-4px) rotate(-2deg); }
+}
+
+@keyframes noteRise {
+	from { opacity: 0; transform: translateY(14px) rotate(1deg) scale(.92); }
+	to   { opacity: 1; transform: translateY(0) rotate(-1.2deg) scale(1); }
+}
+
+@keyframes splash {
+	0%   { opacity: .9; transform: scale(.4); }
+	100% { opacity: 0; transform: scale(1.6); }
+}

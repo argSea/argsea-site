@@ -13,10 +13,11 @@ import './HomePostcards.css';
 const BOB_CLASSES = ['bob-home-a', 'bob-home-b', 'bob-home-c'];
 
 interface Props {
-	projects: Project[];
+	projects:  Project[];
+	catAboard: boolean;
 }
 
-export default function HomePostcards({ projects }: Props) {
+export default function HomePostcards({ projects, catAboard }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 
 	const close = () => setOpenId(null);
@@ -58,7 +59,7 @@ export default function HomePostcards({ projects }: Props) {
 				})}
 			</div>
 
-			{open && <PostcardOverlay project={open} showSeeAll onClose={close} />}
+			{open && <PostcardOverlay project={open} showSeeAll catAboard={catAboard} onClose={close} />}
 		</>
 	);
 }

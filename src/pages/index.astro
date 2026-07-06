@@ -21,6 +21,12 @@ const preview = (featured.length > 0 ? featured : projects).slice(0, 3);
 const copy = await getSiteCopy();
 const keeper = await getKeeperProfile();
 
+// The smuggler's hold: the copy singleton's egg toggles gate what gets wired.
+// Bottle off (or an emptied proverb list) leaves the boat sailing, unpokeable;
+// cat off (master or per-location) means the island never mounts.
+const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
+const catAboard = copy.eggs.cat && copy.catLocs.postcards;
+
 // Dictionary presentation: the copy is one plain-text string; the numbered
 // sense markers ("1." …) get the periwinkle-deep treatment from the design.
 const dictSegments = copy.dict
@@ -72,7 +78,7 @@ const graveyardChips = resting.map((hobby, index) => ({
 		</div>
 	</section>
 
-	<WaveDivider />
+	<WaveDivider proverbs={proverbs} />
 
 	<!-- postcards from production -->
 	<section class="postcards">
@@ -80,7 +86,7 @@ const graveyardChips = resting.map((hobby, index) => ({
 			<span class="section-label">Postcards from production</span>
 			<a href="/projects" class="mono-link">all projects →</a>
 		</div>
-		<HomePostcards client:load projects={preview} />
+		<HomePostcards client:load projects={preview} catAboard={catAboard} />
 	</section>
 
 	<!-- the cargo manifest -->

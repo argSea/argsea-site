@@ -9,5 +9,26 @@
   "heroHeadline": "I help keep the lights on behind the news.",
   "heroBody": "Backend engineering at the Post-Gazette: building, planning, a healthy amount of boxes-and-arrows. Dad the rest of the time. Serial picker-upper of hobbies.",
   "dict": "1. the Argo, but for one. 2. argc, but forever. 3. a sea of water, or of stars. 4. informal — what a method signature becomes if I'm not supervised.",
+  "eggs": { "bottle": true, "cat": true, "lights": true },
+  "catLocs": { "postcards": true, "notes": true, "p404": true },
+  "bottleProverbs": [
+    "A migration nobody notices is a migration done right.",
+    "The queue does not care about your deadline. Respect it anyway.",
+    "Every cron job is a small promise to your future self.",
+    "The best on-call shift is the one you slept through.",
+    "Name it well and you will never have to explain it.",
+    "The boat that leaves on schedule was loaded the night before.",
+    "Cache invalidation, naming things, and one more thing I forget.",
+    "Ship the boring version. Boring floats.",
+    "A rollback is not a failure. It is a lifeboat.",
+    "The sea provides. Usually a merge conflict."
+  ],
+  "lighthouses": [
+    { "name": "Fastnet Rock", "pos": "51°23′N 9°36′W", "line": "Ireland’s teardrop — the last light the emigrants saw." },
+    { "name": "La Jument", "pos": "48°25′N 5°08′W", "line": "the keeper in the doorway, wave at his back. look it up." },
+    { "name": "Bell Rock", "pos": "56°26′N 2°23′W", "line": "built on a rock that vanishes twice a day." },
+    { "name": "Cape Hatteras", "pos": "35°15′N 75°32′W", "line": "the Graveyard of the Atlantic keeps a light on." },
+    { "name": "Tourlitis", "pos": "37°50′N 24°57′E", "line": "a lighthouse on a stone stalk, straight out of a storybook." }
+  ],
   "updatedAt": "2026-07-04T12:00:00Z"
 }
