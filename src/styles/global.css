@@ -273,6 +273,7 @@ a {
 
 .pill-close {
 	cursor: pointer;
+	flex-shrink: 0;
 	font-family: var(--font-mono);
 	font-size: 13px;
 	color: var(--text-body);
