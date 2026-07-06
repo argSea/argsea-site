@@ -423,6 +423,111 @@ input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
           </div>
         </sc-if>
 
+        <!-- ===== SMUGGLER'S HOLD (easter eggs) ===== -->
+        <sc-if value="{{ isEggs }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="Smuggler's hold" style="display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">below decks</span>
+              <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Smuggler's hold</span>
+              <span style="font-size:15.5px;color:#a5aed4;font-style:italic">The hidden delights stowed around the site. Flip them on, flip them off — no one's watching. (The office gremlins stay on regardless.)</span>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;animation:fadeUp .7s ease .12s both">
+              <span style="width:7px;height:7px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 10px 2px rgba(240,217,168,.5)"></span>
+              <span>{{ eggLooseCount }} of {{ eggLiveCount }} loose on the site right now</span>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:18px;animation:fadeUp .7s ease .18s both">
+              <sc-for list="{{ eggFields }}" as="egg" hint-placeholder-count="2">
+                <div style="{{ egg.cardStyle }}">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+                    <div style="display:flex;flex-direction:column;gap:7px;flex:1;min-width:220px">
+                      <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
+                        <span style="font-family:'Gloock',serif;font-size:20px;color:#f0f2fc">{{ egg.name }}</span>
+                        <span style="{{ egg.statusStyle }}">{{ egg.statusLabel }}</span>
+                      </div>
+                      <span style="font-size:15px;color:#a5aed4;line-height:1.55">{{ egg.blurb }}</span>
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;margin-top:2px"><span style="color:#7a83ad">stowed in:</span> {{ egg.where }}</span>
+                    </div>
+                    <sc-if value="{{ egg.isLive }}" hint-placeholder-val="{{ true }}">
+                      <div onClick="{{ egg.toggle }}" title="{{ egg.toggleTitle }}" style="{{ egg.trackStyle }}">
+                        <div style="{{ egg.knobStyle }}"></div>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ egg.isPlanned }}" hint-placeholder-val="{{ false }}">
+                      <span style="flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase;border:1px dashed rgba(150,160,220,.3);border-radius:999px;padding:7px 13px">not yet ashore</span>
+                    </sc-if>
+                  </div>
+
+                  <!-- message-in-a-bottle: proverb editor -->
+                  <sc-if value="{{ egg.isBottle }}" hint-placeholder-val="{{ false }}">
+                    <div style="{{ egg.bodyStyle }}">
+                      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px">
+                        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">what washes ashore</span>
+                        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ bottleCount }} in the bottle · one shows per poke</span>
+                      </div>
+                      <sc-for list="{{ bottleFields }}" as="b" hint-placeholder-count="4">
+                        <div style="display:flex;align-items:center;gap:10px">
+                          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;width:20px;text-align:right;flex-shrink:0">{{ b.num }}</span>
+                          <input type="text" data-idx="{{ b.idx }}" value="{{ b.value }}" onChange="{{ setBottle }}" style="flex:1;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                          <span onClick="{{ b.remove }}" title="toss this one overboard" style="cursor:pointer;flex-shrink:0;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(150,160,220,.25);border-radius:8px;color:#7a83ad;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.55)">✕</span>
+                        </div>
+                      </sc-for>
+                      <span onClick="{{ addBottle }}" style="align-self:flex-start;cursor:pointer;padding:9px 16px;border:1px dashed rgba(147,160,232,.45);border-radius:8px;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:12.5px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">＋ cast a new one out</span>
+                    </div>
+                  </sc-if>
+
+                  <!-- harbor cat: where it roams -->
+                  <sc-if value="{{ egg.isCat }}" hint-placeholder-val="{{ false }}">
+                    <div style="{{ egg.bodyStyle }}">
+                      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:2px">
+                        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">where it roams</span>
+                        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">lives at the lighthouse · out on its rounds</span>
+                      </div>
+                      <sc-for list="{{ egg.catLocFields }}" as="loc" hint-placeholder-count="3">
+                        <div style="{{ loc.rowStyle }}">
+                          <div style="display:flex;flex-direction:column;gap:2px">
+                            <span style="font-family:'Newsreader',serif;font-size:15px;color:#dde1f0">{{ loc.label }}</span>
+                            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ loc.hint }}</span>
+                          </div>
+                          <div onClick="{{ loc.toggle }}" title="{{ loc.toggleTitle }}" style="{{ loc.trackStyle }}">
+                            <div style="{{ loc.knobStyle }}"></div>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+
+                  <!-- the light list: real lighthouses for the wreck report -->
+                  <sc-if value="{{ egg.isLights }}" hint-placeholder-val="{{ false }}">
+                    <div style="{{ egg.bodyStyle }}">
+                      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px">
+                        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">known lights</span>
+                        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ lightCount }} on the chart · one per wreck</span>
+                      </div>
+                      <sc-for list="{{ lightFields }}" as="lh" hint-placeholder-count="3">
+                        <div style="display:flex;align-items:flex-start;gap:10px">
+                          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;width:20px;text-align:right;flex-shrink:0;padding-top:12px">{{ lh.num }}</span>
+                          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+                            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                              <input type="text" data-idx="{{ lh.idx }}" data-field="name" value="{{ lh.name }}" onChange="{{ setLight }}" placeholder="the light" style="flex:1;min-width:150px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                              <input type="text" data-idx="{{ lh.idx }}" data-field="pos" value="{{ lh.pos }}" onChange="{{ setLight }}" placeholder="51°23′N 9°36′W" style="width:170px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                            </div>
+                            <input type="text" data-idx="{{ lh.idx }}" data-field="line" value="{{ lh.line }}" onChange="{{ setLight }}" placeholder="one line about it, for whoever clicks" style="box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:14.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                          </div>
+                          <span onClick="{{ lh.remove }}" title="strike it from the chart" style="cursor:pointer;flex-shrink:0;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(150,160,220,.25);border-radius:8px;color:#7a83ad;font-family:'IBM Plex Mono',monospace;font-size:13px;margin-top:6px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.55)">✕</span>
+                        </div>
+                      </sc-for>
+                      <span onClick="{{ addLight }}" style="align-self:flex-start;cursor:pointer;padding:9px 16px;border:1px dashed rgba(147,160,232,.45);border-radius:8px;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:12.5px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">＋ chart another light</span>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// flip a switch and it takes effect on the next lantern hoist.</span>
+          </div>
+        </sc-if>
+
         <!-- ===== THE KEEPER (profile) ===== -->
         <sc-if value="{{ isKeeper }}" hint-placeholder-val="{{ false }}">
           <div data-screen-label="The keeper" style="display:flex;flex-direction:column;gap:22px">
@@ -842,6 +947,25 @@ class Component extends DCLogic {
       heroHeadline: 'I help keep the lights on behind the news.',
       heroBody: 'Backend engineering at the Post-Gazette: building, planning, a healthy amount of boxes-and-arrows. Dad the rest of the time. Serial picker-upper of hobbies.',
       dict: '1. the Argo, but for one. 2. argc, but forever. 3. a sea of water, or of stars. 4. informal — what a method signature becomes if I\u2019m not supervised.',
+      bottleProverbs: [
+        'A migration nobody notices is a migration done right.',
+        'The queue does not care about your deadline. Respect it anyway.',
+        'Every cron job is a small promise to your future self.',
+        'The best on-call shift is the one you slept through.',
+        'Name it well and you will never have to explain it.',
+        'The boat that leaves on schedule was loaded the night before.',
+        'Cache invalidation, naming things, and one more thing I forget.',
+        'Ship the boring version. Boring floats.',
+        'A rollback is not a failure. It is a lifeboat.',
+        'The sea provides. Usually a merge conflict.',
+      ],
+      lighthouses: [
+        { name: 'Fastnet Rock', pos: '51°23′N 9°36′W', line: 'Ireland’s teardrop — the last light the emigrants saw.' },
+        { name: 'La Jument', pos: '48°25′N 5°08′W', line: 'the keeper in the doorway, wave at his back. look it up.' },
+        { name: 'Bell Rock', pos: '56°26′N 2°23′W', line: 'built on a rock that vanishes twice a day.' },
+        { name: 'Cape Hatteras', pos: '35°15′N 75°32′W', line: 'the Graveyard of the Atlantic keeps a light on.' },
+        { name: 'Tourlitis', pos: '37°50′N 24°57′E', line: 'a lighthouse on a stone stalk, straight out of a storybook.' },
+      ],
     },
     media: [
       { name: 'unmonolith-diagram.png', tone: 0 },
@@ -872,6 +996,8 @@ class Component extends DCLogic {
     },
     edit: null, confirmDel: null, peek: null, changesSinceDeploy: 3,
     catSay: null, proverbIdx: 0,
+    eggs: { bottle: true, cat: true, lights: true },
+    catLocs: { postcards: true, notes: true, p404: true },
     deploying: false, deployPct: 0, lastDeploy: 'yesterday, 9:12 pm',
     toast: null,
   };
@@ -942,8 +1068,36 @@ class Component extends DCLogic {
     };
   }
 
-  catQuotes = ['mrrp.', 'the sea provides.', 'deploy it, coward.', 'i knocked the token off the desk.', 'feed me, keeper.', 'the fish are unionizing.', 'i have read your drafts. no comment.'];
-  proverbs = [
+  eggDefs = [
+    { id: 'bottle', name: 'Message in a bottle', where: 'homepage · the drifting boat',
+      blurb: 'Poke the little boat sailing across the waves and it drops a corked bottle — a proverb unrolls from it, then drifts off.', status: 'live' },
+    { id: 'cat', name: 'The harbor cat', where: 'postcards · notes · the 404 wreck',
+      blurb: 'The lighthouse cat, out on its rounds. It perches on postcards and notes when they open — and heckles the shipwreck from the 404 placard.', status: 'live' },
+    { id: 'lights', name: 'The light list', where: 'the 404 wreck report',
+      blurb: 'Every wreck report lists a last known position — the real coordinates of a real lighthouse. Click them and the light introduces itself.', status: 'live' },
+  ];
+
+  catLocMeta = [
+    { key: 'postcards', label: 'Postcards', hint: 'projects & homepage — when a card opens' },
+    { key: 'notes', label: 'Notes', hint: 'when a note opens' },
+    { key: 'p404', label: 'The wreck', hint: 'heckling the boat on the 404' },
+  ];
+
+  eggToggle(id) {
+    const on = !this.state.eggs[id];
+    this.setState((st) => ({ eggs: { ...st.eggs, [id]: on } }));
+    const def = this.eggDefs.find((e) => e.id === id);
+    this.showToast(on ? ('✧ ' + def.name + ' — loose on the site.') : ('· ' + def.name + ' — stowed away.'));
+  }
+
+  catLocToggle(key) {
+    const on = !this.state.catLocs[key];
+    this.setState((st) => ({ catLocs: { ...st.catLocs, [key]: on } }));
+    const m = this.catLocMeta.find((x) => x.key === key);
+    this.showToast(on ? ('🐱 the cat roams ' + m.label.toLowerCase() + ' again.') : ('🐱 kept off ' + m.label.toLowerCase() + '.'));
+  }
+
+  catQuotes = ['mrrp.', 'the sea provides.', 'deploy it, coward.', 'i knocked the token off the desk.', 'feed me, keeper.', 'the fish are unionizing.', 'i have read your drafts. no comment.'];  proverbs = [
     'The harbormaster is also the intern.',
     'A tidy harbor is a suspicious harbor.',
     'Red sky at night, deploy delight.',
@@ -1225,6 +1379,7 @@ class Component extends DCLogic {
       { id: 'hobbies', glyph: '†', label: 'the graveyard' },
       { id: 'notes', glyph: '✎', label: 'writing desk' },
       { id: 'copy', glyph: '⚑', label: 'signal flags' },
+      { id: 'eggs', glyph: '✧', label: "smuggler's hold" },
       { id: 'media', glyph: '❏', label: 'the darkroom' },
       { id: 'keeper', glyph: '☸', label: 'the keeper' },
     ];
@@ -1443,7 +1598,7 @@ class Component extends DCLogic {
       // screens
       isLogin: scr === 'login', isApp: scr !== 'login',
       isDash: scr === 'dash', isProjects: scr === 'projects', isHobbies: scr === 'hobbies',
-      isNotes: scr === 'notes', isCopy: scr === 'copy', isMedia: scr === 'media', isKeeper: scr === 'keeper',
+      isNotes: scr === 'notes', isCopy: scr === 'copy', isMedia: scr === 'media', isKeeper: scr === 'keeper', isEggs: scr === 'eggs',
       // login
       user: s.user, pass: s.pass, loginError: s.loginError,
       setUser: (ev) => this.setState({ user: ev.target.value, loginError: null }),
@@ -1536,6 +1691,92 @@ class Component extends DCLogic {
       blogBarLine: noteBlogLine,
       // copy
       copy: s.copy, quipFields,
+      bottleFields: (s.copy.bottleProverbs || []).map((value, idx) => ({
+        idx, num: String(idx + 1).padStart(2, '0'), value,
+        remove: () => this.setState((st) => ({ copy: { ...st.copy, bottleProverbs: st.copy.bottleProverbs.filter((_, i) => i !== idx) } })),
+      })),
+      bottleCount: (s.copy.bottleProverbs || []).length,
+      setBottle: (ev) => {
+        const i = Number(ev.target.dataset.idx), v = ev.target.value;
+        this.setState((st) => ({ copy: { ...st.copy, bottleProverbs: st.copy.bottleProverbs.map((p, ix) => ix === i ? v : p) } }));
+      },
+      addBottle: () => this.setState((st) => ({ copy: { ...st.copy, bottleProverbs: [...st.copy.bottleProverbs, ''] } })),
+      lightFields: (s.copy.lighthouses || []).map((lh, idx) => ({
+        ...lh, idx, num: String(idx + 1).padStart(2, '0'),
+        remove: () => this.setState((st) => ({ copy: { ...st.copy, lighthouses: st.copy.lighthouses.filter((_, i) => i !== idx) } })),
+      })),
+      lightCount: (s.copy.lighthouses || []).length,
+      setLight: (ev) => {
+        const i = Number(ev.target.dataset.idx), f = ev.target.dataset.field, v = ev.target.value;
+        this.setState((st) => ({ copy: { ...st.copy, lighthouses: st.copy.lighthouses.map((lh, ix) => ix === i ? { ...lh, [f]: v } : lh) } }));
+      },
+      addLight: () => this.setState((st) => ({ copy: { ...st.copy, lighthouses: [...st.copy.lighthouses, { name: '', pos: '', line: '' }] } })),
+      // easter eggs (smuggler's hold)
+      eggLiveCount: this.eggDefs.filter((e) => e.status === 'live').length,
+      eggLooseCount: this.eggDefs.filter((e) => e.status === 'live' && s.eggs[e.id]).length,
+      eggFields: this.eggDefs.map((e) => {
+        const live = e.status === 'live';
+        const on = live && !!s.eggs[e.id];
+        return {
+          ...e,
+          isLive: live, isPlanned: !live, isBottle: e.id === 'bottle', isCat: e.id === 'cat', isLights: e.id === 'lights',
+          enabled: on,
+          catLocFields: e.id === 'cat' ? this.catLocMeta.map((m) => {
+            const lon = !!s.catLocs[m.key];
+            return {
+              ...m,
+              on: lon,
+              toggle: () => this.catLocToggle(m.key),
+              toggleTitle: lon ? 'keep it off here' : 'let it roam here',
+              rowStyle: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px' },
+              trackStyle: {
+                flexShrink: 0, cursor: 'pointer', width: '40px', height: '23px', borderRadius: '999px',
+                padding: '3px', boxSizing: 'border-box', display: 'flex', alignItems: 'center',
+                justifyContent: lon ? 'flex-end' : 'flex-start',
+                background: lon ? '#93a0e8' : '#232a4d',
+                border: '1px solid ' + (lon ? 'rgba(240,217,168,.5)' : 'rgba(150,160,220,.3)'),
+                transition: 'background .2s,border-color .2s',
+              },
+              knobStyle: {
+                width: '17px', height: '17px', borderRadius: '50%',
+                background: lon ? '#151830' : '#7a83ad', transition: 'background .2s',
+              },
+            };
+          }) : [],
+          statusLabel: live ? (on ? 'loose' : 'stowed') : 'in the workshop',
+          statusStyle: {
+            fontFamily: "'IBM Plex Mono',monospace", fontSize: '10px', letterSpacing: '.12em', textTransform: 'uppercase',
+            padding: '3px 9px', borderRadius: '999px',
+            color: live ? (on ? '#f0d9a8' : '#7a83ad') : '#5f6ec4',
+            background: live && on ? 'rgba(240,217,168,.12)' : 'rgba(150,160,220,.08)',
+            border: '1px solid ' + (live && on ? 'rgba(240,217,168,.4)' : 'rgba(150,160,220,.2)'),
+          },
+          cardStyle: {
+            background: '#1a1e33', border: '1px solid rgba(150,160,220,.2)', borderRadius: '12px',
+            padding: '22px 24px', display: 'flex', flexDirection: 'column', gap: '16px',
+            boxShadow: '0 10px 24px rgba(0,0,0,.35)', opacity: live ? 1 : 0.62,
+          },
+          bodyStyle: {
+            display: 'flex', flexDirection: 'column', gap: '10px',
+            borderTop: '1px dashed rgba(150,160,220,.22)', paddingTop: '16px',
+            opacity: on ? 1 : 0.5, transition: 'opacity .25s',
+          },
+          toggleTitle: on ? 'stow it away' : 'let it loose',
+          trackStyle: {
+            flexShrink: 0, cursor: 'pointer', width: '48px', height: '27px', borderRadius: '999px',
+            padding: '3px', boxSizing: 'border-box', display: 'flex', alignItems: 'center',
+            justifyContent: on ? 'flex-end' : 'flex-start',
+            background: on ? '#93a0e8' : '#232a4d',
+            border: '1px solid ' + (on ? 'rgba(240,217,168,.5)' : 'rgba(150,160,220,.3)'),
+            transition: 'background .2s,border-color .2s',
+          },
+          knobStyle: {
+            width: '21px', height: '21px', borderRadius: '50%',
+            background: on ? '#151830' : '#7a83ad', transition: 'background .2s',
+          },
+          toggle: () => this.eggToggle(e.id),
+        };
+      }),
       setCopy: (ev) => {
         const k = ev.target.dataset.key, v = ev.target.value;
         this.setState((st) => ({ copy: { ...st.copy, [k]: v } }));

@@ -67,7 +67,9 @@ a{text-decoration:none}
   <!-- overlay: the note, as a letter -->
   <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ closeOverlay }}" style="position:fixed;inset:0;background:rgba(8,10,20,.72);backdrop-filter:blur(5px);z-index:50;display:flex;align-items:center;justify-content:center;padding:clamp(14px,4vw,40px);animation:backdropIn .25s ease both">
-      <div onClick="{{ stopProp }}" style="width:min(680px,100%);max-height:86vh;overflow:auto;background:#1c2036;border:1px solid rgba(150,160,220,.3);border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:cardIn .35s ease both">
+      <div onClick="{{ stopProp }}" style="position:relative;width:min(680px,100%);animation:cardIn .35s ease both">
+        <dc-import name="HarborCat" context="note" hint-size="64px,74px" style="position:absolute;top:-50px;left:34px;width:64px;height:74px;z-index:3"></dc-import>
+        <div style="max-height:86vh;overflow:auto;background:#1c2036;border:1px solid rgba(150,160,220,.3);border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.6)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(20px,4vw,32px);border-bottom:1.5px dashed rgba(150,160,220,.25)">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Note · {{ open.date }}</span>
           <span onClick="{{ closeOverlay }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#a5aed4;padding:6px 12px;border:1px solid rgba(150,160,220,.3);border-radius:999px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">close ✕</span>
@@ -83,6 +85,7 @@ a{text-decoration:none}
           <div style="font-size:17px;line-height:1.7;color:#b8c0e0">{{ open.p2 }}</div>
           <div style="font-size:17px;line-height:1.7;color:#b8c0e0">{{ open.p3 }}</div>
           <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#93a0e8;margin-top:8px">— j</div>
+        </div>
         </div>
       </div>
     </div>
