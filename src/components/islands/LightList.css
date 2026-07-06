@@ -1,0 +1,11 @@
+/* The flippable "last position" line on the 404 placard. */
+
+.light-list {
+	cursor: pointer;
+	border-bottom: 1px dotted rgba(150, 160, 220, .35);
+	transition: color .2s;
+}
+
+.light-list:hover {
+	color: var(--gold);
+}
