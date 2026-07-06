@@ -32,12 +32,12 @@ const lighthouses = copy.eggs.lights ? copy.lighthouses : [];
 
 			<!-- clearance below the headline stays: the perched cat must never collide with the copy -->
 			<div class="placard">
-				{catAboard && <HarborCat client:load context="wreck" />}
+				{catAboard && <HarborCat client:visible context="wreck" />}
 				<div class="placard__ribbon">⚠ Notice to Mariners</div>
 				<p class="placard__report">The page you set course for is not on any chart. Your vessel has run onto the shoals — no page lies beyond this point.</p>
 				<div class="placard__meta">
 					{lighthouses.length > 0
-						? <LightList client:load lighthouses={lighthouses} />
+						? <LightList client:visible lighthouses={lighthouses} />
 						: <span>last position: 404</span>}
 					<span>depth: 0 fathoms</span>
 				</div>

@@ -19,7 +19,7 @@ const catAboard = copy.eggs.cat && copy.catLocs.notes;
 
 	<section class="list">
 		<NotesList client:load notes={notes} signoff={keeper.signoff} catAboard={catAboard} />
-		<div class="list__closing">Three notes so far. The bar for "blog" is five. We'll see.</div>
+		<div class="list__closing">{notes.length} {notes.length === 1 ? 'note' : 'notes'} so far. The bar for "blog" is five. We'll see.</div>
 	</section>
 </BaseLayout>
 
