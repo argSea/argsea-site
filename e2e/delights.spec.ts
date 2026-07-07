@@ -1,7 +1,8 @@
 // Delights layer (fixtures build): the light-list coordinate flip and the
 // resident cat on the 404, plus the message in a bottle on the homepage wave.
-// The cat on postcard/note overlays is a 1-in-3 roll, so only the always-on
-// wreck perch is asserted.
+// The cat is one-per-page-view now — a client pick across the spot catalog —
+// so the cat specs seed Math.random to pin a known spot (the catalog lists each
+// page's header first and its overlay last).
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -86,6 +87,58 @@ test('poking the boat drops a bottled proverb, tap releases it', async ({ page }
 
 	await note.click();
 	await expect(note).toHaveCount(0);
+});
+
+test('never more than one cat on a page, across reloads', async ({ page }) => {
+	for (const path of ['/', '/projects', '/hobbies', '/notes', '/404.html']) {
+		await page.goto(path);
+		// let the director settle its pick (or decide the pick is an overlay spot)
+		await page.waitForTimeout(400);
+		expect(await page.locator('.harbor-cat').count()).toBeLessThanOrEqual(1);
+	}
+	// hammer one page: a fresh pick per load must still never double up
+	for (let i = 0; i < 8; i++) {
+		await page.goto('/');
+		await page.waitForTimeout(300);
+		expect(await page.locator('.harbor-cat').count()).toBeLessThanOrEqual(1);
+	}
+});
+
+test('the header wears the lying cat, clamped to the viewport when the nav wraps', async ({ page }) => {
+	// Math.random 0 pins the first enabled spot — each page's header
+	await page.addInitScript(() => { Math.random = () => 0; });
+	await page.setViewportSize({ width: 390, height: 844 });
+	await page.goto('/projects');
+
+	const cat = page.locator('.harbor-cat--lying');
+	await expect(cat).toBeVisible();
+
+	const box = (await page.locator('.cat-mount').boundingBox())!;
+	expect(box.x).toBeGreaterThanOrEqual(0);
+	expect(box.x + box.width).toBeLessThanOrEqual(390);
+});
+
+test('an overlay spot shows the cat only when the overlay opens', async ({ page }) => {
+	// Math.random just under 1 pins the last enabled spot — projects.overlay
+	await page.addInitScript(() => { Math.random = () => 0.999999; });
+	await page.goto('/projects');
+	await page.waitForTimeout(400);
+
+	// the pick is an overlay spot, so nothing rides the page on load
+	await expect(page.locator('.harbor-cat')).toHaveCount(0);
+
+	await page.locator('.projects-grid .card-wrap').first().click();
+	await expect(page.locator('.harbor-cat')).toBeVisible();
+});
+
+test('a static pick plus an opened overlay is still one cat, never two', async ({ page }) => {
+	await page.addInitScript(() => { Math.random = () => 0; });
+	await page.goto('/projects');
+	await expect(page.locator('.harbor-cat--lying')).toBeVisible();
+
+	await page.locator('.projects-grid .card-wrap').first().click();
+	// the overlay must not add a second cat when the pick already sits in the header
+	await expect(page.locator('.harbor-cat')).toHaveCount(1);
 });
 
 test('reduced motion keeps the wreck grounded at its listing tilt', async ({ page }) => {
