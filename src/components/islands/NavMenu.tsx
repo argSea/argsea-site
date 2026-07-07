@@ -11,6 +11,7 @@
 // on the nav link instead, so it's never two.
 import { useEffect, useRef, useState } from 'react';
 import { pageCatPick, NAV_HAMBURGER_MAX, type CatPage } from '../../lib/catSpots';
+import type { FigureheadDesign } from '../../lib/api';
 import HarborCat from './HarborCat';
 import { useEscapeKey } from './useEscapeKey';
 import './NavMenu.css';
@@ -22,15 +23,16 @@ export interface NavLink {
 }
 
 interface Props {
-	active:     string;
-	page:       CatPage;
-	links:      NavLink[];
-	catEnabled: boolean;
-	catPages?:  Record<string, boolean>;
-	catSpots?:  Record<string, boolean>;
+	active:      string;
+	page:        CatPage;
+	links:       NavLink[];
+	catEnabled:  boolean;
+	catPages?:   Record<string, boolean>;
+	catSpots?:   Record<string, boolean>;
+	catDesigns?: FigureheadDesign[];
 }
 
-export default function NavMenu({ active, page, links, catEnabled, catPages, catSpots }: Props) {
+export default function NavMenu({ active, page, links, catEnabled, catPages, catSpots, catDesigns }: Props) {
 	const [open, setOpen] = useState(false);
 	const burger = useRef<HTMLButtonElement>(null);
 
@@ -79,7 +81,7 @@ export default function NavMenu({ active, page, links, catEnabled, catPages, cat
 					<nav id="nav-menu" className="nav-menu">
 						{menuCat && (
 							<div className="cat-mount cat-mount--menu">
-								<HarborCat pose="lying" context="header" />
+								<HarborCat pose="lying" context="header" designs={catDesigns} />
 							</div>
 						)}
 						{links.map((link) => (

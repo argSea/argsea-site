@@ -3,7 +3,7 @@
 // overlay. Content arrives as build-time props; this island only holds
 // `filter` and `open` state.
 import { useState } from 'react';
-import type { Project } from '../../lib/api';
+import type { FigureheadDesign, Project } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
 import Stamp from './Stamp';
 import PostcardOverlay from './PostcardOverlay';
@@ -27,13 +27,14 @@ const QUIPS: Record<Filter, string> = {
 const BOB_CLASSES = ['bob-p1', 'bob-p2', 'bob-p3', 'bob-p4', 'bob-p5', 'bob-p6'];
 
 interface Props {
-	projects:   Project[];
-	catEnabled: boolean;
-	catPages?:  Record<string, boolean>;
-	catSpots?:  Record<string, boolean>;
+	projects:    Project[];
+	catEnabled:  boolean;
+	catPages?:   Record<string, boolean>;
+	catSpots?:   Record<string, boolean>;
+	catDesigns?: FigureheadDesign[];
 }
 
-export default function ProjectsBoard({ projects, catEnabled, catPages, catSpots }: Props) {
+export default function ProjectsBoard({ projects, catEnabled, catPages, catSpots, catDesigns }: Props) {
 	const [filter, setFilter] = useState<Filter>('all');
 	const [openId, setOpenId] = useState<string | null>(null);
 
@@ -102,7 +103,7 @@ export default function ProjectsBoard({ projects, catEnabled, catPages, catSpots
 				))}
 			</div>
 
-			{open && <PostcardOverlay project={open} catHere={catHere} onClose={close} />}
+			{open && <PostcardOverlay project={open} catHere={catHere} catDesigns={catDesigns} onClose={close} />}
 		</>
 	);
 }

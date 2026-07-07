@@ -68,6 +68,15 @@ old flat `catLocs {postcards, notes, p404}`. The catalog above lives in code (ea
 spot = id + page + pose + anchor); the copy doc only stores on/off, so a new perch
 later is a code change that then appears in the admin automatically.
 
+**The figurehead (published shape model):** the cat's two poses are also a
+**figurehead design** the admin can redraw — structured shape JSON (never markup)
+served by `GET /1/figurehead/published` and rendered by `HarborCat` in place of
+the built-in SVGs, **at build time** like all other content (publish goes live on
+the next hoist). `role: tail` / `role: eyes` shapes pick up the canonical tail
+sway/drape and blink animations (`origin` sets the pivot); untagged shapes are
+static. The v1 seeds are shape-for-shape transcriptions of the built-in cats;
+no published design (empty/unreachable) falls back to the built-ins.
+
 **Admin (smuggler's hold, cat card):** the flat 3-toggle list becomes a **page →
 spots tree** — a page master toggle (collapses/disables its spots) with the spots
 nested under it, each with its own smaller toggle and a "where it is" hint. Reuse

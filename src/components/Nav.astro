@@ -2,6 +2,7 @@
 import LighthouseMark from './LighthouseMark.astro';
 import NavMenu from './islands/NavMenu';
 import type { CatPage } from '../lib/catSpots';
+import type { FigureheadDesign } from '../lib/api';
 
 // Borderless nav: lighthouse mark + name on the left, mono links on the
 // right. `active` underlines the current page in gold; the 404 page passes
@@ -13,9 +14,10 @@ interface Props {
 	catEnabled: boolean;
 	catPages:   Record<string, boolean>;
 	catSpots:   Record<string, boolean>;
+	catDesigns: FigureheadDesign[];
 }
 
-const { active, catPage, catEnabled, catPages, catSpots } = Astro.props;
+const { active, catPage, catEnabled, catPages, catSpots, catDesigns } = Astro.props;
 
 const links = [
 	{ id: 'hello',    label: 'hello',    href: '/' },
@@ -37,7 +39,7 @@ const links = [
 	</nav>
 	{/* Only functions below the hamburger breakpoint, so only hydrate there —
 	    on desktop the director owns the header cat and this never mounts */}
-	<NavMenu client:media="(max-width: 600px)" active={active} page={catPage} links={links} catEnabled={catEnabled} catPages={catPages} catSpots={catSpots} />
+	<NavMenu client:media="(max-width: 600px)" active={active} page={catPage} links={links} catEnabled={catEnabled} catPages={catPages} catSpots={catSpots} catDesigns={catDesigns} />
 </header>
 
 <style>

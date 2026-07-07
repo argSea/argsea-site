@@ -42,6 +42,9 @@ const routes = {
 	'/1/note':                       fixture('notes'),
 	'/1/copy':                       fixture('siteCopy'),
 	'/1/user/mock-keeper/profile':   MOCK_KEEPER,
+	// Nothing published — both mock builds prove the cat's built-in fallback,
+	// while the fixtures build renders through the v1-seed shape path
+	'/1/figurehead/published':       fixture('figurehead.empty'),
 };
 
 createServer((req, res) => {
