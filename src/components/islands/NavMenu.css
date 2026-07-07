@@ -4,121 +4,139 @@
    NAV_HAMBURGER_MAX in src/lib/catSpots.ts. */
 
 .nav-burger {
-	display: none;
-	background: none;
-	border: 0;
-	padding: 8px;
-	margin: -8px -4px -8px 0;
-	cursor: pointer;
-	color: var(--periwinkle);
+  display: none;
+  background: none;
+  border: 0;
+  padding: 8px;
+  margin: -8px -4px -8px 0;
+  cursor: pointer;
+  color: var(--periwinkle);
 }
 
 /* Same treatment as the cat sprite: no UA box on pointer taps, gold ring on
    keyboard reach */
 .nav-burger:focus {
-	outline: none;
+  outline: none;
 }
 
 .nav-burger:focus-visible {
-	outline: 2px solid var(--gold);
-	outline-offset: 3px;
-	border-radius: 8px;
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 8px;
 }
 
 .nav-burger__box {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	gap: 5px;
-	width: 22px;
-	height: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 22px;
+  height: 16px;
 }
 
 .nav-burger__bar {
-	height: 2px;
-	width: 100%;
-	background: currentColor;
-	border-radius: 2px;
-	transform-origin: center;
-	transition: transform .2s ease, opacity .2s ease;
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  border-radius: 2px;
+  transform-origin: center;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
 /* Base transforms carry the resting/X poses so the reduced-motion kill-switch
    (which drops the transition) leaves a clean shape, never a broken one */
-.nav-burger__box--open .nav-burger__bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.nav-burger__box--open .nav-burger__bar:nth-child(2) { opacity: 0; }
-.nav-burger__box--open .nav-burger__bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-burger__box--open .nav-burger__bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-burger__box--open .nav-burger__bar:nth-child(2) {
+  opacity: 0;
+}
+.nav-burger__box--open .nav-burger__bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
 
 .nav-backdrop {
-	position: fixed;
-	inset: 0;
-	z-index: 30;
-	background: rgba(9, 11, 20, .5);
-	animation: navFade .18s ease both;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: rgba(9, 11, 20, 0.5);
+  animation: navFade 0.18s ease both;
 }
 
 .nav-menu {
-	position: fixed;
-	top: 60px;
-	right: clamp(12px, 4vw, 24px);
-	z-index: 31;
-	min-width: 190px;
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-	padding: 10px;
-	background: var(--overlay-card);
-	border: 1px solid rgba(150, 160, 220, .3);
-	border-radius: 12px;
-	box-shadow: 0 18px 40px rgba(0, 0, 0, .5);
-	font-family: var(--font-mono);
-	font-size: 14px;
-	animation: navMenuIn .2s ease both;
+  position: fixed;
+  top: 60px;
+  right: clamp(12px, 4vw, 24px);
+  z-index: 31;
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px;
+  background: var(--overlay-card);
+  border: 1px solid rgba(150, 160, 220, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  animation: navMenuIn 0.2s ease both;
 }
 
 .nav-menu__item {
-	position: relative;
+  position: relative;
 }
 
 .nav-menu__item a {
-	display: block;
-	padding: 9px 12px;
-	border-radius: 8px;
-	color: var(--periwinkle);
+  display: block;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--periwinkle);
 }
 
 .nav-menu__item a:hover {
-	background: rgba(147, 160, 232, .1);
+  background: rgba(147, 160, 232, 0.1);
 }
 
 .nav-menu__item a.active {
-	color: var(--text-nav);
-	border-left: 2px solid var(--gold);
+  color: var(--text-nav);
+  border-left: 2px solid var(--gold);
 }
 
 /* The menu-gated header cat lies on the panel's top edge — draped over the
    border like a cat on a wall, tail hanging. It keeps to the top-left corner so
    it never crowds the burger's X above the panel's right edge. */
 .cat-mount--menu {
-	top: -28px;
-	left: 14px;
-	width: 88px;
-	height: 42px;
-	z-index: 3;
+  top: -35px;
+  left: 14px;
+  width: 88px;
+  height: 42px;
+  z-index: 3;
 }
 
 @keyframes navFade {
-	from { opacity: 0; }
-	to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes navMenuIn {
-	from { opacity: 0; transform: translateY(-8px); }
-	to   { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (max-width: 600px) {
-	.nav-burger {
-		display: block;
-	}
+  .nav-burger {
+    display: block;
+  }
 }
