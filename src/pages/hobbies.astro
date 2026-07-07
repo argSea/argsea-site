@@ -4,9 +4,10 @@
 // cycling "next: ???" chip.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NextHobbyChip from '../components/islands/NextHobbyChip';
-import { getHobbies } from '../lib/api';
+import { getHobbies, getSuggestions } from '../lib/api';
 
 const hobbies = await getHobbies();
+const suggestions = await getSuggestions();
 
 // Alternating resting tilts, straightened on hover
 const tilts = [-0.3, 0.3, -0.25, 0.2, -0.2, 0.25];
@@ -38,7 +39,7 @@ const tilts = [-0.3, 0.3, -0.25, 0.2, -0.2, 0.25];
 
 		<div class="entries__foot">
 			<span class="mono-comment">// the graveyard only grows. that's fine.</span>
-			<NextHobbyChip client:load />
+			<NextHobbyChip client:load values={suggestions.map((s) => s.value)} />
 		</div>
 	</section>
 </BaseLayout>
