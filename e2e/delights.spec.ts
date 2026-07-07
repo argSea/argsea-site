@@ -104,18 +104,60 @@ test('never more than one cat on a page, across reloads', async ({ page }) => {
 	}
 });
 
-test('the header wears the lying cat, clamped to the viewport when the nav wraps', async ({ page }) => {
+test('the desktop header wears the lying cat on the nav link', async ({ page }) => {
 	// Math.random 0 pins the first enabled spot — each page's header
+	await page.addInitScript(() => { Math.random = () => 0; });
+	await page.setViewportSize({ width: 1200, height: 800 });
+	await page.goto('/projects');
+
+	await expect(page.locator('.harbor-cat--lying')).toBeVisible();
+	// it rides the nav link, up in the header band
+	const box = (await page.locator('.cat-mount').boundingBox())!;
+	expect(box.y).toBeLessThan(90);
+});
+
+test('the narrow nav is a hamburger that opens and closes', async ({ page }) => {
+	await page.setViewportSize({ width: 390, height: 844 });
+	await page.goto('/');
+
+	// the desktop links are gone; the burger stands in
+	await expect(page.locator('.site-nav .links')).toBeHidden();
+	const burger = page.locator('.nav-burger');
+	await expect(burger).toBeVisible();
+	await expect(burger).toHaveAttribute('aria-expanded', 'false');
+
+	await burger.click();
+	await expect(page.locator('#nav-menu')).toBeVisible();
+	await expect(burger).toHaveAttribute('aria-expanded', 'true');
+
+	// a link tap closes it
+	await page.locator('#nav-menu a', { hasText: 'hobbies' }).click({ noWaitAfter: true });
+	await expect(page.locator('#nav-menu')).toHaveCount(0);
+});
+
+test('on mobile the header cat is menu-gated: it shows in the open menu', async ({ page }) => {
+	// Math.random 0 pins the header spot
 	await page.addInitScript(() => { Math.random = () => 0; });
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto('/projects');
+	await page.waitForTimeout(400);
 
-	const cat = page.locator('.harbor-cat--lying');
-	await expect(cat).toBeVisible();
+	// nothing clamped over the brand row — the header cat waits for the menu
+	await expect(page.locator('.harbor-cat')).toHaveCount(0);
 
-	const box = (await page.locator('.cat-mount').boundingBox())!;
-	expect(box.x).toBeGreaterThanOrEqual(0);
-	expect(box.x + box.width).toBeLessThanOrEqual(390);
+	await page.locator('.nav-burger').click();
+	await expect(page.locator('#nav-menu .harbor-cat--lying')).toBeVisible();
+	// still exactly one cat
+	await expect(page.locator('.harbor-cat')).toHaveCount(1);
+});
+
+test('the hamburger menu closes on Escape', async ({ page }) => {
+	await page.setViewportSize({ width: 390, height: 844 });
+	await page.goto('/');
+	await page.locator('.nav-burger').click();
+	await expect(page.locator('#nav-menu')).toBeVisible();
+	await page.keyboard.press('Escape');
+	await expect(page.locator('#nav-menu')).toHaveCount(0);
 });
 
 test('an overlay spot shows the cat only when the overlay opens', async ({ page }) => {
