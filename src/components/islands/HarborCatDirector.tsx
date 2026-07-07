@@ -18,7 +18,7 @@ import './HarborCat.css';
 // rest on the anchor's edge, so the cat sits above (or below) it naturally.
 const SIZE = {
 	perched: { w: 56, h: 64, paw: 0.71 },
-	lying:   { w: 84, h: 42, paw: 0.85 },
+	lying:   { w: 88, h: 42, paw: 0.89 },
 } as const;
 
 const GUTTER = 8;

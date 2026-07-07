@@ -47,7 +47,7 @@
 }
 
 .harbor-cat--lying .harbor-cat__tail {
-	transform-origin: 75px 38px;
+	transform-origin: 73px 40px;
 	animation: catTailDrape 5s ease-in-out infinite;
 }
 
@@ -57,7 +57,7 @@
 }
 
 .harbor-cat__eyes--lying {
-	transform-origin: 22px 25px;
+	transform-origin: 22px 27px;
 }
 
 .harbor-cat__bubble {

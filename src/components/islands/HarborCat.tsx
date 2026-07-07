@@ -62,7 +62,7 @@ export default function HarborCat({ pose, context, bubbleSide = 'right' }: Props
 			{pose === 'lying' ? (
 				<svg
 					className="harbor-cat__svg"
-					viewBox="0 0 96 48"
+					viewBox="0 0 100 48"
 					fill="none"
 					role="button"
 					tabIndex={0}
@@ -71,25 +71,29 @@ export default function HarborCat({ pose, context, bubbleSide = 'right' }: Props
 					onKeyDown={onKeyDown}
 				>
 					{/* tail draping off the rump, gentle drape sway */}
-					<path className="harbor-cat__tail" d="M74 36 C86 30 92 39 86 45 C83.5 47.5 80 47 80.5 43.5 C83 39 79 37 73 40 Z" fill="#232a4d" stroke="#93a0e8" strokeWidth="1.4" strokeLinejoin="round" />
-					{/* front paws forward */}
-					<ellipse cx="18" cy="41" rx="4" ry="2.8" fill="#232a4d" stroke="#93a0e8" strokeWidth="1.3" />
-					<ellipse cx="26" cy="41" rx="4" ry="2.8" fill="#232a4d" stroke="#93a0e8" strokeWidth="1.3" />
-					{/* body loaf + head + ears */}
-					<path d="M12 41 C6 34 7 24 15 20 L14.5 17 L14 7 L20 14 L25 14 L30 7 L31 18 C40 21 44 18 54 19 C70 20 79 25 80 33 C81 39 77 41 71 41 Z" fill="#232a4d" stroke="#93a0e8" strokeWidth="1.6" strokeLinejoin="round" />
+					<path className="harbor-cat__tail" d="M72 38 C85 33 91 41 86 46.5 C84 49 80.2 48.4 80.8 45.2 C83 41.4 78.6 39.6 72.6 42.4 Z" fill="#232a4d" stroke="#93a0e8" strokeWidth="1.4" strokeLinejoin="round" />
+					{/* front paws stretched forward */}
+					<ellipse cx="10.5" cy="42.6" rx="4.6" ry="2.7" fill="#232a4d" stroke="#93a0e8" strokeWidth="1.3" />
+					<ellipse cx="18.5" cy="42.9" rx="4.4" ry="2.6" fill="#232a4d" stroke="#93a0e8" strokeWidth="1.3" />
+					{/* body sprawl + head + ears */}
+					<path d="M13.5 44 C8.5 39 9 30 13 25 L12.8 22 L12.4 10 L18.6 17 L24.5 17 L30 10 L30.5 22 C35.5 25 38.5 27 44.5 28.5 C56 25.5 69 26.5 77.5 32.5 C83.5 36.8 83 42 76 44 Z" fill="#232a4d" stroke="#93a0e8" strokeWidth="1.6" strokeLinejoin="round" />
+					{/* hind paw peeking out under the hip */}
+					<ellipse cx="68" cy="43.2" rx="5" ry="2.4" fill="#232a4d" stroke="#93a0e8" strokeWidth="1.2" />
 					{/* inner ears */}
-					<path d="M15 15 L15 9 L19 13 Z" fill="#f0d9a8" opacity=".5" />
-					<path d="M29 15 L29.5 9 L25.5 13 Z" fill="#f0d9a8" opacity=".5" />
+					<path d="M13.7 16 L13.5 11.5 L17 15 Z" fill="#f0d9a8" opacity=".5" />
+					<path d="M29 16 L29.4 11.5 L26 15 Z" fill="#f0d9a8" opacity=".5" />
 					{/* eyes */}
 					<g className="harbor-cat__eyes harbor-cat__eyes--lying">
-						<circle cx="18.5" cy="25" r="1.9" fill="#f0d9a8" />
-						<circle cx="26" cy="25" r="1.9" fill="#f0d9a8" />
+						<circle cx="17.8" cy="26.8" r="1.9" fill="#f0d9a8" />
+						<circle cx="26" cy="26.8" r="1.9" fill="#f0d9a8" />
 					</g>
 					{/* nose + mouth */}
-					<path d="M20.8 28.6 L23.6 28.6 L22.2 30.2 Z" fill="#f0d9a8" />
-					<path d="M22.2 30.2 v1.4 M22.2 31.6 q-2 1.4 -3.6 .4 M22.2 31.6 q2 1.4 3.6 .4" stroke="#5f6ec4" strokeWidth="1" fill="none" strokeLinecap="round" />
+					<path d="M20.6 30.4 L23.4 30.4 L22 32 Z" fill="#f0d9a8" />
+					<path d="M22 32 v1.3 M22 33.3 q-2 1.4 -3.6 .4 M22 33.3 q2 1.4 3.6 .4" stroke="#5f6ec4" strokeWidth="1" fill="none" strokeLinecap="round" />
 					{/* whiskers */}
-					<path d="M14 27 l-7 -1.2 M14 29 l-7 .8 M30 27 l7 -1.2 M30 29 l7 .8" stroke="#5f6ec4" strokeWidth="0.9" strokeLinecap="round" opacity=".7" />
+					<path d="M12.6 29 l-7 -1.3 M12.6 31.2 l-7 .9 M30.5 29 l7 -1.3 M30.5 31.2 l7 .9" stroke="#5f6ec4" strokeWidth="0.9" strokeLinecap="round" opacity=".7" />
+					{/* chest stripe hint */}
+					<path d="M15.8 36 q3 1.6 6.4 .6" stroke="#5f6ec4" strokeWidth="0.9" strokeLinecap="round" fill="none" opacity=".45" />
 				</svg>
 			) : (
 				<svg
