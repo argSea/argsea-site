@@ -40,7 +40,7 @@ const catPage: CatPage = active === 'none' ? 'p404' : active;
 	</head>
 	<body>
 		<div class="page">
-			<Nav active={active} />
+			<Nav active={active} catPage={catPage} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} />
 			<slot />
 			<Footer quip={copy[quipKey]} />
 		</div>

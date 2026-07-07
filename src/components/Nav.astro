@@ -1,14 +1,21 @@
 ---
 import LighthouseMark from './LighthouseMark.astro';
+import NavMenu from './islands/NavMenu';
+import type { CatPage } from '../lib/catSpots';
 
 // Borderless nav: lighthouse mark + name on the left, mono links on the
 // right. `active` underlines the current page in gold; the 404 page passes
-// 'none'. Wrapping to two rows on narrow screens is accepted behavior.
+// 'none'. Below the hamburger breakpoint the right-hand links collapse into the
+// NavMenu island's toggle + panel.
 interface Props {
-	active: 'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
+	active:     'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
+	catPage:    CatPage;
+	catEnabled: boolean;
+	catPages:   Record<string, boolean>;
+	catSpots:   Record<string, boolean>;
 }
 
-const { active } = Astro.props;
+const { active, catPage, catEnabled, catPages, catSpots } = Astro.props;
 
 const links = [
 	{ id: 'hello',    label: 'hello',    href: '/' },
@@ -28,6 +35,7 @@ const links = [
 		))}
 		<a href="/resume.pdf">resume ↗</a>
 	</nav>
+	<NavMenu client:load active={active} page={catPage} links={links} catEnabled={catEnabled} catPages={catPages} catSpots={catSpots} />
 </header>
 
 <style>
@@ -35,7 +43,6 @@ const links = [
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		flex-wrap: wrap;
 		gap: 14px;
 		padding: clamp(18px, 3vw, 30px) var(--gutter) 10px;
 	}
@@ -54,7 +61,6 @@ const links = [
 
 	.links {
 		display: flex;
-		flex-wrap: wrap;
 		gap: clamp(14px, 3vw, 32px);
 		font-family: var(--font-mono);
 		font-size: 13px;
@@ -68,5 +74,13 @@ const links = [
 		color: var(--text-nav);
 		border-bottom: 2px solid var(--gold);
 		padding-bottom: 2px;
+	}
+
+	/* Below the hamburger breakpoint the desktop links give way to the NavMenu
+	   toggle (kept in sync with NAV_HAMBURGER_MAX in src/lib/catSpots.ts) */
+	@media (max-width: 600px) {
+		.links {
+			display: none;
+		}
 	}
 </style>

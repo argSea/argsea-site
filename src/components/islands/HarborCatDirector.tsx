@@ -11,7 +11,7 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import HarborCat from './HarborCat';
-import { pageCatPick, type CatPage, type CatSpot } from '../../lib/catSpots';
+import { pageCatPick, NAV_HAMBURGER_MAX, type CatPage, type CatSpot } from '../../lib/catSpots';
 import './HarborCat.css';
 
 // Rendered sizes per pose and the paw line as a fraction of height — the paws
@@ -45,13 +45,20 @@ export default function HarborCatDirector({ page, catPages, catSpots }: Props) {
 		if (!spot || spot.overlay || !spot.anchor) {
 			return;
 		}
-		const { selector, edge, align } = spot.anchor;
+		const { selector, edge, align, dx = 0, dy = 0 } = spot.anchor;
 		const size = SIZE[spot.pose];
+		// A header spot is menu-gated below the hamburger breakpoint: the nav shows
+		// it in the open menu, so the director stands down there.
+		const hamburger = window.matchMedia(`(max-width: ${NAV_HAMBURGER_MAX}px)`);
 		let raf = 0;
 		let tries = 0;
 		let alive = true;
 
 		const measure = () => {
+			if (spot.menuGated && hamburger.matches) {
+				setPlacement(null);
+				return;
+			}
 			const el = document.querySelector(selector);
 			if (!el) {
 				// The anchor may live in an island that hasn't hydrated yet — wait it out
@@ -62,12 +69,12 @@ export default function HarborCatDirector({ page, catPages, catSpots }: Props) {
 			}
 			const rect = el.getBoundingClientRect();
 			const docW = document.documentElement.clientWidth;
-			const anchorY = (edge === 'top' ? rect.top : rect.bottom) + window.scrollY - size.paw * size.h;
+			const anchorY = (edge === 'top' ? rect.top : rect.bottom) + window.scrollY - size.paw * size.h + dy;
 			let left =
 				align === 'center' ? rect.left + rect.width / 2 - size.w / 2 :
 				align === 'left'   ? rect.left - 4 :
 				                     rect.right - size.w + 6;
-			left = Math.max(GUTTER, Math.min(left + window.scrollX, docW - size.w - GUTTER));
+			left = Math.max(GUTTER, Math.min(left + window.scrollX + dx, docW - size.w - GUTTER));
 			const top = Math.max(window.scrollY + 2, anchorY);
 			const side: 'left' | 'right' = left + size.w / 2 > docW / 2 ? 'left' : 'right';
 			setPlacement({ left, top, w: size.w, h: size.h, side });
@@ -81,6 +88,7 @@ export default function HarborCatDirector({ page, catPages, catSpots }: Props) {
 
 		replace();
 		window.addEventListener('resize', replace);
+		hamburger.addEventListener('change', replace);
 		// Entry animations (fade-up, the placard, card re-entry) shift anchors as
 		// they settle — remeasure when each finishes
 		document.addEventListener('animationend', replace, true);
@@ -90,6 +98,7 @@ export default function HarborCatDirector({ page, catPages, catSpots }: Props) {
 			alive = false;
 			cancelAnimationFrame(raf);
 			window.removeEventListener('resize', replace);
+			hamburger.removeEventListener('change', replace);
 			document.removeEventListener('animationend', replace, true);
 		};
 	}, [spot]);
