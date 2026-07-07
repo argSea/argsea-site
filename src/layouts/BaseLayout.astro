@@ -44,6 +44,6 @@ const catPage: CatPage = active === 'none' ? 'p404' : active;
 			<slot />
 			<Footer quip={copy[quipKey]} />
 		</div>
-		{copy.eggs.cat && <HarborCatDirector client:load page={catPage} catPages={copy.catPages} catSpots={copy.catSpots} />}
+		{copy.eggs.cat && <HarborCatDirector client:idle page={catPage} catPages={copy.catPages} catSpots={copy.catSpots} />}
 	</body>
 </html>

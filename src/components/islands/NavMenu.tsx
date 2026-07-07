@@ -34,10 +34,14 @@ export default function NavMenu({ active, page, links, catEnabled, catPages, cat
 	const burger = useRef<HTMLButtonElement>(null);
 
 	const close = () => setOpen(false);
-	useEscapeKey(open, () => {
+
+	// Dismissals that don't land focus anywhere (Escape, backdrop) hand it back
+	// to the toggle; a link tap navigates, so plain close is enough there
+	const dismiss = () => {
 		close();
 		burger.current?.focus();
-	});
+	};
+	useEscapeKey(open, dismiss);
 
 	// A jump to desktop width leaves no way to close the panel, so drop it
 	useEffect(() => {
@@ -70,7 +74,7 @@ export default function NavMenu({ active, page, links, catEnabled, catPages, cat
 
 			{open && (
 				<>
-					<div className="nav-backdrop" onClick={close} />
+					<div className="nav-backdrop" onClick={dismiss} />
 					<nav id="nav-menu" className="nav-menu">
 						{links.map((link) => {
 							const isActive = active === link.id;

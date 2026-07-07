@@ -92,6 +92,10 @@ export default function HarborCatDirector({ page, catPages, catSpots }: Props) {
 		// Entry animations (fade-up, the placard, card re-entry) shift anchors as
 		// they settle — remeasure when each finishes
 		document.addEventListener('animationend', replace, true);
+		// Some anchors move by class change alone (the active filter chip), and
+		// under reduced motion animationend never fires — watch class swaps too
+		const classWatch = new MutationObserver(replace);
+		classWatch.observe(document.body, { attributes: true, attributeFilter: ['class'], subtree: true });
 		document.fonts?.ready.then(() => { if (alive) replace(); });
 
 		return () => {
@@ -100,6 +104,7 @@ export default function HarborCatDirector({ page, catPages, catSpots }: Props) {
 			window.removeEventListener('resize', replace);
 			hamburger.removeEventListener('change', replace);
 			document.removeEventListener('animationend', replace, true);
+			classWatch.disconnect();
 		};
 	}, [spot]);
 
