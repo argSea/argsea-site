@@ -135,7 +135,7 @@ test('the narrow nav is a hamburger that opens and closes', async ({ page }) => 
 	await expect(page.locator('#nav-menu')).toHaveCount(0);
 });
 
-test('on mobile the header cat is menu-gated: it shows in the open menu', async ({ page }) => {
+test('on mobile the header cat is menu-gated: it lies on the open panel edge', async ({ page }) => {
 	// Math.random 0 pins the header spot
 	await page.addInitScript(() => { Math.random = () => 0; });
 	await page.setViewportSize({ width: 390, height: 844 });
@@ -149,6 +149,13 @@ test('on mobile the header cat is menu-gated: it shows in the open menu', async 
 	await expect(page.locator('#nav-menu .harbor-cat--lying')).toBeVisible();
 	// still exactly one cat
 	await expect(page.locator('.harbor-cat')).toHaveCount(1);
+
+	// it rides the panel itself, draped over the top border — not any nav link
+	await expect(page.locator('.nav-menu__item .cat-mount')).toHaveCount(0);
+	const panel = (await page.locator('#nav-menu').boundingBox())!;
+	const mount = (await page.locator('.cat-mount--menu').boundingBox())!;
+	expect(mount.y).toBeLessThan(panel.y);
+	expect(mount.y + mount.height).toBeGreaterThan(panel.y);
 });
 
 test('the hamburger menu closes on Escape', async ({ page }) => {

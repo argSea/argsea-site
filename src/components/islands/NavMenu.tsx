@@ -5,9 +5,10 @@
 // toggle.
 //
 // The header cat is menu-gated here: when the page's one-cat pick is the header
-// spot, the cat loafs on the active link inside the OPEN menu — it shows when
-// the menu opens, the same fold-in as the overlay spots. On desktop the
-// director rides the cat on the nav link instead, so it's never two.
+// spot, the cat lies on the OPEN panel's top edge — draped over the border like
+// a cat on a wall, whatever section is active — and shows when the menu opens,
+// the same fold-in as the overlay spots. On desktop the director rides the cat
+// on the nav link instead, so it's never two.
 import { useEffect, useRef, useState } from 'react';
 import { pageCatPick, NAV_HAMBURGER_MAX, type CatPage } from '../../lib/catSpots';
 import HarborCat from './HarborCat';
@@ -76,19 +77,16 @@ export default function NavMenu({ active, page, links, catEnabled, catPages, cat
 				<>
 					<div className="nav-backdrop" onClick={dismiss} />
 					<nav id="nav-menu" className="nav-menu">
-						{links.map((link) => {
-							const isActive = active === link.id;
-							return (
-								<div key={link.id} className="nav-menu__item">
-									{isActive && menuCat && (
-										<div className="cat-mount cat-mount--menu">
-											<HarborCat pose="lying" context="header" />
-										</div>
-									)}
-									<a href={link.href} className={isActive ? 'active' : undefined} onClick={close}>{link.label}</a>
-								</div>
-							);
-						})}
+						{menuCat && (
+							<div className="cat-mount cat-mount--menu">
+								<HarborCat pose="lying" context="header" />
+							</div>
+						)}
+						{links.map((link) => (
+							<div key={link.id} className="nav-menu__item">
+								<a href={link.href} className={active === link.id ? 'active' : undefined} onClick={close}>{link.label}</a>
+							</div>
+						))}
 						<div className="nav-menu__item">
 							<a href="/resume.pdf" onClick={close}>resume ↗</a>
 						</div>
