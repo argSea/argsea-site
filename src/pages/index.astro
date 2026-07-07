@@ -11,7 +11,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import LighthouseMark from '../components/LighthouseMark.astro';
 import WaveDivider from '../components/WaveDivider.astro';
 import HomePostcards from '../components/islands/HomePostcards';
-import { getProjects, getSiteCopy, getKeeperProfile, getHobbies } from '../lib/api';
+import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead } from '../lib/api';
 
 const projects = await getProjects();
 // The list arrives order-sorted; the cap is defensive — the admin owns the
@@ -20,6 +20,7 @@ const featured = projects.filter((project) => project.featured);
 const preview = (featured.length > 0 ? featured : projects).slice(0, 3);
 const copy = await getSiteCopy();
 const keeper = await getKeeperProfile();
+const catDesigns = await getFigurehead();
 
 // The smuggler's hold: the copy singleton's egg toggles gate what gets wired.
 // Bottle off (or an emptied proverb list) leaves the boat sailing, unpokeable.
@@ -86,7 +87,7 @@ const graveyardChips = resting.map((hobby, index) => ({
 			<span class="section-label">Postcards from production</span>
 			<a href="/projects" class="mono-link">all projects →</a>
 		</div>
-		<HomePostcards client:load projects={preview} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} />
+		<HomePostcards client:load projects={preview} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
 	</section>
 
 	<!-- the cargo manifest -->

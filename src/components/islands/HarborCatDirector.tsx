@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import HarborCat from './HarborCat';
 import { pageCatPick, NAV_HAMBURGER_MAX, type CatPage, type CatSpot } from '../../lib/catSpots';
+import type { FigureheadDesign } from '../../lib/api';
 import './HarborCat.css';
 
 // Rendered sizes per pose and the paw line as a fraction of height — the paws
@@ -24,9 +25,10 @@ const SIZE = {
 const GUTTER = 8;
 
 interface Props {
-	page:      CatPage;
-	catPages?: Record<string, boolean>;
-	catSpots?: Record<string, boolean>;
+	page:        CatPage;
+	catPages?:   Record<string, boolean>;
+	catSpots?:   Record<string, boolean>;
+	catDesigns?: FigureheadDesign[];
 }
 
 interface Placement {
@@ -37,7 +39,7 @@ interface Placement {
 	side: 'left' | 'right';
 }
 
-export default function HarborCatDirector({ page, catPages, catSpots }: Props) {
+export default function HarborCatDirector({ page, catPages, catSpots, catDesigns }: Props) {
 	const [spot] = useState<CatSpot | null>(() => pageCatPick(page, catPages, catSpots));
 	const [placement, setPlacement] = useState<Placement | null>(null);
 
@@ -114,7 +116,7 @@ export default function HarborCatDirector({ page, catPages, catSpots }: Props) {
 
 	return createPortal(
 		<div className="cat-mount" style={{ left: placement.left, top: placement.top, width: placement.w, height: placement.h }}>
-			<HarborCat pose={spot.pose} context={spot.context} bubbleSide={placement.side} />
+			<HarborCat pose={spot.pose} context={spot.context} bubbleSide={placement.side} designs={catDesigns} />
 		</div>,
 		document.body,
 	);

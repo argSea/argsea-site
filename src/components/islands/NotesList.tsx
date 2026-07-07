@@ -2,7 +2,7 @@
 // Notes with an image carry a photo print — a small tilted thumbnail in the
 // row, a larger snapshot in the letter (design v4).
 import { useState } from 'react';
-import type { Note } from '../../lib/api';
+import type { FigureheadDesign, Note } from '../../lib/api';
 import { mediaUrl } from '../../lib/media';
 import { pageCatPick } from '../../lib/catSpots';
 import HarborCat from './HarborCat';
@@ -10,14 +10,15 @@ import { useEscapeKey } from './useEscapeKey';
 import './NotesList.css';
 
 interface Props {
-	notes:      Note[];
-	signoff:    string;
-	catEnabled: boolean;
-	catPages?:  Record<string, boolean>;
-	catSpots?:  Record<string, boolean>;
+	notes:       Note[];
+	signoff:     string;
+	catEnabled:  boolean;
+	catPages?:   Record<string, boolean>;
+	catSpots?:   Record<string, boolean>;
+	catDesigns?: FigureheadDesign[];
 }
 
-export default function NotesList({ notes, signoff, catEnabled, catPages, catSpots }: Props) {
+export default function NotesList({ notes, signoff, catEnabled, catPages, catSpots, catDesigns }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 
 	// The cat rides the letter only when the page's one-cat pick is this overlay
@@ -67,7 +68,7 @@ export default function NotesList({ notes, signoff, catEnabled, catPages, catSpo
 			{open && (
 				<div className="overlay-backdrop" onClick={close}>
 					<div className="letter-wrap" onClick={(event) => event.stopPropagation()}>
-						{catHere && <div className="cat-mount cat-mount--note"><HarborCat pose="perched" context="note" /></div>}
+						{catHere && <div className="cat-mount cat-mount--note"><HarborCat pose="perched" context="note" designs={catDesigns} /></div>}
 						<div className="overlay-card letter">
 							<div className="overlay-head">
 								<span className="overlay-kicker">Note · {open.date}</span>

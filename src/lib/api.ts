@@ -22,6 +22,7 @@ import hobbiesFixture from '../data/fixtures/hobbies.json';
 import notesFixture from '../data/fixtures/notes.json';
 import siteCopyFixture from '../data/fixtures/siteCopy.json';
 import keeperProfileFixture from '../data/fixtures/keeperProfile.json';
+import figureheadFixture from '../data/fixtures/figurehead.json';
 
 export type Category = 'backend' | 'games' | 'this website' | 'tinkering';
 export type Status = 'draft' | 'published' | 'archived';
@@ -152,12 +153,59 @@ export interface KeeperProfile {
 	signoff:  string;  // how notes end, e.g. "— j"
 }
 
+export type FigureheadShapeType = 'path' | 'ellipse' | 'rect' | 'line';
+export type FigureheadRole = 'tail' | 'eyes' | 'body';
+
+// One stored shape of a figurehead design (caravan contract: figurehead.md).
+// Structured shapes only — no markup is ever stored. An absent optional field
+// means the SVG attribute default; renderers write only the fields present.
+export interface FigureheadShape {
+	id:           string;
+	type:         FigureheadShapeType;
+	d?:           string;            // path
+	cx?:          number;            // ellipse (circles: rx == ry)
+	cy?:          number;
+	rx?:          number;
+	ry?:          number;
+	x?:           number;            // rect
+	y?:           number;
+	w?:           number;
+	h?:           number;
+	x1?:          number;            // line
+	y1?:          number;
+	x2?:          number;
+	y2?:          number;
+	fill?:        string;
+	stroke?:      string;
+	strokeWidth?: number;
+	opacity?:     number;
+	linecap?:     string;
+	linejoin?:    string;
+	role?:        FigureheadRole;    // drives the canonical animations; untagged = static
+	origin?:      [number, number];  // animation transform-origin
+}
+
+// A figurehead design: the harbor cat's shape model, one published per pose.
+// The v1 seeds mirror the built-in HarborCat SVGs shape-for-shape.
+export interface FigureheadDesign {
+	id:        string;
+	pose:      'perched' | 'lying';
+	label:     string;
+	viewBox:   string;
+	shapes:    FigureheadShape[];  // always [] on the wire, never null
+	published: boolean;
+	seed:      boolean;
+	createdAt: string;
+	updatedAt: string;
+}
+
 export interface ContentSource {
 	getProjects(): Promise<Project[]>;
 	getHobbies(): Promise<Hobby[]>;
 	getNotes(): Promise<Note[]>;
 	getSiteCopy(): Promise<SiteCopy>;
 	getKeeperProfile(): Promise<KeeperProfile>;
+	getFigurehead(): Promise<FigureheadDesign[]>;
 }
 
 class ApiSource implements ContentSource {
@@ -199,6 +247,21 @@ class ApiSource implements ContentSource {
 		}
 		return await res.json() as KeeperProfile;
 	}
+
+	/**
+	 * The published figurehead designs — public, one per pose, no ?published flag
+	 * (the route only ever serves published). Unlike the content fetches this one
+	 * never fails the build: absent/empty/unreachable all mean "no published
+	 * designs", and the cat falls back to its built-in poses.
+	 */
+	async getFigurehead(): Promise<FigureheadDesign[]> {
+		try {
+			const res = await fetch(`${this.baseUrl}/1/figurehead/published`);
+			return res.ok ? await res.json() as FigureheadDesign[] : [];
+		} catch {
+			return [];
+		}
+	}
 }
 
 class FixtureSource implements ContentSource {
@@ -207,6 +270,7 @@ class FixtureSource implements ContentSource {
 	getNotes(): Promise<Note[]> { return Promise.resolve(notesFixture as Note[]); }
 	getSiteCopy(): Promise<SiteCopy> { return Promise.resolve(siteCopyFixture as SiteCopy); }
 	getKeeperProfile(): Promise<KeeperProfile> { return Promise.resolve(keeperProfileFixture as KeeperProfile); }
+	getFigurehead(): Promise<FigureheadDesign[]> { return Promise.resolve(figureheadFixture as FigureheadDesign[]); }
 }
 
 // ARGSEA_API_URL set → build against the live API; unset → checked-in fixtures.
@@ -249,6 +313,15 @@ let keeperProfilePromise: Promise<KeeperProfile> | undefined;
 export function getKeeperProfile(): Promise<KeeperProfile> {
 	keeperProfilePromise ??= source.getKeeperProfile();
 	return keeperProfilePromise;
+}
+
+// Memoized like SiteCopy: the layout asks on every page for the same designs.
+let figureheadPromise: Promise<FigureheadDesign[]> | undefined;
+
+/** The published figurehead designs the cat renders in place of its built-in poses; [] = built-ins. */
+export function getFigurehead(): Promise<FigureheadDesign[]> {
+	figureheadPromise ??= source.getFigurehead();
+	return figureheadPromise;
 }
 
 /** Fill empty/missing SiteCopy fields from the approved design copy. */

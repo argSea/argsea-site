@@ -6,6 +6,7 @@
 // poke pops a context-specific quip that dismisses itself.
 import { useEffect, useRef, useState } from 'react';
 import type { CatContext, CatPose } from '../../lib/catSpots';
+import type { FigureheadDesign, FigureheadShape } from '../../lib/api';
 import './HarborCat.css';
 
 export type { CatContext } from '../../lib/catSpots';
@@ -31,10 +32,59 @@ const QUIPS: Record<CatContext, string[]> = {
 interface Props {
 	pose:        CatPose;
 	context:     CatContext;
-	bubbleSide?: 'left' | 'right';  // which way the quip opens; hosts near an edge open it inward
+	bubbleSide?: 'left' | 'right';         // which way the quip opens; hosts near an edge open it inward
+	designs?:    FigureheadDesign[];       // published figurehead designs; the pose's design replaces its built-in SVG
 }
 
-export default function HarborCat({ pose, context, bubbleSide = 'right' }: Props) {
+// The animation transform-origin a shape carries, as an inline style — it wins
+// over the pose classes' CSS origins, so a design can move the pivot.
+const originStyle = (origin?: [number, number]) =>
+	origin ? { transformOrigin: `${origin[0]}px ${origin[1]}px` } : undefined;
+
+// One stored shape → its SVG element. Only the fields present on the shape are
+// written (absent = the SVG attribute default); there is no stored markup to
+// render, ever — shapes only, per the figurehead contract.
+function shapeElement(shape: FigureheadShape, className?: string) {
+	const presentation = {
+		className,
+		style:           originStyle(shape.origin),
+		fill:            shape.fill,
+		stroke:          shape.stroke,
+		strokeWidth:     shape.strokeWidth,
+		opacity:         shape.opacity,
+		strokeLinecap:   shape.linecap as React.SVGAttributes<SVGElement>['strokeLinecap'],
+		strokeLinejoin:  shape.linejoin as React.SVGAttributes<SVGElement>['strokeLinejoin'],
+	};
+	switch (shape.type) {
+		case 'path':    return <path key={shape.id} d={shape.d} {...presentation} />;
+		case 'ellipse': return <ellipse key={shape.id} cx={shape.cx} cy={shape.cy} rx={shape.rx} ry={shape.ry} {...presentation} />;
+		case 'rect':    return <rect key={shape.id} x={shape.x} y={shape.y} width={shape.w} height={shape.h} {...presentation} />;
+		case 'line':    return <line key={shape.id} x1={shape.x1} y1={shape.y1} x2={shape.x2} y2={shape.y2} {...presentation} />;
+	}
+}
+
+// A design's shapes in stored (paint) order, with the roles driving the
+// canonical animations: tail shapes wear the pose's sway/drape class, eye
+// shapes gather into one blink group like the built-in <g> (a shared pivot,
+// emitted where the first eye sits so stacking is preserved), and everything
+// else — untagged or role "body" — stays static.
+function designShapes(shapes: FigureheadShape[]) {
+	const eyes = shapes.filter((shape) => shape.role === 'eyes');
+	return shapes.map((shape) => {
+		if (shape.role === 'eyes') {
+			return shape === eyes[0]
+				? (
+					<g key="eyes" className="harbor-cat__eyes" style={originStyle(eyes.find((eye) => eye.origin)?.origin)}>
+						{eyes.map((eye) => shapeElement(eye))}
+					</g>
+				)
+				: null;
+		}
+		return shapeElement(shape, shape.role === 'tail' ? 'harbor-cat__tail' : undefined);
+	});
+}
+
+export default function HarborCat({ pose, context, bubbleSide = 'right', designs }: Props) {
 	const [say, setSay] = useState<string | null>(null);
 	const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -55,11 +105,29 @@ export default function HarborCat({ pose, context, bubbleSide = 'right' }: Props
 		}
 	};
 
+	// A published design for this pose replaces the built-in SVG; an empty shape
+	// list would draw nothing, so it falls back rather than vanish the cat.
+	const design = designs?.find((candidate) => candidate.pose === pose && candidate.shapes.length > 0) ?? null;
+
 	return (
 		<div className={`harbor-cat harbor-cat--${pose} harbor-cat--${context}${bubbleSide === 'left' ? ' harbor-cat--bubble-left' : ''}`}>
 			{/* keyed by quip so a re-poke restarts the pop-in */}
 			{say && <div key={say} className="harbor-cat__bubble">{say}</div>}
-			{pose === 'lying' ? (
+			{design ? (
+				<svg
+					className="harbor-cat__svg"
+					viewBox={design.viewBox}
+					fill="none"
+					role="button"
+					tabIndex={0}
+					aria-label="the harbor cat"
+					data-figurehead={design.id}
+					onClick={poke}
+					onKeyDown={onKeyDown}
+				>
+					{designShapes(design.shapes)}
+				</svg>
+			) : pose === 'lying' ? (
 				<svg
 					className="harbor-cat__svg"
 					viewBox="0 0 100 48"

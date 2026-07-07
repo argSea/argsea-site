@@ -11,7 +11,7 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import HarborCatDirector from '../components/islands/HarborCatDirector';
-import { getSiteCopy, type QuipField } from '../lib/api';
+import { getSiteCopy, getFigurehead, type QuipField } from '../lib/api';
 import type { CatPage } from '../lib/catSpots';
 
 interface Props {
@@ -24,6 +24,10 @@ const { title, active, quipKey } = Astro.props;
 
 // The footer quip is per-page "signal flags" copy from the SiteCopy singleton
 const copy = await getSiteCopy();
+
+// The published figurehead designs override the cat's built-in poses; [] keeps
+// the built-ins. Overlay-spot cats get theirs from the page's own frontmatter.
+const catDesigns = await getFigurehead();
 
 // The harbor cat's page id — the 404 is the only 'none' route, and its catalog
 // page is p404.
@@ -40,10 +44,10 @@ const catPage: CatPage = active === 'none' ? 'p404' : active;
 	</head>
 	<body>
 		<div class="page">
-			<Nav active={active} catPage={catPage} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} />
+			<Nav active={active} catPage={catPage} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
 			<slot />
 			<Footer quip={copy[quipKey]} />
 		</div>
-		{copy.eggs.cat && <HarborCatDirector client:idle page={catPage} catPages={copy.catPages} catSpots={copy.catSpots} />}
+		{copy.eggs.cat && <HarborCatDirector client:idle page={catPage} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />}
 	</body>
 </html>

@@ -4,7 +4,7 @@
 // live on the card fronts only (design v4). The harbor cat perches on the
 // card's top edge only when the page's one-cat pick landed on this overlay
 // spot (the caller decides and passes catHere).
-import type { Project } from '../../lib/api';
+import type { FigureheadDesign, Project } from '../../lib/api';
 import { mediaUrl } from '../../lib/media';
 import HarborCat from './HarborCat';
 import './PostcardOverlay.css';
@@ -13,14 +13,15 @@ interface Props {
 	project:     Project;
 	showSeeAll?: boolean;
 	catHere?:    boolean;
+	catDesigns?: FigureheadDesign[];
 	onClose:     () => void;
 }
 
-export default function PostcardOverlay({ project, showSeeAll = false, catHere = false, onClose }: Props) {
+export default function PostcardOverlay({ project, showSeeAll = false, catHere = false, catDesigns, onClose }: Props) {
 	return (
 		<div className="overlay-backdrop" onClick={onClose}>
 			<div className="postcard-back-wrap" onClick={(event) => event.stopPropagation()}>
-				{catHere && <div className="cat-mount cat-mount--postcard"><HarborCat pose="perched" context="postcard" /></div>}
+				{catHere && <div className="cat-mount cat-mount--postcard"><HarborCat pose="perched" context="postcard" designs={catDesigns} /></div>}
 				<div className="overlay-card postcard-back">
 					<div className="overlay-head">
 						<span className="overlay-kicker">Postcard · from production</span>
