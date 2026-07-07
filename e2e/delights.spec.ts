@@ -183,6 +183,31 @@ test('a static pick plus an opened overlay is still one cat, never two', async (
 	await expect(page.locator('.harbor-cat')).toHaveCount(1);
 });
 
+test('the filterTag cat follows the active chip under reduced motion', async ({ page }) => {
+	// Math.random 0.3 pins the second enabled spot on projects — the filterTag.
+	// Reduced motion kills animationend, so this proves the class-swap remeasure.
+	await page.addInitScript(() => { Math.random = () => 0.3; });
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/projects');
+	await expect(page.locator('.harbor-cat--perched')).toBeVisible();
+
+	const chipCenter = async (name: string) => {
+		const box = (await page.locator('.filter-row .chip', { hasText: name }).boundingBox())!;
+		return box.x + box.width / 2;
+	};
+	const catCenter = async () => {
+		const box = (await page.locator('.cat-mount').boundingBox())!;
+		return box.x + box.width / 2;
+	};
+
+	expect(Math.abs((await catCenter()) - (await chipCenter('all')))).toBeLessThan(20);
+
+	await page.locator('.filter-row .chip', { hasText: 'backend' }).click();
+	await expect(async () => {
+		expect(Math.abs((await catCenter()) - (await chipCenter('backend')))).toBeLessThan(20);
+	}).toPass();
+});
+
 test('reduced motion keeps the wreck grounded at its listing tilt', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/404.html');
