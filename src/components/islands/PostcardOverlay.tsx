@@ -1,29 +1,26 @@
 // The back of the postcard — the project overlay shared by the Projects grid
 // and the homepage preview. The homepage variant adds a "see all projects →"
 // link under the moral (updated Hello design). No stamp back here: stamps
-// live on the card fronts only (design v4). With catAboard on, the harbor cat
-// perches on the card's top edge for roughly 1 in 3 opens — the overlay
-// mounts fresh per open, so one roll per open.
-import { useState } from 'react';
+// live on the card fronts only (design v4). The harbor cat perches on the
+// card's top edge only when the page's one-cat pick landed on this overlay
+// spot (the caller decides and passes catHere).
 import type { Project } from '../../lib/api';
 import { mediaUrl } from '../../lib/media';
-import HarborCat, { catComesAboard } from './HarborCat';
+import HarborCat from './HarborCat';
 import './PostcardOverlay.css';
 
 interface Props {
 	project:     Project;
 	showSeeAll?: boolean;
-	catAboard?:  boolean;
+	catHere?:    boolean;
 	onClose:     () => void;
 }
 
-export default function PostcardOverlay({ project, showSeeAll = false, catAboard = false, onClose }: Props) {
-	const [catHere] = useState(() => catAboard && catComesAboard());
-
+export default function PostcardOverlay({ project, showSeeAll = false, catHere = false, onClose }: Props) {
 	return (
 		<div className="overlay-backdrop" onClick={onClose}>
 			<div className="postcard-back-wrap" onClick={(event) => event.stopPropagation()}>
-				{catHere && <HarborCat context="postcard" />}
+				{catHere && <div className="cat-mount cat-mount--postcard"><HarborCat pose="perched" context="postcard" /></div>}
 				<div className="overlay-card postcard-back">
 					<div className="overlay-head">
 						<span className="overlay-kicker">Postcard · from production</span>

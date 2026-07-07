@@ -86,6 +86,15 @@
 	box-sizing: border-box;
 }
 
+/* The cat perches on the letter's top-left edge when the pick lands on this overlay */
+.cat-mount--note {
+	top: -50px;
+	left: 34px;
+	width: 64px;
+	height: 74px;
+	z-index: 3;
+}
+
 @keyframes cardInLetter {
 	from { opacity: 0; transform: rotate(1.5deg) translateY(34px) scale(.97); }
 	to   { opacity: 1; transform: rotate(0deg) translateY(0) scale(1); }

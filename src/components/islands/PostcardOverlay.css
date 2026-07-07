@@ -13,6 +13,15 @@
 	box-sizing: border-box;
 }
 
+/* The cat perches on the card's top-left edge when the pick lands on this overlay */
+.cat-mount--postcard {
+	top: -50px;
+	left: 34px;
+	width: 64px;
+	height: 74px;
+	z-index: 3;
+}
+
 @keyframes cardInPostcard {
 	from { opacity: 0; transform: rotate(-3deg) translateY(34px) scale(.96); }
 	to   { opacity: 1; transform: rotate(0deg) translateY(0) scale(1); }

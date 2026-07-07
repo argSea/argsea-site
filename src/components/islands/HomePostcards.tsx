@@ -4,6 +4,7 @@
 // inside. The only state is which card is open.
 import { useState } from 'react';
 import type { Project } from '../../lib/api';
+import { pageCatPick } from '../../lib/catSpots';
 import Stamp, { resolveStamp } from './Stamp';
 import PostcardOverlay from './PostcardOverlay';
 import { useEscapeKey } from './useEscapeKey';
@@ -13,12 +14,18 @@ import './HomePostcards.css';
 const BOB_CLASSES = ['bob-home-a', 'bob-home-b', 'bob-home-c'];
 
 interface Props {
-	projects:  Project[];
-	catAboard: boolean;
+	projects:   Project[];
+	catEnabled: boolean;
+	catPages?:  Record<string, boolean>;
+	catSpots?:  Record<string, boolean>;
 }
 
-export default function HomePostcards({ projects, catAboard }: Props) {
+export default function HomePostcards({ projects, catEnabled, catPages, catSpots }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
+
+	// The cat rides the opened postcard only when the page's one-cat pick is this spot
+	const pick = catEnabled ? pageCatPick('hello', catPages, catSpots) : null;
+	const catHere = pick?.id === 'hello.postcard';
 
 	const close = () => setOpenId(null);
 	useEscapeKey(openId !== null, close);
@@ -59,7 +66,7 @@ export default function HomePostcards({ projects, catAboard }: Props) {
 				})}
 			</div>
 
-			{open && <PostcardOverlay project={open} showSeeAll catAboard={catAboard} onClose={close} />}
+			{open && <PostcardOverlay project={open} showSeeAll catHere={catHere} onClose={close} />}
 		</>
 	);
 }

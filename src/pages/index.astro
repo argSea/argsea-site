@@ -22,10 +22,10 @@ const copy = await getSiteCopy();
 const keeper = await getKeeperProfile();
 
 // The smuggler's hold: the copy singleton's egg toggles gate what gets wired.
-// Bottle off (or an emptied proverb list) leaves the boat sailing, unpokeable;
-// cat off (master or per-location) means the island never mounts.
+// Bottle off (or an emptied proverb list) leaves the boat sailing, unpokeable.
+// The cat's per-page/per-spot picking lives client-side (the director + the
+// overlay islands share one pick); the frontmatter just forwards the toggles.
 const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
-const catAboard = copy.eggs.cat && copy.catLocs.postcards;
 
 // Dictionary presentation: the copy is one plain-text string; the numbered
 // sense markers ("1." …) get the periwinkle-deep treatment from the design.
@@ -86,7 +86,7 @@ const graveyardChips = resting.map((hobby, index) => ({
 			<span class="section-label">Postcards from production</span>
 			<a href="/projects" class="mono-link">all projects →</a>
 		</div>
-		<HomePostcards client:load projects={preview} catAboard={catAboard} />
+		<HomePostcards client:load projects={preview} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} />
 	</section>
 
 	<!-- the cargo manifest -->

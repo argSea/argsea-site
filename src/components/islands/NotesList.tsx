@@ -1,28 +1,32 @@
 // The stateful part of the Notes page: the list rows and the letter overlay.
 // Notes with an image carry a photo print — a small tilted thumbnail in the
-// row, a larger snapshot in the letter (design v4). Content and the keeper's
-// sign-off arrive as build-time props; the state is which note is open, plus
-// whether the harbor cat came along — one roll per open, roughly 1 in 3.
+// row, a larger snapshot in the letter (design v4).
 import { useState } from 'react';
 import type { Note } from '../../lib/api';
 import { mediaUrl } from '../../lib/media';
-import HarborCat, { catComesAboard } from './HarborCat';
+import { pageCatPick } from '../../lib/catSpots';
+import HarborCat from './HarborCat';
 import { useEscapeKey } from './useEscapeKey';
 import './NotesList.css';
 
 interface Props {
-	notes:     Note[];
-	signoff:   string;
-	catAboard: boolean;
+	notes:      Note[];
+	signoff:    string;
+	catEnabled: boolean;
+	catPages?:  Record<string, boolean>;
+	catSpots?:  Record<string, boolean>;
 }
 
-export default function NotesList({ notes, signoff, catAboard }: Props) {
+export default function NotesList({ notes, signoff, catEnabled, catPages, catSpots }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
-	const [catHere, setCatHere] = useState(false);
+
+	// The cat rides the letter only when the page's one-cat pick is this overlay
+	// spot; the note-row perch is a separate spot the director owns.
+	const pick = catEnabled ? pageCatPick('notes', catPages, catSpots) : null;
+	const catHere = pick?.id === 'notes.overlay';
 
 	const openNote = (id: string) => {
 		setOpenId(id);
-		setCatHere(catAboard && catComesAboard());
 	};
 
 	const close = () => setOpenId(null);
@@ -63,7 +67,7 @@ export default function NotesList({ notes, signoff, catAboard }: Props) {
 			{open && (
 				<div className="overlay-backdrop" onClick={close}>
 					<div className="letter-wrap" onClick={(event) => event.stopPropagation()}>
-						{catHere && <HarborCat context="note" />}
+						{catHere && <div className="cat-mount cat-mount--note"><HarborCat pose="perched" context="note" /></div>}
 						<div className="overlay-card letter">
 							<div className="overlay-head">
 								<span className="overlay-kicker">Note · {open.date}</span>
