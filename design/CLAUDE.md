@@ -22,16 +22,18 @@ page. `HarborCat.dc.html` is the character (two poses); this section is the rule
 - **Reduced motion + mobile:** a cat pinned to an element's edge must clamp inside
   the viewport. On narrow screens the nav collapses to a **hamburger menu** (this
   supersedes the old "nav wraps to two rows" note); the header cat is then
-  **menu-gated** — it perches on the active link **inside the open menu panel**
-  (shown when the menu opens, the same fold-in as the overlay spots), never
-  clamped over the brand row. On desktop the header cat rides the nav link
-  directly. Either way it's one cat per page.
+  **menu-gated** — it lies on the **open panel's top edge**, draped over the
+  border like a cat on a wall, whatever section is active (shown when the menu
+  opens, the same fold-in as the overlay spots), never clamped over the brand
+  row. On desktop the header cat rides the nav link directly. Either way it's
+  one cat per page.
 
 **Two poses** (`pose` prop on `HarborCat`), reused across spots:
 - **perched** — front paws on an edge, tail draped. Cards, tags, chips, overlay
   tops, list rows, the hero, the contact lighthouse, the 404 placard.
 - **lying** — draped along a horizontal element. The current page's nav link only
-  (on desktop; inside the open hamburger menu on mobile — see the mobile note below).
+  (on desktop; on the open hamburger panel's top edge on mobile — see the mobile
+  note above).
 - *(A curled pose was designed and cut — it didn't read as the same cat. Don't
   reintroduce it; use perched for "quiet corner" spots.)*
 
