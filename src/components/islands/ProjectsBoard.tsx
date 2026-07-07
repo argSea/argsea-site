@@ -4,6 +4,7 @@
 // `filter` and `open` state.
 import { useState } from 'react';
 import type { Project } from '../../lib/api';
+import { pageCatPick } from '../../lib/catSpots';
 import Stamp from './Stamp';
 import PostcardOverlay from './PostcardOverlay';
 import { useEscapeKey } from './useEscapeKey';
@@ -26,13 +27,19 @@ const QUIPS: Record<Filter, string> = {
 const BOB_CLASSES = ['bob-p1', 'bob-p2', 'bob-p3', 'bob-p4', 'bob-p5', 'bob-p6'];
 
 interface Props {
-	projects:  Project[];
-	catAboard: boolean;
+	projects:   Project[];
+	catEnabled: boolean;
+	catPages?:  Record<string, boolean>;
+	catSpots?:  Record<string, boolean>;
 }
 
-export default function ProjectsBoard({ projects, catAboard }: Props) {
+export default function ProjectsBoard({ projects, catEnabled, catPages, catSpots }: Props) {
 	const [filter, setFilter] = useState<Filter>('all');
 	const [openId, setOpenId] = useState<string | null>(null);
+
+	// The cat rides the opened postcard only when the page's one-cat pick is this spot
+	const pick = catEnabled ? pageCatPick('projects', catPages, catSpots) : null;
+	const catHere = pick?.id === 'projects.overlay';
 	// Alternates between two identical enter keyframes so consecutive filter
 	// clicks restart the stagger animation (same trick as the design prototype)
 	const [flip, setFlip] = useState(false);
@@ -95,7 +102,7 @@ export default function ProjectsBoard({ projects, catAboard }: Props) {
 				))}
 			</div>
 
-			{open && <PostcardOverlay project={open} catAboard={catAboard} onClose={close} />}
+			{open && <PostcardOverlay project={open} catHere={catHere} onClose={close} />}
 		</>
 	);
 }

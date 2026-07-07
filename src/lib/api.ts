@@ -97,12 +97,12 @@ export interface EggToggles {
 	lights: boolean;
 }
 
-// Where the harbor cat is allowed to perch, per location.
-export interface CatLocs {
-	postcards: boolean;
-	notes:     boolean;
-	p404:      boolean;
-}
+// The harbor cat's catalog toggles: a page master switch and a per-spot switch,
+// both absent = on (a fresh copy doc lights the whole catalog). The spot ids and
+// these field names are the frozen contract shared with the admin — see
+// src/lib/catSpots.ts for the catalog they key against.
+export type CatPages = Record<string, boolean>;
+export type CatSpots = Record<string, boolean>;
 
 // An entry in the light list: a real lighthouse for the 404 wreck report.
 export interface Lighthouse {
@@ -127,7 +127,8 @@ export interface SiteCopy {
 	heroBody:       string;
 	dict:           string;
 	eggs:           EggToggles;
-	catLocs:        CatLocs;
+	catPages:       CatPages;    // per-page master switch for the harbor cat
+	catSpots:       CatSpots;    // per-spot switch, keyed by the frozen spot ids
 	bottleProverbs: string[];    // emptied by the keeper = the bottle egg is off
 	lighthouses:    Lighthouse[]; // emptied = plain "last position: 404", no flip
 	updatedAt:      string;
@@ -267,6 +268,9 @@ function withCopyDefaults(copy: SiteCopy): SiteCopy {
 	// The toggle objects merge per-field: a document from before a toggle
 	// existed reads as on, while an explicit false stays false.
 	merged.eggs = { ...defaults.eggs, ...copy.eggs };
-	merged.catLocs = { ...defaults.catLocs, ...copy.catLocs };
+	// The cat toggles merge per-key on top of the all-on defaults, so absent =
+	// on holds while an explicit false stays off.
+	merged.catPages = { ...defaults.catPages, ...copy.catPages };
+	merged.catSpots = { ...defaults.catSpots, ...copy.catSpots };
 	return merged;
 }

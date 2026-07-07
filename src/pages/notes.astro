@@ -9,7 +9,6 @@ import { getNotes, getKeeperProfile, getSiteCopy } from '../lib/api';
 const notes = await getNotes();
 const keeper = await getKeeperProfile();
 const copy = await getSiteCopy();
-const catAboard = copy.eggs.cat && copy.catLocs.notes;
 ---
 <BaseLayout title="Notes · argsea.com" active="notes" quipKey="quipNotes">
 	<section class="head">
@@ -18,7 +17,7 @@ const catAboard = copy.eggs.cat && copy.catLocs.notes;
 	</section>
 
 	<section class="list">
-		<NotesList client:load notes={notes} signoff={keeper.signoff} catAboard={catAboard} />
+		<NotesList client:load notes={notes} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} />
 		<div class="list__closing">{notes.length} {notes.length === 1 ? 'note' : 'notes'} so far. The bar for "blog" is five. We'll see.</div>
 	</section>
 </BaseLayout>

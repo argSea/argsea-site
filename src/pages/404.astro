@@ -7,13 +7,10 @@
 // this as dist/404.html; serving it for unknown routes is nginx config at
 // cutover.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HarborCat from '../components/islands/HarborCat';
 import LightList from '../components/islands/LightList';
 import { getSiteCopy } from '../lib/api';
 
 const copy = await getSiteCopy();
-// The wreck always has an audience — no 1-in-3 roll here, only the toggles
-const catAboard = copy.eggs.cat && copy.catLocs.p404;
 const lighthouses = copy.eggs.lights ? copy.lighthouses : [];
 ---
 <BaseLayout title="404 · run aground · argsea.com" active="none" quipKey="quip404">
@@ -32,7 +29,6 @@ const lighthouses = copy.eggs.lights ? copy.lighthouses : [];
 
 			<!-- clearance below the headline stays: the perched cat must never collide with the copy -->
 			<div class="placard">
-				{catAboard && <HarborCat client:visible context="wreck" />}
 				<div class="placard__ribbon">⚠ Notice to Mariners</div>
 				<p class="placard__report">The page you set course for is not on any chart. Your vessel has run onto the shoals — no page lies beyond this point.</p>
 				<div class="placard__meta">
