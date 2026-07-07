@@ -108,7 +108,7 @@
    border like a cat on a wall, tail hanging. It keeps to the top-left corner so
    it never crowds the burger's X above the panel's right edge. */
 .cat-mount--menu {
-  top: -35px;
+  top: -40px;
   left: 14px;
   width: 88px;
   height: 42px;
