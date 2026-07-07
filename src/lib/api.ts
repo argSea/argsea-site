@@ -23,6 +23,7 @@ import notesFixture from '../data/fixtures/notes.json';
 import siteCopyFixture from '../data/fixtures/siteCopy.json';
 import keeperProfileFixture from '../data/fixtures/keeperProfile.json';
 import figureheadFixture from '../data/fixtures/figurehead.json';
+import suggestionsFixture from '../data/fixtures/suggestions.json';
 
 export type Category = 'backend' | 'games' | 'this website' | 'tinkering';
 export type Status = 'draft' | 'published' | 'archived';
@@ -199,6 +200,13 @@ export interface FigureheadDesign {
 	updatedAt: string;
 }
 
+// A "next: ???" suggestion for the hobbies page chip — public, no auth.
+export interface Suggestion {
+	id:    string;
+	value: string;
+	order: number;
+}
+
 export interface ContentSource {
 	getProjects(): Promise<Project[]>;
 	getHobbies(): Promise<Hobby[]>;
@@ -206,6 +214,7 @@ export interface ContentSource {
 	getSiteCopy(): Promise<SiteCopy>;
 	getKeeperProfile(): Promise<KeeperProfile>;
 	getFigurehead(): Promise<FigureheadDesign[]>;
+	getSuggestions(): Promise<Suggestion[]>;
 }
 
 class ApiSource implements ContentSource {
@@ -262,6 +271,16 @@ class ApiSource implements ContentSource {
 			return [];
 		}
 	}
+
+	/** The next-hobby chip's suggestions — public, no ?published flag. Never fails the build: unreachable/error just leaves the chip on its "???" default. */
+	async getSuggestions(): Promise<Suggestion[]> {
+		try {
+			const res = await fetch(`${this.baseUrl}/1/suggestion`);
+			return res.ok ? await res.json() as Suggestion[] : [];
+		} catch {
+			return [];
+		}
+	}
 }
 
 class FixtureSource implements ContentSource {
@@ -271,6 +290,7 @@ class FixtureSource implements ContentSource {
 	getSiteCopy(): Promise<SiteCopy> { return Promise.resolve(siteCopyFixture as SiteCopy); }
 	getKeeperProfile(): Promise<KeeperProfile> { return Promise.resolve(keeperProfileFixture as KeeperProfile); }
 	getFigurehead(): Promise<FigureheadDesign[]> { return Promise.resolve(figureheadFixture as FigureheadDesign[]); }
+	getSuggestions(): Promise<Suggestion[]> { return Promise.resolve(suggestionsFixture as Suggestion[]); }
 }
 
 // ARGSEA_API_URL set → build against the live API; unset → checked-in fixtures.
@@ -286,9 +306,9 @@ export async function getProjects(): Promise<Project[]> {
 	return (await source.getProjects()).sort((a, b) => a.order - b.order || a.createdAt.localeCompare(b.createdAt));
 }
 
-/** Hobbies by their manual `order` key: the headstones are arranged by hand. */
+/** Hobbies active-first, then by their manual `order` key: the headstones are arranged by hand. */
 export async function getHobbies(): Promise<Hobby[]> {
-	return (await source.getHobbies()).sort((a, b) => a.order - b.order);
+	return (await source.getHobbies()).sort((a, b) => Number(b.active) - Number(a.active) || a.order - b.order);
 }
 
 /** Notes newest-first; RFC3339 strings compare chronologically. */
@@ -322,6 +342,11 @@ let figureheadPromise: Promise<FigureheadDesign[]> | undefined;
 export function getFigurehead(): Promise<FigureheadDesign[]> {
 	figureheadPromise ??= source.getFigurehead();
 	return figureheadPromise;
+}
+
+/** The next-hobby chip's suggestions by their manual `order` key. */
+export async function getSuggestions(): Promise<Suggestion[]> {
+	return (await source.getSuggestions()).sort((a, b) => a.order - b.order);
 }
 
 /** Fill empty/missing SiteCopy fields from the approved design copy. */

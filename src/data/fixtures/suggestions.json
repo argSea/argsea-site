@@ -1,0 +1,47 @@
+[
+  {
+    "id": "fixture-suggestion-1",
+    "value": "blacksmithing?",
+    "order": 1
+  },
+  {
+    "id": "fixture-suggestion-2",
+    "value": "sourdough?",
+    "order": 2
+  },
+  {
+    "id": "fixture-suggestion-3",
+    "value": "birdwatching?",
+    "order": 3
+  },
+  {
+    "id": "fixture-suggestion-4",
+    "value": "3d printing?",
+    "order": 4
+  },
+  {
+    "id": "fixture-suggestion-5",
+    "value": "kayaking?",
+    "order": 5
+  },
+  {
+    "id": "fixture-suggestion-6",
+    "value": "chess?",
+    "order": 6
+  },
+  {
+    "id": "fixture-suggestion-7",
+    "value": "fermenting things?",
+    "order": 7
+  },
+  {
+    "id": "fixture-suggestion-8",
+    "value": "ham radio?",
+    "order": 8
+  },
+  {
+    "id": "fixture-suggestion-9",
+    "value": "no. surely not.",
+    "order": 9
+  }
+]
