@@ -1,6 +1,6 @@
 // The stateful part of the Keeper's Journal: the journal-spread rows and the
 // journal-entry overlay. A note's doodle (if any) is rendered as structured
-// inline SVG — small in its row, larger beside its handwritten caption in the
+// inline SVG, small in its row, larger beside its handwritten caption in the
 // open entry (design: The Keeper's Journal).
 import { useState } from 'react';
 import type { Doodle, FigureheadDesign, FigureheadShape, Note } from '../../lib/api';
@@ -20,13 +20,13 @@ interface Props {
 }
 
 // The animation transform-origin a shape carries, as an inline style (mirrors
-// HarborCat.tsx — doodles carry no roles/origins today, but the shape type is
+// HarborCat.tsx; doodles carry no roles/origins today, but the shape type is
 // shared, so this keeps the helper drop-in compatible).
 const originStyle = (origin?: [number, number]) =>
 	origin ? { transformOrigin: `${origin[0]}px ${origin[1]}px` } : undefined;
 
 // One stored shape → its SVG element. Only the fields present on the shape are
-// written; there is no stored markup to render, ever — shapes only, per the
+// written; there is no stored markup to render, ever; shapes only, per the
 // figurehead/doodle contract. Copied from HarborCat.tsx (:47-64).
 function shapeElement(shape: FigureheadShape) {
 	const presentation = {
@@ -130,7 +130,7 @@ export default function NotesList({ notes, doodles, signoff, catEnabled, catPage
 							<div className="letter__content">
 								<div className="letter__conditions">{open.conditions}</div>
 								<div className="letter__title">{open.title}</div>
-								{/* body is sanitized HTML from the API — rendered as-is by contract */}
+								{/* body is sanitized HTML from the API, rendered as-is by contract */}
 								<div className="letter__body" dangerouslySetInnerHTML={{ __html: open.body }} />
 								<div className="letter__signature">{signoff}</div>
 								{openDoodle && (
