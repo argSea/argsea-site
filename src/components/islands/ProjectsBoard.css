@@ -74,6 +74,11 @@
  * padding of its own, so a card's --wp-x/--wp-y percentage lands exactly
  * where the API's 0-100 scale says it should. Children are pinned
  * absolutely; the frame itself never reflows them.
+ *
+ * The board the cards are tacked to: a faint panel a shade off the page,
+ * a soft inner edge-shadow to define its area, and a barely-there weave so
+ * the pins read as pinning into something. Low contrast on purpose, not a
+ * loud corkboard; a little card overhang past the edges is charming.
  */
 .wall {
 	position: relative;
@@ -81,6 +86,14 @@
 	max-width: 1150px;
 	margin: 0 auto;
 	aspect-ratio: 1150 / 840;
+	border-radius: 8px;
+	background-color: #171a30;
+	background-image:
+		repeating-linear-gradient(0deg, rgba(150, 160, 220, .015) 0 1px, transparent 1px 4px),
+		repeating-linear-gradient(90deg, rgba(150, 160, 220, .015) 0 1px, transparent 1px 4px);
+	box-shadow:
+		inset 0 0 60px rgba(0, 0, 0, .38),
+		inset 0 0 0 1px rgba(150, 160, 220, .05);
 }
 
 .card-wrap {
@@ -90,7 +103,7 @@
 	width: var(--wp-w);
 	/* a sensible floor so a card never downscales into a mushy thumbnail on a
 	   narrower wall, before the mobile fallback below takes over entirely */
-	min-width: 240px;
+	min-width: 300px;
 	transform: rotate(var(--wp-r));
 	cursor: pointer;
 	transition: opacity .35s ease, transform .25s ease;
@@ -131,10 +144,12 @@
 	border: 1px solid var(--manila-border);
 	border-radius: 4px;
 	padding: 13px 13px 16px;
+	/* flat wall, flat shadow: just enough lift to sit above the board, not
+	   the deep float the cards read as before */
 	box-shadow:
 		inset 0 0 0 5px rgba(244, 240, 228, .9),
 		inset 0 0 0 6px rgba(110, 100, 75, .28),
-		0 12px 28px rgba(0, 0, 0, .4);
+		0 3px 8px rgba(0, 0, 0, .3);
 }
 
 .postcard__photo {
@@ -303,6 +318,9 @@
 		display: flex;
 		flex-direction: column;
 		gap: 40px;
+		/* the board is a desktop-wall conceit; a stacked column has no board */
+		background: none;
+		box-shadow: none;
 	}
 
 	/* position: relative, not static: .tack still needs a positioning

@@ -24,11 +24,10 @@ const QUIPS: Record<Filter, string> = {
 	'tinkering':    'the hobby that survives every purge',
 };
 
-// A card's printed width, cycling per slot; the six wallPos defaults were
-// tuned against these so the wall reads scattered rather than gridded. Lifted
-// straight from the comp's hand-placed wallSlots (400/330/320/320/360/296 of
-// a 1150px-wide wall) so the cards read big and detailed, not thumbnailed.
-const CARD_WIDTHS = ['35%', '29%', '28%', '28%', '31%', '26%'];
+// Every card the same printed width, the comp's largest slot (w:400 of a
+// 1150px wall ~= 35%): a flat wall has no depth gap to justify a "closer"
+// card reading bigger, so they all match and read big and detailed.
+const CARD_WIDTH = '35%';
 
 // Thumbtack left offset per card, a little off-center so a row of tacks
 // never lines up in a row of its own.
@@ -37,7 +36,7 @@ const TACK_LEFTS = ['47%', '52%', '49%', '54%', '46%', '51%'];
 // The ghost slot sits below the six pinned postcards, in the open strip the
 // wall's fixed aspect ratio leaves under them; not derived from fallbackPos,
 // which is only a safety net for a real project missing its wallPos.
-const GHOST_SLOT: WallPos = { x: 38, y: 68, rotation: -1.8 };
+const GHOST_SLOT: WallPos = { x: 37, y: 77, rotation: -1.8 };
 const GHOST_WIDTH = '27%';
 
 /** A safety net for a project with no wallPos yet: a loose jittered grid. */
@@ -118,7 +117,7 @@ export default function ProjectsBoard({ projects, catEnabled, catPages, catSpots
 							'--wp-x': `${pos.x}%`,
 							'--wp-y': `${pos.y}%`,
 							'--wp-r': `${pos.rotation}deg`,
-							'--wp-w': CARD_WIDTHS[index % CARD_WIDTHS.length],
+							'--wp-w': CARD_WIDTH,
 							zIndex: projects.length - index,
 							...(isMatch ? { animation: `${enterName} .45s ease ${index * 0.05}s both` } : {}),
 						} as React.CSSProperties;
