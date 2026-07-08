@@ -14,7 +14,7 @@ const catDesigns = await getFigurehead();
 		<h1 class="head__title fade-up fade-up--1">The projects</h1>
 		<p class="head__intro fade-up fade-up--2">Things I've built, shipped, or babysat into stability. Sorted by how proud I am, roughly. Click a postcard to flip it over.</p>
 	</section>
-	<ProjectsBoard client:load projects={projects} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
+	<ProjectsBoard client:load projects={projects} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} wallGhost={copy.wallGhost} />
 </BaseLayout>
 
 <style>

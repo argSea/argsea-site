@@ -2,10 +2,11 @@
 // filtering fades the rest without reflowing the wall, and reduced motion
 // keeps every card's resting tilt (a base transform, not an animation).
 //
-// Design v5 moved the corner stamp off the card front onto the postcard-back
-// overlay's convention of "no stamp on the front" (design/Projects.dc.html);
-// the old grid-card-stamp assertions here are gone because the stamp no
-// longer renders on the wall at all, not because a preserved hook broke.
+// Design v6 (wall-and-overlay-polish) put the stamp back, on the opened
+// postcard-back overlay's stamp+postmark corner (design/Projects.dc.html);
+// the wall front still carries no stamp of its own for a card with a photo
+// (fixtures have none, so a stamp only ever renders on the reversed-back
+// no-image cards or inside the opened overlay).
 import { test, expect } from '@playwright/test';
 
 test('the wall pins all six postcards', async ({ page }) => {
@@ -30,14 +31,24 @@ test('filtering fades non-matching postcards and leaves their spots empty', asyn
 	expect(hiddenCount).toBe(5);
 });
 
-test('the postcard-back overlay carries no stamp', async ({ page }) => {
+test('the postcard-back overlay carries the stamp and postmark', async ({ page }) => {
 	await page.goto('/projects');
 	await page.locator('.projects-grid .card-wrap').first().click();
 
 	const overlay = page.locator('.overlay-card');
 	await expect(overlay).toBeVisible();
 	await expect(overlay.locator('.photo-print')).toBeVisible();
-	await expect(overlay.locator('[data-stamp]')).toHaveCount(0);
+	await expect(overlay.locator('[data-stamp]')).toHaveCount(1);
+	await expect(overlay.locator('.postcard-back__postmark')).toBeVisible();
+});
+
+test('a no-photo wall card shows the reversed-back look, not a blank panel', async ({ page }) => {
+	await page.goto('/projects');
+	// every fixture project has image: null, so the first card is a back
+	const back = page.locator('.projects-grid .card-wrap').first().locator('.postcard__back');
+	await expect(back).toBeVisible();
+	await expect(back.locator('.postcard__back-lines')).toBeVisible();
+	await expect(back.locator('.postcard__back-postmark')).toBeVisible();
 });
 
 // emulateMedia, not test.use({ reducedMotion }): the context option does not

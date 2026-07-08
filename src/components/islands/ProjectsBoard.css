@@ -88,15 +88,19 @@
 	left: var(--wp-x);
 	top: var(--wp-y);
 	width: var(--wp-w);
+	/* a sensible floor so a card never downscales into a mushy thumbnail on a
+	   narrower wall, before the mobile fallback below takes over entirely */
+	min-width: 240px;
 	transform: rotate(var(--wp-r));
 	cursor: pointer;
 	transition: opacity .35s ease, transform .25s ease;
 }
 
+/* Stacking is order-based (set inline via zIndex), never hover-driven: a
+   hovered card only lifts, it does not jump to the front of the pile */
 .card-wrap:hover,
 .card-wrap:focus-visible {
 	transform: rotate(0deg) translateY(-6px);
-	z-index: 20;
 	outline: none;
 }
 
@@ -105,15 +109,16 @@
 	pointer-events: none;
 }
 
-/* Brass thumbtack, jittered per card, sat above the paper */
+/* Red thumbtack, jittered per card, sat above the paper; wine-red family to
+   match the notes-page ribbon (NotesList.css .journal__ribbon) */
 .tack {
 	position: absolute;
 	top: -5px;
 	width: 12px;
 	height: 12px;
 	border-radius: 50%;
-	background: radial-gradient(circle at 35% 30%, #ecd9a4, #8a6d3b 70%);
-	box-shadow: 0 2px 4px rgba(0, 0, 0, .55), 0 0 0 1px rgba(60, 48, 24, .4);
+	background: radial-gradient(circle at 35% 30%, #b95069, #843a4c 70%);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .55), 0 0 0 1px rgba(60, 24, 32, .4);
 	z-index: 6;
 	pointer-events: none;
 }
@@ -147,22 +152,16 @@
 	filter: grayscale(1) contrast(1.05) brightness(.95);
 }
 
-.postcard__photo-blank {
-	width: 100%;
-	height: 100%;
-	background: var(--manila);
-}
-
-/* Darkens the photo's lower third so the caption reads over a real photo or
-   the blank cream panel alike */
+/* Just enough of a scrim for the caption to read; the photo itself must stay
+   bright and clean, a silver print rather than a murky vignette */
 .postcard__photo::after {
 	content: '';
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
 	background:
-		linear-gradient(0deg, rgba(42, 34, 20, .6) 0%, rgba(42, 34, 20, .25) 26%, transparent 46%),
-		radial-gradient(ellipse at 50% 32%, transparent 52%, rgba(58, 46, 26, .3) 100%);
+		linear-gradient(0deg, rgba(42, 34, 20, .4) 0%, rgba(42, 34, 20, .14) 22%, transparent 42%),
+		radial-gradient(ellipse at 50% 32%, transparent 62%, rgba(58, 46, 26, .16) 100%);
 }
 
 .postcard__caption {
@@ -175,6 +174,60 @@
 	display: flex;
 	flex-direction: column;
 	gap: 1px;
+}
+
+/* The "backwards postcard": a project with no photo shows its own back
+   instead of a blank panel, cream stock with ruled address lines, a postmark,
+   and its stamp if it has one (design/Projects.dc.html wall-thumbnail back) */
+.postcard__back {
+	position: relative;
+	box-sizing: border-box;
+	aspect-ratio: 1.55 / 1;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 12px 14px 30px;
+	background: var(--manila);
+}
+
+.postcard__back-lines {
+	flex: 1.2;
+	width: 100%;
+	min-width: 0;
+}
+
+/* Postmark and stamp share the top-right corner, stamp overlapping the
+   dashed ring the way a real cancellation mark lands across the stamp */
+.postcard__back-corner {
+	position: absolute;
+	top: 8px;
+	right: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.postcard__back-postmark {
+	position: absolute;
+	opacity: .85;
+	pointer-events: none;
+}
+
+.postcard__caption--back {
+	position: absolute;
+	left: 14px;
+	bottom: 10px;
+	right: 14px;
+}
+
+.postcard__caption--back .postcard__caption-title {
+	color: var(--manila-ink-title);
+	text-shadow: none;
+}
+
+.postcard__caption--back .postcard__caption-sub {
+	color: var(--manila-ink-soft);
+	text-shadow: none;
 }
 
 .postcard__caption-title {
@@ -261,6 +314,7 @@
 		left: auto;
 		top: auto;
 		width: min(100%, 440px);
+		min-width: 0;
 		margin: 0 auto;
 	}
 

@@ -145,6 +145,7 @@ export interface SiteCopy {
 	catSpots:       CatSpots;    // per-spot switch, keyed by the frozen spot ids
 	bottleProverbs: string[];    // emptied by the keeper = the bottle egg is off
 	lighthouses:    Lighthouse[]; // emptied = plain "last position: 404", no flip
+	wallGhost?:     { x: number; y: number; rotation: number; enabled: boolean } | null; // the projects wall's ghost placard; null/absent → the page default position, enabled
 	updatedAt:      string;
 }
 
