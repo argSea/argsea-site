@@ -2,6 +2,7 @@
 .DS_Store
 Thumbs.db
 *.swp
+*:Zone.Identifier
 .idea/
 .vscode/
 
