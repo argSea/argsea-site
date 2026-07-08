@@ -24,6 +24,7 @@ import siteCopyFixture from '../data/fixtures/siteCopy.json';
 import keeperProfileFixture from '../data/fixtures/keeperProfile.json';
 import figureheadFixture from '../data/fixtures/figurehead.json';
 import suggestionsFixture from '../data/fixtures/suggestions.json';
+import doodlesFixture from '../data/fixtures/doodles.json';
 
 export type Category = 'backend' | 'games' | 'this website' | 'tinkering';
 export type Status = 'draft' | 'published' | 'archived';
@@ -79,16 +80,18 @@ export interface Hobby {
 }
 
 export interface Note {
-	id:          string;
-	title:       string;
-	teaser:      string;
-	body:        string;  // sanitized HTML
-	date:        string;  // freeform display string, e.g. "jun 2026"
-	image:       string | null;
-	status:      Status;
-	publishedAt: string;
-	createdAt:   string;
-	updatedAt:   string;
+	id:            string;
+	title:         string;
+	teaser:        string;
+	body:          string;  // sanitized HTML
+	date:          string;  // freeform display string, e.g. "jun 2026"
+	conditions:    string;  // the log-style dek, e.g. "fog inland · desktop suspiciously calm"
+	doodleCaption: string;  // the handwritten quip beside the doodle; "" when there's no doodle
+	doodleId:      string | null;
+	status:        Status;
+	publishedAt:   string;
+	createdAt:     string;
+	updatedAt:     string;
 }
 
 // The smuggler's hold master switches: which easter eggs are live. Absent on
@@ -200,6 +203,16 @@ export interface FigureheadDesign {
 	updatedAt: string;
 }
 
+// A doodle: the keeper's marginalia, a small hand-drawn shape attached to a
+// note. Structured geometry only, same contract as a figurehead design — no
+// stored markup, ever.
+export interface Doodle {
+	id:      string;
+	name:    string;
+	viewBox: string;
+	shapes:  FigureheadShape[];
+}
+
 // A "next: ???" suggestion for the hobbies page chip — public, no auth.
 export interface Suggestion {
 	id:    string;
@@ -215,6 +228,7 @@ export interface ContentSource {
 	getKeeperProfile(): Promise<KeeperProfile>;
 	getFigurehead(): Promise<FigureheadDesign[]>;
 	getSuggestions(): Promise<Suggestion[]>;
+	getDoodles(): Promise<Doodle[]>;
 }
 
 class ApiSource implements ContentSource {
@@ -281,6 +295,16 @@ class ApiSource implements ContentSource {
 			return [];
 		}
 	}
+
+	/** The keeper's doodles — public, no ?published flag. Never fails the build: unreachable/error just leaves notes with no doodle to join. */
+	async getDoodles(): Promise<Doodle[]> {
+		try {
+			const res = await fetch(`${this.baseUrl}/1/doodle`);
+			return res.ok ? await res.json() as Doodle[] : [];
+		} catch {
+			return [];
+		}
+	}
 }
 
 class FixtureSource implements ContentSource {
@@ -291,6 +315,7 @@ class FixtureSource implements ContentSource {
 	getKeeperProfile(): Promise<KeeperProfile> { return Promise.resolve(keeperProfileFixture as KeeperProfile); }
 	getFigurehead(): Promise<FigureheadDesign[]> { return Promise.resolve(figureheadFixture as FigureheadDesign[]); }
 	getSuggestions(): Promise<Suggestion[]> { return Promise.resolve(suggestionsFixture as Suggestion[]); }
+	getDoodles(): Promise<Doodle[]> { return Promise.resolve(doodlesFixture as Doodle[]); }
 }
 
 // ARGSEA_API_URL set → build against the live API; unset → checked-in fixtures.
@@ -347,6 +372,11 @@ export function getFigurehead(): Promise<FigureheadDesign[]> {
 /** The next-hobby chip's suggestions by their manual `order` key. */
 export async function getSuggestions(): Promise<Suggestion[]> {
 	return (await source.getSuggestions()).sort((a, b) => a.order - b.order);
+}
+
+/** The keeper's doodles, joined onto notes by `doodleId`; [] = no doodle renders anywhere. */
+export function getDoodles(): Promise<Doodle[]> {
+	return source.getDoodles();
 }
 
 /** Fill empty/missing SiteCopy fields from the approved design copy. */

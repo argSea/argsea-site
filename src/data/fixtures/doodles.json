@@ -1,0 +1,91 @@
+[
+  {
+    "id": "fixture-doodle-inkwell",
+    "name": "inkwell",
+    "viewBox": "0 0 32 32",
+    "shapes": [
+      {
+        "id": "base",
+        "type": "ellipse",
+        "cx": 16,
+        "cy": 25,
+        "rx": 10,
+        "ry": 3.5,
+        "fill": "#5f6ec4",
+        "opacity": 0.5
+      },
+      {
+        "id": "bottle",
+        "type": "rect",
+        "x": 8,
+        "y": 10,
+        "w": 16,
+        "h": 15,
+        "fill": "#232a4d",
+        "stroke": "#93a0e8",
+        "strokeWidth": 1.4
+      },
+      {
+        "id": "quill",
+        "type": "line",
+        "x1": 20,
+        "y1": 10,
+        "x2": 28,
+        "y2": 2,
+        "stroke": "#f0d9a8",
+        "strokeWidth": 1.6,
+        "linecap": "round"
+      },
+      {
+        "id": "drip",
+        "type": "path",
+        "d": "M16 25 q-1 2.5 0 4 q1 -1.5 0 -4 Z",
+        "fill": "#f0d9a8"
+      }
+    ]
+  },
+  {
+    "id": "fixture-doodle-boat",
+    "name": "little boat",
+    "viewBox": "0 0 40 30",
+    "shapes": [
+      {
+        "id": "hull",
+        "type": "path",
+        "d": "M6 24 L34 24 L29 29 L11 29 Z",
+        "fill": "#232a4d",
+        "stroke": "#93a0e8",
+        "strokeWidth": 1.4,
+        "linejoin": "round"
+      },
+      {
+        "id": "mast",
+        "type": "line",
+        "x1": 20,
+        "y1": 24,
+        "x2": 20,
+        "y2": 3,
+        "stroke": "#5f6ec4",
+        "strokeWidth": 1.2,
+        "linecap": "round"
+      },
+      {
+        "id": "sail",
+        "type": "path",
+        "d": "M21 5 L21 22 L32 22 Z",
+        "fill": "#f0d9a8",
+        "opacity": 0.85
+      },
+      {
+        "id": "wake",
+        "type": "path",
+        "d": "M2 27 q4 -1.5 8 0 M30 27 q4 -1.5 8 0",
+        "fill": "none",
+        "stroke": "#93a0e8",
+        "strokeWidth": 1,
+        "linecap": "round",
+        "opacity": 0.5
+      }
+    ]
+  }
+]

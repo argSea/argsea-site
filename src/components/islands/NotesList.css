@@ -1,48 +1,126 @@
-/* Notes list rows and the note-as-a-letter overlay. */
+/* The Keeper's Journal: a cream-paper spread (list) + a journal-entry overlay
+   (detail). Both sit on the dark site chrome, so they carry their own paper
+   tokens rather than the page's dark palette. */
+
+.journal {
+	--paper-bg:      #f4e9cf;
+	--paper-ink:     #2c2818;
+	--paper-ink-soft: #5b5340;
+	--paper-line:    rgba(44, 40, 24, .16);
+
+	position: relative;
+	background: var(--paper-bg);
+	border-radius: 6px;
+	padding: 30px clamp(22px, 5vw, 48px) 22px clamp(46px, 8vw, 64px);
+	box-shadow: 0 18px 40px rgba(0, 0, 0, .4);
+}
+
+/* Punch-holes down the left margin — cut through to the dark page behind */
+.journal__holes {
+	position: absolute;
+	top: 26px;
+	bottom: 26px;
+	left: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.journal__hole {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: var(--bg-bottom);
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, .6);
+}
+
+/* A ribbon bookmark hanging over the top edge */
+.journal__ribbon {
+	position: absolute;
+	top: -12px;
+	right: clamp(36px, 8vw, 64px);
+	width: 20px;
+	height: 58px;
+	background: var(--periwinkle-deep);
+	clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 76%, 0 100%);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, .35);
+	transform: rotate(-2deg);
+}
+
+.journal__header {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	color: var(--paper-ink-soft);
+	padding-bottom: 14px;
+	margin-bottom: 4px;
+	border-bottom: 1px solid var(--paper-line);
+}
+
+.journal__rows {
+	display: flex;
+	flex-direction: column;
+}
+
+.journal__footer {
+	padding-top: 18px;
+	margin-top: 4px;
+	border-top: 1px solid var(--paper-line);
+	font-size: 14px;
+	font-style: italic;
+	color: var(--paper-ink-soft);
+}
 
 .note-row {
 	display: flex;
 	gap: clamp(14px, 3vw, 28px);
 	align-items: baseline;
 	flex-wrap: wrap;
-	padding: 24px clamp(4px, 1vw, 12px);
-	border-bottom: 1px solid rgba(150, 160, 220, .14);
+	padding: 20px clamp(4px, 1vw, 12px);
+	border-bottom: 1px solid var(--paper-line);
 	cursor: pointer;
 	transition: background .2s, transform .2s;
 }
 
+.note-row:last-child {
+	border-bottom: none;
+}
+
 .note-row:hover {
-	background: rgba(150, 160, 220, .05);
+	background: rgba(44, 40, 24, .05);
 	transform: translateX(6px);
 }
 
-.note-row__date {
+.note-row__dateline {
 	flex: none;
-	width: 110px;
+	width: 150px;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.note-row__date {
 	font-family: var(--font-mono);
 	font-size: 12.5px;
+	color: var(--paper-ink-soft);
+}
+
+.note-row__conditions {
+	font-style: italic;
+	font-size: 12px;
 	color: var(--periwinkle-deep);
 }
 
-/* Small tilted photo print in the row — the resting tilt is a base transform
-   so reduced-motion (which only strips animation) keeps it */
-.note-row__print {
+/* The small marginalia doodle in the row — the resting tilt is a base
+   transform so reduced-motion (which only strips animation) keeps it */
+.note-row__doodle {
 	flex: none;
 	align-self: center;
-	display: inline-block;
-	background: #e8e6df;
-	border-radius: 3px;
-	padding: 4px 4px 9px;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, .3);
-	transform: rotate(-2deg);
-}
-
-.note-row__print img {
-	display: block;
-	width: 46px;
+	width: 34px;
 	height: 34px;
-	border-radius: 1px;
-	object-fit: cover;
+	overflow: visible;
+	transform: rotate(-4deg);
 }
 
 .note-row__middle {
@@ -56,25 +134,26 @@
 .note-row__title {
 	font-family: var(--font-display);
 	font-size: clamp(19px, 3vw, 24px);
-	color: var(--text-head);
+	color: var(--paper-ink);
 }
 
 .note-row__teaser {
+	font-style: italic;
 	font-size: 15.5px;
-	color: var(--text-body);
+	color: var(--paper-ink-soft);
 	line-height: 1.55;
 }
 
 .note-row__read {
 	font-family: var(--font-mono);
 	font-size: 13px;
-	color: var(--gold);
+	color: var(--periwinkle-deep);
 }
 
-/* --- The note, as a letter --- */
+/* --- The note, as a journal entry --- */
 
 /* The wrapper owns width, entry, and positioning so the perched cat can hang
-   over the letter's top edge (the card itself scrolls, so nothing may overflow it) */
+   over the entry's top edge (the card itself scrolls, so nothing may overflow it) */
 .letter-wrap {
 	position: relative;
 	width: min(680px, 100%);
@@ -82,11 +161,36 @@
 }
 
 .letter {
+	--paper-bg:      #f4e9cf;
+	--paper-ink:     #2c2818;
+	--paper-ink-soft: #5b5340;
+	--paper-line:    rgba(44, 40, 24, .16);
+
 	width: 100%;
 	box-sizing: border-box;
+	background: var(--paper-bg);
+	border: 1px solid var(--paper-line);
 }
 
-/* The cat perches on the letter's top-left edge when the pick lands on this overlay */
+.letter .overlay-head {
+	border-bottom: 1.5px dashed var(--paper-line);
+}
+
+.letter .overlay-kicker {
+	color: var(--periwinkle-deep);
+}
+
+.letter .pill-close {
+	color: var(--paper-ink-soft);
+	border-color: var(--paper-line);
+}
+
+.letter .pill-close:hover {
+	color: var(--paper-ink);
+	border-color: rgba(44, 40, 24, .4);
+}
+
+/* The cat perches on the entry's top-left edge when the pick lands on this overlay */
 .cat-mount--note {
 	top: -50px;
 	left: 34px;
@@ -104,32 +208,21 @@
 	padding: clamp(24px, 5vw, 36px);
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: 14px;
+	position: relative;
+}
+
+.letter__conditions {
+	font-style: italic;
+	font-size: 14px;
+	color: var(--periwinkle-deep);
 }
 
 .letter__title {
 	font-family: var(--font-display);
 	font-size: clamp(24px, 4vw, 30px);
-	color: var(--text-strong);
+	color: var(--paper-ink);
 	line-height: 1.2;
-}
-
-/* The letter's larger snapshot, framed like the postcard-back photo print */
-.letter__print {
-	align-self: flex-start;
-	width: min(260px, 70%);
-	background: #e8e6df;
-	padding: 8px 8px 24px;
-	border-radius: 2px;
-	box-shadow: 0 6px 16px rgba(0, 0, 0, .35);
-	transform: rotate(-1.5deg);
-}
-
-.letter__print img {
-	display: block;
-	width: 100%;
-	height: 150px;
-	object-fit: cover;
 }
 
 .letter__body {
@@ -142,12 +235,39 @@
 	margin: 0;
 	font-size: 17px;
 	line-height: 1.7;
-	color: var(--text-body-strong);
+	color: var(--paper-ink);
 }
 
 .letter__signature {
 	font-family: var(--font-mono);
 	font-size: 13px;
-	color: var(--periwinkle);
+	color: var(--paper-ink-soft);
 	margin-top: 8px;
+}
+
+/* The doodle + its handwritten caption, bottom-right of the entry, like
+   something scrawled in the margin after the fact */
+.letter__marginalia {
+	align-self: flex-end;
+	display: flex;
+	align-items: flex-end;
+	gap: 10px;
+	margin-top: 8px;
+	max-width: 220px;
+	text-align: right;
+}
+
+.letter__doodle {
+	flex: none;
+	width: 56px;
+	height: 56px;
+	overflow: visible;
+	transform: rotate(3deg);
+}
+
+.letter__doodle-caption {
+	font-family: var(--font-body);
+	font-style: italic;
+	font-size: 14px;
+	color: var(--paper-ink-soft);
 }

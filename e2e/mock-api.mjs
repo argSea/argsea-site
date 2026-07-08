@@ -46,6 +46,7 @@ const routes = {
 	// while the fixtures build renders through the v1-seed shape path
 	'/1/figurehead/published':       fixture('figurehead.empty'),
 	'/1/suggestion':                 fixture('suggestions'),
+	'/1/doodle':                     fixture('doodles'),
 };
 
 createServer((req, res) => {
