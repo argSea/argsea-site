@@ -34,6 +34,16 @@
 	--border-card:      rgba(150, 160, 220, .2);
 	--border-chip:      rgba(150, 160, 220, .3);
 
+	/* Manila/cream paper stock: the keeper's wall and the postcard back */
+	--manila:            #efeadb;
+	--manila-deep:       #e9e2d0;
+	--manila-border:     #d8cfb6;
+	--manila-ink-title:  #20233c;
+	--manila-ink-body:   #3b3f5e;
+	--manila-ink-soft:   #8a7f63;
+	--manila-ink-label:  #a39876;
+	--manila-ink-brown:  #8a6d3b;
+
 	/* Type */
 	--font-display: 'Gloock', serif;
 	--font-body:    'Newsreader Variable', 'Newsreader', serif;
