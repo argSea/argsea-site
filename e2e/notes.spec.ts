@@ -1,6 +1,6 @@
-// The Keeper's Journal (fixtures build): doodles appear for notes that carry
-// one (small in the row, larger beside the handwritten caption in the open
-// entry) and the sign-off is the keeper's.
+// The Keeper's Journal (fixtures build): a note's doodle (if any) only ever
+// appears in the open entry, beside its handwritten caption; the sign-off is
+// the keeper's.
 import { test, expect } from '@playwright/test';
 
 // Rows run newest-first: the re-architecting note (row 0) and CachyOS (row 1)
@@ -8,12 +8,11 @@ import { test, expect } from '@playwright/test';
 const DOODLED_ROW = 1;
 const UNDOODLED_ROW = 2;
 
-test('only the doodled note rows show a doodle', async ({ page }) => {
+test('rows carry no doodle of their own', async ({ page }) => {
 	await page.goto('/notes');
 	const rows = page.locator('.note-row');
 	await expect(rows).toHaveCount(3);
-	await expect(page.locator('.note-row__doodle')).toHaveCount(2);
-	await expect(rows.nth(UNDOODLED_ROW).locator('.note-row__doodle')).toHaveCount(0);
+	await expect(page.locator('.note-row svg')).toHaveCount(0);
 });
 
 test('a row shows its date and conditions line', async ({ page }) => {
@@ -49,11 +48,11 @@ test('the entry signs off with the keeper fixture', async ({ page }) => {
 	await expect(page.locator('.letter__signature')).toHaveText('- j');
 });
 
-test('reduced motion keeps the doodle resting tilt', async ({ page }) => {
+test('reduced motion keeps the journal tilt', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/notes');
-	const doodle = page.locator('.note-row__doodle').first();
-	await expect(doodle).toBeVisible();
+	const journal = page.locator('.journal');
+	await expect(journal).toBeVisible();
 	// The tilt is a base transform, so the kill-switch must not flatten it
-	expect(await doodle.evaluate((element) => getComputedStyle(element).transform)).not.toBe('none');
+	expect(await journal.evaluate((element) => getComputedStyle(element).transform)).not.toBe('none');
 });

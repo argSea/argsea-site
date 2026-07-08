@@ -1,7 +1,7 @@
 // The stateful part of the Keeper's Journal: the journal-spread rows and the
 // journal-entry overlay. A note's doodle (if any) is rendered as structured
-// inline SVG, small in its row, larger beside its handwritten caption in the
-// open entry (design: The Keeper's Journal).
+// inline SVG, beside its handwritten caption in the open entry only; the row
+// itself carries no doodle (design: The Keeper's Journal).
 import { useState } from 'react';
 import type { Doodle, FigureheadDesign, FigureheadShape, Note } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
@@ -77,45 +77,57 @@ export default function NotesList({ notes, doodles, signoff, catEnabled, catPage
 	return (
 		<>
 			<div className="journal">
-				<div className="journal__holes" aria-hidden="true">
-					{Array.from({ length: 7 }).map((_, index) => <span key={index} className="journal__hole" />)}
-				</div>
+				<div className="journal__binding" aria-hidden="true" />
 				<div className="journal__ribbon" aria-hidden="true" />
-				<div className="journal__header">KEEPER'S JOURNAL · KEPT BY THE LIGHT</div>
+				{catEnabled && <div className="journal__coffee-ring" aria-hidden="true" />}
+				<div className="journal__header">
+					<span className="journal__header-label">Keeper's journal · private-ish</span>
+					<span className="journal__header-vol">vol. 1</span>
+				</div>
 
 				<div className="journal__rows">
-					{notes.map((note) => {
-						const doodle = doodleFor(note.doodleId);
-						return (
-							<div
-								key={note.id}
-								className="note-row"
-								role="button"
-								tabIndex={0}
-								onClick={() => openNote(note.id)}
-								onKeyDown={(event) => {
-									if (event.key === 'Enter' || event.key === ' ') {
-										event.preventDefault();
-										openNote(note.id);
-									}
-								}}
-							>
-								<span className="note-row__dateline">
-									<span className="note-row__date">{note.date}</span>
-									<span className="note-row__conditions">{note.conditions}</span>
-								</span>
-								{doodle && <DoodleSvg doodle={doodle} className="note-row__doodle" />}
-								<span className="note-row__middle">
+					{notes.map((note) => (
+						<div
+							key={note.id}
+							className="note-row"
+							role="button"
+							tabIndex={0}
+							onClick={() => openNote(note.id)}
+							onKeyDown={(event) => {
+								if (event.key === 'Enter' || event.key === ' ') {
+									event.preventDefault();
+									openNote(note.id);
+								}
+							}}
+						>
+							<span className="note-row__dateline">
+								<span className="note-row__date">{note.date}</span>
+								<span className="note-row__conditions">{note.conditions}</span>
+							</span>
+							<span className="note-row__middle">
+								<span className="note-row__titlerow">
 									<span className="note-row__title">{note.title}</span>
-									<span className="note-row__teaser">{note.teaser}</span>
+									<span className="note-row__read">read →</span>
 								</span>
-								<span className="note-row__read">read →</span>
-							</div>
-						);
-					})}
+								<span className="note-row__teaser">{note.teaser}</span>
+							</span>
+						</div>
+					))}
 				</div>
 
-				<div className="journal__footer">{notes.length} inked so far. The bar for "blog" is five. We'll see.</div>
+				<div className="journal__foot">
+					<div className="journal__footer">{notes.length} inked so far. The bar for "blog" is five. We'll see.</div>
+					{catEnabled && (
+						<div className="journal__pawprints">
+							<span className="journal__paw-dots">
+								<span className="journal__paw-dot" />
+								<span className="journal__paw-dot" />
+								<span className="journal__paw-dot" />
+							</span>
+							<span className="journal__paw-caption">the cat has read these</span>
+						</div>
+					)}
+				</div>
 			</div>
 
 			{open && (
@@ -132,13 +144,15 @@ export default function NotesList({ notes, doodles, signoff, catEnabled, catPage
 								<div className="letter__title">{open.title}</div>
 								{/* body is sanitized HTML from the API, rendered as-is by contract */}
 								<div className="letter__body" dangerouslySetInnerHTML={{ __html: open.body }} />
-								<div className="letter__signature">{signoff}</div>
-								{openDoodle && (
-									<div className="letter__marginalia">
-										<DoodleSvg doodle={openDoodle} className="letter__doodle" />
-										<span className="letter__doodle-caption">{open.doodleCaption}</span>
-									</div>
-								)}
+								<div className="letter__signrow">
+									<div className="letter__signature">{signoff}</div>
+									{openDoodle && (
+										<div className="letter__marginalia">
+											<DoodleSvg doodle={openDoodle} className="letter__doodle" />
+											<span className="letter__doodle-caption">{open.doodleCaption}</span>
+										</div>
+									)}
+								</div>
 							</div>
 						</div>
 					</div>
