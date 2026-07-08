@@ -3,7 +3,7 @@
     "id": "fixture-note-1",
     "title": "What re-architecting taught me about not architecting",
     "teaser": "Sometimes the best system design is the meeting where you talk everyone out of a new system.",
-    "body": "<p>The most valuable architecture work I did last year produced zero diagrams. It was a meeting where we decided not to build a new system, because the old one was fine and the problem was actually a missing index.</p><p>Nobody frames that. There is no conference talk called \"We Kept The Thing.\" But keeping the thing — understanding it well enough to defend it — is harder than replacing it, and pays better.</p><p>So my current architecture checklist starts with one question: what if we did nothing? It is amazing how often \"nothing\" is a strong candidate.</p>",
+    "body": "<p>The most valuable architecture work I did last year produced zero diagrams. It was a meeting where we decided not to build a new system, because the old one was fine and the problem was actually a missing index.</p><p>Nobody frames that. There is no conference talk called \"We Kept The Thing.\" But keeping the thing (understanding it well enough to defend it) is harder than replacing it, and pays better.</p><p>So my current architecture checklist starts with one question: what if we did nothing? It is amazing how often \"nothing\" is a strong candidate.</p>",
     "date": "jun 2026",
     "conditions": "fair skies · one fewer diagram",
     "doodleCaption": "the inkwell, mostly full",

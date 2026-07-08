@@ -1,19 +1,19 @@
 // The single seam between the site and its content. Nothing else in the
 // codebase fetches: pages call these functions in frontmatter and stay
-// source-agnostic. Build-time only — never import this from an island
+// source-agnostic. Build-time only: never import this from an island
 // (it reads process.env and bundles the fixtures).
 //
 // Two sources implement one contract:
-//   - ApiSource     — build-time fetch from the Go API when ARGSEA_API_URL is set
-//   - FixtureSource — checked-in JSON matching the wire format exactly
+//   - ApiSource:     build-time fetch from the Go API when ARGSEA_API_URL is set
+//   - FixtureSource: checked-in JSON matching the wire format exactly
 //
 // API sharp edges honored here (caravan plan, "API contract caveats"):
-//   - item routes reject a trailing slash; collections accept both — we
+//   - item routes reject a trailing slash; collections accept both, so we
 //     standardize on no trailing slash
 //   - reads pass ?published=true explicitly, so the build stays draft-free
 //     even if it ever runs with ambient auth
 //   - responses are bare entities/arrays; an empty list is [], never null
-//   - rich text (body) is pre-sanitized HTML — render with set:html /
+//   - rich text (body) is pre-sanitized HTML: render with set:html /
 //     dangerouslySetInnerHTML, never re-sanitize
 //   - timestamps are fixed-width RFC3339 strings, so string sort == chronological
 
@@ -34,7 +34,7 @@ export type StampMotif = 'lighthouse' | 'boat' | 'sun' | 'wave' | 'moon' | 'anch
 export type StampInk = '#f0d9a8' | '#93a0e8';
 
 // A postcard's corner stamp/postmark, designed per-project in the admin.
-// Optional on the wire — older documents may not carry one.
+// Optional on the wire; older documents may not carry one.
 export interface Stamp {
 	shape:  StampShape;
 	motif:  StampMotif;
@@ -95,7 +95,7 @@ export interface Note {
 }
 
 // The smuggler's hold master switches: which easter eggs are live. Absent on
-// the wire reads as on — an older copy document must not silently sink an egg.
+// the wire reads as on; an older copy document must not silently sink an egg.
 export interface EggToggles {
 	bottle: boolean;
 	cat:    boolean;
@@ -104,7 +104,7 @@ export interface EggToggles {
 
 // The harbor cat's catalog toggles: a page master switch and a per-spot switch,
 // both absent = on (a fresh copy doc lights the whole catalog). The spot ids and
-// these field names are the frozen contract shared with the admin — see
+// these field names are the frozen contract shared with the admin: see
 // src/lib/catSpots.ts for the catalog they key against.
 export type CatPages = Record<string, boolean>;
 export type CatSpots = Record<string, boolean>;
@@ -118,7 +118,7 @@ export interface Lighthouse {
 
 // The "signal flags" singleton: the little lines of copy that fly over every
 // page, plus the smuggler's hold (easter-egg toggles and their content). All
-// text fields are plain text — the API does not sanitize them as HTML, so
+// text fields are plain text; the API does not sanitize them as HTML, so
 // render them as text, never with set:html.
 export interface SiteCopy {
 	id:             string;
@@ -143,7 +143,7 @@ export interface SiteCopy {
 export type QuipField = 'quipHello' | 'quipProjects' | 'quipHobbies' | 'quipNotes' | 'quip404';
 
 // The keeper's papers: the public profile subset of the keeper's user document
-// (GET /1/user/{id}/profile — never username/password/role). The contact band,
+// (GET /1/user/{id}/profile; never username/password/role). The contact band,
 // footer socials, and the note sign-off read from these at build time.
 export interface KeeperProfile {
 	name:     string;
@@ -152,16 +152,16 @@ export interface KeeperProfile {
 	title:    string;
 	bio:      string;
 	email:    string;
-	github:   string;  // host path, e.g. "github.com/argsea" — no scheme on the wire
+	github:   string;  // host path, e.g. "github.com/argsea" (no scheme on the wire)
 	linkedin: string;
-	signoff:  string;  // how notes end, e.g. "— j"
+	signoff:  string;  // how notes end, e.g. "- j"
 }
 
 export type FigureheadShapeType = 'path' | 'ellipse' | 'rect' | 'line';
 export type FigureheadRole = 'tail' | 'eyes' | 'body';
 
 // One stored shape of a figurehead design (caravan contract: figurehead.md).
-// Structured shapes only — no markup is ever stored. An absent optional field
+// Structured shapes only; no markup is ever stored. An absent optional field
 // means the SVG attribute default; renderers write only the fields present.
 export interface FigureheadShape {
 	id:           string;
@@ -204,7 +204,7 @@ export interface FigureheadDesign {
 }
 
 // A doodle: the keeper's marginalia, a small hand-drawn shape attached to a
-// note. Structured geometry only, same contract as a figurehead design — no
+// note. Structured geometry only, same contract as a figurehead design: no
 // stored markup, ever.
 export interface Doodle {
 	id:      string;
@@ -213,7 +213,7 @@ export interface Doodle {
 	shapes:  FigureheadShape[];
 }
 
-// A "next: ???" suggestion for the hobbies page chip — public, no auth.
+// A "next: ???" suggestion for the hobbies page chip: public, no auth.
 export interface Suggestion {
 	id:    string;
 	value: string;
@@ -261,7 +261,7 @@ class ApiSource implements ContentSource {
 	/** The profile route is public (no auth, no ?published flag) but needs the keeper's user id from build config. */
 	async getKeeperProfile(): Promise<KeeperProfile> {
 		if (!this.keeperId) {
-			throw new Error('argsea api: ARGSEA_KEEPER_ID must be set alongside ARGSEA_API_URL — a live build must not ship the fixture profile');
+			throw new Error('argsea api: ARGSEA_KEEPER_ID must be set alongside ARGSEA_API_URL; a live build must not ship the fixture profile');
 		}
 		const url = `${this.baseUrl}/1/user/${this.keeperId}/profile`;
 		const res = await fetch(url);
@@ -272,7 +272,7 @@ class ApiSource implements ContentSource {
 	}
 
 	/**
-	 * The published figurehead designs — public, one per pose, no ?published flag
+	 * The published figurehead designs: public, one per pose, no ?published flag
 	 * (the route only ever serves published). Unlike the content fetches this one
 	 * never fails the build: absent/empty/unreachable all mean "no published
 	 * designs", and the cat falls back to its built-in poses.
@@ -286,7 +286,7 @@ class ApiSource implements ContentSource {
 		}
 	}
 
-	/** The next-hobby chip's suggestions — public, no ?published flag. Never fails the build: unreachable/error just leaves the chip on its "???" default. */
+	/** The next-hobby chip's suggestions: public, no ?published flag. Never fails the build: unreachable/error just leaves the chip on its "???" default. */
 	async getSuggestions(): Promise<Suggestion[]> {
 		try {
 			const res = await fetch(`${this.baseUrl}/1/suggestion`);
@@ -296,7 +296,7 @@ class ApiSource implements ContentSource {
 		}
 	}
 
-	/** The keeper's doodles — public, no ?published flag. Never fails the build: unreachable/error just leaves notes with no doodle to join. */
+	/** The keeper's doodles: public, no ?published flag. Never fails the build: unreachable/error just leaves notes with no doodle to join. */
 	async getDoodles(): Promise<Doodle[]> {
 		try {
 			const res = await fetch(`${this.baseUrl}/1/doodle`);
@@ -326,7 +326,7 @@ const KEEPER_ID = (import.meta.env.ARGSEA_KEEPER_ID ?? process.env.ARGSEA_KEEPER
 
 const source: ContentSource = API_URL ? new ApiSource(API_URL, KEEPER_ID) : new FixtureSource();
 
-/** Projects by the keeper's manual `order` key (ties: createdAt) — the API pre-sorts, this just holds fixtures to the same rule. */
+/** Projects by the keeper's manual `order` key (ties: createdAt); the API pre-sorts, this just holds fixtures to the same rule. */
 export async function getProjects(): Promise<Project[]> {
 	return (await source.getProjects()).sort((a, b) => a.order - b.order || a.createdAt.localeCompare(b.createdAt));
 }
@@ -342,7 +342,7 @@ export async function getNotes(): Promise<Note[]> {
 }
 
 // Memoized: the layout asks on every page and the singleton can't change
-// mid-build. Any field the API leaves empty falls back to the design copy —
+// mid-build. Any field the API leaves empty falls back to the design copy:
 // a fresh database may not have the singleton populated yet.
 let siteCopyPromise: Promise<SiteCopy> | undefined;
 
@@ -354,7 +354,7 @@ export function getSiteCopy(): Promise<SiteCopy> {
 // Memoized for the same reason as SiteCopy: the footer asks on every page.
 let keeperProfilePromise: Promise<KeeperProfile> | undefined;
 
-/** The keeper's papers — served as the API returns them, no fixture backfill of cleared fields. */
+/** The keeper's papers: served as the API returns them, no fixture backfill of cleared fields. */
 export function getKeeperProfile(): Promise<KeeperProfile> {
 	keeperProfilePromise ??= source.getKeeperProfile();
 	return keeperProfilePromise;
@@ -384,7 +384,7 @@ function withCopyDefaults(copy: SiteCopy): SiteCopy {
 	const defaults = siteCopyFixture as SiteCopy;
 	const merged = { ...copy };
 	// Generic over the key so the per-field assignment typechecks; only absent
-	// fields backfill — an emptied array is the keeper turning an egg off.
+	// fields backfill; an emptied array is the keeper turning an egg off.
 	const backfill = <K extends keyof SiteCopy>(key: K) => {
 		if (!merged[key]) {
 			merged[key] = defaults[key];

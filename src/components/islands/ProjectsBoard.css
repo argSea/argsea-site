@@ -1,4 +1,4 @@
-/* Projects board — filter row and the postcard grid. */
+/* Projects board: filter row and the postcard grid. */
 
 .filter-row {
 	display: flex;
@@ -30,7 +30,7 @@
 .postcard__desc--grid  { font-size: 15px; }
 .postcard__tags--grid  { padding-top: 8px; }
 
-/* One corner slot for both stamp shapes — the grid stamp sits at 0.9 scale */
+/* One corner slot for both stamp shapes; the grid stamp sits at 0.9 scale */
 .stamp-corner--grid {
 	top: 12px;
 	right: 14px;

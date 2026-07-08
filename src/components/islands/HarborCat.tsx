@@ -1,6 +1,6 @@
-// The harbor cat — the lighthouse's resident, out on its rounds across the spot
+// The harbor cat: the lighthouse's resident, out on its rounds across the spot
 // catalog. Two poses: perched (front paws on an edge) and lying (loafed along a
-// horizontal element, the current page's nav link). It's a pure sprite — the
+// horizontal element, the current page's nav link). It's a pure sprite: the
 // host (the director's mount or an overlay) positions it; the cat only knows
 // its pose, its quip context, and which way to open its speech bubble. Each
 // poke pops a context-specific quip that dismisses itself.
@@ -36,14 +36,14 @@ interface Props {
 	designs?:    FigureheadDesign[];       // published figurehead designs; the pose's design replaces its built-in SVG
 }
 
-// The animation transform-origin a shape carries, as an inline style — it wins
+// The animation transform-origin a shape carries, as an inline style; it wins
 // over the pose classes' CSS origins, so a design can move the pivot.
 const originStyle = (origin?: [number, number]) =>
 	origin ? { transformOrigin: `${origin[0]}px ${origin[1]}px` } : undefined;
 
 // One stored shape → its SVG element. Only the fields present on the shape are
 // written (absent = the SVG attribute default); there is no stored markup to
-// render, ever — shapes only, per the figurehead contract.
+// render, ever: shapes only, per the figurehead contract.
 function shapeElement(shape: FigureheadShape, className?: string) {
 	const presentation = {
 		className,
@@ -67,7 +67,7 @@ function shapeElement(shape: FigureheadShape, className?: string) {
 // canonical animations: tail shapes wear the pose's sway/drape class, eye
 // shapes gather into one blink group like the built-in <g> (a shared pivot,
 // emitted where the first eye sits so stacking is preserved), and everything
-// else — untagged or role "body" — stays static.
+// else (untagged or role "body") stays static.
 function designShapes(shapes: FigureheadShape[]) {
 	const eyes = shapes.filter((shape) => shape.role === 'eyes');
 	return shapes.map((shape) => {

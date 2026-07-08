@@ -1,4 +1,4 @@
-// The "next: ???" chip on the Hobbies page — clicking cycles through
+// The "next: ???" chip on the Hobbies page; clicking cycles through
 // suggestions and loops. Values come from the API via the page's frontmatter
 // (islands don't fetch); an empty list just shows the "???" default.
 import { useState } from 'react';

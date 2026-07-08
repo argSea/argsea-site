@@ -8,7 +8,7 @@ import type { Stamp as StampData, StampMotif } from '../../lib/api';
 const MONO = "'IBM Plex Mono', monospace";
 
 // Belt-and-braces: ink is interpolated into inline styles, so it passes this
-// whitelist no matter what the API sent — never an arbitrary string.
+// whitelist no matter what the API sent; never an arbitrary string.
 const VALID_INKS: readonly string[] = ['#f0d9a8', '#93a0e8'];
 
 const DEFAULT_STAMP: StampData = { shape: 'rect', motif: 'lighthouse', ink: '#f0d9a8', cents: '3¢' };

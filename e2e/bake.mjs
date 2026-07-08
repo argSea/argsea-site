@@ -1,5 +1,5 @@
 // Bakes the three static builds the specs run against (see the mode notes in
-// e2e/mock-api.mjs). Runs as the test:e2e pre-step — Playwright launches its
+// e2e/mock-api.mjs). Runs as the test:e2e pre-step: Playwright launches its
 // webServers before any global setup, so the dists must exist beforehand.
 // Builds are sequential because astro always emits to dist/; each result is
 // moved aside before the next build starts.

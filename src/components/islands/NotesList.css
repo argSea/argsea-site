@@ -15,7 +15,7 @@
 	box-shadow: 0 18px 40px rgba(0, 0, 0, .4);
 }
 
-/* Punch-holes down the left margin — cut through to the dark page behind */
+/* Punch-holes down the left margin: cut through to the dark page behind */
 .journal__holes {
 	position: absolute;
 	top: 26px;
@@ -112,7 +112,7 @@
 	color: var(--periwinkle-deep);
 }
 
-/* The small marginalia doodle in the row — the resting tilt is a base
+/* The small marginalia doodle in the row: the resting tilt is a base
    transform so reduced-motion (which only strips animation) keeps it */
 .note-row__doodle {
 	flex: none;

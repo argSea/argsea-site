@@ -104,7 +104,7 @@
   border-left: 2px solid var(--gold);
 }
 
-/* The menu-gated header cat lies on the panel's top edge — draped over the
+/* The menu-gated header cat lies on the panel's top edge, draped over the
    border like a cat on a wall, tail hanging. It keeps to the top-left corner so
    it never crowds the burger's X above the panel's right edge. */
 .cat-mount--menu {

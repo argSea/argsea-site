@@ -1,11 +1,11 @@
-// The harbor cat's catalog of perches — the code side of the placement model
+// The harbor cat's catalog of perches: the code side of the placement model
 // (design/CLAUDE.md). Each spot is an id + page + pose + quip context + where
 // it anchors; the copy doc only stores on/off per spot and per page. Client-
 // safe on purpose: the director and the overlay islands both import this, and
 // islands must never reach into src/lib/api.ts.
 //
 // The frozen cross-repo contract is the spot ids and the catPages/catSpots
-// field names — the admin slice keys off these exact strings. Don't rename.
+// field names; the admin slice keys off these exact strings. Don't rename.
 
 export type CatPage = 'hello' | 'projects' | 'hobbies' | 'notes' | 'p404';
 export type CatPose = 'perched' | 'lying';
@@ -25,7 +25,7 @@ export interface CatAnchor {
 }
 
 export interface CatSpot {
-	id:         string;       // frozen — matches the admin, e.g. 'hello.header'
+	id:         string;       // frozen: matches the admin, e.g. 'hello.header'
 	page:       CatPage;
 	pose:       CatPose;
 	context:    CatContext;   // which quip set the poke pulls from
@@ -60,13 +60,13 @@ export const CATALOG: CatSpot[] = [
 	{ id: 'p404.wreck', page: 'p404', pose: 'perched', context: 'wreck', overlay: false, anchor: { selector: '.placard', edge: 'top', align: 'right' } },
 ];
 
-// The narrow breakpoint where the nav collapses to a hamburger — kept in sync
+// The narrow breakpoint where the nav collapses to a hamburger, kept in sync
 // with the media query in Nav's stylesheet. Below it, header spots are menu-gated.
 export const NAV_HAMBURGER_MAX = 600;
 
 type Toggles = Record<string, boolean> | undefined;
 
-// Absent = on, like the other egg fields — a missing map or a missing key
+// Absent = on, like the other egg fields: a missing map or a missing key
 // lights the spot, so a fresh copy doc shows the whole catalog.
 const on = (map: Toggles, key: string): boolean => map?.[key] ?? true;
 
@@ -79,7 +79,7 @@ export function enabledSpots(page: CatPage, catPages: Toggles, catSpots: Toggles
 }
 
 // One pick per page per view, memoized so the director and the overlay islands
-// agree on the single spot — first caller in a page load decides, the rest read
+// agree on the single spot; first caller in a page load decides, the rest read
 // it back. A fresh page load gets a fresh module, so a refresh can move the cat.
 const picks = new Map<CatPage, CatSpot | null>();
 

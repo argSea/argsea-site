@@ -1,4 +1,4 @@
-// "Postcards from production" on the homepage — the three proudest projects.
+// "Postcards from production" on the homepage: the three proudest projects.
 // Per the updated Hello design the cards no longer link to /projects: clicking
 // opens the postcard-back overlay in place, with a "see all projects →" link
 // inside. The only state is which card is open.

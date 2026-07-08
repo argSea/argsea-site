@@ -1,4 +1,4 @@
-// Client-safe media helper — islands may import this (unlike api.ts).
+// Client-safe media helper; islands may import this (unlike api.ts).
 
 /**
  * Resolve an API media name to a same-origin URL. The production site and its

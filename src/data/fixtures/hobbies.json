@@ -2,7 +2,7 @@
   {
     "id": "fixture-hobby-1",
     "name": "The home lab",
-    "dates": "2021 — present",
+    "dates": "2021–present",
     "active": true,
     "epitaph": "",
     "eulogy": "Plex server, HTPC, CachyOS on the desktop. The one hobby that survives every purge, because it's just the day job wearing pajamas. Current status: one tweak from perfect, as always.",
@@ -14,7 +14,7 @@
   {
     "id": "fixture-hobby-2",
     "name": "Piano",
-    "dates": "2023 — 2024",
+    "dates": "2023–2024",
     "active": false,
     "epitaph": "† got good enough",
     "eulogy": "Got far enough to feel good, which it turns out was the goal all along. Took music theory down with it. May rise again when the kid wants lessons.",

@@ -25,5 +25,5 @@ test('contact band, socials, and sign-off come from the fetched profile', async 
 
 	await page.goto(`${FEATURED_BUILD}/notes`);
 	await page.locator('.note-row').first().click();
-	await expect(page.locator('.letter__signature')).toHaveText('— the mock keeper');
+	await expect(page.locator('.letter__signature')).toHaveText('- the mock keeper');
 });

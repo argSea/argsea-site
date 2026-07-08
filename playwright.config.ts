@@ -1,5 +1,5 @@
 // E2E config. `npm run test:e2e` first bakes three static builds under
-// e2e-dist/ (fixtures, featured, fallback — see e2e/bake.mjs), and each gets
+// e2e-dist/ (fixtures, featured, fallback; see e2e/bake.mjs), and each gets
 // its own static server so the specs can compare build-time data paths
 // side by side.
 import { defineConfig, devices } from '@playwright/test';

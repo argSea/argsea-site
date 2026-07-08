@@ -1,4 +1,4 @@
-// Static server for a baked build — Playwright's webServer runs one per dist
+// Static server for a baked build: Playwright's webServer runs one per dist
 // under e2e-dist/ so the specs never depend on `astro preview`'s single outDir.
 //
 // Usage: node e2e/serve-dist.mjs <dir> <port>

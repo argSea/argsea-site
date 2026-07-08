@@ -1,5 +1,5 @@
-/* The harbor cat sprite and its speech bubble. The cat fills its host — the
-   director's fixed-size mount or an overlay's cat wrapper — so positioning
+/* The harbor cat sprite and its speech bubble. The cat fills its host (the
+   director's fixed-size mount or an overlay's cat wrapper), so positioning
    lives with the host, never here. Resting poses are the keyframes' 0% states,
    so the reduced-motion kill-switch leaves the cat sitting naturally. */
 
@@ -77,7 +77,7 @@
 	z-index: 4;
 }
 
-/* Near a right edge the bubble would run off the viewport — open it leftward */
+/* Near a right edge the bubble would run off the viewport: open it leftward */
 .harbor-cat--bubble-left .harbor-cat__bubble {
 	left: auto;
 	right: calc(100% + 8px);

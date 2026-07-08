@@ -37,7 +37,7 @@ const links = [
 		))}
 		<a href="/resume.pdf">resume ↗</a>
 	</nav>
-	{/* Only functions below the hamburger breakpoint, so only hydrate there —
+	{/* Only functions below the hamburger breakpoint, so only hydrate there:
 	    on desktop the director owns the header cat and this never mounts */}
 	<NavMenu client:media="(max-width: 600px)" active={active} page={catPage} links={links} catEnabled={catEnabled} catPages={catPages} catSpots={catSpots} catDesigns={catDesigns} />
 </header>
