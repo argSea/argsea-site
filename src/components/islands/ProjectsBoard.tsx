@@ -1,11 +1,11 @@
 // The stateful part of the Projects page: filter chips + count line, the
-// postcard grid (staggered re-entry on filter change), and the postcard-back
-// overlay. Content arrives as build-time props; this island only holds
-// `filter` and `open` state.
+// keeper's wall (postcards pinned at their API-given wallPos), and the
+// postcard-back overlay. Content arrives as build-time props; this island
+// only holds `filter` and `open` state.
 import { useState } from 'react';
-import type { FigureheadDesign, Project } from '../../lib/api';
+import type { FigureheadDesign, Project, WallPos } from '../../lib/api';
+import { mediaUrl } from '../../lib/media';
 import { pageCatPick } from '../../lib/catSpots';
-import Stamp from './Stamp';
 import PostcardOverlay from './PostcardOverlay';
 import { useEscapeKey } from './useEscapeKey';
 import './ProjectsBoard.css';
@@ -23,8 +23,30 @@ const QUIPS: Record<Filter, string> = {
 	'tinkering':    'the hobby that survives every purge',
 };
 
-// Six bob poses from the design; with more projects the cycle repeats
-const BOB_CLASSES = ['bob-p1', 'bob-p2', 'bob-p3', 'bob-p4', 'bob-p5', 'bob-p6'];
+// A card's printed width, cycling per slot; the six wallPos defaults were
+// tuned against these so the wall reads scattered rather than gridded.
+const CARD_WIDTHS = ['34%', '29%', '28%', '28%', '31%', '26%'];
+
+// Thumbtack left offset per card, a little off-center so a row of tacks
+// never lines up in a row of its own.
+const TACK_LEFTS = ['47%', '52%', '49%', '54%', '46%', '51%'];
+
+// The ghost slot sits below the six pinned postcards, in the open strip the
+// wall's fixed aspect ratio leaves under them; not derived from fallbackPos,
+// which is only a safety net for a real project missing its wallPos.
+const GHOST_SLOT: WallPos = { x: 38, y: 68, rotation: -1.8 };
+const GHOST_WIDTH = '27%';
+
+/** A safety net for a project with no wallPos yet: a loose jittered grid. */
+function fallbackPos(index: number): WallPos {
+	const col = index % 3;
+	const row = Math.floor(index / 3);
+	return {
+		x: 4 + col * 32,
+		y: 4 + row * 42,
+		rotation: (index % 2 === 0 ? -1 : 1) * (1.2 + (index % 3) * 0.5),
+	};
+}
 
 interface Props {
 	projects:    Project[];
@@ -48,7 +70,9 @@ export default function ProjectsBoard({ projects, catEnabled, catPages, catSpots
 	const close = () => setOpenId(null);
 	useEscapeKey(openId !== null, close);
 
-	const visible = projects.filter((project) => filter === 'all' || project.category === filter);
+	const matching = new Set(
+		projects.filter((project) => filter === 'all' || project.category === filter).map((project) => project.id),
+	);
 	const open = openId === null ? null : projects.find((project) => project.id === openId) ?? null;
 	const enterName = flip ? 'cardEnterA' : 'cardEnterB';
 
@@ -70,37 +94,69 @@ export default function ProjectsBoard({ projects, catEnabled, catPages, catSpots
 					</button>
 				))}
 				<span className="count-line">
-					showing {visible.length} of {projects.length}, {QUIPS[filter]}
+					{matching.size} of {projects.length} pinned, {QUIPS[filter]}
 				</span>
 			</div>
 
 			<div className="projects-grid">
-				{visible.map((project, index) => (
-					<div
-						key={project.id}
-						className="card-wrap"
-						style={{ animation: `${enterName} .45s ease ${index * 0.07}s both` }}
-						role="button"
-						tabIndex={0}
-						onClick={() => setOpenId(project.id)}
-						onKeyDown={(event) => {
-							if (event.key === 'Enter' || event.key === ' ') {
-								event.preventDefault();
-								setOpenId(project.id);
-							}
-						}}
-					>
-						<div className={`postcard ${BOB_CLASSES[projects.indexOf(project) % BOB_CLASSES.length]}`}>
-							{/* The grid renders stamps a touch smaller than the homepage preview (design v4) */}
-							<div className="stamp-corner stamp-corner--grid">
-								<Stamp stamp={project.stamp} scale={0.9} />
+				<div className="wall">
+					{projects.map((project, index) => {
+						const pos = project.wallPos ?? fallbackPos(index);
+						const isMatch = matching.has(project.id);
+						const wrapStyle = {
+							'--wp-x': `${pos.x}%`,
+							'--wp-y': `${pos.y}%`,
+							'--wp-r': `${pos.rotation}deg`,
+							'--wp-w': CARD_WIDTHS[index % CARD_WIDTHS.length],
+							...(isMatch ? { animation: `${enterName} .45s ease ${index * 0.05}s both` } : {}),
+						} as React.CSSProperties;
+
+						return (
+							<div
+								key={project.id}
+								className={`card-wrap${isMatch ? '' : ' card-wrap--hidden'}`}
+								style={wrapStyle}
+								role={isMatch ? 'button' : undefined}
+								tabIndex={isMatch ? 0 : -1}
+								aria-hidden={!isMatch}
+								onClick={() => isMatch && setOpenId(project.id)}
+								onKeyDown={(event) => {
+									if (!isMatch) {
+										return;
+									}
+									if (event.key === 'Enter' || event.key === ' ') {
+										event.preventDefault();
+										setOpenId(project.id);
+									}
+								}}
+							>
+								<div className="tack" style={{ left: TACK_LEFTS[index % TACK_LEFTS.length] }} />
+								<div className="postcard">
+									<div className="postcard__photo">
+										{project.image
+											? <img src={mediaUrl(project.image)} alt={project.title} />
+											: <div className="postcard__photo-blank" />}
+										<div className="postcard__caption">
+											<span className="postcard__caption-title">{project.title}</span>
+											<span className="postcard__caption-sub">from production, {project.postmarked}</span>
+										</div>
+									</div>
+								</div>
 							</div>
-							<div className="postcard__title postcard__title--grid">{project.title}</div>
-							<div className="postcard__desc postcard__desc--grid">{project.shortDesc}</div>
-							<div className="postcard__tags postcard__tags--grid">{project.tags.join('  ·  ')}</div>
-						</div>
+						);
+					})}
+
+					<div className="ghost-slot" style={{
+						'--wp-x': `${GHOST_SLOT.x}%`,
+						'--wp-y': `${GHOST_SLOT.y}%`,
+						'--wp-r': `${GHOST_SLOT.rotation}deg`,
+						'--wp-w': GHOST_WIDTH,
+					} as React.CSSProperties}>
+						<div className="tack" style={{ left: '50%' }} />
+						<div className="ghost-slot__frame" />
+						<div className="ghost-slot__label">out with the mail, back soon</div>
 					</div>
-				))}
+				</div>
 			</div>
 
 			{open && <PostcardOverlay project={open} catHere={catHere} catDesigns={catDesigns} onClose={close} />}

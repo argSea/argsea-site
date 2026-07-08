@@ -8,9 +8,35 @@
 	animation: cardInPostcard .35s ease both;
 }
 
+/* Cream postcard-back stock, same convention as .letter overriding
+   .overlay-card's night-harbor default (NotesList.css) */
 .postcard-back {
 	width: 100%;
 	box-sizing: border-box;
+	background: linear-gradient(180deg, var(--manila), var(--manila-deep));
+	border: none;
+}
+
+.overlay-card.postcard-back {
+	border-radius: 6px 12px 12px 6px;
+}
+
+.postcard-back .overlay-head {
+	border-bottom: 1.5px dashed rgba(110, 100, 75, .35);
+}
+
+.postcard-back .overlay-kicker {
+	color: var(--manila-ink-soft);
+}
+
+.postcard-back .pill-close {
+	color: #7d7357;
+	border-color: rgba(110, 100, 75, .4);
+}
+
+.postcard-back .pill-close:hover {
+	color: #262a45;
+	border-color: rgba(60, 55, 80, .6);
 }
 
 /* The cat perches on the card's top-left edge when the pick lands on this overlay */
@@ -22,9 +48,12 @@
 	z-index: 3;
 }
 
+/* A 3D flip entrance, like a postcard turned over in your hand; the
+   reduced-motion kill-switch (global.css) strips it and leaves the card
+   simply present, no base transform to flatten */
 @keyframes cardInPostcard {
-	from { opacity: 0; transform: rotate(-3deg) translateY(34px) scale(.96); }
-	to   { opacity: 1; transform: rotate(0deg) translateY(0) scale(1); }
+	from { opacity: 0; transform: perspective(1100px) rotateY(-62deg); }
+	to   { opacity: 1; transform: perspective(1100px) rotateY(0deg); }
 }
 
 .postcard-back__cols {
@@ -45,7 +74,7 @@
 .postcard-back__title {
 	font-family: var(--font-display);
 	font-size: clamp(24px, 4vw, 32px);
-	color: var(--text-strong);
+	color: var(--manila-ink-title);
 	line-height: 1.15;
 }
 
@@ -59,12 +88,12 @@
 	margin: 0;
 	font-size: 16.5px;
 	line-height: 1.65;
-	color: var(--text-body-strong);
+	color: var(--manila-ink-body);
 }
 
 .postcard-back__moral {
 	font-size: 15px;
-	color: var(--text-quip);
+	color: var(--manila-ink-soft);
 	font-style: italic;
 	margin-top: 4px;
 }
@@ -72,14 +101,14 @@
 .postcard-back__see-all {
 	font-family: var(--font-mono);
 	font-size: 13px;
-	color: var(--gold);
+	color: var(--manila-ink-brown);
 	margin-top: 8px;
 }
 
 .postcard-back__right {
 	flex: 1;
 	min-width: 220px;
-	border-left: 1.5px dashed rgba(150, 160, 220, .25);
+	border-left: 1.5px dashed rgba(110, 100, 75, .35);
 	padding-left: clamp(18px, 3vw, 28px);
 	display: flex;
 	flex-direction: column;
@@ -118,7 +147,9 @@
 }
 
 .address-block__label {
-	color: var(--periwinkle-deep);
+	color: var(--manila-ink-label);
+	text-transform: uppercase;
+	letter-spacing: .1em;
 }
 
 .address-block__label--spaced {
@@ -126,7 +157,10 @@
 }
 
 .address-block__value {
-	color: var(--text-soft);
+	color: var(--manila-ink-body);
+	font-style: italic;
+	border-bottom: 1px solid rgba(110, 100, 75, .3);
+	padding-bottom: 3px;
 }
 
 .postcard-back__tags {
@@ -136,5 +170,5 @@
 	margin-top: auto;
 	font-family: var(--font-mono);
 	font-size: 11.5px;
-	color: var(--periwinkle);
+	color: var(--manila-ink-brown);
 }

@@ -43,6 +43,14 @@ export interface Stamp {
 	text?:  string;  // motif 'text' only, ≤40 chars
 }
 
+// Where a project's postcard is pinned on the keeper's wall; x/y are
+// percentages of the wall, rotation in degrees.
+export interface WallPos {
+	x:        number;
+	y:        number;
+	rotation: number;
+}
+
 // Wire types mirror the argsea-site-api domain structs field-for-field.
 export interface Project {
 	id:           string;
@@ -59,6 +67,7 @@ export interface Project {
 	image:        string | null; // nullable media name
 	stamp?:       Stamp | null;  // absent → the design's default stamp
 	order:        number;        // the keeper's manual sort key; the API sends the list pre-sorted
+	wallPos:      WallPos | null; // pinned position on the projects page wall; null → not yet placed
 	featured:     boolean;       // on the mantel → homepage postcards preview
 	status:       Status;
 	publishedAt:  string;
