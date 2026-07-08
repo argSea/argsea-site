@@ -1,5 +1,6 @@
 // Homepage (fixtures build): the mantel shows exactly the featured trio, its
-// overlay lost the stamp, and the contact surfaces render the keeper fixture.
+// overlay carries the stamp+postmark corner, and the contact surfaces render
+// the keeper fixture.
 import { test, expect } from '@playwright/test';
 
 // The fixture mantel: the three projects flagged featured, in order
@@ -10,14 +11,14 @@ test('the mantel shows exactly the featured trio', async ({ page }) => {
 	await expect(page.locator('.home-postcards .postcard__title')).toHaveText(FEATURED_TRIO);
 });
 
-test('the homepage postcard overlay carries no stamp', async ({ page }) => {
+test('the homepage postcard overlay carries the stamp', async ({ page }) => {
 	await page.goto('/');
 	await page.locator('.home-postcards .card-wrap').first().click();
 
 	const overlay = page.locator('.overlay-card');
 	await expect(overlay).toBeVisible();
 	await expect(overlay.locator('.postcard-back__see-all')).toBeVisible();
-	await expect(overlay.locator('[data-stamp]')).toHaveCount(0);
+	await expect(overlay.locator('[data-stamp]')).toHaveCount(1);
 });
 
 test('contact band and footer read the keeper fixture', async ({ page }) => {

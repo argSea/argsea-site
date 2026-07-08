@@ -4,21 +4,26 @@
    over the card's top edge (the card itself scrolls, so nothing may overflow it) */
 .postcard-back-wrap {
 	position: relative;
-	width: min(860px, 100%);
-	animation: cardInPostcard .35s ease both;
+	width: min(880px, 100%);
+	animation: cardInPostcard .45s ease both;
 }
 
 /* Cream postcard-back stock, same convention as .letter overriding
-   .overlay-card's night-harbor default (NotesList.css) */
+   .overlay-card's night-harbor default (NotesList.css); the double inset
+   ring is the card's paper edge, same trick as the wall's fronts */
 .postcard-back {
 	width: 100%;
 	box-sizing: border-box;
-	background: linear-gradient(180deg, var(--manila), var(--manila-deep));
+	background: linear-gradient(180deg, #f1ecdd, #eae3d1);
 	border: none;
+	box-shadow:
+		inset 0 0 0 5px rgba(244, 240, 228, .9),
+		inset 0 0 0 6px rgba(110, 100, 75, .25),
+		0 30px 80px rgba(0, 0, 0, .6);
 }
 
 .overlay-card.postcard-back {
-	border-radius: 6px 12px 12px 6px;
+	border-radius: 4px;
 }
 
 .postcard-back .overlay-head {
@@ -59,12 +64,21 @@
 .postcard-back__cols {
 	display: flex;
 	flex-wrap: wrap;
-	gap: clamp(20px, 4vw, 36px);
+	gap: clamp(16px, 3vw, 26px);
 	padding: clamp(20px, 4vw, 32px);
 }
 
+/* A standalone divider, not a border on either column, so it always reads
+   as one full-height rule regardless of which side is taller */
+.postcard-back__divider {
+	width: 1.5px;
+	align-self: stretch;
+	background: rgba(110, 100, 75, .35);
+	flex: none;
+}
+
 .postcard-back__left {
-	flex: 1.5;
+	flex: 1.4;
 	min-width: 280px;
 	display: flex;
 	flex-direction: column;
@@ -98,6 +112,13 @@
 	margin-top: 4px;
 }
 
+.postcard-back__signature {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--manila-ink-soft);
+	margin-top: 4px;
+}
+
 .postcard-back__see-all {
 	font-family: var(--font-mono);
 	font-size: 13px;
@@ -108,14 +129,29 @@
 .postcard-back__right {
 	flex: 1;
 	min-width: 220px;
-	border-left: 1.5px dashed rgba(110, 100, 75, .35);
-	padding-left: clamp(18px, 3vw, 28px);
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: 15px;
 }
 
-/* Instant-photo paper frame around the project image */
+/* Stamp + hand-drawn postmark, aligned to the card's right edge */
+.postcard-back__stamp-row {
+	position: relative;
+	align-self: flex-end;
+	display: flex;
+	align-items: center;
+	margin: 2px 4px 0 0;
+}
+
+.postcard-back__postmark {
+	position: absolute;
+	top: 4px;
+	right: -10px;
+	pointer-events: none;
+}
+
+/* Instant-photo paper frame around the project image, always in natural
+   color: the wall front carries the silver wash, the opened back does not */
 .photo-print {
 	background: #e8e6df;
 	padding: 8px 8px 26px;
