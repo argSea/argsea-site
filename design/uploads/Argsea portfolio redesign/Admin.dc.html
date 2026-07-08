@@ -14,13 +14,8 @@
 html{background:#131628}
 body{margin:0;background:linear-gradient(180deg,#11131f 0%,#131628 100%)}
 a{text-decoration:none}
-a:hover{color:#e8ebfa}
 input,textarea,select,button{font:inherit}
 input::placeholder,textarea::placeholder{color:#5f6ec4;opacity:.8}
-input[data-ink-slider]{-webkit-appearance:none;appearance:none;height:3px;background:linear-gradient(90deg,#93a0e8,rgba(147,160,232,.25));border-radius:2px;outline:none;cursor:pointer}
-input[data-ink-slider]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:#f0d9a8;border:2px solid #1c2036;box-shadow:0 0 0 1.5px rgba(240,217,168,.55)}
-input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:#f0d9a8;border:2px solid #1c2036;box-shadow:0 0 0 1.5px rgba(240,217,168,.55)}
-@media(max-width:1100px){[data-marg-tray]{position:static !important;flex-direction:row !important;box-shadow:none !important;margin-bottom:8px !important;align-self:flex-start}[data-marg-tin]{width:100% !important;transform:none !important}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes drift{0%,100%{transform:translate(0,0)}25%{transform:translate(9px,-14px)}50%{transform:translate(-7px,-22px)}75%{transform:translate(6px,-9px)}}
 @keyframes wiggle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
@@ -49,15 +44,15 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
     <div style="position:absolute;left:22%;bottom:18%;width:4px;height:4px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 12px 3px rgba(240,217,168,.3);animation:drift 9s ease-in-out 1s infinite"></div>
     <div style="position:absolute;right:20%;bottom:26%;width:4px;height:4px;border-radius:50%;background:#93a0e8;box-shadow:0 0 12px 3px rgba(147,160,232,.3);animation:drift 13s ease-in-out 3s infinite"></div>
     <div style="position:absolute;right:clamp(24px,8vw,120px);top:64px;width:110px;height:110px;border:1.5px dashed rgba(147,160,232,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:postmarkSway 9s ease-in-out infinite">
-      <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#93a0e8;line-height:1.7">KEEPERS<br>ONLY ·<br>ARGSEA.COM</div>
+      <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#93a0e8;line-height:1.7">CREW<br>ONLY ·<br>ARGSEA.COM</div>
     </div>
     <div style="width:min(420px,100%);background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:clamp(28px,5vw,40px);box-sizing:border-box;box-shadow:0 10px 24px rgba(0,0,0,.35);transform:rotate(-.8deg);display:flex;flex-direction:column;gap:18px;animation:fadeUp .7s ease .05s both">
       <div style="display:flex;justify-content:center">
         <svg width="34" height="40" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
       </div>
       <div style="text-align:center;display:flex;flex-direction:column;gap:8px">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">argsea · keepers only</span>
-        <span style="font-family:'Gloock',serif;font-size:27px;color:#f0f2fc;line-height:1.2">The Keeper's Office</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">argsea · crew only</span>
+        <span style="font-family:'Gloock',serif;font-size:27px;color:#f0f2fc;line-height:1.2">The Harbormaster's Office</span>
         <span style="font-size:15px;color:#7a83ad;font-style:italic">State your name and business.</span>
       </div>
       <form onSubmit="{{ login }}" style="display:flex;flex-direction:column;gap:12px;margin:0">
@@ -69,6 +64,9 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
         <button type="submit" style="padding:13px 24px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:14px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">unlock the office</button>
       </form>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;text-align:center">// tokens expire. whimsy doesn't.</span>
+    </div>
+    <div style="position:absolute;bottom:52px;left:-40px;animation:sail 38s linear infinite;pointer-events:none">
+      <svg width="30" height="24" viewBox="0 0 30 24" fill="none" style="animation:bobBoat 3s ease-in-out infinite"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>
     </div>
     <div style="position:absolute;bottom:22px;left:0;right:0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · argsea.com · back office</div>
   </div>
@@ -84,7 +82,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
         <svg width="24" height="28" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
         <div style="display:flex;flex-direction:column">
           <span style="font-family:'Gloock',serif;font-size:17px;color:#e8ebfa">argsea</span>
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">lighthouse keeper</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">harbormaster</span>
         </div>
       </div>
       <sc-for list="{{ navItems }}" as="nv" hint-placeholder-count="6">
@@ -111,7 +109,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             <div style="display:flex;flex-direction:column;gap:8px">
               <div style="position:relative;height:20px;overflow:visible;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x bottom">
                 <div style="{{ boatStyle }}">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="animation:lampPulse 1.4s ease-in-out infinite"><circle cx="8" cy="8" r="3.5" fill="#f0d9a8"></circle><circle cx="8" cy="8" r="6.8" stroke="rgba(240,217,168,.5)" stroke-width="1.2"></circle></svg>
+                  <svg width="22" height="18" viewBox="0 0 30 24" fill="none" style="animation:bobBoat 1.2s ease-in-out infinite"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>
                 </div>
               </div>
               <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#f0d9a8">{{ deployMsg }}</span>
@@ -124,7 +122,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
               <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#f0d9a8">◍ {{ dirtyLine }}</span>
             </sc-if>
             <sc-if value="{{ isClean }}" hint-placeholder-val="{{ false }}">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">○ nothing new for the lamp</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">○ nothing new aboard</span>
             </sc-if>
             <span onClick="{{ rollback }}" style="{{ rollbackStyle }}" style-hover="color:#f0d9a8">{{ rollbackLabel }}</span>
           </sc-if>
@@ -142,9 +140,9 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
 
         <!-- ===== DASHBOARD ===== -->
         <sc-if value="{{ isDash }}" hint-placeholder-val="{{ false }}">
-          <div data-screen-label="The watch room" style="display:flex;flex-direction:column;gap:26px">
+          <div data-screen-label="The bridge" style="display:flex;flex-direction:column;gap:26px">
             <div style="display:flex;flex-direction:column;gap:10px;animation:fadeUp .7s ease .05s both">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the watch room · {{ dateLine }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the bridge · {{ dateLine }}</span>
               <span style="font-family:'Gloock',serif;font-size:clamp(30px,4.5vw,42px);color:#f0f2fc;line-height:1.15">{{ greeting }}, {{ keeperName }}.</span>
               <span style="font-size:16.5px;color:#a5aed4;font-style:italic">{{ harborWeather }}</span>
             </div>
@@ -173,7 +171,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
 
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;align-items:start;animation:fadeUp .7s ease .25s both">
               <div style="background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:11px;box-shadow:0 10px 24px rgba(0,0,0,.35)">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the light log</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the ship's log</span>
                 <div style="display:flex;flex-direction:column;gap:11px">
                   <sc-for list="{{ activity }}" as="ac" hint-placeholder-count="4">
                     <div style="display:flex;gap:12px;align-items:baseline;border-top:1px solid rgba(150,160,220,.12);padding-top:11px">
@@ -231,37 +229,6 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
               </div>
               <button onClick="{{ newProject }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ new postcard</button>
             </div>
-
-            <div style="display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;animation:fadeUp .7s ease .08s both">
-              <span onClick="{{ projTabToRack }}" style="{{ projTabRackStyle }}">the rack</span>
-              <span onClick="{{ projTabToWall }}" style="{{ projTabWallStyle }}">the wall</span>
-            </div>
-
-            <sc-if value="{{ projTabIsWall }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;flex-direction:column;gap:12px;animation:fadeUp .5s ease both">
-                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// drag to move · grab the ⤾ corner to hang it crooked · published cards only.</span>
-                  <div style="display:flex;gap:8px;align-items:center">
-                    <span onClick="{{ wallReset }}" style="white-space:nowrap;flex-shrink:0;padding:8px 15px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#a5aed4;cursor:pointer;transition:color .2s,border-color .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">↺ tidy rows</span>
-                    <span onClick="{{ wallSave }}" style="white-space:nowrap;flex-shrink:0;padding:9px 18px;background:#f0d9a8;color:#1b2033;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;box-shadow:3px 3px 0 rgba(147,160,232,.6);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(147,160,232,.6)">hoist arrangement</span>
-                  </div>
-                </div>
-                <div style="position:relative;height:600px;border:1.5px dashed rgba(150,160,220,.3);border-radius:12px;background-image:radial-gradient(rgba(147,160,232,.1) 1px,transparent 1.5px);background-size:26px 26px;overflow:hidden">
-                  <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:60%;height:200px;pointer-events:none;background:radial-gradient(ellipse at 50% 0%, rgba(240,217,168,.06), transparent 68%)"></div>
-                  <sc-for list="{{ wallCards }}" as="w" hint-placeholder-count="6">
-                    <div onPointerDown="{{ w.onDown }}" onPointerMove="{{ w.onMove }}" onPointerUp="{{ w.onUp }}" style="{{ w.style }}">
-                      <div style="{{ w.thumbStyle }}"></div>
-                      <span style="font-family:'Newsreader',serif;font-style:italic;font-size:12px;color:#3b3f5e;line-height:1.2;padding:5px 7px 6px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ w.title }}</span>
-                      <div style="{{ w.tackStyle }}"></div>
-                      <div onPointerDown="{{ w.onRotDown }}" onPointerMove="{{ w.onRotMove }}" onPointerUp="{{ w.onRotUp }}" title="drag to tilt" style="{{ w.rotHandleStyle }}">⤾</div>
-                    </div>
-                  </sc-for>
-                </div>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">◐ mock — the arrangement sticks to this desk. the public wall picks it up with the next hoist.</span>
-              </div>
-            </sc-if>
-
-            <sc-if value="{{ projTabIsRack }}" hint-placeholder-val="{{ true }}">
             <div style="background:rgba(240,217,168,.06);border:1.5px dashed rgba(240,217,168,.4);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;transform:rotate(.3deg);transition:transform .25s;animation:fadeUp .7s ease .1s both" style-hover="transform:rotate(0deg)">
               <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap">
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">on the mantel · featured on the home page</span>
@@ -294,15 +261,14 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                     <span onClick="{{ p.onDown }}" title="move down the rack" style="padding:7px 11px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">↓</span>
                     <span onClick="{{ p.onFeat }}" style="{{ p.featStyle }}">{{ p.featLabel }}</span>
                     <span onClick="{{ p.onToggle }}" style="{{ p.statusStyle }}">{{ p.statusLabel }}</span>
-                    <span onClick="{{ p.onPeek }}" title="preview as the site would show it" style="padding:7px 14px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">peek</span>
+                    <span onClick="{{ p.onPeek }}" title="preview as it would sail" style="padding:7px 14px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">peek</span>
                     <span onClick="{{ p.onEdit }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">edit</span>
                     <span onClick="{{ p.onDel }}" style="{{ p.delStyle }}">{{ p.delLabel }}</span>
                   </div>
                 </div>
               </sc-for>
             </div>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// drafts stay in the rack. published cards go out on the next tide.</span>
-            </sc-if>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// drafts stay in the rack. published cards catch the next boat out.</span>
           </div>
         </sc-if>
 
@@ -380,35 +346,24 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
           <div data-screen-label="Writing desk" style="display:flex;flex-direction:column;gap:22px">
             <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;animation:fadeUp .7s ease .05s both">
               <div style="display:flex;flex-direction:column;gap:8px">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the log book</span>
-                <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">The keeper's journal</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the writing desk</span>
+                <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Notes</span>
                 <span style="font-size:15.5px;color:#a5aed4;font-style:italic">{{ notesCountLine }}</span>
               </div>
-              <button onClick="{{ newNote }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ new entry</button>
+              <button onClick="{{ newNote }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ new note</button>
             </div>
             <div style="display:flex;flex-direction:column;animation:fadeUp .7s ease .15s both">
               <sc-for list="{{ noteRows }}" as="n" hint-placeholder-count="4">
                 <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;border-bottom:1px solid rgba(150,160,220,.15);padding:18px 10px;transition:background .2s,transform .2s" style-hover="background:rgba(150,160,220,.05);transform:translateX(6px)">
-                  <div style="display:flex;flex-direction:column;gap:4px;width:126px;flex-shrink:0;border-right:1.5px solid rgba(181,106,106,.35);padding:2px 12px 2px 0;align-self:stretch;justify-content:center">
-                    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">{{ n.date }}</span>
-                    <sc-if value="{{ n.wx }}" hint-placeholder-val="{{ false }}">
-                      <span style="font-size:13px;font-style:italic;color:#7a83ad;line-height:1.4">{{ n.wx }}</span>
-                    </sc-if>
-                  </div>
-                  <sc-if value="{{ n.hasDoodle }}" hint-placeholder-val="{{ false }}">
-                    <div style="background:linear-gradient(180deg,#efeadb,#e9e2d0);border-radius:3px;padding:5px 7px;transform:rotate(-2deg);flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,.3);display:flex;align-items:center">
-                      <sc-if value="{{ n.doodleDiagram }}" hint-placeholder-val="{{ false }}"><svg width="52" height="32" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="3" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg></sc-if>
-                      <sc-if value="{{ n.doodleBoat }}" hint-placeholder-val="{{ false }}"><svg width="52" height="32" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path></svg></sc-if>
-                      <sc-if value="{{ n.doodleQueue }}" hint-placeholder-val="{{ false }}"><svg width="56" height="26" viewBox="0 0 110 50" fill="none" stroke="#454a70" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path></svg></sc-if>
-                    </div>
-                  </sc-if>
-                  <div style="display:flex;flex-direction:column;gap:3px;min-width:220px;flex:1">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;width:90px;flex-shrink:0">{{ n.date }}</span>
+                  <div style="{{ n.thumbStyle }}"><div style="{{ n.thumbImgStyle }}"></div></div>
+                  <div style="display:flex;flex-direction:column;gap:3px;min-width:0;flex:1">
                     <span style="font-family:'Gloock',serif;font-size:18px;color:#eef0fb">{{ n.title }}</span>
                     <span style="font-size:14px;color:#7a83ad;font-style:italic">{{ n.teaser }}</span>
                   </div>
                   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0">
                     <span onClick="{{ n.onToggle }}" style="{{ n.statusStyle }}">{{ n.statusLabel }}</span>
-                    <span onClick="{{ n.onPeek }}" title="preview as the site would show it" style="padding:7px 14px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">peek</span>
+                    <span onClick="{{ n.onPeek }}" title="preview as it would sail" style="padding:7px 14px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">peek</span>
                     <span onClick="{{ n.onEdit }}" style="padding:7px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">edit</span>
                     <span onClick="{{ n.onDel }}" style="{{ n.delStyle }}">{{ n.delLabel }}</span>
                   </div>
@@ -470,10 +425,10 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
 
         <!-- ===== SMUGGLER'S HOLD (easter eggs) ===== -->
         <sc-if value="{{ isEggs }}" hint-placeholder-val="{{ false }}">
-          <div data-screen-label="Smuggler's cove" style="display:flex;flex-direction:column;gap:22px">
+          <div data-screen-label="Smuggler's hold" style="display:flex;flex-direction:column;gap:22px">
             <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">beneath the tower</span>
-              <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Smuggler's cove</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">below decks</span>
+              <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Smuggler's hold</span>
               <span style="font-size:15.5px;color:#a5aed4;font-style:italic">The hidden delights stowed around the site. Flip them on, flip them off — no one's watching. (The office gremlins stay on regardless.)</span>
             </div>
 
@@ -540,30 +495,6 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                           </div>
                         </div>
                       </sc-for>
-                    </div>
-                  </sc-if>
-
-                  <!-- the light list: real lighthouses for the wreck report -->
-                  <sc-if value="{{ egg.isLights }}" hint-placeholder-val="{{ false }}">
-                    <div style="{{ egg.bodyStyle }}">
-                      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px">
-                        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">known lights</span>
-                        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ lightCount }} on the chart · one per wreck</span>
-                      </div>
-                      <sc-for list="{{ lightFields }}" as="lh" hint-placeholder-count="3">
-                        <div style="display:flex;align-items:flex-start;gap:10px">
-                          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;width:20px;text-align:right;flex-shrink:0;padding-top:12px">{{ lh.num }}</span>
-                          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
-                            <div style="display:flex;gap:8px;flex-wrap:wrap">
-                              <input type="text" data-idx="{{ lh.idx }}" data-field="name" value="{{ lh.name }}" onChange="{{ setLight }}" placeholder="the light" style="flex:1;min-width:150px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-                              <input type="text" data-idx="{{ lh.idx }}" data-field="pos" value="{{ lh.pos }}" onChange="{{ setLight }}" placeholder="51°23′N 9°36′W" style="width:170px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-                            </div>
-                            <input type="text" data-idx="{{ lh.idx }}" data-field="line" value="{{ lh.line }}" onChange="{{ setLight }}" placeholder="one line about it, for whoever clicks" style="box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:14.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-                          </div>
-                          <span onClick="{{ lh.remove }}" title="strike it from the chart" style="cursor:pointer;flex-shrink:0;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(150,160,220,.25);border-radius:8px;color:#7a83ad;font-family:'IBM Plex Mono',monospace;font-size:13px;margin-top:6px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.55)">✕</span>
-                        </div>
-                      </sc-for>
-                      <span onClick="{{ addLight }}" style="align-self:flex-start;cursor:pointer;padding:9px 16px;border:1px dashed rgba(147,160,232,.45);border-radius:8px;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:12.5px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">＋ chart another light</span>
                     </div>
                   </sc-if>
                 </div>
@@ -668,135 +599,6 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
               </sc-for>
             </div>
             <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// originals live in the media store. these are the harbor copies.</span>
-          </div>
-        </sc-if>
-
-        <!-- ===== FIGUREHEAD SHOP (the cat) ===== -->
-        <sc-if value="{{ isFigurehead }}" hint-placeholder-val="{{ false }}">
-          <div data-screen-label="Figurehead shop" style="display:flex;flex-direction:column;gap:22px">
-            <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the resident</span>
-              <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Figurehead shop</span>
-              <span style="font-size:15.5px;color:#a5aed4;font-style:italic">Where the lighthouse cat comes in for adjustments. It has approved none of them.</span>
-            </div>
-            <div style="background:#1c2036;border:1px solid rgba(150,160,220,.22);border-radius:14px;padding:clamp(24px,4vw,40px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;min-height:280px;animation:fadeUp .7s ease .15s both">
-              <dc-import name="HarborCat" context="header" hint-size="96px,110px" style="width:96px;height:110px"></dc-import>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">◐ mock — the shop isn't fitted out yet. the cat, meanwhile, is fully operational.</span>
-            </div>
-          </div>
-        </sc-if>
-
-        <!-- ===== MARGINALIA (doodles) ===== -->
-        <sc-if value="{{ isDoodles }}" hint-placeholder-val="{{ false }}">
-          <div data-screen-label="Marginalia" style="display:flex;flex-direction:column;gap:22px">
-
-            <!-- the desk: loose pages -->
-            <sc-if value="{{ margDesk }}" hint-placeholder-val="{{ true }}">
-              <div style="display:flex;flex-direction:column;gap:22px">
-                <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">at the desk</span>
-                  <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Marginalia</span>
-                  <span style="font-size:15.5px;color:#a5aed4;font-style:italic">Quick sketches for the margins of a journal entry. Draw freely — pressing one into a note comes later.</span>
-                </div>
-                <div style="background:#1c2036;border:1px solid rgba(150,160,220,.22);border-radius:14px;padding:clamp(16px,3vw,24px);display:flex;flex-direction:column;gap:16px;animation:fadeUp .7s ease .15s both">
-                  <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px">
-                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the desk</span>
-                    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">{{ margCountLine }}</span>
-                  </div>
-                  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;align-items:stretch">
-                    <sc-for list="{{ margCards }}" as="sk" hint-placeholder-count="3">
-                      <div onClick="{{ sk.onOpen }}" title="open at the desk" style="{{ sk.cardStyle }}" style-hover="transform:rotate(0deg) translateY(-4px)">
-                        <div style="height:112px;display:flex;align-items:center;justify-content:center">
-                          <sc-if value="{{ sk.isDiagram }}" hint-placeholder-val="{{ false }}"><svg width="120" height="74" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg></sc-if>
-                          <sc-if value="{{ sk.isBoat }}" hint-placeholder-val="{{ false }}"><svg width="120" height="74" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path></svg></sc-if>
-                          <sc-if value="{{ sk.isQueue }}" hint-placeholder-val="{{ false }}"><svg width="126" height="58" viewBox="0 0 110 50" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path></svg></sc-if>
-                          <sc-if value="{{ sk.isBlank }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a39876">a blank page</span></sc-if>
-                        </div>
-                        <span style="font-family:'Gloock',serif;font-size:17px;color:#262a45;line-height:1.25">{{ sk.name }}</span>
-                        <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#8a7f63;line-height:1.6">{{ sk.metaLine }}</span>
-                        <div style="display:flex;justify-content:flex-end;margin-top:auto;padding-top:6px">
-                          <span onClick="{{ sk.onDel }}" style="{{ sk.delStyle }}">{{ sk.delLabel }}</span>
-                        </div>
-                      </div>
-                    </sc-for>
-                    <div onClick="{{ margAdd }}" style="min-height:210px;border:1.5px dashed rgba(233,226,208,.3);border-radius:3px 10px 10px 3px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#93a0e8;cursor:pointer;transform:rotate(.4deg);transition:border-color .2s,color .2s,transform .2s" style-hover="border-color:rgba(240,217,168,.6);color:#f0d9a8;transform:rotate(0deg)">+ a fresh page</div>
-                  </div>
-                </div>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// sketches are loose pages. a pressed one sits bottom-right of its entry, level with the sign-off. one per entry.</span>
-              </div>
-            </sc-if>
-
-            <!-- the page, open on the desk: mock editor -->
-            <sc-if value="{{ margEditor }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;flex-direction:column;gap:16px;animation:fadeUp .4s ease both">
-                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-                  <span onClick="{{ margClose }}" style="padding:8px 15px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;cursor:pointer;transition:color .2s,border-color .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">← the desk</span>
-                  <input type="text" value="{{ margOpenName }}" onChange="{{ margRename }}" style="background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 14px;color:#eef0fb;font-family:'Gloock',serif;font-size:16px;outline:none;min-width:170px;flex:0 1 280px;box-sizing:border-box" style-focus="border-color:rgba(240,217,168,.6)">
-                  <div style="margin-left:auto;display:flex;gap:14px;align-items:center">
-                    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">○ saved</span>
-                    <span onClick="{{ margSave }}" style="padding:9px 20px;background:#f0d9a8;color:#1b2033;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(147,160,232,.6);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(147,160,232,.6)">save</span>
-                  </div>
-                </div>
-                <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
-                  <div style="position:relative;flex:1 1 480px;max-width:760px;margin:0 auto;display:flex;flex-direction:column">
-                    <div data-marg-tray style="position:absolute;left:-18px;top:32px;z-index:3;display:flex;flex-direction:column;gap:5px;background:#171a2e;border:1px solid rgba(150,160,220,.3);border-radius:12px;padding:7px;box-shadow:0 12px 28px rgba(0,0,0,.45)">
-                      <sc-for list="{{ margTools }}" as="t" hint-placeholder-count="4">
-                        <span onClick="{{ t.onClick }}" title="{{ t.label }}" style="{{ t.style }}">{{ t.glyph }}</span>
-                      </sc-for>
-                    </div>
-                    <div style="position:relative;width:100%;aspect-ratio:4/3;min-height:320px;border-radius:5px;transform:rotate(-.3deg);box-shadow:0 18px 44px rgba(0,0,0,.45);background-image:radial-gradient(rgba(110,100,75,.14) 1px,transparent 1.5px),linear-gradient(180deg,#efeadb,#e9e2d0);background-size:22px 22px,100% 100%;display:flex;align-items:center;justify-content:center;cursor:crosshair;box-sizing:border-box">
-                      <div style="position:absolute;inset:26px;border:1.5px dashed rgba(110,100,75,.3);border-radius:3px;pointer-events:none"></div>
-                      <sc-if value="{{ margOpenIsDiagram }}" hint-placeholder-val="{{ false }}"><svg width="290" height="180" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="1.4" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg></sc-if>
-                      <sc-if value="{{ margOpenIsBoat }}" hint-placeholder-val="{{ false }}"><svg width="300" height="186" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path></svg></sc-if>
-                      <sc-if value="{{ margOpenIsQueue }}" hint-placeholder-val="{{ false }}"><svg width="320" height="145" viewBox="0 0 110 50" fill="none" stroke="#454a70" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path></svg></sc-if>
-                      <span style="position:absolute;bottom:12px;left:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a39876">{{ margOpenCaption }}</span>
-                      <div style="position:absolute;right:10px;bottom:10px;display:flex;gap:2px;align-items:center;background:rgba(19,23,40,.88);border:1px solid rgba(150,160,220,.3);border-radius:999px;padding:3px 7px;font-family:'IBM Plex Mono',monospace;font-size:12px">
-                        <span title="undo — for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">↺</span>
-                        <span title="redo — for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">↻</span>
-                        <span style="width:1px;height:14px;background:rgba(150,160,220,.25)"></span>
-                        <span title="zoom out — for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">−</span>
-                        <span title="zoom in — for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">+</span>
-                        <span title="fit the page — for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">⤢</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div data-marg-tin style="width:236px;flex-shrink:0;background:#1c2036;border:1px solid rgba(150,160,220,.22);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:11px;box-sizing:border-box;transform:rotate(.3deg)">
-                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the inkwells</span>
-                    <div style="display:flex;align-items:center;gap:10px">
-                      <span style="width:46px;flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase">fill</span>
-                      <div style="display:flex;gap:4px;flex-wrap:wrap">
-                        <sc-for list="{{ margFillWells }}" as="w" hint-placeholder-count="6"><span onClick="{{ w.onClick }}" title="{{ w.name }}" style="{{ w.style }}"></span></sc-for>
-                      </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px">
-                      <span style="width:46px;flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase">stroke</span>
-                      <div style="display:flex;gap:4px;flex-wrap:wrap">
-                        <sc-for list="{{ margStrokeWells }}" as="w" hint-placeholder-count="6"><span onClick="{{ w.onClick }}" title="{{ w.name }}" style="{{ w.style }}"></span></sc-for>
-                      </div>
-                    </div>
-                    <div style="height:1px;background:rgba(150,160,220,.14);margin:2px 0"></div>
-                    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
-                      <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase">stroke width</span>
-                      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">{{ margWLabel }}</span>
-                    </div>
-                    <input data-ink-slider type="range" min="0.5" max="6" step="0.1" value="{{ margW }}" onChange="{{ margSetW }}" style="width:100%;margin:0">
-                    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
-                      <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase">opacity</span>
-                      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">{{ margOpLabel }}</span>
-                    </div>
-                    <input data-ink-slider type="range" min="0" max="1" step="0.05" value="{{ margOp }}" onChange="{{ margSetOp }}" style="width:100%;margin:0">
-                    <div style="height:1px;background:rgba(150,160,220,.14);margin:2px 0"></div>
-                    <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase">line ends · corners</span>
-                    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-                      <sc-for list="{{ margCaps }}" as="c" hint-placeholder-count="3"><span onClick="{{ c.onClick }}" title="{{ c.name }}" style="{{ c.style }}"><span style="{{ c.glyphStyle }}"></span></span></sc-for>
-                      <span style="width:1px;height:18px;background:rgba(150,160,220,.2);margin:0 3px"></span>
-                      <sc-for list="{{ margJoins }}" as="c" hint-placeholder-count="3"><span onClick="{{ c.onClick }}" title="{{ c.name }}" style="{{ c.style }}"><span style="{{ c.glyphStyle }}"></span></span></sc-for>
-                    </div>
-                  </div>
-                </div>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">◐ mock — the nibs are dry. tools select; nothing draws yet.</span>
-              </div>
-            </sc-if>
           </div>
         </sc-if>
 
@@ -949,29 +751,21 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             <input type="text" data-field="teaser" value="{{ draft.teaser }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
           </label>
           <label style="display:flex;flex-direction:column;gap:6px">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">margin weather · sea state, mood</span>
-            <input type="text" data-field="wx" value="{{ draft.wx }}" onChange="{{ setField }}" placeholder="light steady · no incidents" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-          </label>
-          <label style="display:flex;flex-direction:column;gap:6px">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">the entry itself</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">the note itself</span>
             <textarea data-field="body" value="{{ draft.body }}" onChange="{{ setField }}" rows="9" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:13px 14px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15.5px;line-height:1.65;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
           </label>
           <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the carving · one per entry, bottom right</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the photo print · one per note</span>
             <div style="display:flex;gap:14px;flex-wrap:wrap">
-              <sc-for list="{{ doodleOptions }}" as="dopt" hint-placeholder-count="4">
-                <div onClick="{{ dopt.onPick }}" style="{{ dopt.style }}" style-hover="transform:rotate(0deg)">
-                  <sc-if value="{{ dopt.isNone }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:16px;color:#8a7f63">∅</span></sc-if>
-                  <sc-if value="{{ dopt.isDiagram }}" hint-placeholder-val="{{ false }}"><svg width="58" height="36" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="2.6" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg></sc-if>
-                  <sc-if value="{{ dopt.isBoat }}" hint-placeholder-val="{{ false }}"><svg width="58" height="36" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path></svg></sc-if>
-                  <sc-if value="{{ dopt.isQueue }}" hint-placeholder-val="{{ false }}"><svg width="62" height="28" viewBox="0 0 110 50" fill="none" stroke="#454a70" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path></svg></sc-if>
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#3d4468;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ dopt.name }}</span>
+              <sc-for list="{{ printOptions }}" as="po" hint-placeholder-count="5">
+                <div onClick="{{ po.onPick }}" style="{{ po.style }}">
+                  <div style="{{ po.imgStyle }}"></div>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#3d4468;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ po.name }}</span>
                 </div>
               </sc-for>
             </div>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// fresh carvings come from the scrimshaw bench</span>
           </div>
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">— signs itself "— j, keeper" on the way out</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">— signs itself "— j" on the way out</span>
         </div>
       </sc-if>
 
@@ -1034,30 +828,21 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
       </sc-if>
       <sc-if value="{{ peekNote }}" hint-placeholder-val="{{ false }}">
         <div style="padding:clamp(22px,4vw,32px);display:flex;flex-direction:column;gap:14px">
-          <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">{{ peekD.date }}</span>
-            <sc-if value="{{ peekWx }}" hint-placeholder-val="{{ false }}">
-              <span style="font-size:14px;font-style:italic;color:#7a83ad">{{ peekWx }}</span>
-            </sc-if>
-          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">{{ peekD.date }}</span>
           <div style="font-family:'Gloock',serif;font-size:clamp(24px,4vw,30px);color:#f0f2fc;line-height:1.2">{{ peekD.title }}</div>
           <div style="font-size:16px;color:#8f9be0;font-style:italic">{{ peekD.teaser }}</div>
+          <sc-if value="{{ peekPrintStyle }}" hint-placeholder-val="{{ false }}">
+            <div style="align-self:flex-start;background:#e8e6df;padding:8px 8px 24px;border-radius:2px;box-shadow:0 6px 16px rgba(0,0,0,.35);transform:rotate(-1.5deg);width:min(260px,70%)">
+              <div style="{{ peekPrintStyle }}"></div>
+            </div>
+          </sc-if>
           <sc-if value="{{ peekBody }}" hint-placeholder-val="{{ false }}">
             <div style="font-size:17px;line-height:1.7;color:#b8c0e0;white-space:pre-line">{{ peekBody }}</div>
           </sc-if>
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#93a0e8;margin-top:8px">— j, keeper</div>
-            <sc-if value="{{ peekHasDoodle }}" hint-placeholder-val="{{ false }}">
-              <div style="background:linear-gradient(180deg,#efeadb,#e9e2d0);border-radius:3px;padding:6px 10px;transform:rotate(-2deg);box-shadow:0 4px 10px rgba(0,0,0,.3);display:flex;align-items:center">
-                <sc-if value="{{ peekDoodleDiagram }}" hint-placeholder-val="{{ false }}"><svg width="72" height="44" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="2.2" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg></sc-if>
-                <sc-if value="{{ peekDoodleBoat }}" hint-placeholder-val="{{ false }}"><svg width="72" height="44" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path></svg></sc-if>
-                <sc-if value="{{ peekDoodleQueue }}" hint-placeholder-val="{{ false }}"><svg width="78" height="36" viewBox="0 0 110 50" fill="none" stroke="#454a70" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path></svg></sc-if>
-              </div>
-            </sc-if>
-          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#93a0e8;margin-top:8px">— j</div>
         </div>
       </sc-if>
-      <div style="padding:0 clamp(20px,4vw,30px) 18px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// rendered as the site would show it. drafts go live only when published + hoisted.</div>
+      <div style="padding:0 clamp(20px,4vw,30px) 18px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// rendered as the site would show it. drafts sail only when published + hoisted.</div>
     </div>
   </div>
 </sc-if>
@@ -1115,16 +900,16 @@ class Component extends DCLogic {
       { name: 'Running', dates: 'one summer', epitaph: '† it was a phase', eulogy: 'It was a phase. The shoes remain, as evidence.', active: false },
     ],
     notes: [
-      { date: 'jun 2026', title: 'What re-architecting taught me about not architecting', status: 'published', wx: 'light steady · no incidents', doodle: 'diagram',
+      { date: 'jun 2026', title: 'What re-architecting taught me about not architecting', status: 'published',
         teaser: 'Sometimes the best system design is the meeting where you talk everyone out of a new system.',
         body: 'The most valuable architecture work I did last year produced zero diagrams...' },
-      { date: 'apr 2026', title: 'CachyOS, three months in', status: 'published', wx: 'fog inland · desktop suspiciously calm', doodle: 'boat',
+      { date: 'apr 2026', title: 'CachyOS, three months in', status: 'published', img: 'homelab-rack.jpg',
         teaser: 'A review from someone who will absolutely distro-hop again and lie about it.',
         body: 'Three months on CachyOS and everything works, which is deeply unsettling...' },
-      { date: 'feb 2026', title: 'The queue is the product', status: 'published', wx: 'wind NW · queue quiet', doodle: 'queue',
+      { date: 'feb 2026', title: 'The queue is the product', status: 'published',
         teaser: 'Notes on message queues after a decade of them quietly running the news.',
         body: 'A decade of publishing systems has convinced me the real product is not the website or the app...' },
-      { date: '—', title: 'The home lab ate my weekend', status: 'draft', wx: '', doodle: null,
+      { date: '—', title: 'The home lab ate my weekend', status: 'draft',
         teaser: 'A confession, with uptime charts.',
         body: '' },
     ],
@@ -1144,18 +929,11 @@ class Component extends DCLogic {
         'Every cron job is a small promise to your future self.',
         'The best on-call shift is the one you slept through.',
         'Name it well and you will never have to explain it.',
-        'The lamp that burns all night was trimmed before dark.',
+        'The boat that leaves on schedule was loaded the night before.',
         'Cache invalidation, naming things, and one more thing I forget.',
         'Ship the boring version. Boring floats.',
         'A rollback is not a failure. It is a lifeboat.',
         'The sea provides. Usually a merge conflict.',
-      ],
-      lighthouses: [
-        { name: 'Fastnet Rock', pos: '51°23′N 9°36′W', line: 'Ireland’s teardrop — the last light the emigrants saw.' },
-        { name: 'La Jument', pos: '48°25′N 5°08′W', line: 'the keeper in the doorway, wave at his back. look it up.' },
-        { name: 'Bell Rock', pos: '56°26′N 2°23′W', line: 'built on a rock that vanishes twice a day.' },
-        { name: 'Cape Hatteras', pos: '35°15′N 75°32′W', line: 'the Graveyard of the Atlantic keeps a light on.' },
-        { name: 'Tourlitis', pos: '37°50′N 24°57′E', line: 'a lighthouse on a stone stalk, straight out of a storybook.' },
       ],
     },
     media: [
@@ -1187,7 +965,7 @@ class Component extends DCLogic {
     },
     edit: null, confirmDel: null, peek: null, changesSinceDeploy: 3,
     catSay: null, proverbIdx: 0,
-    eggs: { bottle: true, cat: true, lights: true },
+    eggs: { bottle: true, cat: true },
     catLocs: { postcards: true, notes: true, p404: true },
     deploying: false, deployPct: 0, lastDeploy: 'yesterday, 9:12 pm',
     toast: null,
@@ -1264,8 +1042,6 @@ class Component extends DCLogic {
       blurb: 'Poke the little boat sailing across the waves and it drops a corked bottle — a proverb unrolls from it, then drifts off.', status: 'live' },
     { id: 'cat', name: 'The harbor cat', where: 'postcards · notes · the 404 wreck',
       blurb: 'The lighthouse cat, out on its rounds. It perches on postcards and notes when they open — and heckles the shipwreck from the 404 placard.', status: 'live' },
-    { id: 'lights', name: 'The light list', where: 'the 404 wreck report',
-      blurb: 'Every wreck report lists a last known position — the real coordinates of a real lighthouse. Click them and the light introduces itself.', status: 'live' },
   ];
 
   catLocMeta = [
@@ -1289,13 +1065,13 @@ class Component extends DCLogic {
   }
 
   catQuotes = ['mrrp.', 'the sea provides.', 'deploy it, coward.', 'i knocked the token off the desk.', 'feed me, keeper.', 'the fish are unionizing.', 'i have read your drafts. no comment.'];  proverbs = [
-    'The keeper is also the intern.',
+    'The harbormaster is also the intern.',
     'A tidy harbor is a suspicious harbor.',
     'Red sky at night, deploy delight.',
     'Never trust a quiet queue.',
     'Any port in a stack trace.',
     'The lighthouse shines both ways.',
-    'Six drafts make a volume.',
+    'Six drafts make a fleet.',
   ];
   weatherLines = [
     'All quiet on the water. Mostly.',
@@ -1306,148 +1082,6 @@ class Component extends DCLogic {
     'Small craft advisory: the home lab is tinkering again.',
   ];
   weatherLine = this.weatherLines[Math.floor(Math.random() * this.weatherLines.length)];
-
-  margInks = [
-    { name: 'indigo', c: '#454a70' },
-    { name: 'ochre', c: '#8a6d3b' },
-    { name: 'madder', c: '#9c4358' },
-    { name: 'periwinkle', c: '#93a0e8' },
-    { name: 'none', c: null },
-    { name: 'slate', c: '#5f6ec4' },
-  ];
-
-  margDefaults = [
-    { name: 'the new system — not built', motif: 'diagram', pressed: 'what re-architecting taught me…', updated: 'jun 2026' },
-    { name: 'a terrible boat', motif: 'boat', pressed: 'cachyos, three months in', updated: '9m ago' },
-    { name: 'the product.', motif: 'queue', pressed: 'the queue is the product', updated: 'feb 2026' },
-  ];
-
-  marginaliaVals() {
-    const s = this.state;
-    const mono = "'IBM Plex Mono', monospace";
-    const sketches = s.margSketches || this.margDefaults;
-    const openIdx = s.margOpen == null ? null : s.margOpen;
-    const open = openIdx == null ? null : sketches[openIdx];
-
-    const rots = ['.6deg', '-.7deg', '.4deg', '-.5deg'];
-    const margCards = sketches.map((sk, i) => {
-      const key = 'marg' + i;
-      const hot = s.confirmDel === key;
-      return {
-        ...sk,
-        isDiagram: sk.motif === 'diagram', isBoat: sk.motif === 'boat', isQueue: sk.motif === 'queue', isBlank: sk.motif === 'blank',
-        cardStyle: {
-          background: 'linear-gradient(180deg,#efeadb,#e9e2d0)', borderRadius: '3px 10px 10px 3px',
-          padding: '16px 16px 12px', display: 'flex', flexDirection: 'column', gap: '8px', cursor: 'pointer',
-          transform: `rotate(${rots[i % rots.length]})`, transition: 'transform .2s',
-          boxShadow: '0 10px 26px rgba(0,0,0,.35)',
-        },
-        metaLine: sk.pressed ? `updated ${sk.updated} · pressed into: ${sk.pressed}` : `updated ${sk.updated} · loose — not pressed yet`,
-        onOpen: () => this.setState({ margOpen: i, margSketches: sketches }),
-        delLabel: hot ? 'sure? tear it out.' : 'tear out',
-        delStyle: {
-          fontFamily: mono, fontSize: '11px', cursor: 'pointer', paddingBottom: '1px',
-          color: hot ? '#b0483a' : '#8a7f63',
-          borderBottom: hot ? '1px dotted rgba(176,72,58,.6)' : '1px dotted rgba(138,127,99,.5)',
-        },
-        onDel: (e) => {
-          e.stopPropagation();
-          this.askDelete(key, () => {
-            this.setState({ margSketches: sketches.filter((_, j) => j !== i) });
-            this.log(`sketch "${sk.name}" torn out of the margins`);
-            this.showToast('✂ torn out. the margin is clean.');
-          });
-        },
-      };
-    });
-
-    const tool = s.margTool || 'pen';
-    const margTools = [
-      { id: 'select', glyph: '⇱' }, { id: 'nodes', glyph: '◇' }, { id: 'pen', glyph: '✒' }, { id: 'pencil', glyph: '✎' },
-    ].map((t) => ({
-      label: t.id, glyph: t.glyph,
-      onClick: () => this.setState({ margTool: t.id }),
-      style: {
-        width: '34px', height: '34px', boxSizing: 'border-box', display: 'flex',
-        alignItems: 'center', justifyContent: 'center', fontSize: '15px',
-        borderRadius: '9px', cursor: 'pointer', transition: 'color .2s, background .2s',
-        border: t.id === tool ? '1.5px dashed rgba(240,217,168,.7)' : '1px solid transparent',
-        background: t.id === tool ? 'rgba(147,160,232,.16)' : 'none',
-        color: t.id === tool ? '#f0d9a8' : '#93a0e8',
-      },
-    }));
-
-    const mkWells = (key, cur) => this.margInks.map((ink, i) => ({
-      name: ink.name,
-      onClick: () => this.setState({ [key]: i }),
-      style: {
-        width: '20px', height: '20px', borderRadius: '50%', cursor: 'pointer', boxSizing: 'border-box', display: 'inline-block',
-        background: ink.c || 'linear-gradient(135deg, transparent 43%, #c07a5a 43%, #c07a5a 57%, transparent 57%)',
-        border: i === cur ? '2px dashed rgba(240,217,168,.9)' : '2px solid rgba(150,160,220,.25)',
-      },
-    }));
-
-    const capGlyph = (i, active) => ({
-      display: 'block', height: '4px', width: i === 2 ? '18px' : '15px',
-      background: active ? '#f0d9a8' : '#93a0e8',
-      borderRadius: i === 1 ? '999px' : '1px',
-    });
-    const joinGlyph = (i, active) => ({
-      display: 'block', width: '11px', height: '11px', boxSizing: 'border-box',
-      borderLeft: `3px solid ${active ? '#f0d9a8' : '#93a0e8'}`,
-      borderTop: `3px solid ${active ? '#f0d9a8' : '#93a0e8'}`,
-      borderTopLeftRadius: i === 1 ? '7px' : i === 2 ? '3px' : '0',
-    });
-    const mkGlyphChips = (opts, key, cur, glyphFn) => opts.map((name, i) => ({
-      name,
-      onClick: () => this.setState({ [key]: i }),
-      glyphStyle: glyphFn(i, i === cur),
-      style: {
-        width: '34px', height: '30px', boxSizing: 'border-box', display: 'flex',
-        alignItems: 'center', justifyContent: 'center', borderRadius: '8px', cursor: 'pointer',
-        border: i === cur ? '1.5px dashed rgba(240,217,168,.6)' : '1px solid rgba(150,160,220,.25)',
-        transition: 'border-color .2s',
-      },
-    }));
-
-    const w = s.margW == null ? 1.8 : s.margW;
-    const op = s.margOp == null ? 1 : s.margOp;
-    const pressedCount = sketches.filter((sk) => sk.pressed).length;
-
-    return {
-      margDesk: openIdx == null, margEditor: openIdx != null,
-      margCards,
-      margCountLine: `${sketches.length} sketch${sketches.length === 1 ? '' : 'es'} · ${pressedCount} pressed`,
-      margAdd: () => this.setState({
-        margSketches: [...sketches, { name: 'untitled margin', motif: 'blank', pressed: null, updated: 'just now' }],
-        margOpen: sketches.length,
-      }),
-      margOpenName: open ? open.name : '',
-      margRename: (e) => {
-        const v = e.target.value;
-        this.setState({ margSketches: sketches.map((sk, j) => j === openIdx ? { ...sk, name: v, updated: 'just now' } : sk) });
-      },
-      margClose: () => this.setState({ margOpen: null, confirmDel: null }),
-      margSave: () => {
-        this.setState({ margSketches: sketches.map((sk, j) => j === openIdx ? { ...sk, updated: 'just now' } : sk) });
-        this.log(`sketch "${open ? open.name : ''}" saved at the desk`);
-        this.showToast('✎ saved. the margin holds it.');
-      },
-      margOpenIsDiagram: !!open && open.motif === 'diagram',
-      margOpenIsBoat: !!open && open.motif === 'boat',
-      margOpenIsQueue: !!open && open.motif === 'queue',
-      margOpenCaption: open ? (open.motif === 'blank' ? 'a blank page — the nibs are dry' : 'on the desk — ' + open.name) : '',
-      margTools,
-      margFillWells: mkWells('margFill', s.margFill == null ? 4 : s.margFill),
-      margStrokeWells: mkWells('margStroke', s.margStroke == null ? 0 : s.margStroke),
-      margW: w, margWLabel: w.toFixed(1),
-      margSetW: (e) => this.setState({ margW: parseFloat(e.target.value) }),
-      margOp: op, margOpLabel: String(op),
-      margSetOp: (e) => this.setState({ margOp: parseFloat(e.target.value) }),
-      margCaps: mkGlyphChips(['butt end', 'round end', 'square end'], 'margCap', s.margCap == null ? 1 : s.margCap, capGlyph),
-      margJoins: mkGlyphChips(['sharp corner', 'round corner', 'bevel corner'], 'margJoin', s.margJoin == null ? 1 : s.margJoin, joinGlyph),
-    };
-  }
 
   pokeCat() {
     clearTimeout(this.catTimer);
@@ -1525,135 +1159,7 @@ class Component extends DCLogic {
     return 'today · ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
   }
 
-  wallDefaults(pubs) {
-    const pos = {};
-    pubs.forEach((p, i) => {
-      pos[p.title] = { x: 30 + (i % 4) * 218, y: 34 + Math.floor(i / 4) * 190 };
-    });
-    return pos;
-  }
-
-  projectsWallVals() {
-    const s = this.state;
-    const tab = s.projTab || 'rack';
-    const mono = "'IBM Plex Mono', monospace";
-    const tabStyle = (on) => ({
-      padding: '8px 18px', borderRadius: '999px', cursor: 'pointer', userSelect: 'none', transition: 'all .2s',
-      border: on ? '1.5px dashed rgba(240,217,168,.6)' : '1px solid rgba(150,160,220,.25)',
-      color: on ? '#f0d9a8' : '#7a83ad',
-      background: on ? 'rgba(240,217,168,.07)' : 'none',
-    });
-
-    const pubs = s.projects.filter((p) => p.status === 'published');
-    const pos = s.wallPos || this.wallDefaults(pubs);
-    const rots = [-2, 1.6, -1.2, 2.2, -0.8, 1.4, -1.8, 1];
-
-    const wallCards = pubs.map((p, i) => {
-      const xy = pos[p.title] || { x: 30 + (i % 4) * 218, y: 34 + Math.floor(i / 4) * 190 };
-      const rot = xy.r == null ? rots[i % rots.length] : xy.r;
-      const grabbed = this.dragTitle === p.title;
-      const rotating = this.rotTitle === p.title;
-      return {
-        title: p.title,
-        style: {
-          position: 'absolute', left: xy.x + 'px', top: xy.y + 'px', width: '190px', boxSizing: 'border-box',
-          transform: `rotate(${rot}deg)`,
-          background: 'linear-gradient(180deg,#efeadb,#e9e2d0)', border: '1px solid #d8cfb6', borderRadius: '3px',
-          padding: '6px', boxShadow: grabbed ? '0 18px 34px rgba(0,0,0,.55)' : '0 8px 18px rgba(0,0,0,.4)',
-          cursor: grabbed ? 'grabbing' : 'grab', touchAction: 'none', userSelect: 'none',
-          zIndex: grabbed || rotating ? 30 : 5 + (i % 4), transition: grabbed || rotating ? 'none' : 'box-shadow .2s',
-        },
-        rotHandleStyle: {
-          position: 'absolute', bottom: '-9px', right: '-9px', width: '22px', height: '22px',
-          borderRadius: '50%', background: '#1c2036', border: '1px solid rgba(240,217,168,.55)',
-          color: '#f0d9a8', fontSize: '12px', lineHeight: '20px', textAlign: 'center',
-          cursor: rotating ? 'grabbing' : 'grab', touchAction: 'none', userSelect: 'none',
-          boxShadow: '0 2px 6px rgba(0,0,0,.5)',
-        },
-        onRotDown: (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          e.currentTarget.setPointerCapture(e.pointerId);
-          const cardRect = e.currentTarget.parentElement.getBoundingClientRect();
-          const cx = cardRect.left + cardRect.width / 2, cy = cardRect.top + cardRect.height / 2;
-          this.rotTitle = p.title;
-          this.rotStart = { cx, cy, a0: Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI, r0: rot };
-          this.forceUpdate();
-        },
-        onRotMove: (e) => {
-          if (this.rotTitle !== p.title) return;
-          const rs = this.rotStart;
-          const a = Math.atan2(e.clientY - rs.cy, e.clientX - rs.cx) * 180 / Math.PI;
-          const nr = Math.max(-30, Math.min(30, Math.round((rs.r0 + a - rs.a0) * 10) / 10));
-          this.setState({ wallPos: { ...pos, [p.title]: { x: xy.x, y: xy.y, r: nr } } });
-        },
-        onRotUp: () => {
-          if (this.rotTitle !== p.title) return;
-          this.rotTitle = null;
-          try { localStorage.setItem('argsea-admin-wallpos', JSON.stringify(this.state.wallPos || pos)); } catch (err) {}
-          this.forceUpdate();
-        },
-        thumbStyle: {
-          width: '100%', aspectRatio: '1.55 / 1',
-          background: `linear-gradient(${115 + i * 40}deg, #454a70, #2b3050 55%, #5f6ec4)`,
-          filter: 'grayscale(.4) brightness(.9)', borderRadius: '2px',
-        },
-        tackStyle: {
-          position: 'absolute', top: '-4px', left: ['47%', '52%', '49%'][i % 3], width: '9px', height: '9px',
-          borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #ecd9a4, #8a6d3b 70%)',
-          boxShadow: '0 1px 3px rgba(0,0,0,.5)', pointerEvents: 'none',
-        },
-        onDown: (e) => {
-          e.preventDefault();
-          e.currentTarget.setPointerCapture(e.pointerId);
-          const canvasRect = e.currentTarget.parentElement.getBoundingClientRect();
-          const cardRect = e.currentTarget.getBoundingClientRect();
-          this.dragTitle = p.title;
-          this.dragOff = { x: e.clientX - cardRect.left, y: e.clientY - cardRect.top, canvas: canvasRect };
-          this.forceUpdate();
-        },
-        onMove: (e) => {
-          if (this.dragTitle !== p.title) return;
-          const c = this.dragOff.canvas;
-          this.setState({
-            wallPos: { ...pos, [p.title]: { x: Math.round(e.clientX - c.left - this.dragOff.x), y: Math.round(e.clientY - c.top - this.dragOff.y) } },
-          });
-        },
-        onUp: () => {
-          if (this.dragTitle !== p.title) return;
-          this.dragTitle = null;
-          try { localStorage.setItem('argsea-admin-wallpos', JSON.stringify(this.state.wallPos || pos)); } catch (err) {}
-          this.forceUpdate();
-        },
-      };
-    });
-
-    return {
-      projTabIsRack: tab === 'rack', projTabIsWall: tab === 'wall',
-      projTabToRack: () => this.setState({ projTab: 'rack' }),
-      projTabToWall: () => this.setState({ projTab: 'wall' }),
-      projTabRackStyle: tabStyle(tab === 'rack'),
-      projTabWallStyle: tabStyle(tab === 'wall'),
-      wallCards,
-      wallReset: () => {
-        const d = this.wallDefaults(pubs);
-        this.setState({ wallPos: d });
-        try { localStorage.setItem('argsea-admin-wallpos', JSON.stringify(d)); } catch (err) {}
-        this.log('the wall was tidied into rows. it will drift again.');
-      },
-      wallSave: () => {
-        try { localStorage.setItem('argsea-admin-wallpos', JSON.stringify(pos)); } catch (err) {}
-        this.log('wall arrangement hoisted to the public side');
-        this.showToast('⚑ arrangement pinned. the wall ships with the next hoist.');
-      },
-    };
-  }
-
   componentDidMount() {
-    try {
-      const saved = localStorage.getItem('argsea-admin-wallpos');
-      if (saved) this.setState({ wallPos: JSON.parse(saved) });
-    } catch (err) {}
     this.onKey = (e) => {
       if (e.key !== 'Escape') return;
       if (this.state.peek) this.setState({ peek: null });
@@ -1756,7 +1262,7 @@ class Component extends DCLogic {
           setTimeout(() => {
             this.setState({ deploying: false, lastDeploy: 'just now', changesSinceDeploy: 0 });
             this.log('lantern hoisted — site rebuilt, lights on');
-            this.showToast('✸ hoisted. the lamp is lit.');
+            this.showToast('⚓ hoisted. the site sails with the new cargo.');
           }, 500);
           return { deployPct: 100 };
         }
@@ -1778,7 +1284,7 @@ class Component extends DCLogic {
         : { ...s.hobbies[idx] };
     } else {
       draft = idx == null
-        ? { date: 'jul 2026', title: '', teaser: '', body: '', status: 'draft', wx: '', doodle: null }
+        ? { date: 'jul 2026', title: '', teaser: '', body: '', status: 'draft', img: null }
         : { ...s.notes[idx] };
     }
     this.setState({ edit: { type, idx, draft } });
@@ -1826,8 +1332,8 @@ class Component extends DCLogic {
         }
         return { notes, edit: null };
       });
-      this.log(`entry "${draft.title || 'untitled'}" ${idx == null ? 'drafted' : 'edited'}`);
-      this.showToast(restored ? `↺ earlier printing filed — it's now ${item.status === 'published' ? 'inked ●' : 'pencilled ○'}` : '✎ entered in the log book');
+      this.log(`note "${draft.title || 'untitled'}" ${idx == null ? 'drafted' : 'edited'}`);
+      this.showToast(restored ? `↺ earlier printing filed — it's now ${item.status === 'published' ? 'published ●' : 'a draft ○'}` : '✎ filed at the writing desk');
     }
   }
 
@@ -1835,16 +1341,14 @@ class Component extends DCLogic {
     const s = this.state;
     const scr = s.screen;
     const nav = [
-      { id: 'dash', glyph: '✦', label: 'the watch room' },
+      { id: 'dash', glyph: '✦', label: 'the bridge' },
       { id: 'projects', glyph: '✉', label: 'postcards' },
       { id: 'hobbies', glyph: '†', label: 'the graveyard' },
-      { id: 'notes', glyph: '✎', label: 'the log book' },
+      { id: 'notes', glyph: '✎', label: 'writing desk' },
       { id: 'copy', glyph: '⚑', label: 'signal flags' },
-      { id: 'eggs', glyph: '✧', label: "smuggler's cove" },
+      { id: 'eggs', glyph: '✧', label: "smuggler's hold" },
       { id: 'media', glyph: '❏', label: 'the darkroom' },
-      { id: 'doodles', glyph: '✐', label: 'marginalia' },
-      { id: 'figurehead', glyph: '♞', label: 'figurehead shop' },
-      { id: 'keeper', glyph: '⌂', label: 'the keeper' },
+      { id: 'keeper', glyph: '☸', label: 'the keeper' },
     ];
 
     const pubProj = s.projects.filter((p) => p.status === 'published').length;
@@ -1897,12 +1401,12 @@ class Component extends DCLogic {
         },
         onEdit: () => this.openEdit('project', i),
         onPeek: () => this.setState({ peek: { type: 'project', idx: i } }),
-        delLabel: hot ? 'sure? tear it up.' : 'tear up',
+        delLabel: hot ? 'sure? scuttle.' : 'scuttle',
         delStyle: this.delStyle(hot),
         onDel: () => this.askDelete(key, () => {
           this.setState((st) => ({ projects: st.projects.filter((_, j) => j !== i), featured: st.featured.filter((t) => t !== p.title) }));
-          this.log(`postcard "${p.title}" torn up. a moment of silence.`);
-          this.showToast('🌊 given to the tide. the sea keeps its secrets.');
+          this.log(`postcard "${p.title}" scuttled. a moment of silence.`);
+          this.showToast('🌊 scuttled. the sea keeps its secrets.');
         }),
       };
     });
@@ -1940,9 +1444,8 @@ class Component extends DCLogic {
       const hot = s.confirmDel === key;
       return {
         ...n,
-        hasDoodle: !!n.doodle,
-        doodleDiagram: n.doodle === 'diagram', doodleBoat: n.doodle === 'boat', doodleQueue: n.doodle === 'queue',
-        statusLabel: n.status === 'published' ? '● inked' : '○ pencilled',
+        ...this.thumbStyles(n.img),
+        statusLabel: n.status === 'published' ? '● published' : '○ draft',
         statusStyle: this.pillStatus(n.status === 'published'),
         onToggle: () => {
           this.setState((st) => {
@@ -1951,7 +1454,7 @@ class Component extends DCLogic {
             return { notes };
           });
           this.markDirty();
-          this.showToast(n.status === 'published' ? '○ back to pencil. deniable again.' : '● inked in. no promises broken yet.');
+          this.showToast(n.status === 'published' ? '○ back to the desk drawer' : '● posted. no promises broken yet.');
         },
         onEdit: () => this.openEdit('note', i),
         onPeek: () => this.setState({ peek: { type: 'note', idx: i } }),
@@ -2001,32 +1504,10 @@ class Component extends DCLogic {
     });
 
     const e = s.edit;
-    const editKickers = { project: 'postcard · ', hobby: 'headstone · ', note: 'journal entry · ' };
+    const editKickers = { project: 'postcard · ', hobby: 'headstone · ', note: 'note · ' };
     const noteBlogLine = pubNotes >= 5
-      ? `${pubNotes} inked. it's officially a journal now. condolences.`
-      : `${pubNotes} inked. the bar for "journal" is five. ${5 - pubNotes} to go — no rush.`;
-
-    let doodleOptions = [];
-    if (e && e.type === 'note') {
-      const dsel = e.draft.doodle || null;
-      doodleOptions = [
-        { name: 'no carving', v: null },
-        { name: 'the new system', v: 'diagram' },
-        { name: 'the boat', v: 'boat' },
-        { name: 'the queue', v: 'queue' },
-      ].map((o) => ({
-        name: o.name,
-        isNone: !o.v, isDiagram: o.v === 'diagram', isBoat: o.v === 'boat', isQueue: o.v === 'queue',
-        onPick: () => this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, doodle: o.v } } })),
-        style: {
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px',
-          background: 'linear-gradient(180deg,#efeadb,#e9e2d0)', borderRadius: '4px', padding: '10px 12px',
-          minWidth: '92px', minHeight: '66px', cursor: 'pointer', boxSizing: 'border-box',
-          border: o.v === dsel ? '2px solid rgba(240,217,168,.95)' : '2px solid transparent',
-          boxShadow: '0 4px 10px rgba(0,0,0,.3)', transform: 'rotate(-1deg)', transition: 'transform .2s',
-        },
-      }));
-    }
+      ? `${pubNotes} published. it's officially a blog now. condolences.`
+      : `${pubNotes} published. the bar for "blog" is five. ${5 - pubNotes} to go — no rush.`;
 
     let printOptions = [], revRows = [], hasRevs = false;
     if (e && (e.type === 'project' || e.type === 'note')) {
@@ -2084,9 +1565,7 @@ class Component extends DCLogic {
       // screens
       isLogin: scr === 'login', isApp: scr !== 'login',
       isDash: scr === 'dash', isProjects: scr === 'projects', isHobbies: scr === 'hobbies',
-      isNotes: scr === 'notes', isCopy: scr === 'copy', isMedia: scr === 'media', isKeeper: scr === 'keeper', isEggs: scr === 'eggs', isDoodles: scr === 'doodles', isFigurehead: scr === 'figurehead',
-      ...this.marginaliaVals(),
-      ...this.projectsWallVals(),
+      isNotes: scr === 'notes', isCopy: scr === 'copy', isMedia: scr === 'media', isKeeper: scr === 'keeper', isEggs: scr === 'eggs',
       // login
       user: s.user, pass: s.pass, loginError: s.loginError,
       setUser: (ev) => this.setState({ user: ev.target.value, loginError: null }),
@@ -2111,12 +1590,12 @@ class Component extends DCLogic {
       deploying: s.deploying, notDeploying: !s.deploying,
       deploy: () => this.deploy(),
       deployVerb: this.props.deployVerb ?? 'hoist the lantern',
-      deployMsg: s.deployPct >= 100 ? 'trimming the wick…' : `rebuilding · ${Math.floor(s.deployPct)}%`,
+      deployMsg: s.deployPct >= 100 ? 'docking…' : `rebuilding · ${Math.floor(s.deployPct)}%`,
       lastDeploy: s.lastDeploy,
       isDirty: s.changesSinceDeploy > 0,
       isClean: s.changesSinceDeploy === 0,
-      dirtyLine: `${s.changesSinceDeploy} change${s.changesSinceDeploy === 1 ? '' : 's'} waiting since last hoist`,
-      rollbackLabel: s.confirmDel === 'rollback' ? '↩ sure? turn back the light.' : '↩ re-hoist the previous lantern',
+      dirtyLine: `${s.changesSinceDeploy} change${s.changesSinceDeploy === 1 ? '' : 's'} aboard since last hoist`,
+      rollbackLabel: s.confirmDel === 'rollback' ? '↩ sure? sail backwards.' : '↩ re-hoist the previous lantern',
       rollbackStyle: {
         fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', cursor: 'pointer',
         color: s.confirmDel === 'rollback' ? '#f0d9a8' : '#7a83ad', transition: 'color .2s', userSelect: 'none',
@@ -2175,7 +1654,7 @@ class Component extends DCLogic {
       },
       // notes
       noteRows, newNote: () => this.openEdit('note', null),
-      notesCountLine: 'The official log stays on the bridge. This book takes opinions.',
+      notesCountLine: 'No schedule. No newsletter. No promises. Just drafts.',
       blogBarLine: noteBlogLine,
       // copy
       copy: s.copy, quipFields,
@@ -2189,16 +1668,6 @@ class Component extends DCLogic {
         this.setState((st) => ({ copy: { ...st.copy, bottleProverbs: st.copy.bottleProverbs.map((p, ix) => ix === i ? v : p) } }));
       },
       addBottle: () => this.setState((st) => ({ copy: { ...st.copy, bottleProverbs: [...st.copy.bottleProverbs, ''] } })),
-      lightFields: (s.copy.lighthouses || []).map((lh, idx) => ({
-        ...lh, idx, num: String(idx + 1).padStart(2, '0'),
-        remove: () => this.setState((st) => ({ copy: { ...st.copy, lighthouses: st.copy.lighthouses.filter((_, i) => i !== idx) } })),
-      })),
-      lightCount: (s.copy.lighthouses || []).length,
-      setLight: (ev) => {
-        const i = Number(ev.target.dataset.idx), f = ev.target.dataset.field, v = ev.target.value;
-        this.setState((st) => ({ copy: { ...st.copy, lighthouses: st.copy.lighthouses.map((lh, ix) => ix === i ? { ...lh, [f]: v } : lh) } }));
-      },
-      addLight: () => this.setState((st) => ({ copy: { ...st.copy, lighthouses: [...st.copy.lighthouses, { name: '', pos: '', line: '' }] } })),
       // easter eggs (smuggler's hold)
       eggLiveCount: this.eggDefs.filter((e) => e.status === 'live').length,
       eggLooseCount: this.eggDefs.filter((e) => e.status === 'live' && s.eggs[e.id]).length,
@@ -2207,7 +1676,7 @@ class Component extends DCLogic {
         const on = live && !!s.eggs[e.id];
         return {
           ...e,
-          isLive: live, isPlanned: !live, isBottle: e.id === 'bottle', isCat: e.id === 'cat', isLights: e.id === 'lights',
+          isLive: live, isPlanned: !live, isBottle: e.id === 'bottle', isCat: e.id === 'cat',
           enabled: on,
           catLocFields: e.id === 'cat' ? this.catLocMeta.map((m) => {
             const lon = !!s.catLocs[m.key];
@@ -2287,7 +1756,7 @@ class Component extends DCLogic {
       },
       // edit overlay
       edit: e, draft: e ? e.draft : {},
-      printOptions, doodleOptions, hasRevs, revRows,
+      printOptions, hasRevs, revRows,
       stampPreview, stampShapeChips, stampInkChips, stampMotifChips, stampIsText, stampText,
       rerollStamp: () => this.updateStamp(this.randomStamp()),
       setStampText: (ev) => this.updateStamp({ text: ev.target.value }),
@@ -2313,13 +1782,8 @@ class Component extends DCLogic {
             ? 'published — this is live'
             : 'draft — only you can see this')
         : '',
-      peekWx: (s.peek && s.peek.type === 'note' && s.notes[s.peek.idx].wx) || '',
-      peekHasDoodle: !!(s.peek && s.peek.type === 'note' && s.notes[s.peek.idx].doodle),
-      peekDoodleDiagram: !!(s.peek && s.peek.type === 'note' && s.notes[s.peek.idx].doodle === 'diagram'),
-      peekDoodleBoat: !!(s.peek && s.peek.type === 'note' && s.notes[s.peek.idx].doodle === 'boat'),
-      peekDoodleQueue: !!(s.peek && s.peek.type === 'note' && s.notes[s.peek.idx].doodle === 'queue'),
       peekPrintStyle: (() => {
-        const d = s.peek && s.peek.type === 'project' ? s.projects[s.peek.idx] : null;
+        const d = s.peek ? (s.peek.type === 'project' ? s.projects[s.peek.idx] : s.notes[s.peek.idx]) : null;
         return d && d.img ? { width: '100%', height: '140px', borderRadius: '1px', background: this.toneGrad(d.img) } : null;
       })(),
       closePeek: () => this.setState({ peek: null }),

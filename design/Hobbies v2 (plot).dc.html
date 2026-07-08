@@ -19,8 +19,6 @@ a:hover{color:#e8ebfa}
 @keyframes lampPulse{0%,100%{opacity:.55}50%{opacity:1}}
 @keyframes backdropIn{from{opacity:0}to{opacity:1}}
 @keyframes cardIn{from{opacity:0;transform:rotate(1.5deg) translateY(34px) scale(.97)}to{opacity:1;transform:rotate(-.4deg) translateY(0) scale(1)}}
-@keyframes mistDrift{from{transform:translateX(-1.5%)}to{transform:translateX(1.5%)}}
-@keyframes drift{0%,100%{transform:translate(0,0)}25%{transform:translate(9px,-14px)}50%{transform:translate(-7px,-22px)}75%{transform:translate(6px,-9px)}}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </helmet>
@@ -53,38 +51,22 @@ a:hover{color:#e8ebfa}
   <!-- entries -->
   <div style="padding:16px clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column;gap:18px">
     <!-- the plot -->
-    <div style="position:relative;display:flex;flex-wrap:wrap;gap:30px 36px;align-items:flex-end;justify-content:center;padding:26px 0 6px">
+    <div style="display:flex;flex-wrap:wrap;gap:30px 36px;align-items:flex-end;justify-content:center;padding:26px 0 6px">
       <sc-for list="{{ stones }}" as="st" hint-placeholder-count="3">
         <div onClick="{{ st.onClick }}" title="pay respects" style="{{ st.plotStyle }}" style-hover="transform:rotate(0deg) translateY(-3px)">
           <div style="{{ st.stoneStyle }}">
-            <div style="{{ st.wearStyle }}"></div>
-            <sc-if value="{{ st.hasCrack }}" hint-placeholder-val="{{ false }}">
-              <svg width="14" height="54" viewBox="0 0 14 54" fill="none" stroke="rgba(12,15,30,.5)" stroke-width="1.2" stroke-linecap="round" style="position:absolute;top:2px;left:27%"><path d="M7 0 L4 14 L9 27 L3 41 L6 54"></path></svg>
-            </sc-if>
-            <div style="{{ st.inkStyle }}">
-              <sc-if value="{{ st.isAlive }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#f0d9a8;animation:lampPulse 3.5s ease-in-out infinite">●</span></sc-if>
-              <sc-if value="{{ st.isDead }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;color:#f0d9a8;opacity:.65">❦</span></sc-if>
-              <span style="font-family:'Gloock',serif;font-size:20px;color:#e4e8f8;line-height:1.2;letter-spacing:.02em;text-shadow:0 1px 0 rgba(0,0,0,.5)">{{ st.name }}</span>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#7a83ad;letter-spacing:.06em">{{ st.dates }}</span>
-              <span style="width:22px;height:1px;background:rgba(150,160,220,.35);margin:3px 0"></span>
-              <span style="font-size:13.5px;font-style:italic;color:#8f9be0;line-height:1.5">{{ st.epitaph }}</span>
-              <sc-if value="{{ st.hasCeno }}" hint-placeholder-val="{{ false }}">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase;margin-top:3px">nothing buried here</span>
-              </sc-if>
-            </div>
+            <sc-if value="{{ st.isAlive }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#f0d9a8;animation:lampPulse 3.5s ease-in-out infinite">●</span></sc-if>
+            <sc-if value="{{ st.isDead }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;color:#f0d9a8;opacity:.65">❦</span></sc-if>
+            <span style="font-family:'Gloock',serif;font-size:20px;color:#e4e8f8;line-height:1.2;letter-spacing:.02em;text-shadow:0 1px 0 rgba(0,0,0,.5)">{{ st.name }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#7a83ad;letter-spacing:.06em">{{ st.dates }}</span>
+            <span style="width:22px;height:1px;background:rgba(150,160,220,.35);margin:3px 0"></span>
+            <span style="font-size:13.5px;font-style:italic;color:#8f9be0;line-height:1.5">{{ st.epitaph }}</span>
           </div>
           <div style="width:130%;height:24px;margin-top:-13px;border-radius:50%;background:radial-gradient(ellipse at 50% 32%,#2b3050 0%,rgba(26,30,51,0) 72%)"></div>
           <svg width="52" height="16" viewBox="0 0 48 16" fill="none" stroke="#5f6ec4" stroke-width="1.4" stroke-linecap="round" style="position:absolute;bottom:4px;left:8px;opacity:.7;z-index:2"><path d="M4 15 Q5 8 3 4 M8 15 Q9 9 12 6 M13 15 Q13 10 11 8"></path></svg>
           <svg width="30" height="14" viewBox="0 0 30 14" fill="none" stroke="#5f6ec4" stroke-width="1.4" stroke-linecap="round" style="position:absolute;bottom:5px;right:10px;opacity:.7;z-index:2"><path d="M6 13 Q7 7 5 3 M11 13 Q11 8 14 5"></path><circle cx="14" cy="4" r="1.6" fill="#f0d9a8" stroke="none"></circle></svg>
-          <sc-if value="{{ st.hasMarker }}" hint-placeholder-val="{{ false }}">
-            <div title="keeper's service marker · bronze" style="position:absolute;bottom:9px;right:34px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c9a86a,#7a5c33);box-shadow:0 0 6px rgba(240,217,168,.3);z-index:2"></div>
-          </sc-if>
         </div>
       </sc-for>
-      <div style="position:absolute;left:14%;top:6%;width:4px;height:4px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 10px 3px rgba(240,217,168,.3);animation:drift 12s ease-in-out infinite;pointer-events:none"></div>
-      <div style="position:absolute;right:16%;top:22%;width:3px;height:3px;border-radius:50%;background:#93a0e8;box-shadow:0 0 9px 3px rgba(147,160,232,.3);animation:drift 15s ease-in-out 2s infinite;pointer-events:none"></div>
-      <div style="position:absolute;left:44%;bottom:18%;width:3px;height:3px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 9px 3px rgba(240,217,168,.25);animation:drift 10s ease-in-out 4s infinite;pointer-events:none"></div>
-      <div style="position:absolute;left:-4%;right:-4%;bottom:-6px;height:64px;pointer-events:none;z-index:3;background:radial-gradient(ellipse 40% 100% at 20% 100%, rgba(147,160,232,.07), transparent 70%),radial-gradient(ellipse 50% 100% at 60% 100%, rgba(147,160,232,.05), transparent 70%),radial-gradient(ellipse 35% 100% at 90% 100%, rgba(147,160,232,.06), transparent 70%);animation:mistDrift 26s ease-in-out infinite alternate"></div>
     </div>
 
     <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;padding:2px 0 8px">// tap a stone to hear the eulogy</div>
@@ -140,8 +122,20 @@ class Component extends DCLogic {
       eulogy: 'Got far enough to feel good, which it turns out was the goal all along. Took music theory down with it. May rise again when the kid wants lessons.' },
     { name: 'Game development', status: '† shipped one', dates: '2020',
       eulogy: 'Made a cat/boat racing game for CS50 and retired at the top. Undefeated: one game made, one game finished.' },
-    { name: 'Running', status: '† it was a phase', dates: 'one summer', cenotaph: true,
+    { name: 'Running', status: '† it was a phase', dates: 'one summer',
       eulogy: "The shoes were purchased. The shoes remain. We don't talk about the shoes." },
+    // TEST DATA — remove
+    { name: 'Sourdough', status: '† fed it daily', dates: 'one pandemic', eulogy: 'The starter had a name. The starter had a schedule. The starter is in a better place now (the compost).' },
+    { name: 'Chess', status: '† peaked at 1200', dates: '2021', eulogy: 'Studied openings for three months, blundered a queen in every one of them.' },
+    { name: 'Fountain pens', status: '† ink everywhere', dates: '2022', eulogy: 'Bought four pens to improve handwriting. Handwriting unchanged. Shirt count reduced.' },
+    { name: '3D printing', status: '† printed printer parts', dates: '2022 — 2023', eulogy: 'A machine whose primary output was upgrades to itself. The circle of life.' },
+    { name: 'Birdwatching', status: '† saw a pigeon', dates: 'one spring', eulogy: 'The binoculars were excellent. The birds declined to appear.' },
+    { name: 'Kayaking', status: '† the lake won', dates: '2019', eulogy: 'One rental, one capsize, one phone at the bottom of the Allegheny.' },
+    { name: 'Coffee roasting', status: '† alarm objected', dates: '2020', eulogy: 'The smoke alarm reviewed my roast profile. The review was loud and fair.' },
+    { name: 'Ham radio', status: '† nobody answered', dates: '2021', eulogy: 'CQ CQ CQ. The ionosphere kept my calls brief.' },
+    { name: 'Bonsai', status: '† it was a stick', dates: '2023', eulogy: 'Purchased a tiny tree. Nurtured a tiny stick. Grieved a tiny loss.' },
+    { name: 'Speedcubing', status: '† sub-2, once', dates: '2020', eulogy: 'Learned the beginner method, timed everything, retired at a personal best witnessed by no one.' },
+    { name: 'Whittling', status: '† ten fingers remain', dates: '2024', eulogy: 'A safe and complete retirement, which is more than the wood can say.' },
   ];
 
   renderVals() {
@@ -149,38 +143,25 @@ class Component extends DCLogic {
     const sel = s.stoneIdx;
 
     const shapes = [
-      { w: 232, radius: '118px 102px 8px 6px', pad: '36px 22px 24px' },
-      { w: 208, radius: '14px 20px 7px 10px', pad: '28px 20px 22px' },
-      { w: 240, radius: '66px 80px 8px 7px', pad: '30px 22px 22px' },
-      { w: 186, radius: '88px 100px 7px 9px', pad: '32px 18px 20px' },
-      { w: 252, radius: '22px 32px 9px 6px', pad: '26px 22px 20px' },
+      { w: 232, radius: '116px 116px 8px 8px', pad: '36px 22px 24px' },
+      { w: 208, radius: '16px 16px 8px 8px', pad: '28px 20px 22px' },
+      { w: 240, radius: '72px 72px 8px 8px', pad: '30px 22px 22px' },
+      { w: 186, radius: '94px 94px 8px 8px', pad: '32px 18px 20px' },
+      { w: 252, radius: '26px 26px 8px 8px', pad: '26px 22px 20px' },
     ];
     const shapeSeq = [0, 1, 2, 3, 4, 1, 3, 0, 4, 2, 0, 3, 1, 2, 4];
-    const tilts = [-2.2, 1.6, -1.3, 2.4, -0.9, 1.9, -2.6];
-    const sink = [0, 14, 6, 22, 3, 11, 18, 5, 13, 8];
-    const wearSeq = [0.9, 0.5, 0.75, 1, 0.4, 0.65, 0.85, 0.55, 0.95, 0.7];
+    const tilts = [-1.2, 0.9, -0.8, 1.1, -0.5, 1.3, -1.4];
+    const sink = [0, 12, 5, 18, 2, 9, 15, 4, 11, 7];
 
     const stones = this.hobbies.map((h, i) => {
       const alive = h.status === 'active';
       const sh = shapes[shapeSeq[i % shapeSeq.length]];
       const isSel = i === sel;
-      const wl = alive ? 0.2 : wearSeq[i % wearSeq.length];
-      const wear = [
-        `linear-gradient(105deg, rgba(10,12,24,${(0.3 * wl).toFixed(2)}) 0%, transparent 36%)`,
-        `linear-gradient(0deg, rgba(221,225,240,${(0.09 * wl).toFixed(2)}) 0%, transparent ${Math.round(18 + wl * 14)}%)`,
-      ];
-      if (wl > 0.5) wear.push(`radial-gradient(circle at ${20 + (i * 13) % 50}% ${25 + (i * 17) % 40}%, rgba(240,217,168,${(0.13 * wl).toFixed(2)}) 0%, transparent 24%)`);
-      if (wl > 0.7) wear.push(`radial-gradient(circle at ${65 + (i * 7) % 25}% ${55 + (i * 11) % 30}%, rgba(147,160,232,${(0.12 * wl).toFixed(2)}) 0%, transparent 28%)`);
       return {
         name: h.name,
         dates: alive ? h.dates.replace('present', '').trimEnd() : h.dates,
         epitaph: alive ? 'not dead yet' : h.status,
         isAlive: alive, isDead: !alive,
-        hasCeno: !!h.cenotaph,
-        hasCrack: !alive && wl >= 0.9,
-        hasMarker: !alive && i % 3 === 1,
-        wearStyle: { position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', background: wear.join(',') },
-        inkStyle: { position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', opacity: 1 - wl * 0.28 },
         onClick: () => this.setState({ stoneIdx: i }),
         plotStyle: {
           display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative',
@@ -216,9 +197,7 @@ class Component extends DCLogic {
       eulogyText: openEulogy ? '“' + openEulogy.eulogy + '”' : '',
       eulogyDates: !openEulogy ? '' : stillAlive
         ? '— to be read at a much later date · ' + openEulogy.dates
-        : openEulogy.cenotaph
-          ? '— read over an empty plot · ' + openEulogy.dates
-          : '— as read at the graveside · ' + openEulogy.dates,
+        : '— as read at the graveside · ' + openEulogy.dates,
       nextHobby: this.suggestions[this.state.nextIdx],
       cycleNext: () => this.setState((s2) => ({ nextIdx: (s2.nextIdx + 1) % this.suggestions.length })),
     };

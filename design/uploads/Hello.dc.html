@@ -14,7 +14,6 @@
 html{background:#131628}
 body{margin:0;background:linear-gradient(180deg,#11131f 0%,#131628 100%)}
 a{text-decoration:none}
-a:hover{color:#e8ebfa}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes drift{0%,100%{transform:translate(0,0)}25%{transform:translate(9px,-14px)}50%{transform:translate(-7px,-22px)}75%{transform:translate(6px,-9px)}}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
@@ -25,7 +24,6 @@ a:hover{color:#e8ebfa}
 @keyframes wiggle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
 @keyframes wiggle14{0%,100%{transform:rotate(11deg)}50%{transform:rotate(17deg)}}
 @keyframes postmarkSway{0%,100%{transform:rotate(9deg)}50%{transform:rotate(15deg)}}
-@keyframes lampPulse{0%,100%{opacity:.55}50%{opacity:1}}
 @keyframes sail{0%{left:-60px}100%{left:102%}}
 @keyframes bobBoat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-3px) rotate(2deg)}}
 @keyframes wakeRipple{to{background-position-x:-53px}}
@@ -46,7 +44,7 @@ a:hover{color:#e8ebfa}
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:clamp(18px,3vw,30px) clamp(20px,5vw,52px) 10px">
     <a href="Hello.dc.html" style="display:flex;align-items:center;gap:12px">
       <span style="position:relative;display:inline-flex">
-        <svg width="24" height="28" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
+        <svg width="24" height="28" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
       </span>
       <span style="font-family:'Gloock',serif;font-size:19px;color:#e8ebfa">Justin Smith</span>
     </a>
@@ -79,9 +77,9 @@ a:hover{color:#e8ebfa}
     </div>
   </div>
 
-  <!-- wave, with a boat passing offshore -->
+  <!-- wave with boat -->
   <div data-wave style="position:relative;height:18px;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x">
-    <div onClick="{{ dropBottle }}" title="a little boat, passing offshore — it drops the mail" style="position:absolute;top:-15px;left:-60px;animation:sail 70s linear infinite;cursor:pointer;padding:8px">
+    <div onClick="{{ dropBottle }}" title="a little boat, out on a delivery" style="position:absolute;top:-15px;left:-60px;animation:sail 70s linear infinite;cursor:pointer;padding:8px">
       <div class="boat-wake" style="right:32px;top:23px;mask-image:linear-gradient(90deg,transparent,black 70%);-webkit-mask-image:linear-gradient(90deg,transparent,black 70%)"></div>
       <svg width="30" height="24" viewBox="0 0 30 24" fill="none" style="position:relative;animation:bobBoat 3s ease-in-out infinite;transition:transform .2s" style-hover="transform:translateY(-3px) scale(1.08)"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>
     </div>
@@ -178,11 +176,11 @@ a:hover{color:#e8ebfa}
     </div>
   </sc-if>
 
-  <!-- keeper's stores -->
+  <!-- cargo manifest -->
   <div style="padding:0 clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column;gap:16px">
     <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">The keeper's stores</span>
-      <span style="font-size:15px;color:#5f6ec4;font-style:italic">tools kept in the tower</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">The cargo manifest</span>
+      <span style="font-size:15px;color:#5f6ec4;font-style:italic">tools currently aboard</span>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px 28px">
       <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(150,160,220,.2);padding-top:12px">
@@ -226,15 +224,12 @@ a:hover{color:#e8ebfa}
         <span style="font-size:14.5px;color:#7a83ad;font-style:italic">Nothing here is dead. It's just resting until the next season of me.</span>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// the graveyard only grows. that's fine.</span>
-      <span onClick="{{ cycleNext }}" style="padding:6px 14px;border:1.5px dashed rgba(240,217,168,.6);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transform:rotate(-1deg);transition:transform .15s" style-hover="transform:rotate(0deg) scale(1.04)" style-active="transform:scale(.96)">next: {{ nextHobby }}</span>
-    </div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// the graveyard only grows. that's fine.</div>
   </div>
 
   <!-- contact band -->
   <div style="padding:clamp(40px,7vw,72px) clamp(20px,5vw,52px) clamp(28px,5vw,48px);display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center">
-    <svg width="30" height="34" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
+    <svg width="30" height="34" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
     <div style="font-family:'Gloock',serif;font-size:clamp(24px,4.5vw,34px);color:#f0f2fc;max-width:560px;line-height:1.2;text-wrap:balance">Need a hand keeping your lights on?</div>
     <div style="font-size:17px;color:#a5aed4;font-style:italic;max-width:460px">Backend, architecture, planning — or just to talk shop.</div>
     <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:4px">
@@ -257,7 +252,7 @@ a:hover{color:#e8ebfa}
   <!-- footer -->
   <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:26px clamp(20px,5vw,52px) 24px">
     <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · argsea.com</span>
-    <span style="font-size:15px;color:#8f9be0;font-style:italic">The light runs on schedule. Ish.</span>
+    <span style="font-size:15px;color:#8f9be0;font-style:italic">The boats run on schedule. Ish.</span>
     <div style="display:flex;gap:16px;font-family:'IBM Plex Mono',monospace;font-size:12px">
       <a href="#" style="color:#93a0e8">github</a><a href="#" style="color:#93a0e8">linkedin</a><a href="mailto:hello@argsea.com" style="color:#93a0e8">email</a>
     </div>
@@ -267,9 +262,7 @@ a:hover{color:#e8ebfa}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { openIdx: null, bottle: null, nextIdx: 0 };
-
-  suggestions = ['???', 'blacksmithing?', 'sourdough?', 'birdwatching?', '3d printing?', 'kayaking?', 'chess?', 'fermenting things?', 'ham radio?', 'no. surely not.'];
+  state = { openIdx: null, bottle: null };
 
   bottleProverbs = [
     'A migration nobody notices is a migration done right.',
@@ -277,7 +270,7 @@ class Component extends DCLogic {
     'Every cron job is a small promise to your future self.',
     'The best on-call shift is the one you slept through.',
     'Name it well and you will never have to explain it.',
-    'The lamp that burns all night was trimmed before dark.',
+    'The boat that leaves on schedule was loaded the night before.',
     'Cache invalidation, naming things, and one more thing I forget.',
     'Ship the boring version. Boring floats.',
     'A rollback is not a failure. It is a lifeboat.',
@@ -339,8 +332,6 @@ class Component extends DCLogic {
       } : null,
       dropBottle: (e) => this.dropBottle(e),
       dismissBottle: () => { clearTimeout(this.bottleTimer); this.setState({ bottle: null }); },
-      nextHobby: this.suggestions[this.state.nextIdx],
-      cycleNext: () => this.setState((s) => ({ nextIdx: (s.nextIdx + 1) % this.suggestions.length })),
       openCard0: () => this.setState({ openIdx: 0 }),
       openCard1: () => this.setState({ openIdx: 1 }),
       openCard2: () => this.setState({ openIdx: 2 }),

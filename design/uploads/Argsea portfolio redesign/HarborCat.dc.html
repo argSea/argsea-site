@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+@keyframes catTailSway{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-11deg)}}
+@keyframes catTailCurl{0%,100%{transform:rotate(0deg)}50%{transform:rotate(6deg)}}
+@keyframes catBubbleIn{from{opacity:0;transform:translateY(6px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes catBlink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(.12)}}
+@keyframes catBreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.03)}}
+@keyframes catSettle{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none !important}}
+</style>
+</helmet>
+
+<div ref="{{ rootRef }}" style="{{ clampStyle }}">
+<div style="position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:flex-end;animation:catSettle .4s ease both;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))">
+  <sc-if value="{{ say }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ bubbleStyle }}">{{ say }}</div>
+  </sc-if>
+
+  <!-- PERCHED: front paws on an edge, tail draped -->
+  <sc-if value="{{ isPerched }}" hint-placeholder-val="{{ true }}">
+    <svg onClick="{{ poke }}" width="100%" height="100%" viewBox="0 0 64 74" fill="none" style="{{ svgStyle }}">
+      <path d="M45 55 C57 52 61 62 56 70 C54.5 72.5 51 72.5 50 70 C52.5 64.5 50 60 43 60 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.4" stroke-linejoin="round" style="transform-origin:45px 56px;animation:catTailSway 4.5s ease-in-out infinite"></path>
+      <ellipse cx="26" cy="52.5" rx="4.4" ry="3.2" fill="#232a4d" stroke="#93a0e8" stroke-width="1.3"></ellipse>
+      <ellipse cx="37.5" cy="52.5" rx="4.4" ry="3.2" fill="#232a4d" stroke="#93a0e8" stroke-width="1.3"></ellipse>
+      <path d="M12.95 51.8 C9.25 40.7 13.9 29.6 22.2 25.9 L21.3 15.7 L27.4 21.8 L33.7 21.8 L39.8 15.7 L38.85 25.9 C47.2 29.6 51.8 40.7 48.1 51.8 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.6" stroke-linejoin="round"></path>
+      <path d="M22.7 18.2 L25.6 21.6 L22.2 21.6 Z" fill="#f0d9a8" opacity=".5"></path>
+      <path d="M38.3 18.2 L38.8 21.6 L35.4 21.6 Z" fill="#f0d9a8" opacity=".5"></path>
+      <g style="transform-origin:30px 31px;animation:catBlink 6s ease-in-out infinite">
+        <circle cx="25.9" cy="30.8" r="1.9" fill="#f0d9a8"></circle>
+        <circle cx="35.2" cy="30.8" r="1.9" fill="#f0d9a8"></circle>
+      </g>
+      <path d="M29.4 35 L32.2 35 L30.8 36.6 Z" fill="#f0d9a8"></path>
+      <path d="M30.8 36.6 v1.4 M30.8 38 q-2 1.4 -3.6 .4 M30.8 38 q2 1.4 3.6 .4" stroke="#5f6ec4" stroke-width="1" fill="none" stroke-linecap="round"></path>
+      <path d="M22 33 l-7 -1.4 M22 35.4 l-7 1 M39.5 33 l7 -1.4 M39.5 35.4 l7 1" stroke="#5f6ec4" stroke-width="0.9" stroke-linecap="round" opacity=".7"></path>
+    </svg>
+  </sc-if>
+
+  <!-- LYING: stretched along a horizontal element, head up at left, tail trailing right -->
+  <sc-if value="{{ isLying }}" hint-placeholder-val="{{ false }}">
+    <svg onClick="{{ poke }}" width="100%" height="100%" viewBox="0 0 112 46" fill="none" preserveAspectRatio="xMidYMax meet" style="{{ svgStyle }}">
+      <!-- tail trailing right, gently swaying -->
+      <path d="M84 34 C99 35 104 22 96 16.5 C92.5 14.2 89 16.6 90.6 19.6 C95 22 93 30 82 31 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.4" stroke-linejoin="round" style="transform-origin:84px 33px;animation:catTailCurl 5s ease-in-out infinite"></path>
+      <!-- long lying body -->
+      <path d="M17 41 C11 41 8.5 30 15 25 C20 21 32 21.5 44 22 L74 23 C90 23.6 95 32 89 41 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.6" stroke-linejoin="round"></path>
+      <!-- front paws stretched forward over the edge -->
+      <ellipse cx="16" cy="41.5" rx="6.5" ry="3" fill="#232a4d" stroke="#93a0e8" stroke-width="1.3"></ellipse>
+      <ellipse cx="27" cy="42" rx="6" ry="2.8" fill="#232a4d" stroke="#93a0e8" stroke-width="1.3"></ellipse>
+      <!-- head resting at left -->
+      <path d="M9.5 22.5 C6 14 12 6.5 21 7.5 L21.6 3 L26 8 C34 9 36 18 31 24 C26 29.5 14 29 9.5 22.5 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.6" stroke-linejoin="round"></path>
+      <!-- ear tips -->
+      <path d="M12 9 L14.5 15 L10 14 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.4" stroke-linejoin="round"></path>
+      <path d="M24.5 6.5 L26 12.8 L21.4 11.4 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.4" stroke-linejoin="round"></path>
+      <path d="M12.6 11 L14 14.6 L11.4 14 Z" fill="#f0d9a8" opacity=".5"></path>
+      <path d="M23.9 8.6 L24.8 12 L22.2 11.2 Z" fill="#f0d9a8" opacity=".5"></path>
+      <!-- content half-lidded eyes -->
+      <path d="M13.5 19.4 q3 2.6 6 0" stroke="#f0d9a8" stroke-width="1.7" fill="none" stroke-linecap="round"></path>
+      <path d="M23 19.4 q3 2.6 6 0" stroke="#f0d9a8" stroke-width="1.7" fill="none" stroke-linecap="round"></path>
+      <!-- nose + whiskers -->
+      <path d="M20 23.4 L23 23.4 L21.5 25 Z" fill="#f0d9a8"></path>
+      <path d="M13 22.6 l-7 .6 M13 24.6 l-6.6 1.8 M29 22.6 l7 .6 M29 24.6 l6.6 1.8" stroke="#5f6ec4" stroke-width="0.9" stroke-linecap="round" opacity=".7"></path>
+    </svg>
+  </sc-if>
+
+  <!-- CURLED: compact, tail wrapped, head tucked, dozing -->
+  <sc-if value="{{ isCurled }}" hint-placeholder-val="{{ false }}">
+    <svg onClick="{{ poke }}" width="100%" height="100%" viewBox="0 0 64 56" fill="none" preserveAspectRatio="xMidYMax meet" style="{{ svgStyle }}">
+      <!-- round curled body -->
+      <path d="M32 52 C13 52 6 38 12 26 C17 16 28 13 34 15 C46 12 58 20 57 34 C56 46 47 52 32 52 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.6" stroke-linejoin="round" style="transform-origin:32px 40px;animation:catBreathe 5.5s ease-in-out infinite"></path>
+      <!-- tail wrapped around the front -->
+      <path d="M50 40 C60 43 58 53 45 52.5 C33 52 22 53 16 48 C13 45.6 15 42 18 43.5 C25 47 40 47 47 44 C50 42.8 49 41 50 40 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.4" stroke-linejoin="round"></path>
+      <!-- head tucked to the front-left, resting -->
+      <path d="M18 32 C13 24 19 15 28 16 L28.6 11.5 L33 16.6 C41 18 42 27 37 32.5 C31.5 38.5 22.5 38 18 32 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.6" stroke-linejoin="round"></path>
+      <!-- ears -->
+      <path d="M19 17.5 L21.5 23 L17 22 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.4" stroke-linejoin="round"></path>
+      <path d="M31.5 15 L33 21 L28.6 19.6 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.4" stroke-linejoin="round"></path>
+      <path d="M19.5 19 L21 22.4 L18.4 21.8 Z" fill="#f0d9a8" opacity=".5"></path>
+      <path d="M30.6 17 L31.6 20.4 L29 19.6 Z" fill="#f0d9a8" opacity=".5"></path>
+      <!-- sleepy closed eyes -->
+      <path d="M20.5 28 q2.6 2.4 5.2 0" stroke="#f0d9a8" stroke-width="1.7" fill="none" stroke-linecap="round"></path>
+      <path d="M29 28 q2.6 2.4 5.2 0" stroke="#f0d9a8" stroke-width="1.7" fill="none" stroke-linecap="round"></path>
+      <!-- nose + whiskers -->
+      <path d="M26 31.4 L29 31.4 L27.5 33 Z" fill="#f0d9a8"></path>
+      <path d="M20 30.6 l-6.5 .4 M20 32.6 l-6 1.6 M35 30.6 l6.5 .4 M35 32.6 l6 1.6" stroke="#5f6ec4" stroke-width="0.9" stroke-linecap="round" opacity=".65"></path>
+    </svg>
+  </sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:120,&quot;height&quot;:90},&quot;pose&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;perched&quot;,&quot;lying&quot;,&quot;curled&quot;],&quot;default&quot;:&quot;perched&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;context&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;header&quot;,&quot;hero&quot;,&quot;postcard&quot;,&quot;note&quot;,&quot;wreck&quot;,&quot;manifest&quot;,&quot;graveyard&quot;,&quot;contact&quot;,&quot;filterTag&quot;,&quot;card&quot;,&quot;row&quot;,&quot;entry&quot;,&quot;nextChip&quot;],&quot;default&quot;:&quot;header&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;flip&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { say: null, shiftX: 0, bubble: null };
+
+  rootRef = React.createRef();
+
+  sets = {
+    header: ['this is my beam.', 'mind the step.', 'i live up the stairs.', 'nav duty. mrrp.', 'you are here. so am i.', 'i drape where i like.'],
+    hero: ['hi. i live here.', 'welcome to the light.', 'mrrp. big words up there.', 'he wrote that, not me.', 'i approved the headline.', 'the keeper is around somewhere.'],
+    postcard: ['mrrp.', 'i sat on this one first.', 'read it to me.', 'this postcard is mine now.', 'i approve. mostly.', 'the stamp tastes fine.', 'you opened it, i inspected it.'],
+    note: ['mrrp.', 'i walked across the keyboard during this one.', 'typo on line two. i left it.', 'read it to me.', 'i supervised this draft.', 'nap first. then read.', 'i have read it. no comment.'],
+    wreck: ['told you to turn left.', 'i would not have hit that.', 'a cat never runs aground.', 'nice parking, captain.', 'i saw the rocks. did you?', 'this is why i steer.', 'should have asked the cat.'],
+    manifest: ['all aboard? good.', 'i counted the cargo. twice.', 'the manifest checks out.', 'i am also cargo.', 'end of the list. nap now.', 'nothing to declare but me.'],
+    graveyard: ['nothing is dead. just resting.', 'i knock the flowers off these.', 'i sit on the headstones.', 'quiet here. i like it.', 'rest in pieces.', 'i keep this plot warm.'],
+    contact: ['this is home. the lighthouse.', 'i keep the light.', 'say hi. i will judge it.', 'the keeper is in.', 'mind the lamp.', 'i live at the top of these stairs.'],
+    filterTag: ['good filter.', 'i sorted these myself.', 'this pile is mine.', 'chip approved.', 'mrrp. sorted.', 'batting the others off.'],
+    card: ['i sat on this one first.', 'this project is mine now.', 'corner office.', 'i inspected it.', 'ship it. or don\u2019t.', 'nice card. mine.'],
+    row: ['read it to me.', 'i supervised this one.', 'good row for a nap.', 'i vote you open it.', 'mrrp. this line.', 'i left the typo in.'],
+    entry: ['i keep this grave warm.', 'headstone. good for naps.', 'still resting.', 'i liked this hobby.', 'rest in pieces.', 'quiet. dozing.'],
+    nextChip: ['bat. bat. bat.', 'what is next? i decide.', 'i knocked this off the list.', 'pick this one.', 'mine now.', 'chase the question mark.'],
+  };
+
+  poke(e) {
+    if (e) e.stopPropagation();
+    clearTimeout(this.t);
+    const ctx = this.sets[this.props.context] ? this.props.context : 'header';
+    const pool = this.sets[ctx].filter((q) => q !== this.state.say);
+    const say = pool[Math.floor(Math.random() * pool.length)];
+    this.setState({ say, bubble: this.computeBubble() });
+    this.t = setTimeout(() => this.setState({ say: null }), 2600);
+  }
+
+  // choose a bubble side that stays on screen
+  computeBubble() {
+    const el = this.rootRef.current;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    let r = { left: vw / 2, right: vw / 2, top: vh / 2, bottom: vh / 2, width: 60 };
+    if (el) r = el.getBoundingClientRect();
+    const below = r.top < 96;            // near top -> drop the bubble below
+    const cx = (r.left + r.right) / 2;
+    const leftSpace = cx, rightSpace = vw - cx;
+    const base = {
+      position: 'absolute', whiteSpace: 'normal', maxWidth: 'min(220px,52vw)', width: 'max-content',
+      background: '#1c2036', border: '1px solid rgba(150,160,220,.4)', padding: '6px 12px',
+      fontFamily: "'IBM Plex Mono', monospace", fontSize: '11.5px', color: '#c3cbf2',
+      boxShadow: '0 8px 20px rgba(0,0,0,.45)', animation: 'catBubbleIn .2s ease both', zIndex: 6, lineHeight: 1.35,
+    };
+    const st = { ...base };
+    // vertical anchor
+    if (below) { st.top = 'calc(100% + 8px)'; } else { st.bottom = 'calc(100% + 8px)'; }
+    // horizontal anchor: point the bubble toward the roomier side
+    if (rightSpace < 150 && leftSpace > rightSpace) {
+      st.right = '0'; st.borderRadius = below ? '11px 2px 11px 11px' : '11px 11px 2px 11px';
+    } else if (leftSpace < 150) {
+      st.left = '0'; st.borderRadius = below ? '2px 11px 11px 11px' : '11px 11px 11px 2px';
+    } else {
+      st.left = '50%'; st.transform = 'translateX(-50%)'; st.borderRadius = '11px';
+    }
+    return st;
+  }
+
+  clampSelf() {
+    const el = this.rootRef.current;
+    if (!el) return;
+    const pad = 8;
+    const r = el.getBoundingClientRect();
+    // undo the current shift to find the natural position
+    const rawLeft = r.left - this.state.shiftX;
+    const rawRight = r.right - this.state.shiftX;
+    let shift = 0;
+    if (rawLeft < pad) shift = pad - rawLeft;
+    else if (rawRight > window.innerWidth - pad) shift = (window.innerWidth - pad) - rawRight;
+    if (Math.abs(shift - this.state.shiftX) > 0.5) this.setState({ shiftX: shift });
+  }
+
+  componentDidMount() {
+    this.clampSelf();
+    this._onResize = () => { this.clampSelf(); if (this.state.say) this.setState({ bubble: this.computeBubble() }); };
+    window.addEventListener('resize', this._onResize);
+    // one more pass after fonts/layout settle
+    this._rt = setTimeout(() => this.clampSelf(), 350);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.t); clearTimeout(this._rt);
+    window.removeEventListener('resize', this._onResize);
+  }
+
+  renderVals() {
+    const pose = this.props.pose || 'perched';
+    const flip = this.props.flip === true || this.props.flip === 'true';
+    return {
+      rootRef: this.rootRef,
+      say: this.state.say,
+      bubbleStyle: this.state.bubble || {},
+      poke: (e) => this.poke(e),
+      isPerched: pose === 'perched',
+      isLying: pose === 'lying',
+      isCurled: pose === 'curled',
+      svgStyle: { overflow: 'visible', cursor: 'pointer', transform: flip ? 'scaleX(-1)' : 'none' },
+      clampStyle: { position: 'relative', width: '100%', height: '100%', transform: 'translateX(' + this.state.shiftX + 'px)' },
+    };
+  }
+}
+</script>
+</body>
+</html>
