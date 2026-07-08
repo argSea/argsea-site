@@ -7,7 +7,7 @@
  * island-specific styles live next to each island.
  *
  * The reduced-motion kill-switch at the bottom of this file is a hard design
- * requirement — keep it last so nothing re-enables motion after it.
+ * requirement; keep it last so nothing re-enables motion after it.
  */
 
 :root {
@@ -329,7 +329,7 @@ a {
 	to   { opacity: 1; }
 }
 
-/* Firefly dots — positions are per-page, glow and drift are shared */
+/* Firefly dots: positions are per-page, glow and drift are shared */
 .firefly {
 	position: absolute;
 	border-radius: 50%;
@@ -339,7 +339,7 @@ a {
 /*
  * REQUIRED on every page: reduced motion disables all animation/transitions.
  * The !important declarations are what make this rule beat inline styles and
- * component/island styles (which the bundler may append after this file) —
+ * component/island styles (which the bundler may append after this file);
  * its position here is convention, not the mechanism. Elements whose resting
  * pose is a transform (tilted cards, the tunnel arches) carry that transform
  * as a base style so this rule never breaks layout.

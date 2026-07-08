@@ -1,6 +1,6 @@
 // The crossing sailboat and its message-in-a-bottle egg. Poking the boat
 // drops a bottle that bobs on the wave where the boat was, and a proverb note
-// rises from it — tap to release, Escape, or a 9s tide takes it back. With no
+// rises from it: tap to release, Escape, or a 9s tide takes it back. With no
 // proverbs (egg off) the boat just sails and isn't clickable; the homepage
 // then renders this without a client directive, so no JS ships.
 import { useEffect, useRef, useState } from 'react';
@@ -91,7 +91,7 @@ export default function BottleBoat({ proverbs }: Props) {
 							<div className="bottle-note__kicker">washed ashore</div>
 							<div className="bottle-note__proverb">{bottle.proverb}</div>
 							<div className="bottle-note__foot">
-								<span>— the sea</span>
+								<span>- the sea</span>
 								<span className="bottle-note__hint">tap to release ✕</span>
 							</div>
 							<div className="bottle-note__nib" />

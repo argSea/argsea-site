@@ -9,11 +9,11 @@
       "rabbitmq"
     ],
     "shortDesc": "One giant app became many small, well-behaved services. Readers never noticed. That was the point.",
-    "body": "<p>The old system was one enormous application that did everything and feared nothing, least of all my weekends. We took it apart piece by piece: a message queue in the middle, services around it, Kubernetes herding the containers.</p><p>The success metric was silence. No reader ever noticed a thing — the paper published every single day while we swapped the engine mid-flight.</p>",
+    "body": "<p>The old system was one enormous application that did everything and feared nothing, least of all my weekends. We took it apart piece by piece: a message queue in the middle, services around it, Kubernetes herding the containers.</p><p>The success metric was silence. No reader ever noticed a thing: the paper published every single day while we swapped the engine mid-flight.</p>",
     "moral": "Moral: the best migrations are the boring ones.",
     "postcardTo": "everyone who reads the news without thinking about queues",
     "postcardFrom": "justin, from inside the cluster",
-    "postmarked": "2024 — ongoing",
+    "postmarked": "2024–ongoing",
     "slug": "the-great-un-monolithing",
     "image": null,
     "stamp": {
@@ -43,7 +43,7 @@
     "moral": "Moral: if they never think about you, you did it right.",
     "postcardTo": "the 6pm deadline",
     "postcardFrom": "the pipes beneath the newsroom",
-    "postmarked": "2016 — ongoing",
+    "postmarked": "2016–ongoing",
     "slug": "newsroom-plumbing",
     "image": null,
     "stamp": {
@@ -73,7 +73,7 @@
     "moral": "Moral: automation is just kindness to your future self, scheduled.",
     "postcardTo": "100,000 people who are not awake yet",
     "postcardFrom": "a cron job with ambition",
-    "postmarked": "2018 — ongoing",
+    "postmarked": "2018–ongoing",
     "slug": "100k-good-mornings",
     "image": null,
     "stamp": {
@@ -162,7 +162,7 @@
     "moral": "Moral: some hobbies are load-bearing.",
     "postcardTo": "the family, who just wanted to watch a movie",
     "postcardFrom": "the server closet",
-    "postmarked": "2021 — forever",
+    "postmarked": "2021–forever",
     "slug": "the-home-lab",
     "image": null,
     "stamp": {

@@ -7,7 +7,7 @@ const RECT_W = 34 * 0.9;
 const RECT_H = 42 * 0.9;
 const CIRCLE_D = 52 * 0.9;
 
-// Computed size, not boundingBox — the wiggle animation rotates the box
+// Computed size, not boundingBox: the wiggle animation rotates the box
 async function computedSize(stamp: Locator): Promise<{ width: number; height: number }> {
 	return stamp.evaluate((element) => {
 		const style = getComputedStyle(element);
@@ -41,7 +41,7 @@ test('the postcard-back overlay carries no stamp', async ({ page }) => {
 	await expect(overlay.locator('[data-stamp]')).toHaveCount(0);
 });
 
-// emulateMedia, not test.use({ reducedMotion }) — the context option does not
+// emulateMedia, not test.use({ reducedMotion }): the context option does not
 // reach matchMedia under this runner/browser pairing, the page-level API does
 test('reduced motion stills the grid stamps', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });

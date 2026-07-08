@@ -1,4 +1,4 @@
-// The light list — the 404 placard's "last position" is the real coordinates
+// The light list: the 404 placard's "last position" is the real coordinates
 // of a real lighthouse, one random pick per wreck. Clicking flips the line in
 // place to the light's name and its one-liner; clicking again flips back.
 // The 404 page only mounts this when the egg is on and the list is non-empty.
@@ -36,7 +36,7 @@ export default function LightList({ lighthouses }: Props) {
 				}
 			}}
 		>
-			{revealed ? `${light.name} — ${light.line}` : `last position: ${light.pos}`}
+			{revealed ? `${light.name}: ${light.line}` : `last position: ${light.pos}`}
 		</span>
 	);
 }

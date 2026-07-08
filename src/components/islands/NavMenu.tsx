@@ -5,8 +5,8 @@
 // toggle.
 //
 // The header cat is menu-gated here: when the page's one-cat pick is the header
-// spot, the cat lies on the OPEN panel's top edge — draped over the border like
-// a cat on a wall, whatever section is active — and shows when the menu opens,
+// spot, the cat lies on the OPEN panel's top edge (draped over the border like
+// a cat on a wall, whatever section is active) and shows when the menu opens,
 // the same fold-in as the overlay spots. On desktop the director rides the cat
 // on the nav link instead, so it's never two.
 import { useEffect, useRef, useState } from 'react';

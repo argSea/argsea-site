@@ -1,9 +1,9 @@
 // Build-time mock of the argsea-site-api, used only by e2e/bake.mjs.
 // Serves the checked-in fixtures over the real wire routes so ApiSource is
 // exercised end-to-end, with one twist per mode:
-//   featured  — the mantel moves to the LAST three projects by order, so a
-//               homepage that merely sliced the first three would fail
-//   fallback  — nothing is featured, proving the order-fallback keeps the
+//   featured: the mantel moves to the LAST three projects by order, so a
+//             homepage that merely sliced the first three would fail
+//   fallback: nothing is featured, proving the order-fallback keeps the
 //               homepage populated
 // Both modes swap in a mock keeper profile so the specs can prove the contact
 // band, socials, and sign-off are wired to the profile, not hardcoded.
@@ -28,7 +28,7 @@ const MOCK_KEEPER = {
 	email:    'keeper@example.test',
 	github:   'github.com/mock-keeper',
 	linkedin: 'linkedin.com/in/mock-keeper',
-	signoff:  '— the mock keeper',
+	signoff:  '- the mock keeper',
 };
 
 const projects = fixture('projects').map((project) => ({
@@ -42,7 +42,7 @@ const routes = {
 	'/1/note':                       fixture('notes'),
 	'/1/copy':                       fixture('siteCopy'),
 	'/1/user/mock-keeper/profile':   MOCK_KEEPER,
-	// Nothing published — both mock builds prove the cat's built-in fallback,
+	// Nothing published: both mock builds prove the cat's built-in fallback,
 	// while the fixtures build renders through the v1-seed shape path
 	'/1/figurehead/published':       fixture('figurehead.empty'),
 	'/1/suggestion':                 fixture('suggestions'),

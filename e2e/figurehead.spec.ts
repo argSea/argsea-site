@@ -1,7 +1,7 @@
 // The figurehead render path: the fixtures build carries the v1-seed published
 // designs, so its cats render from shape JSON (the svg wears data-figurehead);
 // the mock-api builds publish nothing, so the built-in SVGs still show. The 404
-// is the deterministic stage — p404.wreck is its only spot, a guaranteed cat.
+// is the deterministic stage: p404.wreck is its only spot, a guaranteed cat.
 import { test, expect } from '@playwright/test';
 
 const FEATURED_BUILD = 'http://127.0.0.1:4822';
@@ -25,7 +25,7 @@ test('the fixture designs render the cat through the shape path', async ({ page 
 });
 
 test('the lying design renders on the header spot', async ({ page }) => {
-	// Math.random 0 pins the header spot — the lying pose
+	// Math.random 0 pins the header spot: the lying pose
 	await page.addInitScript(() => { Math.random = () => 0; });
 	await page.setViewportSize({ width: 1200, height: 800 });
 	await page.goto('/projects');

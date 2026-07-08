@@ -1,8 +1,8 @@
 ---
-// 404 — run aground. Centered "Notice to Mariners" copy above the grounded
+// 404: run aground. Centered "Notice to Mariners" copy above the grounded
 // scene: the listing boat on a sand-toned shoal, a warning buoy, a circling
-// gull, and two layers of choppy water. No lighthouse beam — cut by design
-// ruling; don't reintroduce it. The placard's "last position" is the light
+// gull, and two layers of choppy water. No lighthouse beam (cut by design
+// ruling, don't reintroduce it). The placard's "last position" is the light
 // list egg; the harbor cat heckles from the placard's top edge. Astro emits
 // this as dist/404.html; serving it for unknown routes is nginx config at
 // cutover.
@@ -30,7 +30,7 @@ const lighthouses = copy.eggs.lights ? copy.lighthouses : [];
 			<!-- clearance below the headline stays: the perched cat must never collide with the copy -->
 			<div class="placard">
 				<div class="placard__ribbon">⚠ Notice to Mariners</div>
-				<p class="placard__report">The page you set course for is not on any chart. Your vessel has run onto the shoals — no page lies beyond this point.</p>
+				<p class="placard__report">The page you set course for is not on any chart. Your vessel has run onto the shoals: no page lies beyond this point.</p>
 				<div class="placard__meta">
 					{lighthouses.length > 0
 						? <LightList client:visible lighthouses={lighthouses} />

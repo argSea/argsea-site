@@ -1,6 +1,6 @@
 // Delights layer (fixtures build): the light-list coordinate flip and the
 // resident cat on the 404, plus the message in a bottle on the homepage wave.
-// The cat is one-per-page-view now — a client pick across the spot catalog —
+// The cat is one-per-page-view now (a client pick across the spot catalog),
 // so the cat specs seed Math.random to pin a known spot (the catalog lists each
 // page's header first and its overlay last).
 import { readFileSync } from 'node:fs';
@@ -21,7 +21,7 @@ test('the 404 placard lists a lighthouse position and flips to its story', async
 	await expect(line).toContainText('last position:');
 
 	// The line hydrates lazily and repicks its light on mount, so read the truth
-	// off the reveal rather than the server-rendered position — retry the click
+	// off the reveal rather than the server-rendered position; retry the click
 	// until the handler is attached
 	await expect(async () => {
 		await line.click();
@@ -29,7 +29,7 @@ test('the 404 placard lists a lighthouse position and flips to its story', async
 	}).toPass();
 
 	const story = (await line.textContent())!;
-	const light = siteCopy.lighthouses.find((entry) => `${entry.name} — ${entry.line}` === story)!;
+	const light = siteCopy.lighthouses.find((entry) => `${entry.name}: ${entry.line}` === story)!;
 	expect(light).toBeTruthy();
 
 	await line.click();
@@ -77,7 +77,7 @@ test('the wreck cat bubble stays on screen at 390px', async ({ page }) => {
 test('poking the boat drops a bottled proverb, tap releases it', async ({ page }) => {
 	await page.goto('/');
 	// The boat never stops sailing, so a real click would wait forever for it
-	// to hold still — dispatch the click at wherever it is right now
+	// to hold still; dispatch the click at wherever it is right now
 	await page.locator('.boat-track').dispatchEvent('click');
 
 	const note = page.locator('.bottle-note');
@@ -105,7 +105,7 @@ test('never more than one cat on a page, across reloads', async ({ page }) => {
 });
 
 test('the desktop header wears the lying cat on the nav link', async ({ page }) => {
-	// Math.random 0 pins the first enabled spot — each page's header
+	// Math.random 0 pins the first enabled spot: each page's header
 	await page.addInitScript(() => { Math.random = () => 0; });
 	await page.setViewportSize({ width: 1200, height: 800 });
 	await page.goto('/projects');
@@ -142,7 +142,7 @@ test('on mobile the header cat is menu-gated: it lies on the open panel edge', a
 	await page.goto('/projects');
 	await page.waitForTimeout(400);
 
-	// nothing clamped over the brand row — the header cat waits for the menu
+	// nothing clamped over the brand row; the header cat waits for the menu
 	await expect(page.locator('.harbor-cat')).toHaveCount(0);
 
 	await page.locator('.nav-burger').click();
@@ -150,7 +150,7 @@ test('on mobile the header cat is menu-gated: it lies on the open panel edge', a
 	// still exactly one cat
 	await expect(page.locator('.harbor-cat')).toHaveCount(1);
 
-	// it rides the panel itself, draped over the top border — not any nav link
+	// it rides the panel itself, draped over the top border, not any nav link
 	await expect(page.locator('.nav-menu__item .cat-mount')).toHaveCount(0);
 	const panel = (await page.locator('#nav-menu').boundingBox())!;
 	const mount = (await page.locator('.cat-mount--menu').boundingBox())!;
@@ -168,7 +168,7 @@ test('the hamburger menu closes on Escape', async ({ page }) => {
 });
 
 test('an overlay spot shows the cat only when the overlay opens', async ({ page }) => {
-	// Math.random just under 1 pins the last enabled spot — projects.overlay
+	// Math.random just under 1 pins the last enabled spot: projects.overlay
 	await page.addInitScript(() => { Math.random = () => 0.999999; });
 	await page.goto('/projects');
 	await page.waitForTimeout(400);
@@ -191,7 +191,7 @@ test('a static pick plus an opened overlay is still one cat, never two', async (
 });
 
 test('the filterTag cat follows the active chip under reduced motion', async ({ page }) => {
-	// Math.random 0.3 pins the second enabled spot on projects — the filterTag.
+	// Math.random 0.3 pins the second enabled spot on projects: the filterTag.
 	// Reduced motion kills animationend, so this proves the class-swap remeasure.
 	await page.addInitScript(() => { Math.random = () => 0.3; });
 	await page.emulateMedia({ reducedMotion: 'reduce' });

@@ -23,7 +23,7 @@ const QUIPS: Record<Filter, string> = {
 	'tinkering':    'the hobby that survives every purge',
 };
 
-// Six bob poses from the design — with more projects the cycle repeats
+// Six bob poses from the design; with more projects the cycle repeats
 const BOB_CLASSES = ['bob-p1', 'bob-p2', 'bob-p3', 'bob-p4', 'bob-p5', 'bob-p6'];
 
 interface Props {
@@ -70,7 +70,7 @@ export default function ProjectsBoard({ projects, catEnabled, catPages, catSpots
 					</button>
 				))}
 				<span className="count-line">
-					showing {visible.length} of {projects.length} — {QUIPS[filter]}
+					showing {visible.length} of {projects.length}, {QUIPS[filter]}
 				</span>
 			</div>
 

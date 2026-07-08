@@ -5,10 +5,10 @@
   "quipHobbies": "Flowers welcome. Watering optional.",
   "quipNotes": "Written by a human, edited by deadline.",
   "quip404": "You are the first person to find this exact wrong URL. Probably.",
-  "heroKicker": "Hiya — senior software engineer, Pittsburgh PA",
+  "heroKicker": "Hiya, senior software engineer, Pittsburgh PA",
   "heroHeadline": "I help keep the lights on behind the news.",
   "heroBody": "Backend engineering at the Post-Gazette: building, planning, a healthy amount of boxes-and-arrows. Dad the rest of the time. Serial picker-upper of hobbies.",
-  "dict": "1. the Argo, but for one. 2. argc, but forever. 3. a sea of water, or of stars. 4. informal — what a method signature becomes if I'm not supervised.",
+  "dict": "1. the Argo, but for one. 2. argc, but forever. 3. a sea of water, or of stars. 4. informal: what a method signature becomes if I'm not supervised.",
   "eggs": { "bottle": true, "cat": true, "lights": true },
   "catPages": { "hello": true, "projects": true, "hobbies": true, "notes": true, "p404": true },
   "catSpots": {
@@ -43,7 +43,7 @@
     "The sea provides. Usually a merge conflict."
   ],
   "lighthouses": [
-    { "name": "Fastnet Rock", "pos": "51°23′N 9°36′W", "line": "Ireland’s teardrop — the last light the emigrants saw." },
+    { "name": "Fastnet Rock", "pos": "51°23′N 9°36′W", "line": "Ireland’s teardrop: the last light the emigrants saw." },
     { "name": "La Jument", "pos": "48°25′N 5°08′W", "line": "the keeper in the doorway, wave at his back. look it up." },
     { "name": "Bell Rock", "pos": "56°26′N 2°23′W", "line": "built on a rock that vanishes twice a day." },
     { "name": "Cape Hatteras", "pos": "35°15′N 75°32′W", "line": "the Graveyard of the Atlantic keeps a light on." },

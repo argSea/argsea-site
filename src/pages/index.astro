@@ -1,5 +1,5 @@
 ---
-// Hello — hero, wave-with-boat, postcards preview, cargo manifest, hobbies
+// Hello: hero, wave-with-boat, postcards preview, cargo manifest, hobbies
 // preview, contact band, and the dictionary entry. The postcards preview is
 // the mantel: the featured projects, or the first three by order so the
 // section never empties. It opens the postcard-back overlay in place; hero
@@ -14,7 +14,7 @@ import HomePostcards from '../components/islands/HomePostcards';
 import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead } from '../lib/api';
 
 const projects = await getProjects();
-// The list arrives order-sorted; the cap is defensive — the admin owns the
+// The list arrives order-sorted; the cap is defensive: the admin owns the
 // mantel-fits-three rule, the site just refuses to overflow it
 const featured = projects.filter((project) => project.featured);
 const preview = (featured.length > 0 ? featured : projects).slice(0, 3);
@@ -139,7 +139,7 @@ const graveyardChips = resting.map((hobby, index) => ({
 	<section class="contact">
 		<LighthouseMark width={30} height={34} />
 		<div class="contact__headline">Need a hand keeping your lights on?</div>
-		<div class="contact__aside">Backend, architecture, planning — or just to talk shop.</div>
+		<div class="contact__aside">Backend, architecture, planning, or just to talk shop.</div>
 		<div class="contact__actions">
 			<a href={`mailto:${keeper.email}`} class="btn btn--roomy btn--gold">say hi</a>
 			<a href="/resume.pdf" class="btn btn--roomy btn--outline">resume ↗</a>

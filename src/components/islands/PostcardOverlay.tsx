@@ -1,4 +1,4 @@
-// The back of the postcard — the project overlay shared by the Projects grid
+// The back of the postcard: the project overlay shared by the Projects grid
 // and the homepage preview. The homepage variant adds a "see all projects →"
 // link under the moral (updated Hello design). No stamp back here: stamps
 // live on the card fronts only (design v4). The harbor cat perches on the
@@ -30,7 +30,7 @@ export default function PostcardOverlay({ project, showSeeAll = false, catHere =
 					<div className="postcard-back__cols">
 						<div className="postcard-back__left">
 							<div className="postcard-back__title">{project.title}</div>
-							{/* body is sanitized HTML from the API — rendered as-is by contract */}
+							{/* body is sanitized HTML from the API; rendered as-is by contract */}
 							<div className="postcard-back__body" dangerouslySetInnerHTML={{ __html: project.body }} />
 							<div className="postcard-back__moral">{project.moral}</div>
 							{showSeeAll && <a className="postcard-back__see-all" href="/projects">see all projects →</a>}

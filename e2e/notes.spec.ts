@@ -1,6 +1,6 @@
 // The Keeper's Journal (fixtures build): doodles appear for notes that carry
-// one — small in the row, larger beside the handwritten caption in the open
-// entry — and the sign-off is the keeper's.
+// one (small in the row, larger beside the handwritten caption in the open
+// entry) and the sign-off is the keeper's.
 import { test, expect } from '@playwright/test';
 
 // Rows run newest-first: the re-architecting note (row 0) and CachyOS (row 1)
@@ -46,7 +46,7 @@ test('an undoodled note gets no marginalia in the entry', async ({ page }) => {
 test('the entry signs off with the keeper fixture', async ({ page }) => {
 	await page.goto('/notes');
 	await page.locator('.note-row').first().click();
-	await expect(page.locator('.letter__signature')).toHaveText('— j');
+	await expect(page.locator('.letter__signature')).toHaveText('- j');
 });
 
 test('reduced motion keeps the doodle resting tilt', async ({ page }) => {

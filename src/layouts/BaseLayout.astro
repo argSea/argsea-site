@@ -29,7 +29,7 @@ const copy = await getSiteCopy();
 // the built-ins. Overlay-spot cats get theirs from the page's own frontmatter.
 const catDesigns = await getFigurehead();
 
-// The harbor cat's page id — the 404 is the only 'none' route, and its catalog
+// The harbor cat's page id: the 404 is the only 'none' route, and its catalog
 // page is p404.
 const catPage: CatPage = active === 'none' ? 'p404' : active;
 ---
