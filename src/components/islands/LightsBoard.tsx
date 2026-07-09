@@ -3,7 +3,7 @@
 // register below it, and the shared entry overlay. Content arrives as
 // build-time props; this island only holds `filter`, `open`, and the
 // row-flash state a beacon click triggers.
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { FigureheadDesign, Light, Project, WallPos } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { pageCatPick } from '../../lib/catSpots';
@@ -56,6 +56,15 @@ function reducedMotion(): boolean {
 	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+/** Whether a project belongs to a filter, 'all' being the pass-everything case. */
+function matchesFilter(project: Project, target: Filter): boolean {
+	return target === 'all' || project.category === target;
+}
+
+// The register's FLIP glide duration, shared between the WAAPI call below and
+// nothing else CSS-side needs it (entering/leaving are their own keyframes).
+const GLIDE_MS = 400;
+
 interface Props {
 	projects:    Project[];
 	catEnabled:  boolean;
@@ -68,9 +77,6 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 	const [filter, setFilter] = useState<Filter>('all');
 	const [openId, setOpenId] = useState<string | null>(null);
 	const [flashId, setFlashId] = useState<string | null>(null);
-	// Alternates between two identical enter keyframes so consecutive filter
-	// clicks restart the row stagger (same trick the wall used for its cards)
-	const [flip, setFlip] = useState(false);
 	const flashTimer = useRef<number | undefined>(undefined);
 
 	// The register never gives height back: it is locked to its full-list
@@ -93,9 +99,7 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 
 	const close = () => setOpenId(null);
 
-	const matching = new Set(
-		projects.filter((project) => filter === 'all' || project.category === filter).map((project) => project.id),
-	);
+	const matching = new Set(projects.filter((project) => matchesFilter(project, filter)).map((project) => project.id));
 	// The register only lists what matches; the coast keeps every beacon lit
 	// and dims the rest, so the panorama never reflows on a filter change.
 	const visible = projects.filter((project) => matching.has(project.id));
@@ -103,9 +107,110 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 	const hereId = projects.find((project) => project.category === 'this website')?.id ?? null;
 	const burningCount = projects.filter((project) => !(project.light ?? DEFAULT_LIGHT).extinguished).length;
 
+	// FLIP glide on a filter change: survivors keep their row node (measured in
+	// pickFilter, animated below), leavers are pulled out of flow to fade in
+	// place at their captured top, newcomers mount fresh. rowNodes is the live
+	// map pickFilter reads from; flipFrom holds each survivor's pre-change top
+	// until the layout effect below applies the invert.
+	const rowNodes = useRef(new Map<string, HTMLDivElement>());
+	const flipFrom = useRef(new Map<string, number>());
+	const flipAnimations = useRef(new Map<string, Animation>());
+	const prevVisibleIds = useRef<Set<string>>(new Set(matching));
+	const [leaving, setLeaving] = useState<Map<string, { project: Project; top: number }>>(new Map());
+	const [enteringIds, setEnteringIds] = useState<Set<string>>(new Set());
+
+	// Same cleanup discipline as the lamp animations: cancel in-flight glides
+	// on unmount so nothing keeps ticking against a detached node.
+	useEffect(() => () => {
+		flipAnimations.current.forEach((animation) => animation.cancel());
+	}, []);
+
+	// Survivors glide from their pre-change position via WAAPI, which the CSS
+	// reduced-motion kill switch never touches on its own; pickFilter simply
+	// never populates flipFrom when motion is reduced, so this loop is a no-op.
+	useLayoutEffect(() => {
+		flipFrom.current.forEach((oldTop, id) => {
+			const node = rowNodes.current.get(id);
+			if (!node) {
+				return;
+			}
+			const delta = oldTop - node.getBoundingClientRect().top;
+			if (!delta) {
+				return;
+			}
+			flipAnimations.current.get(id)?.cancel();
+			const animation = node.animate(
+				[{ transform: `translateY(${delta}px)` }, { transform: 'none' }],
+				{ duration: GLIDE_MS, easing: 'ease', fill: 'backwards' },
+			);
+			flipAnimations.current.set(id, animation);
+		});
+		flipFrom.current.clear();
+	}, [filter]);
+
+	const settleLeave = (id: string) => {
+		setLeaving((previous) => {
+			if (!previous.has(id)) {
+				return previous;
+			}
+			const next = new Map(previous);
+			next.delete(id);
+			return next;
+		});
+	};
+
 	const pickFilter = (next: Filter) => {
+		if (next === filter) {
+			return;
+		}
+		const nextIds = new Set(projects.filter((project) => matchesFilter(project, next)).map((project) => project.id));
+
+		// Reduced motion is an instant swap: no captured rects, no glide, no
+		// fade, the register just shows the new set on the next render.
+		if (reducedMotion()) {
+			setFilter(next);
+			setLeaving(new Map());
+			setEnteringIds(new Set());
+			prevVisibleIds.current = nextIds;
+			return;
+		}
+
+		const containerTop = registerRef.current?.getBoundingClientRect().top ?? 0;
+		const departing = new Map<string, { project: Project; top: number }>();
+		flipFrom.current.clear();
+
+		prevVisibleIds.current.forEach((id) => {
+			const node = rowNodes.current.get(id);
+			if (!node) {
+				return;
+			}
+			if (nextIds.has(id)) {
+				flipFrom.current.set(id, node.getBoundingClientRect().top);
+				return;
+			}
+			const project = projects.find((candidate) => candidate.id === id);
+			if (project) {
+				departing.set(id, { project, top: node.getBoundingClientRect().top - containerTop });
+			}
+		});
+
+		const arriving = new Set<string>();
+		nextIds.forEach((id) => {
+			if (!prevVisibleIds.current.has(id)) {
+				arriving.add(id);
+			}
+		});
+
 		setFilter(next);
-		setFlip((previous) => !previous);
+		setLeaving((previous) => {
+			const merged = new Map(previous);
+			// a row back in the new filter cancels its own leave, even mid-fade
+			nextIds.forEach((id) => merged.delete(id));
+			departing.forEach((value, id) => merged.set(id, value));
+			return merged;
+		});
+		setEnteringIds(arriving);
+		prevVisibleIds.current = nextIds;
 	};
 
 	// A beacon click never opens the entry: it points at the light's row.
@@ -155,14 +260,30 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 					<div className="register__cols">
 						<span>no.</span><span /><span>light</span><span>characteristic</span><span>first lit</span><span>status</span><span />
 					</div>
-					{visible.map((project, index) => (
+					{visible.map((project) => (
 						<RegisterRow
 							key={project.id}
 							project={project}
 							flashed={flashId === project.id}
-							enterClass={flip ? 'register__row--enter-a' : 'register__row--enter-b'}
-							enterDelay={index * 45}
+							entering={enteringIds.has(project.id)}
+							rowRef={(node) => {
+								if (node) {
+									rowNodes.current.set(project.id, node);
+								} else {
+									rowNodes.current.delete(project.id);
+								}
+							}}
 							onOpen={setOpenId}
+						/>
+					))}
+					{Array.from(leaving.entries()).map(([id, { project, top }]) => (
+						<RegisterRow
+							key={id}
+							project={project}
+							flashed={false}
+							leavingTop={top}
+							onOpen={setOpenId}
+							onLeaveEnd={() => settleLeave(id)}
 						/>
 					))}
 				</div>
@@ -194,6 +315,12 @@ function Beacon({ project, index, matches, isHere, onActivate }: BeaconProps) {
 	const haloRef = useLamp(light, dark ? 0.1 : 0.55);
 	const coreRef = useLamp(light, dark ? 0.2 : 0.85);
 	const reflectRef = useLamp(light, 0.4);
+	// The you-are-here ring rides the same phase-locked clock as the lamp for a
+	// blinking characteristic, dimming to a quarter opacity in the dark phase
+	// rather than vanishing, so it keeps wayfinding through long dark spans. A
+	// fixed light keeps its old independent idle breath (CSS, untouched below).
+	const blinkingRing = light.kind !== 'fixed';
+	const ringRef = useLamp(light, dark ? 0.25 : 1, 0.25);
 
 	const code = codeFor(light);
 	const tip = isHere
@@ -240,38 +367,53 @@ function Beacon({ project, index, matches, isHere, onActivate }: BeaconProps) {
 					style={{ top: `${23 + elevPx}px`, height: `${Math.round(14 + elevPx * 0.7)}px`, background: `linear-gradient(180deg, rgba(${glow},1) 0%, transparent 100%)` }}
 				/>
 			)}
-			{isHere && <div className="beacon__ring" />}
+			{isHere && (
+				blinkingRing
+					? <div ref={ringRef} className="beacon__ring beacon__ring--locked" />
+					: <div className="beacon__ring" />
+			)}
 		</div>
 	);
 }
 
 interface RegisterRowProps {
-	project:    Project;
-	flashed:    boolean;
-	enterClass: string;
-	enterDelay: number;
-	onOpen:     (id: string) => void;
+	project:     Project;
+	flashed:     boolean;
+	entering?:   boolean;                            // fades in in place, delayed so the glide reads first
+	leavingTop?: number;                              // set only for a row mid fade-out: its captured, register-relative top
+	rowRef?:     (node: HTMLDivElement | null) => void; // in-flow rows only, so pickFilter can measure them for the glide
+	onOpen:      (id: string) => void;
+	onLeaveEnd?: () => void;                          // fires when a leaving row's fade-out finishes, so the parent can drop it
 }
 
-function RegisterRow({ project, flashed, enterClass, enterDelay, onOpen }: RegisterRowProps) {
+function RegisterRow({ project, flashed, entering = false, leavingTop, rowRef, onOpen, onLeaveEnd }: RegisterRowProps) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
 	const code = codeFor(light);
 	const no = registryNo(project.order);
+	const leaving = leavingTop !== undefined;
 
 	const haloRef = useLamp(light, dark ? 0.08 : 0.45);
 	const coreRef = useLamp(light, dark ? 0.2 : 0.8);
 
 	const open = () => onOpen(project.id);
 
+	const className = [
+		'register__row',
+		entering ? 'register__row--entering' : '',
+		leaving ? 'register__row--leaving' : '',
+		flashed ? 'register__row--flash' : '',
+	].filter(Boolean).join(' ');
+
 	return (
 		<div
 			id={`light-row-${project.id}`}
-			className={`register__row ${enterClass}${flashed ? ' register__row--flash' : ''}`}
-			style={{ '--row-delay': `${enterDelay}ms` } as React.CSSProperties}
+			ref={rowRef}
+			className={className}
+			style={leaving ? { top: leavingTop, pointerEvents: 'none' } : undefined}
 			role="button"
-			tabIndex={0}
+			tabIndex={leaving ? -1 : 0}
 			onClick={open}
 			onKeyDown={(event) => {
 				if (event.key === 'Enter' || event.key === ' ') {
@@ -279,6 +421,7 @@ function RegisterRow({ project, flashed, enterClass, enterDelay, onOpen }: Regis
 					open();
 				}
 			}}
+			onAnimationEnd={leaving ? onLeaveEnd : undefined}
 		>
 			<span className="register__no">{no}</span>
 			<div className="register__lamp">
