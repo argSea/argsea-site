@@ -78,6 +78,17 @@ a {
 
 /* --- Shared text vocabulary --- */
 
+/* A section's label + "see more" link row: shared across index.astro's own
+   sections and JournalStrip.astro, so it lives here rather than scoped to
+   one page's stylesheet. */
+.row-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
 .section-label {
 	font-family: var(--font-mono);
 	font-size: 13px;

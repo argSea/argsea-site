@@ -1,23 +1,29 @@
 ---
-// Hello: hero, wave-with-boat, lights preview, cargo manifest, hobbies
-// preview, contact band, and the dictionary entry. The lights preview is
-// the mantel: the featured projects, or the first three by order so the
-// section never empties. It opens the Light List entry in place; hero
-// copy and the dictionary come from the SiteCopy singleton; the say-hi email
-// is the keeper's; the cargo manifest is approved copy hardcoded by design. The
-// hobbies preview is data-driven: active hobbies fill "currently learning",
-// resting ones become graveyard chips.
+// Hello: hero, wave-with-boat, lights preview, journal strip, cargo
+// manifest, hobbies preview, contact band, and the dictionary entry. The
+// lights preview is the mantel: the featured projects, or the first three by
+// order so the section never empties. It opens the Light List entry in
+// place; hero copy and the dictionary come from the SiteCopy singleton; the
+// say-hi email is the keeper's; the cargo manifest is approved copy
+// hardcoded by design. The journal strip is the newest notes, static links
+// out to /notes, and disappears once there are none. The hobbies preview is
+// data-driven: active hobbies fill "currently learning", resting ones become
+// graveyard chips.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LighthouseMark from '../components/LighthouseMark.astro';
 import WaveDivider from '../components/WaveDivider.astro';
 import HomeLights from '../components/islands/HomeLights';
-import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead } from '../lib/api';
+import JournalStrip from '../components/JournalStrip.astro';
+import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead, getNotes } from '../lib/api';
 
 const projects = await getProjects();
 // The list arrives order-sorted; the cap is defensive: the admin owns the
 // mantel-fits-three rule, the site just refuses to overflow it
 const featured = projects.filter((project) => project.featured);
 const preview = (featured.length > 0 ? featured : projects).slice(0, 3);
+// getNotes() sorts newest-first; cap at three so a growing journal never
+// crowds the strip below the mantel
+const journalPreview = (await getNotes()).slice(0, 3);
 const copy = await getSiteCopy();
 const keeper = await getKeeperProfile();
 const catDesigns = await getFigurehead();
@@ -89,6 +95,8 @@ const graveyardChips = resting.map((hobby, index) => ({
 		</div>
 		<HomeLights client:load projects={preview} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
 	</section>
+
+	<JournalStrip notes={journalPreview} />
 
 	<!-- the cargo manifest -->
 	<section class="manifest">
@@ -238,15 +246,6 @@ const graveyardChips = resting.map((hobby, index) => ({
 		gap: 14px;
 		align-items: center;
 		margin-top: 4px;
-	}
-
-	/* --- shared section head row --- */
-	.row-head {
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		gap: 8px;
 	}
 
 	/* --- postcards preview --- */

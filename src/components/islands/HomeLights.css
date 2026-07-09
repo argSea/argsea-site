@@ -93,6 +93,13 @@
 	color: var(--text-body);
 }
 
+.home-lights__decoded {
+	font-size: 14px;
+	font-style: italic;
+	color: var(--text-quip);
+	line-height: 1.5;
+}
+
 .home-lights__tags {
 	display: flex;
 	gap: 8px;
