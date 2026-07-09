@@ -68,7 +68,22 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 	const [filter, setFilter] = useState<Filter>('all');
 	const [openId, setOpenId] = useState<string | null>(null);
 	const [flashId, setFlashId] = useState<string | null>(null);
+	// Alternates between two identical enter keyframes so consecutive filter
+	// clicks restart the row stagger (same trick the wall used for its cards)
+	const [flip, setFlip] = useState(false);
 	const flashTimer = useRef<number | undefined>(undefined);
+
+	// The register never gives height back: it is locked to its full-list
+	// size at mount so filtering swaps rows inside a steady page instead of
+	// yanking the footer up and down. The spare room below is just night.
+	const registerRef = useRef<HTMLDivElement | null>(null);
+	const [registerMin, setRegisterMin] = useState<number | undefined>(undefined);
+
+	useEffect(() => {
+		if (registerRef.current) {
+			setRegisterMin(registerRef.current.scrollHeight);
+		}
+	}, []);
 
 	useEffect(() => () => window.clearTimeout(flashTimer.current), []);
 
@@ -88,6 +103,11 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 	const hereId = projects.find((project) => project.category === 'this website')?.id ?? null;
 	const burningCount = projects.filter((project) => !(project.light ?? DEFAULT_LIGHT).extinguished).length;
 
+	const pickFilter = (next: Filter) => {
+		setFilter(next);
+		setFlip((previous) => !previous);
+	};
+
 	// A beacon click never opens the entry: it points at the light's row.
 	const goToRow = (id: string) => {
 		const row = document.getElementById(`light-row-${id}`);
@@ -104,14 +124,13 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 		<>
 			<div className="filter-row fade-up fade-up--3">
 				{FILTERS.map((name) => (
-					<FilterChip key={name} name={name} active={name === filter} onSelect={setFilter} />
+					<FilterChip key={name} name={name} active={name === filter} onSelect={pickFilter} />
 				))}
 				<span className="count-line">{visible.length} of {projects.length} lights · {QUIPS[filter]}</span>
 			</div>
 
 			<div className="coast">
 				<div className="coast__pano">
-					<div className="coast__moon" />
 					<div className="coast__sea" />
 					<div className="coast__horizon" />
 					{projects.map((project, index) => (
@@ -128,7 +147,7 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 					<span className="coast__caption">the coast tonight · {burningCount} burning</span>
 				</div>
 
-				<div className="register">
+				<div className="register" ref={registerRef} style={{ minHeight: registerMin }}>
 					<div className="register__head">
 						<span className="register__head-label">The light list</span>
 						<span className="register__head-district">District · argsea</span>
@@ -136,8 +155,15 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 					<div className="register__cols">
 						<span>no.</span><span /><span>light</span><span>characteristic</span><span>first lit</span><span>status</span><span />
 					</div>
-					{visible.map((project) => (
-						<RegisterRow key={project.id} project={project} flashed={flashId === project.id} onOpen={setOpenId} />
+					{visible.map((project, index) => (
+						<RegisterRow
+							key={project.id}
+							project={project}
+							flashed={flashId === project.id}
+							enterClass={flip ? 'register__row--enter-a' : 'register__row--enter-b'}
+							enterDelay={index * 45}
+							onOpen={setOpenId}
+						/>
 					))}
 				</div>
 			</div>
@@ -220,12 +246,14 @@ function Beacon({ project, index, matches, isHere, onActivate }: BeaconProps) {
 }
 
 interface RegisterRowProps {
-	project: Project;
-	flashed: boolean;
-	onOpen:  (id: string) => void;
+	project:    Project;
+	flashed:    boolean;
+	enterClass: string;
+	enterDelay: number;
+	onOpen:     (id: string) => void;
 }
 
-function RegisterRow({ project, flashed, onOpen }: RegisterRowProps) {
+function RegisterRow({ project, flashed, enterClass, enterDelay, onOpen }: RegisterRowProps) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
@@ -240,7 +268,8 @@ function RegisterRow({ project, flashed, onOpen }: RegisterRowProps) {
 	return (
 		<div
 			id={`light-row-${project.id}`}
-			className={`register__row${flashed ? ' register__row--flash' : ''}`}
+			className={`register__row ${enterClass}${flashed ? ' register__row--flash' : ''}`}
+			style={{ '--row-delay': `${enterDelay}ms` } as React.CSSProperties}
 			role="button"
 			tabIndex={0}
 			onClick={open}
