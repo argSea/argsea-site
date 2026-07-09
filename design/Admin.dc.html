@@ -26,6 +26,10 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
 @keyframes wiggle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
 @keyframes postmarkSway{0%,100%{transform:rotate(9deg)}50%{transform:rotate(15deg)}}
 @keyframes swayChip{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
+@keyframes flashChar{0%,68%{opacity:.08}78%{opacity:1}88%{opacity:.08}100%{opacity:.08}}
+@keyframes occultChar{0%,70%{opacity:1}80%{opacity:.09}90%{opacity:1}100%{opacity:1}}
+@keyframes isoChar{0%,42%{opacity:1}54%,96%{opacity:.12}100%{opacity:.12}}
+@keyframes haloBreath{0%,100%{opacity:.55}50%{opacity:.85}}
 @keyframes bobBoat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-3px) rotate(2deg)}}
 @keyframes sail{0%{left:-40px}100%{left:102%}}
 @keyframes lampPulse{0%,100%{opacity:.55}50%{opacity:1}}
@@ -192,7 +196,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                 </div>
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">1,204 ships sighted · busiest: thursday</span>
                 <div style="display:flex;flex-direction:column;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.7;border-top:1px solid rgba(150,160,220,.12);padding-top:11px">
-                  <span style="color:#a5aed4">top postcard · <span style="color:#f0d9a8">"Meo Wave Race" — 214 flips</span></span>
+                  <span style="color:#a5aed4">top light · <span style="color:#f0d9a8">"Meo Wave Race" — 214 lookups</span></span>
                   <span style="color:#a5aed4">top note · <span style="color:#c3cbf2">"The queue is the product" — 178 reads</span></span>
                   <span style="color:#a5aed4">ports of origin · <span style="color:#c3cbf2">search 44% · direct 31% · fediverse 25%</span></span>
                 </div>
@@ -220,22 +224,18 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
           </div>
         </sc-if>
 
-        <!-- ===== POSTCARDS (projects) ===== -->
+        <!-- ===== THE LIGHT LIST (projects) ===== -->
         <sc-if value="{{ isProjects }}" hint-placeholder-val="{{ false }}">
-          <div data-screen-label="Postcards admin" style="display:flex;flex-direction:column;gap:22px">
+          <div data-screen-label="Light list admin" style="display:flex;flex-direction:column;gap:22px">
             <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;animation:fadeUp .7s ease .05s both">
               <div style="display:flex;flex-direction:column;gap:8px">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the rack</span>
-                <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Postcards from production</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the watch</span>
+                <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">The light list</span>
                 <span style="font-size:15.5px;color:#a5aed4;font-style:italic">{{ projCountLine }}</span>
               </div>
-              <button onClick="{{ newProject }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ new postcard</button>
+              <button onClick="{{ newProject }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ kindle a light</button>
             </div>
 
-            <div style="display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;animation:fadeUp .7s ease .08s both">
-              <span onClick="{{ projTabToRack }}" style="{{ projTabRackStyle }}">the rack</span>
-              <span onClick="{{ projTabToWall }}" style="{{ projTabWallStyle }}">the wall</span>
-            </div>
 
             <sc-if value="{{ projTabIsWall }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;flex-direction:column;gap:12px;animation:fadeUp .5s ease both">
@@ -264,7 +264,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             <sc-if value="{{ projTabIsRack }}" hint-placeholder-val="{{ true }}">
             <div style="background:rgba(240,217,168,.06);border:1.5px dashed rgba(240,217,168,.4);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;transform:rotate(.3deg);transition:transform .25s;animation:fadeUp .7s ease .1s both" style-hover="transform:rotate(0deg)">
               <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">on the mantel · featured on the home page</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">in the front window · featured on the home page</span>
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ featuredCountLine }}</span>
               </div>
               <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
@@ -272,24 +272,24 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                   <span style="padding:6px 14px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#f0d9a8;display:inline-flex;align-items:center;gap:8px;animation:swayChip 5.5s ease-in-out infinite">★ {{ f.label }}<span onClick="{{ f.onRemove }}" style="cursor:pointer;color:#5f6ec4;transition:color .2s" style-hover="color:#f0d9a8">✕</span></span>
                 </sc-for>
                 <sc-if value="{{ mantelHasRoom }}" hint-placeholder-val="{{ false }}">
-                  <span style="font-size:13.5px;color:#7a83ad;font-style:italic">room on the mantel — pin a card with ☆ below</span>
+                  <span style="font-size:13.5px;color:#7a83ad;font-style:italic">room in the window — pin a light with ☆ below</span>
                 </sc-if>
               </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:14px;animation:fadeUp .7s ease .15s both">
               <sc-for list="{{ projRows }}" as="p" hint-placeholder-count="6">
                 <div style="{{ p.rowStyle }}" style-hover="transform:rotate(0deg)">
-                  <div style="position:absolute;top:12px;right:14px">{{ p.stampEl }}</div>
-                  <div style="{{ p.thumbStyle }}"><div style="{{ p.thumbImgStyle }}"></div></div>
-                  <div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1">
+                  <div style="{{ p.lampBox }}"><div style="{{ p.lampHalo }}"></div><div style="{{ p.lampCore }}"></div></div>
+                  <div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1 1 300px">
                     <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
                       <span style="font-family:'Gloock',serif;font-size:19px;color:#eef0fb">{{ p.title }}</span>
                       <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ p.cat }}</span>
+                      <span style="{{ p.charStyle }}">{{ p.charLine }}</span>
                     </div>
                     <span style="font-size:14.5px;color:#a5aed4;line-height:1.5">{{ p.desc }}</span>
                     <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8">{{ p.tagsText }}</span>
                   </div>
-                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0;padding-right:36px">
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0">
                     <span onClick="{{ p.onUp }}" title="move up the rack" style="padding:7px 11px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">↑</span>
                     <span onClick="{{ p.onDown }}" title="move down the rack" style="padding:7px 11px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">↓</span>
                     <span onClick="{{ p.onFeat }}" style="{{ p.featStyle }}">{{ p.featLabel }}</span>
@@ -301,7 +301,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                 </div>
               </sc-for>
             </div>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// drafts stay in the rack. published cards go out on the next tide.</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// a dark light stays on the list — the coast remembers. changes shine with the next hoist.</span>
             </sc-if>
           </div>
         </sc-if>
@@ -830,7 +830,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
           </label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <label style="display:flex;flex-direction:column;gap:6px">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">berth (category)</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">station (category)</span>
               <select data-field="cat" value="{{ draft.cat }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
                 <option value="backend">backend</option>
                 <option value="games">games</option>
@@ -844,12 +844,12 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             </label>
           </div>
           <label style="display:flex;flex-direction:column;gap:6px">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">front of card · short description</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">the register line · short description</span>
             <textarea data-field="desc" value="{{ draft.desc }}" onChange="{{ setField }}" rows="2" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
           </label>
           <label style="display:flex;flex-direction:column;gap:6px">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">back of card · the full story</span>
-            <textarea data-field="body" value="{{ draft.body }}" onChange="{{ setField }}" rows="6" placeholder="the long version — what happened, what broke, what you'd do differently. renders when a card is flipped over." style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:13px 14px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15.5px;line-height:1.65;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">the entry · the full story</span>
+            <textarea data-field="body" value="{{ draft.body }}" onChange="{{ setField }}" rows="6" placeholder="the long version — what happened, what broke, what you'd do differently. renders in the light's full entry." style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:13px 14px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15.5px;line-height:1.65;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
           </label>
           <label style="display:flex;flex-direction:column;gap:6px">
             <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">moral of the story</span>
@@ -872,29 +872,50 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
               </label>
             </div>
           </div>
-          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px">
+          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:16px">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the stamp · top-right corner</span>
-              <span onClick="{{ rerollStamp }}" style="padding:7px 15px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transition:transform .2s" style-hover="transform:scale(1.04)">⚄ surprise me</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the light · how it burns on the coast</span>
+              <span onClick="{{ rerollLight }}" style="padding:7px 15px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transition:transform .2s" style-hover="transform:scale(1.04)">⚄ let the sea decide</span>
             </div>
             <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
-              <div style="width:96px;height:96px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px">{{ stampPreview }}</div>
-              <div style="display:flex;flex-direction:column;gap:9px;flex:1;min-width:230px">
-                <div style="display:flex;gap:8px;flex-wrap:wrap">
-                  <sc-for list="{{ stampShapeChips }}" as="c" hint-placeholder-count="2"><span onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</span></sc-for>
-                  <sc-for list="{{ stampInkChips }}" as="c" hint-placeholder-count="2"><span onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</span></sc-for>
-                </div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap">
-                  <sc-for list="{{ stampMotifChips }}" as="c" hint-placeholder-count="7"><span onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</span></sc-for>
-                </div>
-                <sc-if value="{{ stampIsText }}" hint-placeholder-val="{{ false }}">
-                  <input type="text" value="{{ stampText }}" onChange="{{ setStampText }}" placeholder="AIR MAIL" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-                </sc-if>
+              <div style="width:96px;height:96px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#0b0e1c;border:1px solid rgba(150,160,220,.25);border-radius:8px">
+                <div style="{{ lightPrevBox }}"><div style="{{ lightPrevHalo }}"></div><div style="{{ lightPrevCore }}"></div></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;flex:1;min-width:230px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.1em;color:#f0d9a8">{{ lightCode }}</span>
+                <span style="font-size:14.5px;font-style:italic;color:#a5aed4;line-height:1.5">{{ lightWords }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// its signature — how a stranger tells this light from the others on the coast.</span>
               </div>
             </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the pattern</span>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <sc-for list="{{ lightKindChips }}" as="c" hint-placeholder-count="4"><span onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</span></sc-for>
+              </div>
+              <span style="font-size:13.5px;font-style:italic;color:#7a83ad">{{ lightHint }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the color</span>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <sc-for list="{{ lightColorChips }}" as="c" hint-placeholder-count="3"><span onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</span></sc-for>
+              </div>
+            </div>
+            <sc-if value="{{ lightShowPeriod }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the rhythm</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">every {{ lightPeriod }} seconds</span>
+                </div>
+                <input type="range" min="2" max="12" step="1" value="{{ lightPeriod }}" onChange="{{ setLightPeriod }}" style="width:100%;accent-color:#93a0e8;margin:0">
+              </div>
+            </sc-if>
+            <label style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">established</span>
+              <input type="text" value="{{ lightEst }}" onChange="{{ setLightEst }}" placeholder="2026" style="width:110px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
           </div>
           <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the photo print · one per card</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the photo · shown with the entry</span>
             <div style="display:flex;gap:14px;flex-wrap:wrap">
               <sc-for list="{{ printOptions }}" as="po" hint-placeholder-count="5">
                 <div onClick="{{ po.onPick }}" style="{{ po.style }}">
@@ -1269,7 +1290,7 @@ class Component extends DCLogic {
   ];
 
   catLocMeta = [
-    { key: 'postcards', label: 'Postcards', hint: 'projects & homepage — when a card opens' },
+    { key: 'postcards', label: 'Postcards', hint: 'contact & homepage — when a card opens' },
     { key: 'notes', label: 'Notes', hint: 'when a note opens' },
     { key: 'p404', label: 'The wreck', hint: 'heckling the boat on the 404' },
   ];
@@ -1449,6 +1470,55 @@ class Component extends DCLogic {
     };
   }
 
+  lightCharFor(p) {
+    const known = {
+      'The Great Un-monolithing': { color: 'white', kind: 'flash', period: 8, est: '2024' },
+      'Newsroom plumbing': { color: 'white', kind: 'fixed', period: 0, est: '2016' },
+      '100k good mornings': { color: 'white', kind: 'occult', period: 6, est: '2018' },
+      'Meo Wave Race': { color: 'green', kind: 'flash', period: 4, est: '2020' },
+      'This website': { color: 'white', kind: 'iso', period: 3, est: '2026' },
+      'The home lab': { color: 'red', kind: 'fixed', period: 0, est: '2021' },
+    };
+    const h = (p.title || '').length;
+    return p.light || known[p.title] || { color: ['white', 'white', 'green', 'red'][h % 4], kind: ['flash', 'occult', 'iso', 'fixed'][h % 4], period: 3 + (h % 8), est: 'tbd' };
+  }
+
+  lightCode(ch) {
+    const letter = { white: 'W', red: 'R', green: 'G' }[ch.color] || 'W';
+    return ch.kind === 'fixed' ? 'F ' + letter : ({ flash: 'Fl', occult: 'Oc', iso: 'Iso' }[ch.kind] || 'Fl') + ' ' + letter + ' ' + ch.period + 's';
+  }
+
+  lightWords(ch) {
+    if (ch.kind === 'fixed') return `fixed ${ch.color} — a steady light that never blinks`;
+    return {
+      flash: `flashing ${ch.color} — dark, then a bright flash every ${ch.period} seconds`,
+      occult: `occulting ${ch.color} — steady, with a brief eclipse every ${ch.period} seconds`,
+      iso: `isophase ${ch.color} — equal parts light and dark, every ${ch.period} seconds`,
+    }[ch.kind] || ch.color + ' light';
+  }
+
+  lampAnim(ch, pub) {
+    if (!pub) return 'none';
+    const dur = Math.min(6, Math.max(3, ch.period || 4));
+    const n = { flash: 'flashChar', occult: 'occultChar', iso: 'isoChar', fixed: null }[ch.kind];
+    return n ? `${n} ${dur}s ease-in-out infinite` : 'haloBreath 5s ease-in-out infinite';
+  }
+
+  adminLamp(p, sc = 1) {
+    const ch = this.lightCharFor(p);
+    const pub = p.status === 'published';
+    const glow = { white: '246,236,207', red: '231,122,112', green: '111,202,151' }[ch.color] || '246,236,207';
+    const g = pub ? glow : '120,132,170';
+    const anim = this.lampAnim(ch, pub);
+    return {
+      lampBox: { position: 'relative', width: 46 * sc + 'px', height: 46 * sc + 'px', flex: 'none' },
+      lampHalo: { position: 'absolute', left: '50%', top: '50%', width: 38 * sc + 'px', height: 38 * sc + 'px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${g},${pub ? 0.5 : 0.1}) 0%, transparent 64%)`, filter: 'blur(2px)', animation: anim, pointerEvents: 'none' },
+      lampCore: { position: 'absolute', left: '50%', top: '50%', width: Math.round(7 * sc) + 'px', height: Math.round(7 * sc) + 'px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: pub ? '#fff' : '#4d5670', boxShadow: `0 0 ${Math.round(8 * sc)}px ${Math.round(2 * sc)}px rgba(${g},${pub ? 0.85 : 0.2})`, animation: anim, pointerEvents: 'none' },
+      charStyle: { fontFamily: "'IBM Plex Mono', monospace", fontSize: '11.5px', letterSpacing: '.07em', color: pub ? `rgb(${glow})` : '#7a83ad' },
+      charLine: `${this.lightCode(ch)} · est. ${ch.est}`,
+    };
+  }
+
   pokeCat() {
     clearTimeout(this.catTimer);
     const others = this.catQuotes.filter((q) => q !== this.state.catSay);
@@ -1512,6 +1582,13 @@ class Component extends DCLogic {
     return e('div', { style: { width: 34 * scale, height: 42 * scale, boxSizing: 'border-box', border: `1.5px solid ${ink}80`, borderRadius: 3, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wiggle 6s ease-in-out infinite', flexShrink: 0 } },
       content,
       st.cents ? e('span', { key: 'c', style: { position: 'absolute', top: 1.5 * scale, right: 2.5 * scale, fontFamily: mono, fontSize: 6.5 * scale, color: ink } }, st.cents) : null);
+  }
+
+  updateLight(patch) {
+    this.setState((st) => {
+      const cur = this.lightCharFor(st.edit.draft);
+      return { edit: { ...st.edit, draft: { ...st.edit.draft, light: { ...cur, ...patch } } } };
+    });
   }
 
   updateStamp(patch) {
@@ -1629,7 +1706,7 @@ class Component extends DCLogic {
     });
 
     return {
-      projTabIsRack: tab === 'rack', projTabIsWall: tab === 'wall',
+      projTabIsRack: true, projTabIsWall: false,
       projTabToRack: () => this.setState({ projTab: 'rack' }),
       projTabToWall: () => this.setState({ projTab: 'wall' }),
       projTabRackStyle: tabStyle(tab === 'rack'),
@@ -1802,9 +1879,9 @@ class Component extends DCLogic {
         const featured = idx != null ? s.featured.map((t) => (t === s.projects[idx].title ? item.title : t)) : s.featured;
         return { projects, featured, edit: null };
       });
-      this.log(`postcard "${draft.title || 'untitled'}" ${idx == null ? 'added to the rack' : 'edited'}`);
-      const projStatus = (item.status === 'published') ? 'published ●' : 'a draft ○';
-      this.showToast(idx == null ? '✉ new postcard in the rack' : restored ? `↺ earlier printing filed — it's now ${projStatus}` : '✉ postcard filed');
+      this.log(`light "${draft.title || 'untitled'}" ${idx == null ? 'kindled' : 'trimmed'}`);
+      const projStatus = (item.status === 'published') ? 'lit ●' : 'dark ○';
+      this.showToast(idx == null ? '✺ a new light on the list' : restored ? `↺ earlier trimming filed — it's now ${projStatus}` : '✺ light trimmed and filed');
     } else if (type === 'hobby') {
       this.setState((s) => {
         const hobbies = [...s.hobbies];
@@ -1836,7 +1913,7 @@ class Component extends DCLogic {
     const scr = s.screen;
     const nav = [
       { id: 'dash', glyph: '✦', label: 'the watch room' },
-      { id: 'projects', glyph: '✉', label: 'postcards' },
+      { id: 'projects', glyph: '✺', label: 'the light list' },
       { id: 'hobbies', glyph: '†', label: 'the graveyard' },
       { id: 'notes', glyph: '✎', label: 'the log book' },
       { id: 'copy', glyph: '⚑', label: 'signal flags' },
@@ -1855,7 +1932,7 @@ class Component extends DCLogic {
     const stats = [
       { label: 'ships sighted', value: '1,204', sub: 'visitors this week. one was mom.' },
       { label: 'lighthouse uptime', value: '99.98%', sub: 'the .02 was planned. mostly.' },
-      { label: 'postcards', value: `${pubProj} / ${s.projects.length}`, sub: 'published / in the rack' },
+      { label: 'lights burning', value: `${pubProj} / ${s.projects.length}`, sub: 'lit / on the list' },
       { label: 'graveyard census', value: String(resting), sub: 'resting. none dead.' },
     ].map((st, i) => ({
       ...st,
@@ -1871,20 +1948,19 @@ class Component extends DCLogic {
       const hot = s.confirmDel === key;
       return {
         ...p, tagsText: p.tags.join(' · '),
-        stampEl: this.renderStamp(p.stamp, 0.78),
-        ...this.thumbStyles(p.img),
+        ...this.adminLamp(p),
         rowStyle: this.rowStyle(i),
         onUp: () => this.moveProj(i, -1),
         onDown: () => this.moveProj(i, 1),
-        featLabel: s.featured.includes(p.title) ? '★ on the mantel' : '☆ feature',
+        featLabel: s.featured.includes(p.title) ? '★ in the window' : '☆ feature',
         featStyle: this.featPill(s.featured.includes(p.title)),
         onFeat: () => {
           const feat = s.featured.includes(p.title);
-          if (!feat && s.featured.length >= 3) { this.showToast('the mantel only fits three — take one down first'); return; }
+          if (!feat && s.featured.length >= 3) { this.showToast('the window only fits three — take one down first'); return; }
           this.setState((st) => ({ featured: feat ? st.featured.filter((t) => t !== p.title) : [...st.featured, p.title] }));
-          this.showToast(feat ? '☆ taken down from the mantel' : '★ up on the mantel');
+          this.showToast(feat ? '☆ taken out of the window' : '★ set in the front window');
         },
-        statusLabel: p.status === 'published' ? '● published' : '○ draft',
+        statusLabel: p.status === 'published' ? '● lit' : '○ dark',
         statusStyle: this.pillStatus(p.status === 'published'),
         onToggle: () => {
           this.setState((st) => {
@@ -1893,16 +1969,16 @@ class Component extends DCLogic {
             return { projects };
           });
           this.markDirty();
-          this.showToast(p.status === 'published' ? '○ pulled back into the rack' : '● stamped and published');
+          this.showToast(p.status === 'published' ? '○ extinguished. the coast is dimmer.' : '● lit. burning on the coast.');
         },
         onEdit: () => this.openEdit('project', i),
         onPeek: () => this.setState({ peek: { type: 'project', idx: i } }),
-        delLabel: hot ? 'sure? tear it up.' : 'tear up',
+        delLabel: hot ? 'sure? strike it.' : 'strike',
         delStyle: this.delStyle(hot),
         onDel: () => this.askDelete(key, () => {
           this.setState((st) => ({ projects: st.projects.filter((_, j) => j !== i), featured: st.featured.filter((t) => t !== p.title) }));
-          this.log(`postcard "${p.title}" torn up. a moment of silence.`);
-          this.showToast('🌊 given to the tide. the sea keeps its secrets.');
+          this.log(`light "${p.title}" struck from the list. a moment of darkness.`);
+          this.showToast('🌊 struck from the list. the sea keeps its secrets.');
         }),
       };
     });
@@ -2001,7 +2077,7 @@ class Component extends DCLogic {
     });
 
     const e = s.edit;
-    const editKickers = { project: 'postcard · ', hobby: 'headstone · ', note: 'journal entry · ' };
+    const editKickers = { project: 'light · ', hobby: 'headstone · ', note: 'journal entry · ' };
     const noteBlogLine = pubNotes >= 5
       ? `${pubNotes} inked. it's officially a journal now. condolences.`
       : `${pubNotes} inked. the bar for "journal" is five. ${5 - pubNotes} to go — no rush.`;
@@ -2058,24 +2134,39 @@ class Component extends DCLogic {
       }));
     }
 
-    let stampPreview = null, stampShapeChips = [], stampInkChips = [], stampMotifChips = [], stampIsText = false, stampText = '';
+    let lightPrevBox = null, lightPrevHalo = null, lightPrevCore = null, lightCode = '', lightWords = '', lightHint = '', lightKindChips = [], lightColorChips = [], lightShowPeriod = false, lightPeriod = 5, lightEst = '';
     if (e && e.type === 'project') {
-      const stp = e.draft.stamp || this.defaultStamp;
-      stampPreview = this.renderStamp(stp, 1.5);
+      const ch = this.lightCharFor(e.draft);
+      const prev = this.adminLamp({ ...e.draft, status: 'published' }, 1.7);
+      lightPrevBox = prev.lampBox; lightPrevHalo = prev.lampHalo; lightPrevCore = prev.lampCore;
+      lightCode = this.lightCode(ch);
+      lightWords = this.lightWords(ch);
       const chip = (sel) => ({
         padding: '6px 13px', borderRadius: '999px', fontFamily: "'IBM Plex Mono', monospace",
         fontSize: '11.5px', cursor: 'pointer', userSelect: 'none', transition: 'all .2s',
         border: sel ? '1.5px dashed rgba(240,217,168,.6)' : '1px solid rgba(150,160,220,.3)',
         color: sel ? '#f0d9a8' : '#a5aed4',
       });
-      stampShapeChips = [{ id: 'rect', label: 'stamp' }, { id: 'circle', label: 'postmark' }]
-        .map((o) => ({ label: o.label, style: chip(stp.shape === o.id), onClick: () => this.updateStamp({ shape: o.id, cents: stp.cents || '3¢' }) }));
-      stampInkChips = [{ v: '#f0d9a8', label: 'gold ink' }, { v: '#93a0e8', label: 'periwinkle ink' }]
-        .map((o) => ({ label: o.label, style: chip(stp.ink === o.v), onClick: () => this.updateStamp({ ink: o.v }) }));
-      stampMotifChips = [...this.motifIds, 'text']
-        .map((m) => ({ label: m === 'text' ? 'words' : m, style: chip(stp.motif === m), onClick: () => this.updateStamp({ motif: m, text: stp.text || 'AIR MAIL' }) }));
-      stampIsText = stp.motif === 'text';
-      stampText = stp.text || '';
+      lightKindChips = [
+        { id: 'fixed', label: 'fixed — steady' },
+        { id: 'flash', label: 'flashing' },
+        { id: 'occult', label: 'occulting' },
+        { id: 'iso', label: 'isophase' },
+      ].map((o) => ({ label: o.label, style: chip(ch.kind === o.id), onClick: () => this.updateLight({ kind: o.id, period: o.id === 'fixed' ? 0 : (ch.period || 5) }) }));
+      lightColorChips = [
+        { id: 'white', label: 'white — the mains' },
+        { id: 'red', label: 'red — kept for home' },
+        { id: 'green', label: 'green — the playful ones' },
+      ].map((o) => ({ label: o.label, style: chip(ch.color === o.id), onClick: () => this.updateLight({ color: o.id }) }));
+      lightHint = {
+        fixed: 'a steady beam, never blinking. for the things that must simply always be on.',
+        flash: 'mostly dark, then one bright flash. for the dramatic ones — you notice when it speaks.',
+        occult: 'mostly lit, with a brief eclipse. for the reliable ones with scheduled pauses.',
+        iso: 'half light, half dark, evenly. for the ones rebuilt as often as they run.',
+      }[ch.kind] || '';
+      lightShowPeriod = ch.kind !== 'fixed';
+      lightPeriod = ch.period || 5;
+      lightEst = ch.est === 'tbd' ? '' : (ch.est || '');
     }
 
     const nowDate = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toLowerCase();
@@ -2148,16 +2239,16 @@ class Component extends DCLogic {
         },
       })),
       quickActions: [
-        { label: 'write a new postcard', onClick: () => { this.setState({ screen: 'projects' }); this.openEdit('project', null); } },
+        { label: 'kindle a new light', onClick: () => { this.setState({ screen: 'projects' }); this.openEdit('project', null); } },
         { label: 'draft a note', onClick: () => { this.setState({ screen: 'notes' }); this.openEdit('note', null); } },
         { label: 'pick up a hobby (again)', onClick: () => { this.setState({ screen: 'hobbies' }); this.openEdit('hobby', null); } },
         { label: 'hoist the lantern', onClick: () => this.deploy() },
       ],
       // projects
       projRows,
-      projCountLine: `${s.projects.length} in the rack · ${pubProj} published · ${s.projects.length - pubProj} waiting for a stamp`,
+      projCountLine: `${s.projects.length} on the list · ${pubProj} lit · ${s.projects.length - pubProj} dark`,
       newProject: () => this.openEdit('project', null),
-      featuredChips: s.featured.map((t) => ({ label: t, onRemove: () => { this.setState((st) => ({ featured: st.featured.filter((x) => x !== t) })); this.showToast('☆ taken down from the mantel'); } })),
+      featuredChips: s.featured.map((t) => ({ label: t, onRemove: () => { this.setState((st) => ({ featured: st.featured.filter((x) => x !== t) })); this.showToast('☆ taken out of the window'); } })),
       featuredCountLine: `${s.featured.length} of 3 spots filled`,
       mantelHasRoom: s.featured.length < 3,
       // hobbies
@@ -2288,9 +2379,16 @@ class Component extends DCLogic {
       // edit overlay
       edit: e, draft: e ? e.draft : {},
       printOptions, doodleOptions, hasRevs, revRows,
-      stampPreview, stampShapeChips, stampInkChips, stampMotifChips, stampIsText, stampText,
-      rerollStamp: () => this.updateStamp(this.randomStamp()),
-      setStampText: (ev) => this.updateStamp({ text: ev.target.value }),
+      lightPrevBox, lightPrevHalo, lightPrevCore, lightCode, lightWords, lightHint,
+      lightKindChips, lightColorChips, lightShowPeriod, lightPeriod, lightEst,
+      rerollLight: () => {
+        const kinds = ['fixed', 'flash', 'occult', 'iso'];
+        const colors = ['white', 'white', 'white', 'red', 'green'];
+        const kind = kinds[Math.floor(Math.random() * kinds.length)];
+        this.updateLight({ kind, color: colors[Math.floor(Math.random() * colors.length)], period: kind === 'fixed' ? 0 : 2 + Math.floor(Math.random() * 10) });
+      },
+      setLightPeriod: (ev) => this.updateLight({ period: parseInt(ev.target.value, 10) }),
+      setLightEst: (ev) => this.updateLight({ est: ev.target.value }),
       editProject: e && e.type === 'project', editHobby: e && e.type === 'hobby', editNote: e && e.type === 'note',
       editKicker: e ? (editKickers[e.type] + (e.idx == null ? 'a fresh one' : 'editing')) : '',
       saveLabel: e && e.idx == null ? 'file it' : 'save changes',
