@@ -94,12 +94,12 @@ function reducedMotion(): boolean {
 }
 
 /**
- * Opacity keyframes for one period: peak inside a span, 0 outside, a 0.07s
- * ramp at each real edge. A span touching t=0 or t=period is already lit
- * going into the wrap, so no ramp is drawn there: the point of a shared,
+ * Opacity keyframes for one period: peak inside a span, floor outside, a
+ * 0.07s ramp at each real edge. A span touching t=0 or t=period is already
+ * lit going into the wrap, so no ramp is drawn there: the point of a shared,
  * looping clock is that the seam must not read as a second, spurious blink.
  */
-function buildKeyframes(period: number, spans: [number, number][], peak: number): Keyframe[] {
+function buildKeyframes(period: number, spans: [number, number][], peak: number, floor: number): Keyframe[] {
 	const points: { t: number; opacity: number }[] = [];
 	const nudge = Math.max(period * 0.0002, 0.0005);
 
@@ -113,18 +113,18 @@ function buildKeyframes(period: number, spans: [number, number][], peak: number)
 	const startsLit = spans.length > 0 && spans[0][0] === 0;
 	const endsLit = spans.length > 0 && spans[spans.length - 1][1] === period;
 
-	push(0, startsLit ? peak : 0);
+	push(0, startsLit ? peak : floor);
 	spans.forEach(([onStart, onEnd], index) => {
 		if (!(index === 0 && startsLit)) {
-			push(onStart - RAMP, 0);
+			push(onStart - RAMP, floor);
 			push(onStart, peak);
 		}
 		if (!(index === spans.length - 1 && endsLit)) {
 			push(onEnd - RAMP, peak);
-			push(onEnd, 0);
+			push(onEnd, floor);
 		}
 	});
-	push(period, endsLit ? peak : 0);
+	push(period, endsLit ? peak : floor);
 
 	return points.map((point) => ({ offset: point.t / period, opacity: point.opacity }));
 }
@@ -134,10 +134,13 @@ function buildKeyframes(period: number, spans: [number, number][], peak: number)
  * API, phase-locked to a shared clock so every lamp on the page reads the
  * same instant the same way. Fixed, extinguished, and reduced-motion all
  * settle on a static opacity instead: there is nothing there to animate.
- * Any blink already running on the element is cancelled first, and the new
- * one is returned so a caller can cancel it in its own cleanup.
+ * floor is the dark-phase opacity (0 by default, so most lamps fully vanish
+ * between flashes); a caller like the you-are-here ring can raise it so the
+ * element only dims. Any blink already running on the element is cancelled
+ * first, and the new one is returned so a caller can cancel it in its own
+ * cleanup.
  */
-export function ignite(el: HTMLElement, light: Light, peak: number): Animation | null {
+export function ignite(el: HTMLElement, light: Light, peak: number, floor = 0): Animation | null {
 	el.getAnimations().forEach((animation) => animation.cancel());
 
 	if (light.extinguished) {
@@ -160,7 +163,7 @@ export function ignite(el: HTMLElement, light: Light, peak: number): Animation |
 	}
 
 	el.style.opacity = '';
-	const keyframes = buildKeyframes(period, spans, peak);
+	const keyframes = buildKeyframes(period, spans, peak, floor);
 	const animation = el.animate(keyframes, { duration: period * 1000, iterations: Infinity });
 	animation.startTime = 0;
 	return animation;

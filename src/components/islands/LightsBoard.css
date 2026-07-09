@@ -169,6 +169,13 @@
 	pointer-events: none;
 }
 
+/* A blinking characteristic hands the ring's opacity to the same phase-locked
+   engine as the lamp (see Beacon in LightsBoard.tsx); this only cancels the
+   idle breath so the two never fight over the same property. */
+.beacon__ring--locked {
+	animation: none;
+}
+
 @keyframes coastHaloBreath {
 	0%, 100% { opacity: .55; }
 	50%      { opacity: .85; }
@@ -212,6 +219,10 @@
 
 .register__cols,
 .register__row {
+	/* border-box so a leaver's JS-set width (captured via getBoundingClientRect,
+	   itself always border-box) lands on the same box it measured, padding
+	   included, instead of rendering 20px wider than its in-flow self */
+	box-sizing: border-box;
 	display: grid;
 	grid-template-columns: 48px 40px minmax(0, 1fr) 130px 90px 130px 56px;
 	gap: 14px;
@@ -242,26 +253,33 @@
 	outline: none;
 }
 
-/* Two identical enter animations; alternating restarts the stagger on every
-   filter change, even for a row that never left the register. --row-delay is
-   the row's own slot in the stagger. The flash rule below must stay after
-   these so a beacon click still wins on an already-entered row. */
-.register__row--enter-a {
-	animation: rowEnterA .38s ease var(--row-delay, 0ms) both;
+/* FLIP filter transition (see pickFilter in LightsBoard.tsx): a survivor
+   glides via WAAPI, so it carries no class here. A newcomer fades in at its
+   final position, delayed so the glide reads first. A leaver is pulled out
+   of flow (JS sets its captured top/left/width) and fades out fast so
+   survivors close the gap under it. Both come before the flash rule below
+   so a beacon click still wins on a row mid-transition. */
+.register__row--entering {
+	animation: registerRowEnter .3s ease .15s both;
 }
 
-.register__row--enter-b {
-	animation: rowEnterB .38s ease var(--row-delay, 0ms) both;
+.register__row--leaving {
+	/* left/width ride in via JS, not left:0/right:0: this is an absolute
+	   child of .register (position: relative), so left:0/right:0 would
+	   resolve against .register's padding box and ignore its horizontal
+	   padding, snapping and stretching the row at the moment it starts to fade */
+	position: absolute;
+	animation: registerRowLeave .18s ease both;
 }
 
-@keyframes rowEnterA {
-	from { opacity: 0; transform: translateY(7px); }
-	to   { opacity: 1; transform: none; }
+@keyframes registerRowEnter {
+	from { opacity: 0; }
+	to   { opacity: 1; }
 }
 
-@keyframes rowEnterB {
-	from { opacity: 0; transform: translateY(7px); }
-	to   { opacity: 1; transform: none; }
+@keyframes registerRowLeave {
+	from { opacity: 1; }
+	to   { opacity: 0; }
 }
 
 .register__row--flash {

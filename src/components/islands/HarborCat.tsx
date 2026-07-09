@@ -15,7 +15,7 @@ export type { CatContext } from '../../lib/catSpots';
 // repeats the quip currently on screen. An unknown context falls back to the
 // roaming header set.
 const QUIPS: Record<CatContext, string[]> = {
-	postcard:  ['mrrp.', 'i sat on this one first.', 'read it to me.', 'this postcard is mine now.', 'i approve. mostly.', 'the stamp tastes fine.', 'you opened it, i inspected it.'],
+	postcard:  ['mrrp.', 'i sat on this one first.', 'read it to me.', 'this entry is mine now.', 'i approve. mostly.', 'the archive tastes fine.', 'you opened it, i inspected it.'],
 	note:      ['mrrp.', 'i walked across the keyboard during this one.', 'typo on line two. i left it.', 'read it to me.', 'i supervised this draft.', 'nap first. then read.', 'i have read it. no comment.'],
 	wreck:     ['told you to turn left.', 'i would not have hit that.', 'a cat never runs aground.', 'nice parking, captain.', 'i saw the rocks. did you?', 'this is why i steer.', 'should have asked the cat.'],
 	header:    ['mrrp.', 'this is my page now.', 'you may look. briefly.', 'i live up here.', 'the lighthouse sent me.', 'mind the tail.'],

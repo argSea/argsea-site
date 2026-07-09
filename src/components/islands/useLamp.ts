@@ -9,8 +9,10 @@ import { ignite } from '../../lib/lightChar';
  * primitive-keyed effect only ever re-ignites when the characteristic
  * actually changes, never on an unrelated re-render. The ref callback is
  * memoized so React doesn't churn it (and el.current) on every render.
+ * floor is the dark-phase opacity (0 by default); a caller can raise it so
+ * the element dims instead of vanishing between flashes.
  */
-export function useLamp(light: Light, peak: number): React.RefCallback<HTMLElement> {
+export function useLamp(light: Light, peak: number, floor = 0): React.RefCallback<HTMLElement> {
 	const el = useRef<HTMLElement | null>(null);
 	const setEl = useCallback((node: HTMLElement | null) => { el.current = node; }, []);
 
@@ -18,9 +20,9 @@ export function useLamp(light: Light, peak: number): React.RefCallback<HTMLEleme
 		if (!el.current) {
 			return;
 		}
-		const animation = ignite(el.current, light, peak);
+		const animation = ignite(el.current, light, peak, floor);
 		return () => animation?.cancel();
-	}, [light.kind, light.color, light.period, light.extinguished, peak]);
+	}, [light.kind, light.color, light.period, light.extinguished, peak, floor]);
 
 	return setEl;
 }
