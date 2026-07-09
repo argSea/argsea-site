@@ -71,11 +71,20 @@ const catDesigns = await getFigurehead();
 		/* The moon: a soft disc, its own blurred halo, and a thin low-opacity
 		   ring at roughly twice the disc's radius, high in the sky band near
 		   the header copy. Layer order matters: disc, halo, then ring, then
-		   the sky gradient underneath everything else. */
+		   the sky gradient underneath everything else. Scaled to about two
+		   thirds of its original size (disc falloff, halo, and ring radius
+		   all shrunk together): it was reading too big for the sky band. */
+		/* The sky ramp: unlike the old two-stop version that flattened at
+		   .55 well before the coast began, this keeps darkening in more
+		   steps and its last stop is a fully opaque #080b18 (not an rgba,
+		   so body's own background stops contributing entirely once it's
+		   reached), the same terminal tone the coast itself ends on, hit
+		   well before any header's real height, so nothing below that point
+		   (register, footer) ever pops lighter again. */
 		background:
-			radial-gradient(circle at right 9% top 176px, rgba(234, 237, 250, .92) 0, rgba(210, 217, 245, .5) 18px, rgba(184, 193, 236, .16) 36px, transparent 54px),
-			radial-gradient(circle at right 9% top 176px, rgba(147, 160, 232, .16) 0, transparent 145px),
-			radial-gradient(circle at right 9% top 176px, transparent 76px, rgba(182, 192, 236, .13) 82px, transparent 90px),
-			linear-gradient(180deg, rgba(10, 13, 26, 0) 90px, rgba(11, 14, 29, .55) 380px);
+			radial-gradient(circle at right 9% top 176px, rgba(234, 237, 250, .92) 0, rgba(210, 217, 245, .5) 12px, rgba(184, 193, 236, .16) 24px, transparent 36px),
+			radial-gradient(circle at right 9% top 176px, rgba(147, 160, 232, .16) 0, transparent 95px),
+			radial-gradient(circle at right 9% top 176px, transparent 52px, rgba(182, 192, 236, .13) 56px, transparent 60px),
+			linear-gradient(180deg, rgba(10, 13, 26, 0) 90px, rgba(11, 14, 29, .45) 260px, rgba(11, 14, 27, .72) 460px, #080b18 700px);
 	}
 </style>
