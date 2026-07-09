@@ -51,10 +51,13 @@ export interface WallPos {
 	rotation: number;
 }
 
+export type LightKind = 'fixed' | 'flash' | 'occult' | 'iso';
+export type LightColor = 'white' | 'red' | 'green';
+
 // A project's navigational characteristic: how it burns on the coast.
 export interface Light {
-	kind:         string; // fixed | flash | occult | iso
-	color:        string; // white | red | green
+	kind:         LightKind;
+	color:        LightColor;
 	period:       number; // seconds per cycle, 0 for fixed
 	extinguished: string; // year string, '' = burning
 }

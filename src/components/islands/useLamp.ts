@@ -15,9 +15,11 @@ export function useLamp(light: Light, peak: number): React.RefCallback<HTMLEleme
 	const setEl = useCallback((node: HTMLElement | null) => { el.current = node; }, []);
 
 	useEffect(() => {
-		if (el.current) {
-			ignite(el.current, light, peak);
+		if (!el.current) {
+			return;
 		}
+		const animation = ignite(el.current, light, peak);
+		return () => animation?.cancel();
 	}, [light.kind, light.color, light.period, light.extinguished, peak]);
 
 	return setEl;

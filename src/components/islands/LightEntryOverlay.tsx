@@ -119,7 +119,7 @@ export default function LightEntryOverlay({ project, catHere = false, catDesigns
 						<div className="light-entry__moral">{project.moral}</div>
 
 						<div className="light-entry__footer">
-							<span className="light-entry__tags">{project.tags.join('  ·  ')}</span>
+							<span className="light-entry__tags">{(project.tags ?? []).join('  ·  ')}</span>
 							<span className="light-entry__signoff">- j, keeper</span>
 						</div>
 					</div>

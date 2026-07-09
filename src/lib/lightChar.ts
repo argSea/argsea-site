@@ -4,13 +4,13 @@
 // island, owns it. Every lamp on the page shares one clock (animation
 // startTime pinned to 0), so the coast, the register, and the overlay's big
 // lamp all agree with each other on what instant it is.
-import type { Light } from './api';
+import type { Light, LightColor, LightKind } from './api';
 
 export const DEFAULT_LIGHT: Light = { kind: 'fixed', color: 'white', period: 0, extinguished: '' };
 
 // Glow RGB per color, fed into rgba(...) at render time; dark is the
 // extinguished tint, never a color a burning light carries.
-export const GLOW: Record<'white' | 'red' | 'green' | 'dark', string> = {
+export const GLOW: Record<LightColor | 'dark', string> = {
 	white: '246,236,207',
 	red:   '231,122,112',
 	green: '111,202,151',
@@ -22,7 +22,7 @@ export function glowFor(light: Light): string {
 	if (light.extinguished) {
 		return GLOW.dark;
 	}
-	return GLOW[light.color as 'white' | 'red' | 'green'] ?? GLOW.white;
+	return GLOW[light.color];
 }
 
 /** The Light List's registry number: gapped so a future insertion never renumbers its neighbors. */
@@ -30,17 +30,16 @@ export function registryNo(order: number): string {
 	return String(order * 2).padStart(3, '0');
 }
 
-const COLOR_LETTER: Record<string, string> = { white: 'W', red: 'R', green: 'G' };
-const KIND_PREFIX: Record<string, string> = { flash: 'Fl', occult: 'Oc', iso: 'Iso' };
+const COLOR_LETTER: Record<LightColor, string> = { white: 'W', red: 'R', green: 'G' };
+const KIND_PREFIX: Record<Exclude<LightKind, 'fixed'>, string> = { flash: 'Fl', occult: 'Oc', iso: 'Iso' };
 
 /** The Light List code: `F W`, `Fl W 8s`, `Oc R 6s`, `Iso G 3s`. */
 export function codeFor(light: Light): string {
-	const letter = COLOR_LETTER[light.color] ?? 'W';
+	const letter = COLOR_LETTER[light.color];
 	if (light.kind === 'fixed') {
 		return `F ${letter}`;
 	}
-	const prefix = KIND_PREFIX[light.kind] ?? 'Fl';
-	return `${prefix} ${letter} ${light.period}s`;
+	return `${KIND_PREFIX[light.kind]} ${letter} ${light.period}s`;
 }
 
 function plainLanguage(light: Light): string {
@@ -135,28 +134,34 @@ function buildKeyframes(period: number, spans: [number, number][], peak: number)
  * API, phase-locked to a shared clock so every lamp on the page reads the
  * same instant the same way. Fixed, extinguished, and reduced-motion all
  * settle on a static opacity instead: there is nothing there to animate.
+ * Any blink already running on the element is cancelled first, and the new
+ * one is returned so a caller can cancel it in its own cleanup.
  */
-export function ignite(el: HTMLElement, light: Light, peak: number): void {
+export function ignite(el: HTMLElement, light: Light, peak: number): Animation | null {
+	el.getAnimations().forEach((animation) => animation.cancel());
+
 	if (light.extinguished) {
 		el.style.opacity = String(peak);
-		return;
+		return null;
 	}
 	if (light.kind === 'fixed') {
 		el.style.opacity = String(peak);
-		return;
+		return null;
 	}
 	if (reducedMotion()) {
 		el.style.opacity = String(peak);
-		return;
+		return null;
 	}
 
 	const { period, spans } = timeline(light);
 	if (!(period > 0) || spans.length === 0) {
 		el.style.opacity = String(peak);
-		return;
+		return null;
 	}
 
+	el.style.opacity = '';
 	const keyframes = buildKeyframes(period, spans, peak);
 	const animation = el.animate(keyframes, { duration: period * 1000, iterations: Infinity });
 	animation.startTime = 0;
+	return animation;
 }

@@ -77,7 +77,7 @@ function LightCard({ project, bobClass, onOpen }: { project: Project; bobClass: 
 				<div className="home-lights__title">{project.title}</div>
 				<span className="home-lights__char" style={{ color: dark ? 'var(--text-dim)' : `rgb(${glow})` }}>{codeFor(light)} · {dark ? `dark · ${light.extinguished}` : 'lit'}</span>
 				<div className="home-lights__desc">{project.shortDesc}</div>
-				<div className="home-lights__tags">{project.tags.join(' · ')}</div>
+				<div className="home-lights__tags">{(project.tags ?? []).join(' · ')}</div>
 			</div>
 		</div>
 	);
