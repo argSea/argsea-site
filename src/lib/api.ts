@@ -51,6 +51,14 @@ export interface WallPos {
 	rotation: number;
 }
 
+// A project's navigational characteristic: how it burns on the coast.
+export interface Light {
+	kind:         string; // fixed | flash | occult | iso
+	color:        string; // white | red | green
+	period:       number; // seconds per cycle, 0 for fixed
+	extinguished: string; // year string, '' = burning
+}
+
 // Wire types mirror the argsea-site-api domain structs field-for-field.
 export interface Project {
 	id:           string;
@@ -64,8 +72,11 @@ export interface Project {
 	postcardFrom: string;
 	postmarked:   string;      // freeform display string
 	slug:         string;
-	image:        string | null; // nullable media name
+	image:        string | null; // nullable media name (legacy single photo)
 	stamp?:       Stamp | null;  // absent → the design's default stamp
+	light:        Light | null;   // nullable: null burns as the default fixed white
+	images:       string[] | null; // gallery media names, first print leads; null like tags, guard accordingly
+	firstLit:     string;         // freeform year shown in the register
 	order:        number;        // the keeper's manual sort key; the API sends the list pre-sorted
 	wallPos:      WallPos | null; // pinned position on the projects page wall; null → not yet placed
 	featured:     boolean;       // on the mantel → homepage postcards preview

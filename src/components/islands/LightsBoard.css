@@ -1,0 +1,414 @@
+/* The lights: filter pills, the night coast, and the register below it. */
+
+.filter-row {
+	display: flex;
+	gap: 9px;
+	flex-wrap: wrap;
+	align-items: center;
+	padding: 26px var(--gutter) 0;
+}
+
+/* .chip / .chip--idle / .chip--active are the shared pill from global.css
+   (gold active, periwinkle idle); this just adds room for the dot */
+.filter-row .chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+}
+
+.chip__dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	flex: none;
+}
+
+.count-line {
+	font-family: var(--font-body);
+	font-style: italic;
+	font-size: 14px;
+	color: var(--text-quip);
+	margin-left: auto;
+	transform: rotate(-.8deg);
+}
+
+/* --- the night coast: panorama + register share one gradient backdrop --- */
+
+.coast {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	background: linear-gradient(180deg, var(--bg-bottom) 0%, #0d1122 190px, #0a0d1a 100%);
+	margin-top: 34px;
+}
+
+.coast__pano {
+	position: relative;
+	height: 216px;
+	overflow: hidden;
+	flex: none;
+	background:
+		radial-gradient(1.4px 1.4px at 12% 12%, rgba(255, 255, 255, .55), transparent),
+		radial-gradient(1px 1px at 26% 32%, rgba(255, 255, 255, .38), transparent),
+		radial-gradient(1.2px 1.2px at 41% 9%, rgba(200, 206, 240, .5), transparent),
+		radial-gradient(1px 1px at 57% 24%, rgba(255, 255, 255, .32), transparent),
+		radial-gradient(1.5px 1.5px at 72% 14%, rgba(240, 217, 168, .42), transparent),
+		radial-gradient(1px 1px at 86% 28%, rgba(255, 255, 255, .4), transparent),
+		radial-gradient(1px 1px at 8% 44%, rgba(200, 206, 240, .3), transparent),
+		radial-gradient(1.2px 1.2px at 64% 40%, rgba(255, 255, 255, .28), transparent),
+		radial-gradient(1px 1px at 94% 8%, rgba(255, 255, 255, .35), transparent),
+		radial-gradient(1px 1px at 33% 50%, rgba(200, 206, 240, .25), transparent),
+		linear-gradient(180deg, rgba(19, 22, 40, 0) 0%, #0e1428 62%, #0d1224 100%);
+}
+
+.coast__moon {
+	position: absolute;
+	top: -70px;
+	right: 10%;
+	width: 280px;
+	height: 280px;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgba(147, 160, 232, .11) 0%, transparent 66%);
+	pointer-events: none;
+}
+
+.coast__sea {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 132px;
+	bottom: 0;
+	background:
+		repeating-linear-gradient(0deg, rgba(147, 160, 232, .028) 0 1px, transparent 1px 7px),
+		linear-gradient(180deg, #0c1122, #080b18);
+}
+
+.coast__horizon {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 132px;
+	height: 1px;
+	background: linear-gradient(90deg, transparent 2%, rgba(147, 160, 232, .22) 30%, rgba(147, 160, 232, .22) 70%, transparent 98%);
+}
+
+.coast__rail {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 30px;
+	z-index: 4;
+	pointer-events: none;
+	border-top: 1px solid rgba(147, 160, 232, .13);
+	background:
+		repeating-linear-gradient(90deg, rgba(6, 8, 16, .95) 0 3px, transparent 3px 72px),
+		linear-gradient(180deg, rgba(6, 8, 16, .55), rgba(6, 8, 16, .95));
+}
+
+.coast__caption {
+	position: absolute;
+	left: clamp(18px, 4vw, 44px);
+	bottom: 10px;
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	letter-spacing: .18em;
+	color: rgba(147, 160, 232, .5);
+	text-transform: uppercase;
+	z-index: 5;
+}
+
+/* --- beacons --- */
+
+.beacon {
+	position: absolute;
+	width: 46px;
+	height: 46px;
+	transform: translate(-50%, -50%);
+	cursor: pointer;
+	z-index: 3;
+	transition: opacity .35s ease, filter .2s ease;
+}
+
+.beacon:hover,
+.beacon:focus-visible {
+	filter: brightness(1.9);
+	outline: none;
+}
+
+.beacon__halo {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	filter: blur(2px);
+	pointer-events: none;
+}
+
+.beacon__core {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	pointer-events: none;
+}
+
+/* Water reflection: a streak below the horizon, in sync with the beacon
+   above it but dimmer (peak .4 vs the core's .85, see LightsBoard.tsx) */
+.beacon__reflect {
+	position: absolute;
+	left: 50%;
+	width: 2.5px;
+	transform: translateX(-50%);
+	filter: blur(1.2px);
+	border-radius: 0 0 2px 2px;
+	pointer-events: none;
+}
+
+.beacon__ring {
+	position: absolute;
+	inset: 9px;
+	border: 1px dashed rgba(240, 217, 168, .55);
+	border-radius: 50%;
+	animation: coastHaloBreath 4s ease-in-out infinite;
+	pointer-events: none;
+}
+
+@keyframes coastHaloBreath {
+	0%, 100% { opacity: .55; }
+	50%      { opacity: .85; }
+}
+
+/* --- the register --- */
+
+.register {
+	position: relative;
+	width: 100%;
+	box-sizing: border-box;
+	max-width: 1060px;
+	margin: 0 auto;
+	padding: clamp(18px, 3.5vw, 34px) clamp(16px, 4vw, 40px) clamp(30px, 5vw, 48px);
+}
+
+.register__head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 14px;
+	padding: 0 10px 10px;
+	border-bottom: 1px solid rgba(150, 160, 220, .18);
+}
+
+.register__head-label {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	letter-spacing: .2em;
+	color: #8a93c4;
+	text-transform: uppercase;
+}
+
+.register__head-district {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	letter-spacing: .14em;
+	color: var(--periwinkle-deep);
+	text-transform: uppercase;
+}
+
+.register__cols,
+.register__row {
+	display: grid;
+	grid-template-columns: 48px 40px minmax(0, 1fr) 130px 90px 130px 56px;
+	gap: 14px;
+	align-items: center;
+}
+
+.register__cols {
+	align-items: baseline;
+	padding: 12px 10px 9px;
+	font-family: var(--font-mono);
+	font-size: 10px;
+	letter-spacing: .16em;
+	text-transform: uppercase;
+	color: var(--periwinkle-deep);
+	border-bottom: 1px solid rgba(150, 160, 220, .1);
+}
+
+.register__row {
+	padding: 15px 10px;
+	border-bottom: 1px solid rgba(150, 160, 220, .09);
+	cursor: pointer;
+	transition: background .25s;
+}
+
+.register__row:hover,
+.register__row:focus-visible {
+	background: rgba(147, 160, 232, .06);
+	outline: none;
+}
+
+.register__row--flash {
+	animation: registerFlash .9s ease;
+}
+
+@keyframes registerFlash {
+	0%   { background: rgba(240, 217, 168, .22); }
+	100% { background: transparent; }
+}
+
+.register__no {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: #4d5680;
+}
+
+.register__lamp {
+	position: relative;
+	width: 36px;
+	height: 36px;
+	flex: none;
+}
+
+.register__halo {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 30px;
+	height: 30px;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	filter: blur(1.5px);
+	pointer-events: none;
+}
+
+.register__core {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 6px;
+	height: 6px;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	pointer-events: none;
+}
+
+.register__info {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.register__name-row {
+	display: flex;
+	align-items: baseline;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.register__name {
+	font-family: var(--font-display);
+	font-size: 20px;
+	color: var(--text-head);
+	line-height: 1.15;
+}
+
+.register__desc {
+	font-size: 14px;
+	font-style: italic;
+	color: var(--text-body);
+	line-height: 1.45;
+}
+
+.register__mobile-char {
+	display: none;
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: var(--periwinkle);
+}
+
+.register__pill--mobile {
+	display: none;
+}
+
+.register__code {
+	font-family: var(--font-mono);
+	font-size: 12.5px;
+	letter-spacing: .06em;
+	white-space: nowrap;
+}
+
+.register__first-lit {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: var(--periwinkle);
+}
+
+.register__read {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: var(--periwinkle-deep);
+	opacity: .8;
+}
+
+.status-pill {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	padding: 3px 10px;
+	border-radius: 999px;
+	white-space: nowrap;
+	display: inline-block;
+}
+
+.status-pill--lit {
+	color: var(--gold);
+	border: 1px solid rgba(240, 217, 168, .5);
+	background: rgba(240, 217, 168, .12);
+}
+
+.status-pill--dark {
+	color: #8a93c4;
+	border: 1px solid rgba(138, 147, 196, .4);
+	background: rgba(138, 147, 196, .08);
+}
+
+/*
+ * Mobile: the desktop grid columns (no., characteristic, first lit, status,
+ * read →) drop out; the status pill and a combined code/first-lit line move
+ * in next to the description instead (design's mobile variant).
+ */
+@media (max-width: 880px) {
+	.register__cols {
+		display: none;
+	}
+
+	.register__row {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		padding: 18px 8px;
+	}
+
+	.register__no,
+	.register__code,
+	.register__first-lit,
+	.register__status,
+	.register__read {
+		display: none;
+	}
+
+	.register__mobile-char {
+		display: block;
+	}
+
+	.register__pill--mobile {
+		display: inline-block;
+	}
+}

@@ -1,0 +1,259 @@
+/* The Light List entry, shared by the coast and the home preview. Dark
+   night card throughout; the photo print is the one pale surface, a
+   physical paper prop that keeps its own color regardless of the card. */
+
+.light-entry-wrap {
+	position: relative;
+	width: min(760px, 100%);
+	animation: lightEntryIn .4s ease both;
+}
+
+.overlay-card.light-entry {
+	border-radius: 8px;
+	background: linear-gradient(180deg, #191d33, #12162a);
+	box-shadow: 0 30px 80px rgba(0, 0, 0, .65), inset 0 0 0 1px rgba(240, 217, 168, .06);
+}
+
+@keyframes lightEntryIn {
+	from { opacity: 0; transform: translateY(24px) scale(.985); }
+	to   { opacity: 1; transform: none; }
+}
+
+.light-entry__body {
+	padding: clamp(20px, 4vw, 34px);
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.light-entry__masthead {
+	display: flex;
+	align-items: center;
+	gap: 22px;
+	flex-wrap: wrap;
+}
+
+/* --- the big lamp: layered halos, a ghost lighthouse, the animated core --- */
+
+.lamp--big {
+	position: relative;
+	width: 100px;
+	height: 124px;
+	flex: none;
+}
+
+.lamp__halo-under {
+	position: absolute;
+	left: 50%;
+	top: 42%;
+	width: 88px;
+	height: 88px;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	pointer-events: none;
+}
+
+.lamp__halo {
+	position: absolute;
+	left: 50%;
+	top: 42%;
+	width: 124px;
+	height: 124px;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	filter: blur(3px);
+	pointer-events: none;
+}
+
+.lamp__ghost {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -46%);
+	opacity: .6;
+	pointer-events: none;
+}
+
+.lamp__core {
+	position: absolute;
+	left: 50%;
+	top: 42%;
+	width: 13px;
+	height: 13px;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	pointer-events: none;
+}
+
+.light-entry__intro {
+	flex: 1;
+	min-width: 220px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.light-entry__title {
+	font-family: var(--font-display);
+	font-size: clamp(26px, 4.5vw, 34px);
+	color: #f2f4fd;
+	line-height: 1.1;
+}
+
+.light-entry__status-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.light-entry__code {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	letter-spacing: .1em;
+	color: var(--text-soft);
+}
+
+.light-entry__decoded {
+	font-size: 15.5px;
+	font-style: italic;
+	color: var(--text-quip);
+	line-height: 1.5;
+}
+
+.light-entry__meta {
+	display: flex;
+	gap: 22px;
+	flex-wrap: wrap;
+	font-family: var(--font-mono);
+	font-size: 12.5px;
+	color: var(--periwinkle);
+	padding: 14px 0;
+	border-top: 1px solid rgba(150, 160, 220, .14);
+	border-bottom: 1px solid rgba(150, 160, 220, .14);
+}
+
+.light-entry__meta-value {
+	color: var(--text-soft);
+}
+
+.light-entry__cols {
+	display: flex;
+	gap: 26px;
+	flex-wrap: wrap;
+	align-items: flex-start;
+}
+
+.light-entry__left {
+	flex: 1 1 320px;
+	min-width: 0;
+}
+
+.light-entry__text {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.light-entry__text p {
+	margin: 0;
+	font-size: 16.5px;
+	line-height: 1.7;
+	color: var(--text-body-strong);
+}
+
+.light-entry__right {
+	flex: 0 1 220px;
+	min-width: 180px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+/* The photo print: a physical paper prop, always pale regardless of the card */
+.photo-print {
+	background: #fdfcf8;
+	padding: 6px 6px 20px;
+	box-shadow: 0 8px 22px rgba(0, 0, 0, .45);
+	transform: rotate(-1.6deg);
+}
+
+.photo-print img {
+	display: block;
+	width: 100%;
+	height: 130px;
+	object-fit: cover;
+	background: #e6e2d6;
+}
+
+.light-entry__photo-caption {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: var(--periwinkle-deep);
+	text-align: center;
+}
+
+.light-entry__thumbs {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.light-entry__thumb {
+	padding: 0;
+	border: 1.5px solid transparent;
+	border-radius: 2px;
+	background: none;
+	cursor: pointer;
+	width: 34px;
+	height: 34px;
+	overflow: hidden;
+}
+
+.light-entry__thumb img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.light-entry__thumb--active {
+	border-color: var(--gold);
+}
+
+.light-entry__moral {
+	font-size: 15px;
+	color: var(--text-quip);
+	font-style: italic;
+}
+
+.light-entry__footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 14px;
+	flex-wrap: wrap;
+}
+
+.light-entry__tags {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: #8a6d3b;
+}
+
+.light-entry__signoff {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--periwinkle-deep);
+	font-style: italic;
+}
+
+/* The cat perches on the card's top-left edge when the pick lands on this overlay */
+.cat-mount--light-entry {
+	top: -50px;
+	left: 34px;
+	width: 64px;
+	height: 74px;
+	z-index: 3;
+}

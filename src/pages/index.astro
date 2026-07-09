@@ -1,8 +1,8 @@
 ---
-// Hello: hero, wave-with-boat, postcards preview, cargo manifest, hobbies
-// preview, contact band, and the dictionary entry. The postcards preview is
+// Hello: hero, wave-with-boat, lights preview, cargo manifest, hobbies
+// preview, contact band, and the dictionary entry. The lights preview is
 // the mantel: the featured projects, or the first three by order so the
-// section never empties. It opens the postcard-back overlay in place; hero
+// section never empties. It opens the Light List entry in place; hero
 // copy and the dictionary come from the SiteCopy singleton; the say-hi email
 // is the keeper's; the cargo manifest is approved copy hardcoded by design. The
 // hobbies preview is data-driven: active hobbies fill "currently learning",
@@ -10,7 +10,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LighthouseMark from '../components/LighthouseMark.astro';
 import WaveDivider from '../components/WaveDivider.astro';
-import HomePostcards from '../components/islands/HomePostcards';
+import HomeLights from '../components/islands/HomeLights';
 import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead } from '../lib/api';
 
 const projects = await getProjects();
@@ -81,13 +81,13 @@ const graveyardChips = resting.map((hobby, index) => ({
 
 	<WaveDivider proverbs={proverbs} />
 
-	<!-- postcards from production -->
+	<!-- lights I keep burning -->
 	<section class="postcards">
 		<div class="row-head">
-			<span class="section-label">Postcards from production</span>
-			<a href="/projects" class="mono-link">all projects →</a>
+			<span class="section-label">Lights I keep burning</span>
+			<a href="/projects" class="mono-link">the whole coast →</a>
 		</div>
-		<HomePostcards client:load projects={preview} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
+		<HomeLights client:load projects={preview} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
 	</section>
 
 	<!-- the cargo manifest -->
