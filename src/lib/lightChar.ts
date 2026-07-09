@@ -36,7 +36,7 @@ const KIND_PREFIX: Record<string, string> = { flash: 'Fl', occult: 'Oc', iso: 'I
 /** The Light List code: `F W`, `Fl W 8s`, `Oc R 6s`, `Iso G 3s`. */
 export function codeFor(light: Light): string {
 	const letter = COLOR_LETTER[light.color] ?? 'W';
-	if ('fixed' === light.kind) {
+	if (light.kind === 'fixed') {
 		return `F ${letter}`;
 	}
 	const prefix = KIND_PREFIX[light.kind] ?? 'Fl';
@@ -111,12 +111,12 @@ function buildKeyframes(period: number, spans: [number, number][], peak: number)
 		points.push({ t: at, opacity });
 	};
 
-	const startsLit = spans.length > 0 && 0 === spans[0][0];
-	const endsLit = spans.length > 0 && period === spans[spans.length - 1][1];
+	const startsLit = spans.length > 0 && spans[0][0] === 0;
+	const endsLit = spans.length > 0 && spans[spans.length - 1][1] === period;
 
 	push(0, startsLit ? peak : 0);
 	spans.forEach(([onStart, onEnd], index) => {
-		if (!(0 === index && startsLit)) {
+		if (!(index === 0 && startsLit)) {
 			push(onStart - RAMP, 0);
 			push(onStart, peak);
 		}
@@ -141,7 +141,7 @@ export function ignite(el: HTMLElement, light: Light, peak: number): void {
 		el.style.opacity = String(peak);
 		return;
 	}
-	if ('fixed' === light.kind) {
+	if (light.kind === 'fixed') {
 		el.style.opacity = String(peak);
 		return;
 	}
@@ -151,7 +151,7 @@ export function ignite(el: HTMLElement, light: Light, peak: number): void {
 	}
 
 	const { period, spans } = timeline(light);
-	if (!(period > 0) || 0 === spans.length) {
+	if (!(period > 0) || spans.length === 0) {
 		el.style.opacity = String(peak);
 		return;
 	}

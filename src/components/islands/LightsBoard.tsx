@@ -79,13 +79,13 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 	const close = () => setOpenId(null);
 
 	const matching = new Set(
-		projects.filter((project) => 'all' === filter || project.category === filter).map((project) => project.id),
+		projects.filter((project) => filter === 'all' || project.category === filter).map((project) => project.id),
 	);
 	// The register only lists what matches; the coast keeps every beacon lit
 	// and dims the rest, so the panorama never reflows on a filter change.
 	const visible = projects.filter((project) => matching.has(project.id));
 	const open = openId === null ? null : projects.find((project) => project.id === openId) ?? null;
-	const hereId = projects.find((project) => 'this website' === project.category)?.id ?? null;
+	const hereId = projects.find((project) => project.category === 'this website')?.id ?? null;
 	const burningCount = projects.filter((project) => !(project.light ?? DEFAULT_LIGHT).extinguished).length;
 
 	// A beacon click never opens the entry: it points at the light's row.
@@ -186,7 +186,7 @@ function Beacon({ project, index, matches, isHere, onActivate }: BeaconProps) {
 			title={tip}
 			onClick={activate}
 			onKeyDown={(event) => {
-				if ('Enter' === event.key || ' ' === event.key) {
+				if (event.key === 'Enter' || event.key === ' ') {
 					event.preventDefault();
 					activate();
 				}
@@ -245,7 +245,7 @@ function RegisterRow({ project, flashed, onOpen }: RegisterRowProps) {
 			tabIndex={0}
 			onClick={open}
 			onKeyDown={(event) => {
-				if ('Enter' === event.key || ' ' === event.key) {
+				if (event.key === 'Enter' || event.key === ' ') {
 					event.preventDefault();
 					open();
 				}

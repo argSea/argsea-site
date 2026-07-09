@@ -63,7 +63,7 @@ function LightCard({ project, bobClass, onOpen }: { project: Project; bobClass: 
 			tabIndex={0}
 			onClick={onOpen}
 			onKeyDown={(event) => {
-				if ('Enter' === event.key || ' ' === event.key) {
+				if (event.key === 'Enter' || event.key === ' ') {
 					event.preventDefault();
 					onOpen();
 				}
