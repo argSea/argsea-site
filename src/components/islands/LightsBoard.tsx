@@ -36,8 +36,10 @@ const FILTER_LIGHT: Record<Filter, Light> = {
 	'tinkering':    { kind: 'fixed', color: 'red',   period: 0, extinguished: '', letter: '' },
 };
 
-// The panorama's fixed aspect: horizon sits 132px down a 216px band, same
-// numbers the wallPos mapping below is built against.
+// The panorama's fixed aspect: horizon sits 132px down a 352px band (a 220px
+// sea below it), same numbers the wallPos mapping below is built against.
+// Only the sea's own depth grew; HORIZON_Y itself never moves, which is what
+// keeps every lamp, headland, and the boat's track pinned in place below.
 const HORIZON_Y = 132;
 
 // Specular twinkle near the horizon: deterministic positions/timings (no
