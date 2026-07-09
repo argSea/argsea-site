@@ -5,6 +5,7 @@
 // card's top edge only when the page's one-cat pick landed on this overlay
 // spot (the caller decides and passes catHere).
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { FigureheadDesign, Light, Project } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor, registryNo, timeline } from '../../lib/lightChar';
 import { mediaUrl } from '../../lib/media';
@@ -44,7 +45,10 @@ export default function LightEntryOverlay({ project, catHere = false, catDesigns
 		? project.images
 		: project.image ? [project.image] : [];
 
-	return (
+	// Portaled to document.body so the backdrop sits in the root stacking
+	// context, same as HarborCatDirector's cat-mount, instead of being
+	// trapped under the cat inside .page's own context.
+	return createPortal(
 		<div className="overlay-backdrop" onClick={onClose}>
 			<div className="light-entry-wrap" onClick={(event) => event.stopPropagation()}>
 				{catHere && <div className="cat-mount cat-mount--light-entry"><HarborCat pose="perched" context="postcard" designs={catDesigns} /></div>}
@@ -126,7 +130,8 @@ export default function LightEntryOverlay({ project, catHere = false, catDesigns
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>,
+		document.body,
 	);
 }
 
