@@ -155,12 +155,12 @@ export default function ProjectsBoard({ projects, catEnabled, catPages, catSpots
 										)
 										: (
 											<div className="postcard__back">
-												<svg className="postcard__back-lines" viewBox="0 0 150 64" fill="none" stroke="rgba(70,76,120,.55)" strokeWidth="1.3" strokeLinecap="round">
+												<svg className="postcard__back-lines" viewBox="0 0 150 64" fill="none" stroke="rgba(150,160,220,.5)" strokeWidth="1.3" strokeLinecap="round">
 													<path d="M4 8 q14 -5 28 0 t28 0 t28 0 t28 0 t24 -2 M4 22 q14 -5 28 0 t28 0 t28 0 t26 0 M4 36 q14 -5 28 0 t28 0 t30 -2 M4 50 q12 -4 24 0 t24 0" />
-													<path d="M112 54 q10 -4 20 0" stroke="rgba(138,109,59,.6)" />
+													<path d="M112 54 q10 -4 20 0" stroke="rgba(240,217,168,.5)" />
 												</svg>
 												<div className="postcard__back-corner">
-													<svg className="postcard__back-postmark" width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="rgba(95,110,196,.5)" strokeWidth="1.2">
+													<svg className="postcard__back-postmark" width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="rgba(130,145,215,.55)" strokeWidth="1.2">
 														<circle cx="19" cy="19" r="14.5" strokeDasharray="3 4" />
 														<path d="M7 15 q5.5 -3 11 0 t11 0 M7 19 q5.5 -3 11 0 t11 0 M7 23 q5.5 -3 11 0 t11 0" />
 													</svg>

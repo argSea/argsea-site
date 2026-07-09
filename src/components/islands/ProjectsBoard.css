@@ -136,27 +136,31 @@
 	pointer-events: none;
 }
 
-/* Manila card stock: double inset border reads as a paper edge */
+/* Night-harbor card stock: navy body with a slim dark mat and a periwinkle
+   hairline, so the photo reads as a framed print sat on the board */
 .postcard {
 	position: relative;
 	box-sizing: border-box;
-	background: linear-gradient(180deg, var(--manila), var(--manila-deep));
-	border: 1px solid var(--manila-border);
-	border-radius: 4px;
+	/* a shade lighter than the board (#171a30) so a navy card lifts off a navy
+	   board instead of sinking into it */
+	background: linear-gradient(180deg, var(--overlay-card), var(--card));
+	border: 1px solid var(--border-card);
+	border-radius: 5px;
 	padding: 13px 13px 16px;
-	/* flat wall, flat shadow: just enough lift to sit above the board, not
-	   the deep float the cards read as before */
+	/* flat wall, flat shadow: just enough lift to sit above the board, plus a
+	   dark mat, a periwinkle hairline framing the photo, and a faint top rim */
 	box-shadow:
-		inset 0 0 0 5px rgba(244, 240, 228, .9),
-		inset 0 0 0 6px rgba(110, 100, 75, .28),
-		0 3px 8px rgba(0, 0, 0, .3);
+		inset 0 1px 0 rgba(180, 190, 240, .06),
+		inset 0 0 0 5px rgba(20, 23, 40, .9),
+		inset 0 0 0 6px rgba(150, 160, 220, .16),
+		0 5px 12px rgba(0, 0, 0, .5);
 }
 
 .postcard__photo {
 	position: relative;
 	overflow: hidden;
 	aspect-ratio: 1.55 / 1;
-	background: var(--manila-border);
+	background: var(--card-alt);
 }
 
 .postcard__photo img {
@@ -164,19 +168,19 @@
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	filter: grayscale(1) contrast(1.05) brightness(.95);
+	filter: grayscale(1) contrast(1.05) brightness(.92);
 }
 
-/* Just enough of a scrim for the caption to read; the photo itself must stay
-   bright and clean, a silver print rather than a murky vignette */
+/* A caption scrim plus a faint periwinkle wash over the whole frame, so the
+   grayscale print reads as a cool cyanotype that belongs in the night palette */
 .postcard__photo::after {
 	content: '';
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
 	background:
-		linear-gradient(0deg, rgba(42, 34, 20, .4) 0%, rgba(42, 34, 20, .14) 22%, transparent 42%),
-		radial-gradient(ellipse at 50% 32%, transparent 62%, rgba(58, 46, 26, .16) 100%);
+		linear-gradient(0deg, rgba(13, 15, 26, .8) 0%, rgba(13, 15, 26, .3) 22%, transparent 44%),
+		linear-gradient(0deg, rgba(74, 88, 158, .16), rgba(74, 88, 158, .16));
 }
 
 .postcard__caption {
@@ -202,7 +206,7 @@
 	align-items: center;
 	gap: 10px;
 	padding: 12px 14px 30px;
-	background: var(--manila);
+	background: var(--card-alt);
 }
 
 .postcard__back-lines {
@@ -236,12 +240,12 @@
 }
 
 .postcard__caption--back .postcard__caption-title {
-	color: var(--manila-ink-title);
+	color: var(--text-head);
 	text-shadow: none;
 }
 
 .postcard__caption--back .postcard__caption-sub {
-	color: var(--manila-ink-soft);
+	color: var(--periwinkle);
 	text-shadow: none;
 }
 
