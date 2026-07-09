@@ -121,6 +121,24 @@
 	line-height: 1.5;
 }
 
+/* The timing diagram: one period of the real characteristic, lit spans as
+   solid bars in the light's own color, everything else dark track. */
+.light-entry__timing {
+	position: relative;
+	height: 6px;
+	margin-top: 2px;
+	border-radius: 3px;
+	background: rgba(150, 160, 220, .12);
+	overflow: hidden;
+}
+
+.light-entry__timing-lit {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	opacity: .75;
+}
+
 .light-entry__meta {
 	display: flex;
 	gap: 22px;

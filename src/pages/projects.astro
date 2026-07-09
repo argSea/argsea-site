@@ -47,11 +47,19 @@ const catDesigns = await getFigurehead();
 	}
 
 	/* The whole page is the night canvas: the header copy and filter pills
-	   render on top of one sky that deepens from the nav down to a footer
-	   already sitting in it. The moon halo lives up here too, so no overflow
-	   edge ever slices it flat. */
+	   render on top of a sky that deepens from the nav down to the top of
+	   the coast, which then carries the darkening the rest of the way itself
+	   (see .coast in LightsBoard.css) so it stays tied to section order, not
+	   how tall the page happens to be. The moon halo lives up here too, so no
+	   overflow edge ever slices it flat. */
+	/* z-index:0 (not just position:relative) matters here: without it .page
+	   isn't its own stacking context, so ::before's z-index:-1 below escapes
+	   to the root context and paints behind body's own background instead of
+	   just behind .page's content, i.e. invisible. That's the actual reason
+	   the moon "got lost." */
 	:global(.page) {
 		position: relative;
+		z-index: 0;
 	}
 
 	:global(.page)::before {
@@ -60,8 +68,14 @@ const catDesigns = await getFigurehead();
 		inset: 0;
 		z-index: -1;
 		pointer-events: none;
+		/* The moon: a soft disc, its own blurred halo, and a thin low-opacity
+		   ring at roughly twice the disc's radius, high in the sky band near
+		   the header copy. Layer order matters: disc, halo, then ring, then
+		   the sky gradient underneath everything else. */
 		background:
-			radial-gradient(circle at right 9% top 330px, rgba(147, 160, 232, .12) 0, transparent 190px),
-			linear-gradient(180deg, rgba(10, 13, 26, 0) 90px, rgba(11, 14, 29, .5) 380px, #0d1122 640px, #0a0d1a 920px);
+			radial-gradient(circle at right 9% top 176px, rgba(234, 237, 250, .92) 0, rgba(210, 217, 245, .5) 18px, rgba(184, 193, 236, .16) 36px, transparent 54px),
+			radial-gradient(circle at right 9% top 176px, rgba(147, 160, 232, .16) 0, transparent 145px),
+			radial-gradient(circle at right 9% top 176px, transparent 76px, rgba(182, 192, 236, .13) 82px, transparent 90px),
+			linear-gradient(180deg, rgba(10, 13, 26, 0) 90px, rgba(11, 14, 29, .55) 380px);
 	}
 </style>

@@ -51,15 +51,16 @@ export interface WallPos {
 	rotation: number;
 }
 
-export type LightKind = 'fixed' | 'flash' | 'occult' | 'iso';
+export type LightKind = 'fixed' | 'flash' | 'occult' | 'iso' | 'quick' | 'veryquick' | 'morse';
 export type LightColor = 'white' | 'red' | 'green';
 
 // A project's navigational characteristic: how it burns on the coast.
 export interface Light {
 	kind:         LightKind;
 	color:        LightColor;
-	period:       number; // seconds per cycle, 0 for fixed
+	period:       number; // seconds per cycle, 0 for fixed/quick/veryquick
 	extinguished: string; // year string, '' = burning
+	letter:       string; // single A-Z, morse only; '' otherwise
 }
 
 // Wire types mirror the argsea-site-api domain structs field-for-field.

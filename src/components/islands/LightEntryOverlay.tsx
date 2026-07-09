@@ -5,8 +5,8 @@
 // card's top edge only when the page's one-cat pick landed on this overlay
 // spot (the caller decides and passes catHere).
 import { useEffect, useRef, useState } from 'react';
-import type { FigureheadDesign, Project } from '../../lib/api';
-import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor, registryNo } from '../../lib/lightChar';
+import type { FigureheadDesign, Light, Project } from '../../lib/api';
+import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor, registryNo, timeline } from '../../lib/lightChar';
 import { mediaUrl } from '../../lib/media';
 import { useLamp } from './useLamp';
 import { useEscapeKey } from './useEscapeKey';
@@ -78,6 +78,7 @@ export default function LightEntryOverlay({ project, catHere = false, catDesigns
 									<span className="light-entry__code">{codeFor(light)}</span>
 								</div>
 								<span className="light-entry__decoded">{decodeFor(light)}</span>
+								<TimingDiagram light={light} glow={glow} />
 							</div>
 						</div>
 
@@ -125,6 +126,33 @@ export default function LightEntryOverlay({ project, catHere = false, catDesigns
 					</div>
 				</div>
 			</div>
+		</div>
+	);
+}
+
+/**
+ * A static one-period strip of the light's real lit/dark pattern, built off
+ * the same timeline() the characteristic engine animates from: a flash reads
+ * as one wide bar, morse as its dots and dashes. Fixed, extinguished, and
+ * anything with no spans have nothing worth drawing, so they render nothing.
+ */
+function TimingDiagram({ light, glow }: { light: Light; glow: string }) {
+	if (light.extinguished || light.kind === 'fixed') {
+		return null;
+	}
+	const { period, spans } = timeline(light);
+	if (!(period > 0) || spans.length === 0) {
+		return null;
+	}
+	return (
+		<div className="light-entry__timing" aria-hidden="true">
+			{spans.map(([start, end], index) => (
+				<span
+					key={index}
+					className="light-entry__timing-lit"
+					style={{ left: `${(start / period) * 100}%`, width: `${((end - start) / period) * 100}%`, background: `rgb(${glow})` }}
+				/>
+			))}
 		</div>
 	);
 }

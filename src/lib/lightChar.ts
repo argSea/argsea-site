@@ -4,9 +4,9 @@
 // island, owns it. Every lamp on the page shares one clock (animation
 // startTime pinned to 0), so the coast, the register, and the overlay's big
 // lamp all agree with each other on what instant it is.
-import type { Light, LightColor, LightKind } from './api';
+import type { Light, LightColor } from './api';
 
-export const DEFAULT_LIGHT: Light = { kind: 'fixed', color: 'white', period: 0, extinguished: '' };
+export const DEFAULT_LIGHT: Light = { kind: 'fixed', color: 'white', period: 0, extinguished: '', letter: '' };
 
 // Glow RGB per color, fed into rgba(...) at render time; dark is the
 // extinguished tint, never a color a burning light carries.
@@ -31,15 +31,23 @@ export function registryNo(order: number): string {
 }
 
 const COLOR_LETTER: Record<LightColor, string> = { white: 'W', red: 'R', green: 'G' };
-const KIND_PREFIX: Record<Exclude<LightKind, 'fixed'>, string> = { flash: 'Fl', occult: 'Oc', iso: 'Iso' };
+const KIND_PREFIX: Record<'flash' | 'occult' | 'iso', string> = { flash: 'Fl', occult: 'Oc', iso: 'Iso' };
 
-/** The Light List code: `F W`, `Fl W 8s`, `Oc R 6s`, `Iso G 3s`. */
+/** The Light List code: `F W`, `Fl W 8s`, `Oc R 6s`, `Iso G 3s`, `Q W`, `VQ R`, `Mo(A) W 8s`. Quick and veryquick carry no period, same as fixed: their rate is a fixed convention, not a stored value. */
 export function codeFor(light: Light): string {
 	const letter = COLOR_LETTER[light.color];
-	if (light.kind === 'fixed') {
-		return `F ${letter}`;
+	switch (light.kind) {
+		case 'fixed':
+			return `F ${letter}`;
+		case 'quick':
+			return `Q ${letter}`;
+		case 'veryquick':
+			return `VQ ${letter}`;
+		case 'morse':
+			return `Mo(${light.letter}) ${letter} ${light.period}s`;
+		default:
+			return `${KIND_PREFIX[light.kind]} ${letter} ${light.period}s`;
 	}
-	return `${KIND_PREFIX[light.kind]} ${letter} ${light.period}s`;
 }
 
 function plainLanguage(light: Light): string {
@@ -51,6 +59,12 @@ function plainLanguage(light: Light): string {
 			return `occulting ${color}, steady with a brief eclipse every ${light.period} seconds`;
 		case 'iso':
 			return `isophase ${color}, equal parts light and dark every ${light.period} seconds`;
+		case 'quick':
+			return `quick ${color}, flashing about once a second`;
+		case 'veryquick':
+			return `very quick ${color}, flashing about twice a second`;
+		case 'morse':
+			return `morse ${color}, tapping the letter ${light.letter} in Morse code every ${light.period} seconds`;
 		case 'flash':
 		default:
 			return `flashing ${color}, dark with a bright flash every ${light.period} seconds`;
@@ -71,7 +85,32 @@ export interface Timeline {
 	spans:  [number, number][];
 }
 
-/** Lit intervals within one period, in seconds; fixed carries no spans, callers treat it as static. */
+// International Morse, A-Z only (the contract's letter field is a single A-Z rune).
+const MORSE: Record<string, string> = {
+	A: '.-',   B: '-...', C: '-.-.', D: '-..',  E: '.',
+	F: '..-.', G: '--.',  H: '....', I: '..',   J: '.---',
+	K: '-.-',  L: '.-..', M: '--',   N: '-.',   O: '---',
+	P: '.--.', Q: '--.-', R: '.-.',  S: '...',  T: '-',
+	U: '..-',  V: '...-', W: '.--',  X: '-..-', Y: '-.--',
+	Z: '--..',
+};
+
+const MORSE_UNIT = 0.4;
+
+/** A morse letter's lit spans at the 0.4s unit: dot 1 unit, dash 3, a 1-unit gap between elements; whatever's left of the period stays dark. */
+function morseTimeline(letter: string, period: number): Timeline {
+	const pattern = MORSE[letter.toUpperCase()] ?? '';
+	const spans: [number, number][] = [];
+	let t = 0;
+	for (const symbol of pattern) {
+		const on = symbol === '-' ? MORSE_UNIT * 3 : MORSE_UNIT;
+		spans.push([t, t + on]);
+		t += on + MORSE_UNIT;
+	}
+	return { period, spans };
+}
+
+/** Lit intervals within one period, in seconds; fixed carries no spans, callers treat it as static. Quick/veryquick ignore the stored period: their cycle is a fixed convention, not a stored value. */
 export function timeline(light: Light): Timeline {
 	const period = light.period || 0;
 	switch (light.kind) {
@@ -81,6 +120,12 @@ export function timeline(light: Light): Timeline {
 			return { period, spans: [[0, 0.6], [1.7, period]] };
 		case 'iso':
 			return { period, spans: [[0, period / 2]] };
+		case 'quick':
+			return { period: 1.0, spans: [[0, 0.3]] };
+		case 'veryquick':
+			return { period: 0.5, spans: [[0, 0.15]] };
+		case 'morse':
+			return morseTimeline(light.letter, period);
 		case 'fixed':
 		default:
 			return { period, spans: [] };
