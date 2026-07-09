@@ -45,4 +45,10 @@ const catDesigns = await getFigurehead();
 		font-style: italic;
 		color: var(--text-soft);
 	}
+
+	/* the coast's night runs to the bottom edge of the page: the footer picks
+	   up the gradient's final color instead of seaming back to the page bg */
+	:global(.site-footer) {
+		background: #0a0d1a;
+	}
 </style>

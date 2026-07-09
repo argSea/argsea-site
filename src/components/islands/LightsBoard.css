@@ -41,7 +41,10 @@
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	background: linear-gradient(180deg, var(--bg-bottom) 0%, #0d1122 190px, #0a0d1a 100%);
+	/* the top starts fully transparent so the page's own gradient shows
+	   through and the night deepens with no seam; the bottom hands the same
+	   #0a0d1a to the footer, which this page darkens to match */
+	background: linear-gradient(180deg, rgba(13, 17, 34, 0) 0%, #0d1122 210px, #0a0d1a 100%);
 	margin-top: 34px;
 }
 
