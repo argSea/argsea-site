@@ -1,9 +1,11 @@
 // "Lights I keep burning" on the homepage: the featured trio (or the first
-// three by order, so the section never empties). Clicking a card opens the
-// same Light List entry the coast uses. The only state is which card is open.
+// three by order, so the section never empties). Each card carries the same
+// decoded characteristic line the entry overlay does, from the shared decode
+// helper. Clicking a card opens the same Light List entry the coast uses.
+// The only state is which card is open.
 import { useState } from 'react';
 import type { FigureheadDesign, Light, Project } from '../../lib/api';
-import { DEFAULT_LIGHT, codeFor, glowFor } from '../../lib/lightChar';
+import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor } from '../../lib/lightChar';
 import { pageCatPick } from '../../lib/catSpots';
 import { useLamp } from './useLamp';
 import LightEntryOverlay from './LightEntryOverlay';
@@ -77,6 +79,7 @@ function LightCard({ project, bobClass, onOpen }: { project: Project; bobClass: 
 				<div className="home-lights__title">{project.title}</div>
 				<span className="home-lights__char" style={{ color: dark ? 'var(--text-dim)' : `rgb(${glow})` }}>{codeFor(light)} · {dark ? `dark · ${light.extinguished}` : 'lit'}</span>
 				<div className="home-lights__desc">{project.shortDesc}</div>
+				<span className="home-lights__decoded">{decodeFor(light)}</span>
 				<div className="home-lights__tags">{(project.tags ?? []).join(' · ')}</div>
 			</div>
 		</div>

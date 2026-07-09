@@ -30,3 +30,17 @@ test('contact band and footer read the keeper fixture', async ({ page }) => {
 	await expect(socials.nth(1)).toHaveAttribute('href', 'https://linkedin.com/in/argsea');
 	await expect(socials.nth(2)).toHaveAttribute('href', 'mailto:hello@argsea.com');
 });
+
+test('the journal strip shows the newest notes and links out to /notes', async ({ page }) => {
+	await page.goto('/');
+	const rows = page.locator('.journal-strip__row');
+	await expect(rows).toHaveCount(3);
+	await expect(rows.first().locator('.journal-strip__title')).toHaveText('What re-architecting taught me about not architecting');
+	await expect(rows.first()).toHaveAttribute('href', '/notes');
+});
+
+test('a lamp card carries the decoded characteristic under its blurb', async ({ page }) => {
+	await page.goto('/');
+	const decoded = page.locator('.home-lights .home-lights__decoded').first();
+	await expect(decoded).toHaveText('flashing white, dark with a bright flash every 8 seconds');
+});
