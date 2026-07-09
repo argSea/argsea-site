@@ -219,6 +219,10 @@
 
 .register__cols,
 .register__row {
+	/* border-box so a leaver's JS-set width (captured via getBoundingClientRect,
+	   itself always border-box) lands on the same box it measured, padding
+	   included, instead of rendering 20px wider than its in-flow self */
+	box-sizing: border-box;
 	display: grid;
 	grid-template-columns: 48px 40px minmax(0, 1fr) 130px 90px 130px 56px;
 	gap: 14px;
@@ -252,17 +256,19 @@
 /* FLIP filter transition (see pickFilter in LightsBoard.tsx): a survivor
    glides via WAAPI, so it carries no class here. A newcomer fades in at its
    final position, delayed so the glide reads first. A leaver is pulled out
-   of flow (JS sets its captured top) and fades out fast so survivors close
-   the gap under it. Both come before the flash rule below so a beacon click
-   still wins on a row mid-transition. */
+   of flow (JS sets its captured top/left/width) and fades out fast so
+   survivors close the gap under it. Both come before the flash rule below
+   so a beacon click still wins on a row mid-transition. */
 .register__row--entering {
 	animation: registerRowEnter .3s ease .15s both;
 }
 
 .register__row--leaving {
+	/* left/width ride in via JS, not left:0/right:0: this is an absolute
+	   child of .register (position: relative), so left:0/right:0 would
+	   resolve against .register's padding box and ignore its horizontal
+	   padding, snapping and stretching the row at the moment it starts to fade */
 	position: absolute;
-	left: 0;
-	right: 0;
 	animation: registerRowLeave .18s ease both;
 }
 

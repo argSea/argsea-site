@@ -116,7 +116,7 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 	const flipFrom = useRef(new Map<string, number>());
 	const flipAnimations = useRef(new Map<string, Animation>());
 	const prevVisibleIds = useRef<Set<string>>(new Set(matching));
-	const [leaving, setLeaving] = useState<Map<string, { project: Project; top: number }>>(new Map());
+	const [leaving, setLeaving] = useState<Map<string, { project: Project; top: number; left: number; width: number }>>(new Map());
 	const [enteringIds, setEnteringIds] = useState<Set<string>>(new Set());
 
 	// Same cleanup discipline as the lamp animations: cancel in-flight glides
@@ -175,8 +175,14 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 			return;
 		}
 
-		const containerTop = registerRef.current?.getBoundingClientRect().top ?? 0;
-		const departing = new Map<string, { project: Project; top: number }>();
+		// left/width ride along with top: a leaver is pulled to position:absolute,
+		// whose containing block is .register's padding box, not the content box
+		// in-flow rows sit in, so the fade-out needs its own captured horizontal
+		// rect too or it snaps to the padding edge for the length of the fade.
+		const containerRect = registerRef.current?.getBoundingClientRect();
+		const containerTop = containerRect?.top ?? 0;
+		const containerLeft = containerRect?.left ?? 0;
+		const departing = new Map<string, { project: Project; top: number; left: number; width: number }>();
 		flipFrom.current.clear();
 
 		prevVisibleIds.current.forEach((id) => {
@@ -190,7 +196,13 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 			}
 			const project = projects.find((candidate) => candidate.id === id);
 			if (project) {
-				departing.set(id, { project, top: node.getBoundingClientRect().top - containerTop });
+				const rect = node.getBoundingClientRect();
+				departing.set(id, {
+					project,
+					top: rect.top - containerTop,
+					left: rect.left - containerLeft,
+					width: rect.width,
+				});
 			}
 		});
 
@@ -271,17 +283,23 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 									rowNodes.current.set(project.id, node);
 								} else {
 									rowNodes.current.delete(project.id);
+									// this id's glide (if any) is riding a node that's now
+									// detached; nothing will ever cancel it otherwise
+									flipAnimations.current.get(project.id)?.cancel();
+									flipAnimations.current.delete(project.id);
 								}
 							}}
 							onOpen={setOpenId}
 						/>
 					))}
-					{Array.from(leaving.entries()).map(([id, { project, top }]) => (
+					{Array.from(leaving.entries()).map(([id, { project, top, left, width }]) => (
 						<RegisterRow
 							key={id}
 							project={project}
 							flashed={false}
 							leavingTop={top}
+							leavingLeft={left}
+							leavingWidth={width}
 							onOpen={setOpenId}
 							onLeaveEnd={() => settleLeave(id)}
 						/>
@@ -377,16 +395,18 @@ function Beacon({ project, index, matches, isHere, onActivate }: BeaconProps) {
 }
 
 interface RegisterRowProps {
-	project:     Project;
-	flashed:     boolean;
-	entering?:   boolean;                            // fades in in place, delayed so the glide reads first
-	leavingTop?: number;                              // set only for a row mid fade-out: its captured, register-relative top
-	rowRef?:     (node: HTMLDivElement | null) => void; // in-flow rows only, so pickFilter can measure them for the glide
-	onOpen:      (id: string) => void;
-	onLeaveEnd?: () => void;                          // fires when a leaving row's fade-out finishes, so the parent can drop it
+	project:       Project;
+	flashed:       boolean;
+	entering?:     boolean;                            // fades in in place, delayed so the glide reads first
+	leavingTop?:   number;                              // set only for a row mid fade-out: its captured, register-relative top/left/width
+	leavingLeft?:  number;
+	leavingWidth?: number;
+	rowRef?:       (node: HTMLDivElement | null) => void; // in-flow rows only, so pickFilter can measure them for the glide
+	onOpen:        (id: string) => void;
+	onLeaveEnd?:   () => void;                          // fires when a leaving row's fade-out finishes, so the parent can drop it
 }
 
-function RegisterRow({ project, flashed, entering = false, leavingTop, rowRef, onOpen, onLeaveEnd }: RegisterRowProps) {
+function RegisterRow({ project, flashed, entering = false, leavingTop, leavingLeft, leavingWidth, rowRef, onOpen, onLeaveEnd }: RegisterRowProps) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
@@ -411,7 +431,7 @@ function RegisterRow({ project, flashed, entering = false, leavingTop, rowRef, o
 			id={`light-row-${project.id}`}
 			ref={rowRef}
 			className={className}
-			style={leaving ? { top: leavingTop, pointerEvents: 'none' } : undefined}
+			style={leaving ? { top: leavingTop, left: leavingLeft, width: leavingWidth, pointerEvents: 'none' } : undefined}
 			role="button"
 			tabIndex={leaving ? -1 : 0}
 			onClick={open}
