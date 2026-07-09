@@ -16,7 +16,7 @@ const { notes } = Astro.props;
 			<span class="section-label">From the keeper's journal</span>
 			<a href="/notes" class="mono-link">the full journal →</a>
 		</div>
-		<div class="journal-strip__paper">
+		<div class="journal-strip__block">
 			{notes.map((note) => (
 				<a href="/notes" class="journal-strip__row">
 					<span class="journal-strip__date">{note.date}</span>
@@ -39,14 +39,13 @@ const { notes } = Astro.props;
 		gap: 18px;
 	}
 
-	/* Cool-ink serif on warm paper, warm-tan mono metadata: the Keeper's
-	   Journal design arc, scaled down from the Notes page spread */
-	.journal-strip__paper {
-		background: linear-gradient(180deg, var(--manila) 0%, var(--manila-deep) 100%);
-		border-radius: 4px 12px 12px 4px;
-		padding: 0 clamp(20px, 4vw, 32px);
-		box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
-		transform: rotate(-.3deg);
+	/* Night-vocabulary rows, bare like the manifest columns below it on this
+	   same page: no paper card, just dividers. The one wink at the journal's
+	   own stitched binding (see design/Notes.dc.html) is this dashed
+	   periwinkle spine down the left edge. */
+	.journal-strip__block {
+		padding-left: clamp(18px, 3.5vw, 28px);
+		border-left: 1.5px dashed rgba(147, 160, 232, .4);
 	}
 
 	.journal-strip__row {
@@ -54,7 +53,7 @@ const { notes } = Astro.props;
 		gap: 8px 20px;
 		align-items: baseline;
 		flex-wrap: wrap;
-		border-top: 1px solid var(--manila-border);
+		border-top: 1px solid var(--border-card);
 		padding: 18px 0;
 		transition: transform .2s;
 	}
@@ -70,7 +69,7 @@ const { notes } = Astro.props;
 	.journal-strip__date {
 		font-family: var(--font-mono);
 		font-size: 12px;
-		color: var(--manila-ink-soft);
+		color: var(--text-dim);
 		flex: none;
 		width: 72px;
 	}
@@ -86,27 +85,29 @@ const { notes } = Astro.props;
 	.journal-strip__title {
 		font-family: var(--font-display);
 		font-size: 18.5px;
-		color: var(--manila-ink-title);
+		color: var(--text-head);
 		line-height: 1.3;
 		transition: color .2s;
 	}
 
 	.journal-strip__row:hover .journal-strip__title {
-		color: var(--manila-ink-brown);
+		color: var(--gold);
 	}
 
 	.journal-strip__teaser {
 		font-size: 15px;
 		font-style: italic;
-		color: var(--manila-ink-body);
+		color: var(--text-body);
 		line-height: 1.5;
 		text-wrap: pretty;
 	}
 
+	/* The second wink: conditions read as a right-aligned mono weather-log
+	   column instead of trailing prose, the journal's own distinctive tic. */
 	.journal-strip__conditions {
 		font-family: var(--font-mono);
 		font-size: 11.5px;
-		color: var(--manila-ink-label);
+		color: var(--periwinkle-deep);
 		margin-left: auto;
 		flex: none;
 	}

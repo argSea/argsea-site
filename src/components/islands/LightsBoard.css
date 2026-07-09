@@ -47,33 +47,40 @@
 	   through here on every viewport we've checked, so this only needs to
 	   pick up that same trend instead of snapping to it. Section-anchored
 	   darkening past that, not pixel height: holds at the panorama's own
-	   bottom tone through its fixed 216px, then deepens across whatever the
+	   bottom tone through its fixed 352px, then deepens across whatever the
 	   register's real height turns out to be (a filtered-down list or a
 	   future longer one), always landing on the same #080b18 the sky ramp
 	   tops out at, so the footer's band never rebounds lighter behind it.
 	   That terminal value also matches .coast__sea's own bottom tone below. */
-	background: linear-gradient(180deg, rgba(13, 18, 36, 0) 0, #0d1224 110px, #0d1224 216px, #080b18 100%);
+	background: linear-gradient(180deg, rgba(13, 18, 36, 0) 0, #0d1224 110px, #0d1224 352px, #080b18 100%);
 }
 
 .coast__pano {
 	position: relative;
-	height: 216px;
+	height: 352px;
 	overflow: hidden;
 	flex: none;
+	/* Star field Y-coords are px, not %, so the sky holds its shape as the
+	   pano grows taller for the deeper sea below: percentages here would
+	   have scaled every star toward the horizon along with the box. X stays
+	   a percentage since the width isn't changing. */
 	background:
-		radial-gradient(1.4px 1.4px at 12% 12%, rgba(255, 255, 255, .55), transparent),
-		radial-gradient(1px 1px at 26% 32%, rgba(255, 255, 255, .38), transparent),
-		radial-gradient(1.2px 1.2px at 41% 9%, rgba(200, 206, 240, .5), transparent),
-		radial-gradient(1px 1px at 57% 24%, rgba(255, 255, 255, .32), transparent),
-		radial-gradient(1.5px 1.5px at 72% 14%, rgba(240, 217, 168, .42), transparent),
-		radial-gradient(1px 1px at 86% 28%, rgba(255, 255, 255, .4), transparent),
-		radial-gradient(1px 1px at 8% 44%, rgba(200, 206, 240, .3), transparent),
-		radial-gradient(1.2px 1.2px at 64% 40%, rgba(255, 255, 255, .28), transparent),
-		radial-gradient(1px 1px at 94% 8%, rgba(255, 255, 255, .35), transparent),
-		radial-gradient(1px 1px at 33% 50%, rgba(200, 206, 240, .25), transparent),
-		linear-gradient(180deg, rgba(19, 22, 40, 0) 0%, #0e1428 62%, #0d1224 100%);
+		radial-gradient(1.4px 1.4px at 12% 26px, rgba(255, 255, 255, .55), transparent),
+		radial-gradient(1px 1px at 26% 69px, rgba(255, 255, 255, .38), transparent),
+		radial-gradient(1.2px 1.2px at 41% 19px, rgba(200, 206, 240, .5), transparent),
+		radial-gradient(1px 1px at 57% 52px, rgba(255, 255, 255, .32), transparent),
+		radial-gradient(1.5px 1.5px at 72% 30px, rgba(240, 217, 168, .42), transparent),
+		radial-gradient(1px 1px at 86% 60px, rgba(255, 255, 255, .4), transparent),
+		radial-gradient(1px 1px at 8% 95px, rgba(200, 206, 240, .3), transparent),
+		radial-gradient(1.2px 1.2px at 64% 86px, rgba(255, 255, 255, .28), transparent),
+		radial-gradient(1px 1px at 94% 17px, rgba(255, 255, 255, .35), transparent),
+		radial-gradient(1px 1px at 33% 108px, rgba(200, 206, 240, .25), transparent),
+		linear-gradient(180deg, rgba(19, 22, 40, 0) 0, #0e1428 134px, #0d1224 216px);
 }
 
+/* Brightened toward design/Office.dc.html's own water (#222c60 -> #161d48 ->
+   #0f1434 -> #070a1e), swapping its last stop for our own #080b18 terminal
+   so the sea keeps landing on the same tone the footer does. */
 .coast__sea {
 	position: absolute;
 	left: 0;
@@ -82,7 +89,7 @@
 	bottom: 0;
 	background:
 		repeating-linear-gradient(0deg, rgba(147, 160, 232, .028) 0 1px, transparent 1px 7px),
-		linear-gradient(180deg, #0c1122, #080b18);
+		linear-gradient(180deg, #222c60 0%, #161d48 20%, #0f1434 48%, #080b18 100%);
 }
 
 /* --- living water: specular twinkle, drifting wave lines, the boat --- */
@@ -108,10 +115,9 @@
    (the same arc tile, repeated at four widths): nearer bands are wider-spaced,
    more opaque, and drift faster, so the sea reads as layered swell instead of
    a few flat lines. Positioned as a percentage of .coast__sea's own height
-   (its containing block). The two near bands sit higher than the doc's own
-   79/90% spread because our sea band, unlike the doc's, has the rail overlay
-   darkening its lower third; any lower and the most-opaque bands read fainter
-   than the far ones, inverting the parallax. */
+   (its containing block), now at the doc's own 61/69/79/90% spread: with the
+   sea grown to a real height, the rail's 30px overlay is a small enough slice
+   of it that the near bands no longer need to sit higher to read through it. */
 .coast__swell {
 	position: absolute;
 	left: 0;
@@ -141,7 +147,7 @@
 }
 
 .coast__swell--c {
-	top: 73%;
+	top: 79%;
 	height: 18px;
 	opacity: .19;
 	background-size: 55px 18px;
@@ -151,7 +157,7 @@
 }
 
 .coast__swell--d {
-	top: 82%;
+	top: 90%;
 	height: 18px;
 	opacity: .28;
 	background-size: 42px 18px;
@@ -169,8 +175,9 @@
    from the horizon at the moon's own x, so the smaller moon still casts on
    the water below it. Fades out by 60% of the sea's height rather than
    riding all the way down, so it reads on open water instead of guttering
-   out under the rail (the rail overlay sits at z-index 4 and covers the sea
-   from about 64% of its height down). The line alpha runs hotter than the
+   out under the rail (the rail overlay sits at z-index 4 and, in the grown
+   sea, only covers its bottom ~14%; the same fixed 30px was a third of the
+   old shallow sea, now it's a sliver). The line alpha runs hotter than the
    office doc's .2 because that ceiling was calibrated against the doc's much
    brighter sea; over our near-black water the same alpha disappears. The
    mid-opacity base is what reduced motion rests on once the breathing
@@ -289,7 +296,7 @@
 	position: absolute;
 	left: 0;
 	right: 0;
-	bottom: 84px; /* 216px pano height minus horizonY (132px): sits the land on the horizon line */
+	bottom: 220px; /* 352px pano height minus horizonY (132px): sits the land on the horizon line */
 	height: 0;
 	z-index: 2;
 	pointer-events: none;
