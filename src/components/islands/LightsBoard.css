@@ -41,10 +41,8 @@
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	/* the top starts fully transparent so the page's own gradient shows
-	   through and the night deepens with no seam; the bottom hands the same
-	   #0a0d1a to the footer, which this page darkens to match */
-	background: linear-gradient(180deg, rgba(13, 17, 34, 0) 0%, #0d1122 210px, #0a0d1a 100%);
+	/* no backdrop of its own: the projects page paints one night gradient
+	   from the nav to the footer, and the coast sits transparently in it */
 	margin-top: 34px;
 }
 
@@ -65,17 +63,6 @@
 		radial-gradient(1px 1px at 94% 8%, rgba(255, 255, 255, .35), transparent),
 		radial-gradient(1px 1px at 33% 50%, rgba(200, 206, 240, .25), transparent),
 		linear-gradient(180deg, rgba(19, 22, 40, 0) 0%, #0e1428 62%, #0d1224 100%);
-}
-
-.coast__moon {
-	position: absolute;
-	top: -70px;
-	right: 10%;
-	width: 280px;
-	height: 280px;
-	border-radius: 50%;
-	background: radial-gradient(circle, rgba(147, 160, 232, .11) 0%, transparent 66%);
-	pointer-events: none;
 }
 
 .coast__sea {
@@ -253,6 +240,28 @@
 .register__row:focus-visible {
 	background: rgba(147, 160, 232, .06);
 	outline: none;
+}
+
+/* Two identical enter animations; alternating restarts the stagger on every
+   filter change, even for a row that never left the register. --row-delay is
+   the row's own slot in the stagger. The flash rule below must stay after
+   these so a beacon click still wins on an already-entered row. */
+.register__row--enter-a {
+	animation: rowEnterA .38s ease var(--row-delay, 0ms) both;
+}
+
+.register__row--enter-b {
+	animation: rowEnterB .38s ease var(--row-delay, 0ms) both;
+}
+
+@keyframes rowEnterA {
+	from { opacity: 0; transform: translateY(7px); }
+	to   { opacity: 1; transform: none; }
+}
+
+@keyframes rowEnterB {
+	from { opacity: 0; transform: translateY(7px); }
+	to   { opacity: 1; transform: none; }
 }
 
 .register__row--flash {

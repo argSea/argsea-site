@@ -46,9 +46,22 @@ const catDesigns = await getFigurehead();
 		color: var(--text-soft);
 	}
 
-	/* the coast's night runs to the bottom edge of the page: the footer picks
-	   up the gradient's final color instead of seaming back to the page bg */
-	:global(.site-footer) {
-		background: #0a0d1a;
+	/* The whole page is the night canvas: the header copy and filter pills
+	   render on top of one sky that deepens from the nav down to a footer
+	   already sitting in it. The moon halo lives up here too, so no overflow
+	   edge ever slices it flat. */
+	:global(.page) {
+		position: relative;
+	}
+
+	:global(.page)::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background:
+			radial-gradient(circle at right 9% top 330px, rgba(147, 160, 232, .12) 0, transparent 190px),
+			linear-gradient(180deg, rgba(10, 13, 26, 0) 90px, rgba(11, 14, 29, .5) 380px, #0d1122 640px, #0a0d1a 920px);
 	}
 </style>
