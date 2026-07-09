@@ -26,7 +26,8 @@
       "kind": "flash",
       "color": "white",
       "period": 8,
-      "extinguished": ""
+      "extinguished": "",
+      "letter": ""
     },
     "images": null,
     "firstLit": "2024",
@@ -69,7 +70,8 @@
       "kind": "fixed",
       "color": "white",
       "period": 0,
-      "extinguished": ""
+      "extinguished": "",
+      "letter": ""
     },
     "images": null,
     "firstLit": "2016",
@@ -112,7 +114,8 @@
       "kind": "occult",
       "color": "white",
       "period": 6,
-      "extinguished": ""
+      "extinguished": "",
+      "letter": ""
     },
     "images": null,
     "firstLit": "2018",
@@ -155,7 +158,8 @@
       "kind": "flash",
       "color": "green",
       "period": 4,
-      "extinguished": "2020"
+      "extinguished": "2020",
+      "letter": ""
     },
     "images": null,
     "firstLit": "2020",
@@ -197,7 +201,8 @@
       "kind": "iso",
       "color": "white",
       "period": 3,
-      "extinguished": ""
+      "extinguished": "",
+      "letter": ""
     },
     "images": null,
     "firstLit": "2026",
@@ -240,7 +245,8 @@
       "kind": "fixed",
       "color": "red",
       "period": 0,
-      "extinguished": ""
+      "extinguished": "",
+      "letter": ""
     },
     "images": null,
     "firstLit": "2021",
@@ -255,5 +261,92 @@
     "publishedAt": "2026-07-01T12:00:05Z",
     "createdAt": "2026-07-01T12:00:05Z",
     "updatedAt": "2026-07-01T12:00:05Z"
+  },
+  {
+    "id": "fixture-project-7",
+    "title": "The Quick Reply Bot",
+    "category": "tinkering",
+    "tags": [
+      "python",
+      "irc",
+      "regret"
+    ],
+    "shortDesc": "A chatbot that answers faster than I can, which was the whole problem.",
+    "body": "<p>I wrote a bot to answer the same three questions in a group chat so I would not have to. It got faster than me, then funnier than me, then more popular than me. I keep it running out of respect.</p><p>Every so often it says something I wish I had thought of first. That is the tinkering tax.</p>",
+    "moral": "Moral: automate the boring parts, brace for the rest.",
+    "postcardTo": "everyone who has ever asked the same question twice",
+    "postcardFrom": "a bot with better comebacks than me",
+    "postmarked": "2023–ongoing",
+    "slug": "the-quick-reply-bot",
+    "image": null,
+    "stamp": {
+      "shape": "circle",
+      "motif": "anchor",
+      "ink": "#93a0e8"
+    },
+    "light": {
+      "kind": "quick",
+      "color": "white",
+      "period": 0,
+      "extinguished": "",
+      "letter": ""
+    },
+    "images": null,
+    "firstLit": "2023",
+    "order": 7,
+    "wallPos": {
+      "x": 34,
+      "y": 46,
+      "rotation": -0.9
+    },
+    "featured": false,
+    "status": "published",
+    "publishedAt": "2026-07-01T12:00:06Z",
+    "createdAt": "2026-07-01T12:00:06Z",
+    "updatedAt": "2026-07-01T12:00:06Z"
+  },
+  {
+    "id": "fixture-project-8",
+    "title": "Tap Code",
+    "category": "tinkering",
+    "tags": [
+      "arduino",
+      "morse",
+      "weekend"
+    ],
+    "shortDesc": "A desk lamp that blinks my initial in morse when a build finishes.",
+    "body": "<p>A weekend build: an Arduino, a relay, and a desk lamp that taps out a single letter in morse whenever CI goes green. Entirely unnecessary. I have not turned it off once.</p><p>Coworkers assumed it was a bug for the first month. It is, technically, the opposite of a bug.</p>",
+    "moral": "Moral: the best hobbies solve problems nobody has.",
+    "postcardTo": "the CI pipeline, who has no idea it has a fan",
+    "postcardFrom": "a lamp that learned morse",
+    "postmarked": "2025",
+    "slug": "tap-code",
+    "image": null,
+    "stamp": {
+      "shape": "rect",
+      "motif": "text",
+      "ink": "#f0d9a8",
+      "text": "- . ... -"
+    },
+    "light": {
+      "kind": "morse",
+      "color": "white",
+      "period": 8,
+      "extinguished": "",
+      "letter": "A"
+    },
+    "images": null,
+    "firstLit": "2025",
+    "order": 8,
+    "wallPos": {
+      "x": 50,
+      "y": 68,
+      "rotation": 1.1
+    },
+    "featured": false,
+    "status": "published",
+    "publishedAt": "2026-07-01T12:00:07Z",
+    "createdAt": "2026-07-01T12:00:07Z",
+    "updatedAt": "2026-07-01T12:00:07Z"
   }
 ]

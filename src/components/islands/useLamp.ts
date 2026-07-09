@@ -22,7 +22,7 @@ export function useLamp(light: Light, peak: number, floor = 0): React.RefCallbac
 		}
 		const animation = ignite(el.current, light, peak, floor);
 		return () => animation?.cancel();
-	}, [light.kind, light.color, light.period, light.extinguished, peak, floor]);
+	}, [light.kind, light.color, light.period, light.extinguished, light.letter, peak, floor]);
 
 	return setEl;
 }

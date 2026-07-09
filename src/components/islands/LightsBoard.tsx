@@ -29,16 +29,32 @@ const QUIPS: Record<Filter, string> = {
 // characteristic of the light that best represents it rather than an
 // arbitrary blink, so the dot reads as a light off this coast.
 const FILTER_LIGHT: Record<Filter, Light> = {
-	'all':          { kind: 'iso',   color: 'white', period: 3, extinguished: '' },
-	'backend':      { kind: 'flash', color: 'white', period: 8, extinguished: '' },
-	'games':        { kind: 'flash', color: 'green', period: 4, extinguished: '' },
-	'this website': { kind: 'iso',   color: 'white', period: 3, extinguished: '' },
-	'tinkering':    { kind: 'fixed', color: 'red',   period: 0, extinguished: '' },
+	'all':          { kind: 'iso',   color: 'white', period: 3, extinguished: '', letter: '' },
+	'backend':      { kind: 'flash', color: 'white', period: 8, extinguished: '', letter: '' },
+	'games':        { kind: 'flash', color: 'green', period: 4, extinguished: '', letter: '' },
+	'this website': { kind: 'iso',   color: 'white', period: 3, extinguished: '', letter: '' },
+	'tinkering':    { kind: 'fixed', color: 'red',   period: 0, extinguished: '', letter: '' },
 };
 
 // The panorama's fixed aspect: horizon sits 132px down a 216px band, same
 // numbers the wallPos mapping below is built against.
 const HORIZON_Y = 132;
+
+// Specular twinkle near the horizon: deterministic positions/timings (no
+// Math.random) so server and client render the same dots on hydration. Long,
+// staggered delays and durations keep them from ever syncing up.
+const TWINKLES = [
+	{ left: '6%',  top: '10px', delay: '.2s',  duration: '6.5s' },
+	{ left: '14%', top: '26px', delay: '2.1s', duration: '7.8s' },
+	{ left: '23%', top: '6px',  delay: '4.4s', duration: '5.6s' },
+	{ left: '34%', top: '32px', delay: '1.3s', duration: '8.4s' },
+	{ left: '46%', top: '15px', delay: '5.9s', duration: '6.9s' },
+	{ left: '58%', top: '38px', delay: '.8s',  duration: '7.2s' },
+	{ left: '67%', top: '9px',  delay: '3.6s', duration: '9.1s' },
+	{ left: '78%', top: '28px', delay: '6.7s', duration: '6.1s' },
+	{ left: '88%', top: '18px', delay: '2.9s', duration: '8.8s' },
+	{ left: '95%', top: '40px', delay: '4.9s', duration: '7.5s' },
+];
 
 /** A safety net for a project with no wallPos yet: the design's deterministic scatter. */
 function fallbackSpot(index: number): { x: number; y: number } {
@@ -61,8 +77,10 @@ function matchesFilter(project: Project, target: Filter): boolean {
 	return target === 'all' || project.category === target;
 }
 
-// The register's FLIP glide duration, shared between the WAAPI call below and
-// nothing else CSS-side needs it (entering/leaving are their own keyframes).
+// The register's FLIP glide duration: drives the WAAPI call below and times
+// the min-height settle's resizing window (its .4s CSS transition in
+// LightsBoard.css, matched by eye, not by reference); entering/leaving rows
+// are their own separate keyframes and don't use this.
 const GLIDE_MS = 400;
 
 interface Props {
@@ -79,17 +97,23 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 	const [flashId, setFlashId] = useState<string | null>(null);
 	const flashTimer = useRef<number | undefined>(undefined);
 
-	// The register never gives height back: it is locked to its full-list
-	// size at mount so filtering swaps rows inside a steady page instead of
-	// yanking the footer up and down. The spare room below is just night.
+	// The register locks to its full-list size at mount so filtering swaps
+	// rows inside a steady page instead of yanking the footer up and down.
+	// It does eventually give height back (see the settle effect below): once
+	// a filter's leavers are gone, the lock glides to the survivors' real
+	// height rather than holding the full-list size forever.
 	const registerRef = useRef<HTMLDivElement | null>(null);
 	const [registerMin, setRegisterMin] = useState<number | undefined>(undefined);
+	const [registerResizing, setRegisterResizing] = useState(false);
+	const resizeTimer = useRef<number | undefined>(undefined);
 
 	useEffect(() => {
 		if (registerRef.current) {
 			setRegisterMin(registerRef.current.scrollHeight);
 		}
 	}, []);
+
+	useEffect(() => () => window.clearTimeout(resizeTimer.current), []);
 
 	useEffect(() => () => window.clearTimeout(flashTimer.current), []);
 
@@ -118,6 +142,38 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 	const prevVisibleIds = useRef<Set<string>>(new Set(matching));
 	const [leaving, setLeaving] = useState<Map<string, { project: Project; top: number; left: number; width: number }>>(new Map());
 	const [enteringIds, setEnteringIds] = useState<Set<string>>(new Set());
+
+	// The register-void fix: once a filter's leavers are gone (or immediately,
+	// if there were none), glide the locked min-height to the survivors' real
+	// height instead of leaving a dead gap on a short filter. Guarded on
+	// registerMin already being set so this never fires on the initial mount
+	// pass, only after a real filter change; reduced motion just skips the
+	// transition (the global kill switch already strips it), so the re-lock
+	// there is instant with no extra branching needed.
+	useEffect(() => {
+		if (leaving.size > 0 || registerMin === undefined) {
+			return;
+		}
+		const node = registerRef.current;
+		if (!node) {
+			return;
+		}
+		// scrollHeight is clamped by the locked min-height still applied at
+		// this instant, so it never reads shorter than the current lock; drop
+		// it for the one synchronous measurement, then let the state update
+		// below put the real (old or new) value back.
+		const lockedMinHeight = node.style.minHeight;
+		node.style.minHeight = '';
+		const natural = node.scrollHeight;
+		node.style.minHeight = lockedMinHeight;
+		if (natural === registerMin) {
+			return;
+		}
+		setRegisterResizing(true);
+		setRegisterMin(natural);
+		window.clearTimeout(resizeTimer.current);
+		resizeTimer.current = window.setTimeout(() => setRegisterResizing(false), GLIDE_MS);
+	}, [leaving]);
 
 	// Same cleanup discipline as the lamp animations: cancel in-flight glides
 	// on unmount so nothing keeps ticking against a detached node.
@@ -248,8 +304,31 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 
 			<div className="coast">
 				<div className="coast__pano">
-					<div className="coast__sea" />
+					<div className="coast__sea">
+						{TWINKLES.map((twinkle, index) => (
+							<span
+								key={index}
+								className="coast__twinkle"
+								style={{ left: twinkle.left, top: twinkle.top, animationDelay: twinkle.delay, animationDuration: twinkle.duration }}
+							/>
+						))}
+						<div className="coast__wave coast__wave--a" />
+						<div className="coast__wave coast__wave--b" />
+						<div className="coast__wave coast__wave--c" />
+						<div className="coast__boat">
+							<svg className="coast__boat-hull" width="22" height="18" viewBox="0 0 30 24" fill="none">
+								<path d="M4 15 L26 15 L21 22 L9 22 Z" fill="rgba(38,44,72,.95)" />
+								<path d="M15 15 V3" stroke="rgba(130,140,185,.75)" strokeWidth="1.3" />
+								<path d="M15 3 L24 13 L15 13 Z" fill="rgba(48,55,88,.9)" />
+							</svg>
+						</div>
+					</div>
 					<div className="coast__horizon" />
+					<div className="coast__coastline">
+						<div className="coast__headland coast__headland--a" />
+						<div className="coast__headland coast__headland--b" />
+						<div className="coast__headland coast__headland--c" />
+					</div>
 					{projects.map((project, index) => (
 						<Beacon
 							key={project.id}
@@ -264,7 +343,7 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 					<span className="coast__caption">the coast tonight · {burningCount} burning</span>
 				</div>
 
-				<div className="register" ref={registerRef} style={{ minHeight: registerMin }}>
+				<div className={`register${registerResizing ? ' register--resizing' : ''}`} ref={registerRef} style={{ minHeight: registerMin }}>
 					<div className="register__head">
 						<span className="register__head-label">The light list</span>
 						<span className="register__head-district">District · argsea</span>
@@ -332,7 +411,9 @@ function Beacon({ project, index, matches, isHere, onActivate }: BeaconProps) {
 
 	const haloRef = useLamp(light, dark ? 0.1 : 0.55);
 	const coreRef = useLamp(light, dark ? 0.2 : 0.85);
-	const reflectRef = useLamp(light, 0.4);
+	// A dark phase dims the reflection rather than vanishing it: same floor
+	// pattern as the you-are-here ring, so the water never goes fully blank.
+	const reflectRef = useLamp(light, 0.4, 0.1);
 	// The you-are-here ring rides the same phase-locked clock as the lamp for a
 	// blinking characteristic, dimming to a quarter opacity in the dark phase
 	// rather than vanishing, so it keeps wayfinding through long dark spans. A
@@ -363,6 +444,12 @@ function Beacon({ project, index, matches, isHere, onActivate }: BeaconProps) {
 				}
 			}}
 		>
+			{/* Grounds the beacon instead of leaving it floating like a star:
+			    the tower reaches exactly from the lamp down to the horizon
+			    (elevPx is that same distance), rooted in a small knoll. */}
+			<div className="beacon__base" style={{ height: elevPx }}>
+				<div className="beacon__knoll" />
+			</div>
 			<div
 				ref={haloRef}
 				className="beacon__halo"
@@ -472,7 +559,9 @@ function StatusPill({ dark, year, className }: { dark: boolean; year: string; cl
 function FilterChip({ name, active, onSelect }: { name: Filter; active: boolean; onSelect: (name: Filter) => void }) {
 	const light = FILTER_LIGHT[name];
 	const glow = glowFor(light);
-	const dotRef = useLamp(light, 0.9);
+	// Same 0.25 floor as the you-are-here ring: a blinking active chip dims
+	// in its dark phase instead of vanishing off the filter row entirely.
+	const dotRef = useLamp(light, 0.9, 0.25);
 
 	return (
 		<button className={`chip ${active ? 'chip--active' : 'chip--idle'}`} onClick={() => onSelect(name)}>
