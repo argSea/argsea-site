@@ -176,7 +176,7 @@ test('an overlay spot shows the cat only when the overlay opens', async ({ page 
 	// the pick is an overlay spot, so nothing rides the page on load
 	await expect(page.locator('.harbor-cat')).toHaveCount(0);
 
-	await page.locator('.projects-grid .card-wrap').first().click();
+	await page.locator('.register .register__row').first().click();
 	await expect(page.locator('.harbor-cat')).toBeVisible();
 });
 
@@ -185,7 +185,7 @@ test('a static pick plus an opened overlay is still one cat, never two', async (
 	await page.goto('/projects');
 	await expect(page.locator('.harbor-cat--lying')).toBeVisible();
 
-	await page.locator('.projects-grid .card-wrap').first().click();
+	await page.locator('.register .register__row').first().click();
 	// the overlay must not add a second cat when the pick already sits in the header
 	await expect(page.locator('.harbor-cat')).toHaveCount(1);
 });

@@ -8,13 +8,13 @@ const FALLBACK_BUILD = 'http://127.0.0.1:4823';
 
 test('the mantel follows the featured flag, not list position', async ({ page }) => {
 	await page.goto(`${FEATURED_BUILD}/`);
-	await expect(page.locator('.home-postcards .postcard__title'))
+	await expect(page.locator('.home-lights .home-lights__title'))
 		.toHaveText(['Meo Wave Race', 'This website', 'The home lab']);
 });
 
 test('with nothing featured the mantel falls back to the first three by order', async ({ page }) => {
 	await page.goto(`${FALLBACK_BUILD}/`);
-	await expect(page.locator('.home-postcards .postcard__title'))
+	await expect(page.locator('.home-lights .home-lights__title'))
 		.toHaveText(['The Great Un-monolithing', 'Newsroom plumbing', '100k good mornings']);
 });
 

@@ -1,65 +1,76 @@
-// Projects page (fixtures build): the keeper's wall pins all six postcards,
-// filtering fades the rest without reflowing the wall, and reduced motion
-// keeps every card's resting tilt (a base transform, not an animation).
-//
-// Design v6 (wall-and-overlay-polish) put the stamp back, on the opened
-// postcard-back overlay's stamp+postmark corner (design/Projects.dc.html);
-// the wall front still carries no stamp of its own for a card with a photo
-// (fixtures have none, so a stamp only ever renders on the reversed-back
-// no-image cards or inside the opened overlay).
+// Projects page (fixtures build), now the lights: the coast pins one beacon
+// per published project, filtering dims the rest of the coast without
+// moving them while the register narrows to just the matches, a beacon
+// click scrolls to its row without opening the entry, and reduced motion
+// holds every lamp static (no Web Animations API animation running), per
+// the hard "every light burns steady" rule.
 import { test, expect } from '@playwright/test';
 
-test('the wall pins all six postcards', async ({ page }) => {
+test('the coast lights one beacon per published project', async ({ page }) => {
 	await page.goto('/projects');
-	const cards = page.locator('.projects-grid .card-wrap');
-	await expect(cards).toHaveCount(6);
-	await expect(cards.locator('.postcard__caption-title')).toHaveCount(6);
+	await expect(page.locator('.coast__pano .beacon')).toHaveCount(6);
+	await expect(page.locator('.register .register__row')).toHaveCount(6);
 });
 
-test('filtering fades non-matching postcards and leaves their spots empty', async ({ page }) => {
+test('filtering narrows the register and dims the rest of the coast', async ({ page }) => {
 	await page.goto('/projects');
-	const cards = page.locator('.projects-grid .card-wrap');
 
 	await page.locator('.filter-row .chip', { hasText: 'games' }).click();
 
-	// the wall never reflows: all six wrappers stay put, matching or not
-	await expect(cards).toHaveCount(6);
-	const visible = cards.locator('.postcard__caption-title', { hasText: 'Meo Wave Race' });
-	await expect(visible).toBeVisible();
+	// the register only lists what matches
+	const rows = page.locator('.register .register__row');
+	await expect(rows).toHaveCount(1);
+	await expect(rows.locator('.register__name')).toHaveText('Meo Wave Race');
 
-	const hiddenCount = await page.locator('.projects-grid .card-wrap--hidden').count();
-	expect(hiddenCount).toBe(5);
+	// the coast never reflows: all six beacons stay put, matching or not.
+	// The opacity fade is a CSS transition, so poll rather than read it once
+	await expect(async () => {
+		const dimmed = await page.locator('.coast__pano .beacon').evaluateAll(
+			(elements) => elements.filter((element) => Number(getComputedStyle(element).opacity) < 0.5).length,
+		);
+		expect(dimmed).toBe(5);
+	}).toPass();
 });
 
-test('the postcard-back overlay carries the stamp and postmark', async ({ page }) => {
+test('a beacon click scrolls to its register row and flashes it, not the entry', async ({ page }) => {
 	await page.goto('/projects');
-	await page.locator('.projects-grid .card-wrap').first().click();
+	await page.locator('.coast__pano .beacon').first().click();
+
+	await expect(page.locator('.overlay-card')).toHaveCount(0);
+	await expect(page.locator('#light-row-fixture-project-1')).toHaveClass(/register__row--flash/);
+});
+
+test('a register row opens the Light List entry', async ({ page }) => {
+	await page.goto('/projects');
+	await page.locator('.register .register__row').first().click();
 
 	const overlay = page.locator('.overlay-card');
 	await expect(overlay).toBeVisible();
-	await expect(overlay.locator('.photo-print')).toBeVisible();
-	await expect(overlay.locator('[data-stamp]')).toHaveCount(1);
-	await expect(overlay.locator('.postcard-back__postmark')).toBeVisible();
+	await expect(overlay.locator('.light-entry__title')).toHaveText('The Great Un-monolithing');
+	await expect(overlay.locator('.light-entry__code')).toHaveText('Fl W 8s');
+	await expect(overlay.locator('.overlay-kicker')).toContainText('No. 002');
 });
 
-test('a no-photo wall card shows the reversed-back look, not a blank panel', async ({ page }) => {
+test('an extinguished light reads dark on the register and in its entry', async ({ page }) => {
 	await page.goto('/projects');
-	// every fixture project has image: null, so the first card is a back
-	const back = page.locator('.projects-grid .card-wrap').first().locator('.postcard__back');
-	await expect(back).toBeVisible();
-	await expect(back.locator('.postcard__back-lines')).toBeVisible();
-	await expect(back.locator('.postcard__back-postmark')).toBeVisible();
+	await page.locator('.filter-row .chip', { hasText: 'games' }).click();
+
+	const row = page.locator('.register .register__row').first();
+	await expect(row.locator('.register__status .status-pill')).toHaveText('dark · 2020');
+
+	await row.click();
+	await expect(page.locator('.light-entry__decoded')).toContainText('formerly flashing green');
+	await expect(page.locator('.light-entry__decoded')).toContainText('extinguished 2020');
 });
 
 // emulateMedia, not test.use({ reducedMotion }): the context option does not
 // reach matchMedia under this runner/browser pairing, the page-level API does
-test('reduced motion keeps a pinned postcard at its resting tilt', async ({ page }) => {
+test('reduced motion holds every lamp static, no Web Animations running', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/projects');
-	const card = page.locator('.projects-grid .card-wrap').first();
-	await expect(card).toBeVisible();
 
-	// the tilt is a base transform, so the kill-switch must not flatten it
-	expect(await card.evaluate((element) => getComputedStyle(element).transform)).not.toBe('none');
-	expect(await card.evaluate((element) => getComputedStyle(element).animationName)).toBe('none');
+	const core = page.locator('.register .register__row .register__core').first();
+	await expect(core).toBeVisible();
+	expect(await core.evaluate((element) => element.getAnimations().length)).toBe(0);
+	expect(Number(await core.evaluate((element) => getComputedStyle(element).opacity))).toBeGreaterThan(0);
 });

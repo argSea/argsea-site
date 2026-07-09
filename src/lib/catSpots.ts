@@ -46,7 +46,7 @@ export const CATALOG: CatSpot[] = [
 
 	{ id: 'projects.header',    page: 'projects', pose: 'lying',   context: 'header', overlay: false, menuGated: true, anchor: { selector: '.site-nav .links a.active', edge: 'top', align: 'center', dy: 16 } },
 	{ id: 'projects.filterTag', page: 'projects', pose: 'perched', context: 'tag',    overlay: false, anchor: { selector: '.filter-row .chip--active', edge: 'top', align: 'center', dy: -8 } },
-	{ id: 'projects.card',      page: 'projects', pose: 'perched', context: 'card',   overlay: false, anchor: { selector: '.projects-grid .card-wrap', edge: 'top', align: 'right', dy: 6 } },
+	{ id: 'projects.card',      page: 'projects', pose: 'perched', context: 'card',   overlay: false, anchor: { selector: '.register__row', edge: 'top', align: 'right', dy: 6 } },
 	{ id: 'projects.overlay',   page: 'projects', pose: 'perched', context: 'postcard', overlay: true },
 
 	{ id: 'hobbies.header',   page: 'hobbies', pose: 'lying',   context: 'header',    overlay: false, menuGated: true, anchor: { selector: '.site-nav .links a.active', edge: 'top', align: 'center', dy: 16 } },

@@ -1,6 +1,6 @@
-// Homepage (fixtures build): the mantel shows exactly the featured trio, its
-// overlay carries the stamp+postmark corner, and the contact surfaces render
-// the keeper fixture.
+// Homepage (fixtures build): the mantel shows exactly the featured trio as
+// lamp cards, a card opens the shared Light List entry, and the contact
+// surfaces render the keeper fixture.
 import { test, expect } from '@playwright/test';
 
 // The fixture mantel: the three projects flagged featured, in order
@@ -8,17 +8,16 @@ const FEATURED_TRIO = ['The Great Un-monolithing', 'Newsroom plumbing', '100k go
 
 test('the mantel shows exactly the featured trio', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.locator('.home-postcards .postcard__title')).toHaveText(FEATURED_TRIO);
+	await expect(page.locator('.home-lights .home-lights__title')).toHaveText(FEATURED_TRIO);
 });
 
-test('the homepage postcard overlay carries the stamp', async ({ page }) => {
+test('the homepage lamp card opens the Light List entry', async ({ page }) => {
 	await page.goto('/');
-	await page.locator('.home-postcards .card-wrap').first().click();
+	await page.locator('.home-lights .card-wrap').first().click();
 
 	const overlay = page.locator('.overlay-card');
 	await expect(overlay).toBeVisible();
-	await expect(overlay.locator('.postcard-back__see-all')).toBeVisible();
-	await expect(overlay.locator('[data-stamp]')).toHaveCount(1);
+	await expect(overlay.locator('.light-entry__title')).toHaveText('The Great Un-monolithing');
 });
 
 test('contact band and footer read the keeper fixture', async ({ page }) => {
