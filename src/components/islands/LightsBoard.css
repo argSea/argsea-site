@@ -42,12 +42,17 @@
 	display: flex;
 	flex-direction: column;
 	margin-top: 34px;
-	/* Section-anchored darkening, not pixel height: holds at the panorama's
-	   own bottom tone through its fixed 216px, then deepens across whatever
-	   the register's real height turns out to be (a filtered-down list or a
-	   future longer one), always landing on the footer's dark tone by its
-	   own bottom, so the handoff never depends on total page height. */
-	background: linear-gradient(180deg, #0d1224 216px, #0a0d1a 100%);
+	/* Fades in from transparent rather than opening on a flat #0d1224: the
+	   page's own sky ramp (projects.astro's .page::before) is still darkening
+	   through here on every viewport we've checked, so this only needs to
+	   pick up that same trend instead of snapping to it. Section-anchored
+	   darkening past that, not pixel height: holds at the panorama's own
+	   bottom tone through its fixed 216px, then deepens across whatever the
+	   register's real height turns out to be (a filtered-down list or a
+	   future longer one), always landing on the same #080b18 the sky ramp
+	   tops out at, so the footer's band never rebounds lighter behind it.
+	   That terminal value also matches .coast__sea's own bottom tone below. */
+	background: linear-gradient(180deg, rgba(13, 18, 36, 0) 0, #0d1224 110px, #0d1224 216px, #080b18 100%);
 }
 
 .coast__pano {
@@ -99,26 +104,89 @@
 	100%    { opacity: 0; }
 }
 
-.coast__wave {
+/* Scallop swell bands, far to near, lifted from design/Office.dc.html's water
+   (the same arc tile, repeated at four widths): nearer bands are wider-spaced,
+   more opaque, and drift faster, so the sea reads as layered swell instead of
+   a few flat lines. Positioned as a percentage of .coast__sea's own height
+   (its containing block), matching the doc's own horizon-to-shore spread. */
+.coast__swell {
 	position: absolute;
 	left: 0;
 	right: 0;
-	height: 10px;
-	opacity: .07;
 	pointer-events: none;
-	background: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2260%22%20height=%2210%22%3E%3Cpath%20d=%22M0%205%20Q15%200,30%205%20T60%205%22%20stroke=%22rgba(147,160,232,0.6)%22%20stroke-width=%221%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;
+	background: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.4)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;
 }
 
-.coast__wave--a { top: 14px; animation: coastWaveDriftRight 90s linear infinite; }
-.coast__wave--b { top: 34px; opacity: .05; animation: coastWaveDriftLeft 120s linear infinite; }
-.coast__wave--c { top: 54px; opacity: .06; animation: coastWaveDriftRight 70s linear infinite; }
-
-@keyframes coastWaveDriftRight {
-	to { background-position-x: 600px; }
+.coast__swell--a {
+	top: 61%;
+	height: 14px;
+	opacity: .09;
+	background-size: 90px 14px;
+	mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+	-webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+	animation: coastSwellDriftA 21s linear infinite;
 }
 
-@keyframes coastWaveDriftLeft {
-	to { background-position-x: -600px; }
+.coast__swell--b {
+	top: 69%;
+	height: 16px;
+	opacity: .13;
+	background-size: 70px 16px;
+	mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+	-webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+	animation: coastSwellDriftB 15s linear infinite;
+}
+
+.coast__swell--c {
+	top: 79%;
+	height: 18px;
+	opacity: .19;
+	background-size: 55px 18px;
+	mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+	-webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+	animation: coastSwellDriftC 10s linear infinite;
+}
+
+.coast__swell--d {
+	top: 90%;
+	height: 18px;
+	opacity: .28;
+	background-size: 42px 18px;
+	mask-image: linear-gradient(90deg, transparent, black 4%, black 96%, transparent);
+	-webkit-mask-image: linear-gradient(90deg, transparent, black 4%, black 96%, transparent);
+	animation: coastSwellDriftD 7s linear infinite;
+}
+
+@keyframes coastSwellDriftA { to { background-position-x: -90px; } }
+@keyframes coastSwellDriftB { to { background-position-x: -70px; } }
+@keyframes coastSwellDriftC { to { background-position-x: -55px; } }
+@keyframes coastSwellDriftD { to { background-position-x: -84px; } }
+
+/* Moon glitter path: a clipped trapezoid of repeating light lines descending
+   from the horizon at the moon's own x, so the smaller moon still casts on
+   the water below it. Fades out by 60% of the sea's height rather than
+   riding all the way down, so it reads on open water instead of guttering
+   out under the rail (z-index 4, opaque from ~64% down). The mid-opacity
+   base is what reduced motion rests on once the breathing keyframe is killed. */
+.coast__glitter {
+	position: absolute;
+	right: 9%;
+	top: 0;
+	height: 100%;
+	width: 26px;
+	pointer-events: none;
+	clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
+	background: repeating-linear-gradient(180deg, rgba(236, 231, 216, .2) 0 1.5px, transparent 1.5px 7px);
+	filter: blur(1.2px);
+	opacity: .65;
+	mask-image: linear-gradient(180deg, black 12%, black 42%, transparent 60%);
+	-webkit-mask-image: linear-gradient(180deg, black 12%, black 42%, transparent 60%);
+	animation: coastGlitterBreathe 4.5s ease-in-out infinite;
+}
+
+@keyframes coastGlitterBreathe {
+	0%, 100% { opacity: .45; }
+	50%      { opacity: .85; }
 }
 
 /* A small dark sailboat crossing at the horizon: charm, not spectacle, on a
@@ -134,7 +202,7 @@
 
 .coast__boat-hull {
 	display: block;
-	animation: coastBoatBob 3.2s ease-in-out infinite;
+	animation: coastBoatBob 4.5s ease-in-out infinite;
 }
 
 @keyframes coastBoatSail {
@@ -143,8 +211,8 @@
 }
 
 @keyframes coastBoatBob {
-	0%, 100% { transform: translateY(0) rotate(-2deg); }
-	50%      { transform: translateY(-2px) rotate(2deg); }
+	0%, 100% { transform: translateY(0) rotate(-1.2deg); }
+	50%      { transform: translateY(-4px) rotate(1deg); }
 }
 
 .coast__horizon {
@@ -154,6 +222,28 @@
 	top: 132px;
 	height: 1px;
 	background: linear-gradient(90deg, transparent 2%, rgba(147, 160, 232, .22) 30%, rgba(147, 160, 232, .22) 70%, transparent 98%);
+}
+
+/* Horizon glow: two thin bands hugging the horizon line, lifted from the
+   office doc's water. The line itself stays crisp, this just gives it a
+   soft halo above and a fainter one bleeding into the sea below. */
+.coast__horizon-glow {
+	position: absolute;
+	left: 0;
+	right: 0;
+	pointer-events: none;
+}
+
+.coast__horizon-glow--above {
+	top: 124px;
+	height: 8px;
+	background: linear-gradient(180deg, transparent, rgba(180, 190, 240, .26));
+}
+
+.coast__horizon-glow--below {
+	top: 132px;
+	height: 14px;
+	background: linear-gradient(180deg, rgba(180, 190, 240, .15), transparent);
 }
 
 .coast__rail {

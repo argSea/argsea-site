@@ -312,18 +312,25 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 								style={{ left: twinkle.left, top: twinkle.top, animationDelay: twinkle.delay, animationDuration: twinkle.duration }}
 							/>
 						))}
-						<div className="coast__wave coast__wave--a" />
-						<div className="coast__wave coast__wave--b" />
-						<div className="coast__wave coast__wave--c" />
+						<div className="coast__swell coast__swell--a" />
+						<div className="coast__swell coast__swell--b" />
+						<div className="coast__swell coast__swell--c" />
+						<div className="coast__swell coast__swell--d" />
+						<div className="coast__glitter" />
 						<div className="coast__boat">
-							<svg className="coast__boat-hull" width="22" height="18" viewBox="0 0 30 24" fill="none">
-								<path d="M4 15 L26 15 L21 22 L9 22 Z" fill="rgba(38,44,72,.95)" />
-								<path d="M15 15 V3" stroke="rgba(130,140,185,.75)" strokeWidth="1.3" />
-								<path d="M15 3 L24 13 L15 13 Z" fill="rgba(48,55,88,.9)" />
+							<svg className="coast__boat-hull" width="40" height="28" viewBox="0 0 66 46" fill="none">
+								<path d="M31 3 V32" stroke="#7c88c9" strokeWidth="1.3" />
+								<path d="M33 6 L46 29 L33 29 Z" fill="#c9c2ab" />
+								<path d="M29 8 L18 29 L29 29 Z" fill="#a89f85" />
+								<path d="M31 2 L39 5 L31 8 Z" fill="#f0d9a8" />
+								<path d="M12 32 L52 32 L46 40 L18 40 Z" fill="#1e2547" stroke="#7c88c9" strokeWidth="1.1" strokeLinejoin="round" />
+								<path d="M15 35 H49" stroke="rgba(240,217,168,.4)" strokeWidth=".8" />
 							</svg>
 						</div>
 					</div>
+					<div className="coast__horizon-glow coast__horizon-glow--above" />
 					<div className="coast__horizon" />
+					<div className="coast__horizon-glow coast__horizon-glow--below" />
 					<div className="coast__coastline">
 						<div className="coast__headland coast__headland--a" />
 						<div className="coast__headland coast__headland--b" />
