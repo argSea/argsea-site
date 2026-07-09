@@ -22,7 +22,7 @@
 
 <div style="position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:flex-end;animation:catSettle .4s ease both;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))">
   <sc-if value="{{ say }}" hint-placeholder-val="{{ false }}">
-    <div style="position:absolute;left:calc(100% + 8px);top:14px;white-space:nowrap;background:#1c2036;border:1px solid rgba(150,160,220,.4);border-radius:11px 11px 11px 2px;padding:6px 12px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#c3cbf2;box-shadow:0 8px 20px rgba(0,0,0,.45);animation:catBubbleIn .2s ease both;z-index:4">{{ say }}</div>
+    <div style="{{ bubbleStyle }}">{{ say }}</div>
   </sc-if>
 
   <!-- ============ PERCHED — front paws on an edge, tail draped (cards, tags, chips, overlay tops, contact, hero, list rows) ============ -->
@@ -90,6 +90,7 @@ class Component extends DCLogic {
   // where it's sitting. Unknown contexts fall back to the roaming set.
   sets = {
     postcard: ['mrrp.', 'i sat on this one first.', 'read it to me.', 'this postcard is mine now.', 'i approve. mostly.', 'the stamp tastes fine.', 'you opened it, i inspected it.'],
+    lightwatch: ['i count them every night.', 'all still burning. you may sleep.', 'the green one went dark once. i saw it.', 'i watch. that is the job.', 'the red one is ours.', 'mrrp. horizon clear.', 'wake me if one blinks wrong.'],
     note: ['mrrp.', 'i walked across the keyboard during this one.', 'typo on line two. i left it.', 'read it to me.', 'i supervised this draft.', 'nap first. then read.', 'i have read it. no comment.'],
     wreck: ['told you to turn left.', 'i would not have hit that.', 'a cat never runs aground.', 'nice parking, captain.', 'i saw the rocks. did you?', 'the light was on. i checked.', 'should have asked the cat.'],
     header: ['mrrp.', 'this is my page now.', 'you may look. briefly.', 'i live up here.', 'the lighthouse sent me.', 'mind the tail.'],
@@ -114,7 +115,17 @@ class Component extends DCLogic {
   componentWillUnmount() { clearTimeout(this.t); }
 
   renderVals() {
-    return { pose: this.props.pose || 'perched', say: this.state.say, poke: () => this.poke() };
+    const left = this.props.bubble === 'left';
+    const bubbleStyle = {
+      position: 'absolute', top: '14px', whiteSpace: 'nowrap',
+      [left ? 'right' : 'left']: 'calc(100% + 8px)',
+      background: '#1c2036', border: '1px solid rgba(150,160,220,.4)',
+      borderRadius: left ? '11px 11px 2px 11px' : '11px 11px 11px 2px',
+      padding: '6px 12px', fontFamily: "'IBM Plex Mono', monospace", fontSize: '11.5px',
+      color: '#c3cbf2', boxShadow: '0 8px 20px rgba(0,0,0,.45)',
+      animation: 'catBubbleIn .2s ease both', zIndex: 4,
+    };
+    return { pose: this.props.pose || 'perched', say: this.state.say, poke: () => this.poke(), bubbleStyle };
   }
 }
 </script>

@@ -15,19 +15,15 @@ html{background:#131628}
 body{margin:0;background:linear-gradient(180deg,#11131f 0%,#131628 100%)}
 a{text-decoration:none}
 a:hover{color:#e8ebfa}
-image-slot{display:block;width:100%;height:100%}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
-@keyframes bobA{0%,100%{transform:rotate(-.8deg) translateY(0)}50%{transform:rotate(-.3deg) translateY(-4px)}}
-@keyframes bobB{0%,100%{transform:rotate(.6deg) translateY(0)}50%{transform:rotate(.1deg) translateY(-5px)}}
-@keyframes bobC{0%,100%{transform:rotate(-.4deg) translateY(0)}50%{transform:rotate(-.9deg) translateY(-3px)}}
-@keyframes wiggle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
 @keyframes lampPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes flashChar{0%,68%{opacity:.08}78%{opacity:1}88%{opacity:.08}100%{opacity:.08}}
+@keyframes occultChar{0%,70%{opacity:1}80%{opacity:.09}90%{opacity:1}100%{opacity:1}}
+@keyframes isoChar{0%,42%{opacity:1}54%,96%{opacity:.12}100%{opacity:.12}}
+@keyframes haloBreath{0%,100%{opacity:.55}50%{opacity:.85}}
 @keyframes backdropIn{from{opacity:0}to{opacity:1}}
-@keyframes enterA{from{opacity:0}to{opacity:1}}
-@keyframes enterB{from{opacity:0}to{opacity:1}}
-@keyframes cardIn{from{opacity:0;transform:rotate(-3deg) translateY(34px) scale(.96)}to{opacity:1;transform:rotate(0deg) translateY(0) scale(1)}}
-@keyframes flipIn{from{opacity:0;transform:perspective(1100px) rotateY(-62deg)}to{opacity:1;transform:perspective(1100px) rotateY(0deg)}}
+@keyframes entryUp{from{opacity:0;transform:translateY(24px) scale(.985)}to{opacity:1;transform:none}}
 </style>
 </helmet>
 
@@ -46,251 +42,204 @@ image-slot{display:block;width:100%;height:100%}
       <a href="Projects.dc.html" style="color:#e8ebfa;border-bottom:2px solid #f0d9a8;padding-bottom:2px">projects</a>
       <a href="Hobbies.dc.html" style="color:#93a0e8">hobbies</a>
       <a href="Notes.dc.html" style="color:#93a0e8">notes</a>
+      <a href="Contact.dc.html" style="color:#93a0e8">contact</a>
       <a href="#" style="color:#93a0e8">resume ↗</a>
     </div>
   </div>
 
   <!-- header -->
-  <div style="padding:clamp(40px,7vw,64px) clamp(20px,5vw,52px) 24px;display:flex;flex-direction:column;gap:18px">
-    <div style="font-family:'Gloock',serif;font-size:clamp(32px,5.5vw,46px);color:#f0f2fc;animation:fadeUp .7s ease .05s both">The projects</div>
-    <div style="font-size:clamp(16px,2.3vw,18px);color:#a5aed4;max-width:560px;line-height:1.6;animation:fadeUp .7s ease .15s both">Things I've built, shipped, or babysat into stability. Sorted by how proud I am, roughly. Click a postcard to flip it over.</div>
+  <div style="padding:clamp(40px,7vw,64px) clamp(20px,5vw,52px) 22px;display:flex;flex-direction:column;gap:18px">
+    <div style="font-family:'Gloock',serif;font-size:clamp(32px,5.5vw,46px);color:#f0f2fc;animation:fadeUp .7s ease .05s both">The lights</div>
+    <div style="font-size:clamp(16px,2.3vw,18px);color:#a5aed4;max-width:620px;line-height:1.6;animation:fadeUp .7s ease .15s both">The view from the lamp room. Every system I keep burning is out there on the coast, logged by its <span style="font-style:italic;color:#c3cbf2">characteristic</span> — the blink that tells you which light you're looking at. Click one to read its entry.</div>
     <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:8px;align-items:center;animation:fadeUp .7s ease .25s both">
       <sc-for list="{{ chips }}" as="chip" hint-placeholder-count="5">
-        <span style="{{ chip.style }}" style-before="content:'';position:absolute;left:9px;top:50%;margin-top:-3.5px;width:7px;height:7px;border-radius:50%;background:rgba(19,22,40,.85);box-shadow:inset 0 1px 1px rgba(0,0,0,.6)" onClick="{{ chip.onClick }}">{{ chip.label }}</span>
+        <span style="{{ chip.style }}" style-hover="border-color:rgba(240,217,168,.5);color:#c3cbf2" onClick="{{ chip.onClick }}">{{ chip.label }}</span>
       </sc-for>
       <span style="font-family:'Newsreader',serif;font-style:italic;font-size:14px;color:#8f9be0;margin-left:auto;transform:rotate(-.8deg)">{{ countLine }}</span>
     </div>
   </div>
 
-  <!-- the keeper's wall -->
-  <div style="padding:16px clamp(20px,5vw,52px) clamp(36px,6vw,56px)">
-    <div style="{{ wallStyle }}">
-      <sc-if value="{{ ghost }}" hint-placeholder-val="{{ false }}">
-        <div style="{{ ghost.posStyle }}">
-          <div style="aspect-ratio:1.55 / 1;box-sizing:border-box;border:1.5px dashed rgba(150,160,220,.28);border-radius:4px;background:rgba(147,160,232,.03)"></div>
-          <div style="{{ ghost.tackStyle }}"></div>
-          <div style="position:absolute;top:100%;left:12%;margin-top:6px;font-family:'Newsreader',serif;font-style:italic;font-size:14px;color:#5f6ec4;white-space:nowrap;transform:rotate(-1deg)">out with the mail — back soon</div>
-        </div>
-      </sc-if>
-      <sc-for list="{{ wallFronts }}" as="p" hint-placeholder-count="5">
-        <div style="{{ p.posStyle }}" style-hover="transform:rotate(0deg) translateY(-6px)" onClick="{{ p.onClick }}">
-          <div style="{{ p.style }}">
-            <div style="{{ p.photoWrapStyle }}">
-              <div style="{{ p.photoFilterStyle }}">
-                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ p.slotId }}" shape="rect" placeholder="drop a postcard photo" style="display:block;width:100%;height:100%" hint-size="100%,100%"></x-import>
-              </div>
-              <div style="{{ p.photoOverlayStyle }}"></div>
-              <div style="position:absolute;left:14px;bottom:10px;right:14px;pointer-events:none;transform:rotate(-1.2deg);display:flex;flex-direction:column;gap:1px">
-                <span style="{{ p.captionTitleStyle }}">{{ p.title }}</span>
-                <span style="{{ p.captionSubStyle }}">{{ p.captionLine }}</span>
-              </div>
-            </div>
+  <!-- the night coast -->
+  <div style="flex:1;display:flex;flex-direction:column">
+    <div style="{{ sceneStyle }}">
+
+      <!-- panorama: the coast from the lamp room -->
+      <div style="{{ panoStyle }}">
+        <div style="{{ moonStyle }}"></div>
+        <div style="{{ seaStyle }}"></div>
+        <div style="{{ horizonStyle }}"></div>
+        <sc-for list="{{ beacons }}" as="b" hint-placeholder-count="6">
+          <div style="{{ b.wrapStyle }}" title="{{ b.tip }}" onClick="{{ b.onClick }}" onMouseEnter="{{ b.onEnter }}" onMouseLeave="{{ b.onLeave }}">
+            <div style="{{ b.halo }}"></div>
+            <div style="{{ b.core }}"></div>
+            <sc-if value="{{ b.reflect }}" hint-placeholder-val="{{ false }}"><div style="{{ b.reflect }}"></div></sc-if>
+            <sc-if value="{{ b.ring }}" hint-placeholder-val="{{ false }}"><div style="{{ b.ring }}"></div></sc-if>
           </div>
-          <div style="{{ p.tackStyle }}"></div>
+        </sc-for>
+        <div style="{{ railStyle }}"></div>
+        <dc-import name="HarborCat" context="lightwatch" bubble="left" hint-size="52px,60px" style="position:absolute;bottom:23px;right:clamp(60px,16vw,190px);width:52px;height:60px;z-index:5"></dc-import>
+        <span style="position:absolute;left:clamp(18px,4vw,44px);bottom:10px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(147,160,232,.5);text-transform:uppercase;z-index:5">the coast tonight · {{ litCount }} burning</span>
+      </div>
+
+      <!-- the register -->
+      <div style="{{ innerStyle }}">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:0 10px 10px;border-bottom:1px solid rgba(150,160,220,.18)">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#8a93c4;text-transform:uppercase">The light list</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase">District · argsea</span>
         </div>
-      </sc-for>
-      <sc-for list="{{ wallBacks }}" as="p" hint-placeholder-count="1">
-        <div style="{{ p.posStyle }}" style-hover="transform:rotate(0deg) translateY(-6px)" onClick="{{ p.onClick }}">
-          <div style="{{ p.style }}">
-            <div style="aspect-ratio:1.55 / 1;box-sizing:border-box;display:flex;gap:10px;padding:12px 12px 10px">
-              <div style="flex:1.25;display:flex;flex-direction:column;justify-content:center;gap:7px;min-width:0">
-                <svg viewBox="0 0 150 64" fill="none" stroke="rgba(70,76,120,.55)" stroke-width="1.3" stroke-linecap="round" style="width:100%"><path d="M4 8 q14 -5 28 0 t28 0 t28 0 t28 0 t24 -2 M4 22 q14 -5 28 0 t28 0 t28 0 t26 0 M4 36 q14 -5 28 0 t28 0 t30 -2 M4 50 q12 -4 24 0 t24 0"></path><path d="M112 54 q10 -4 20 0" stroke="rgba(138,109,59,.6)"></path></svg>
-              </div>
-              <div style="width:1.2px;background:rgba(110,100,75,.35);flex:none"></div>
-              <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0">
-                <div style="align-self:flex-end">{{ p.stampEl }}</div>
-                <div style="height:1px;background:rgba(110,100,75,.35);margin-top:auto"></div>
-                <div style="height:1px;background:rgba(110,100,75,.35)"></div>
-                <div style="height:1px;background:rgba(110,100,75,.35);width:70%"></div>
-              </div>
+        <div style="{{ colHeaderStyle }}">
+          <span>no.</span><span></span><span>light</span><span>characteristic</span><span>est.</span><span>status</span><span></span>
+        </div>
+        <sc-for list="{{ lights }}" as="p" hint-placeholder-count="6">
+          <div style="{{ p.rowStyle }}" style-hover="background:rgba(147,160,232,.06)" onClick="{{ p.onClick }}" onMouseEnter="{{ p.onEnter }}" onMouseLeave="{{ p.onLeave }}">
+            <span style="{{ p.noStyle }}">{{ p.no }}</span>
+            <div style="{{ p.miniBox }}">
+              <div style="{{ p.miniHalo }}"></div>
+              <div style="{{ p.miniCore }}"></div>
             </div>
+            <div style="min-width:0;display:flex;flex-direction:column;gap:4px">
+              <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+                <span style="{{ p.nameStyle }}">{{ p.title }}</span>
+                <sc-if value="{{ p.mobilePill }}" hint-placeholder-val="{{ false }}"><span style="{{ p.pillStyle }}">{{ p.pillLabel }}</span></sc-if>
+              </div>
+              <span style="{{ p.descStyle }}">{{ p.desc }}</span>
+              <sc-if value="{{ p.mobileChar }}" hint-placeholder-val="{{ false }}"><span style="{{ p.charStyle }}">{{ p.mobileCharLine }}</span></sc-if>
+            </div>
+            <sc-if value="{{ p.deskCols }}" hint-placeholder-val="{{ true }}">
+              <span style="{{ p.charStyle }}">{{ p.code }}</span>
+              <span style="{{ p.estStyle }}">{{ p.est }}</span>
+              <span style="min-width:0"><span style="{{ p.pillStyle }}">{{ p.pillLabel }}</span></span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;opacity:.8">read →</span>
+            </sc-if>
           </div>
-          <div style="{{ p.tackStyle }}"></div>
-          <div style="position:absolute;top:100%;left:10%;margin-top:6px;font-family:'Newsreader',serif;font-style:italic;font-size:14px;color:#8f9be0;white-space:nowrap;transform:rotate(-1deg)">{{ p.pencilLine }}</div>
+        </sc-for>
+      </div>
+
+      <!-- footer, out in the night -->
+      <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:10px clamp(20px,5vw,52px) 24px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · argsea.com</span>
+        <span style="font-size:15px;color:#8f9be0;font-style:italic">A light is just a promise you keep every night.</span>
+        <div style="display:flex;gap:16px;font-family:'IBM Plex Mono',monospace;font-size:12px">
+          <a href="#" style="color:#93a0e8">github</a><a href="#" style="color:#93a0e8">linkedin</a><a href="mailto:hello@argsea.com" style="color:#93a0e8">email</a>
         </div>
-      </sc-for>
+      </div>
     </div>
   </div>
 
-  <!-- overlay: the back of the postcard -->
+  <!-- overlay: the light-list entry -->
   <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
-    <div onClick="{{ closeOverlay }}" style="position:fixed;inset:0;background:rgba(8,10,20,.72);backdrop-filter:blur(5px);z-index:50;display:flex;align-items:center;justify-content:center;padding:clamp(14px,4vw,40px);animation:backdropIn .25s ease both">
-      <div onClick="{{ stopProp }}" style="position:relative;width:min(880px,100%);animation:flipIn .45s ease both">
-        <dc-import name="HarborCat" context="postcard" hint-size="64px,74px" style="position:absolute;top:-50px;left:34px;width:64px;height:74px;z-index:3"></dc-import>
-        <div style="max-height:86vh;overflow:auto;background:linear-gradient(180deg,#f1ecdd,#eae3d1);border-radius:4px;box-shadow:inset 0 0 0 5px rgba(244,240,228,.9), inset 0 0 0 6px rgba(110,100,75,.25), 0 30px 80px rgba(0,0,0,.6)">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(20px,4vw,32px) 8px">
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#8a7f63;text-transform:uppercase">Postcard · the back</span>
-          <span onClick="{{ closeOverlay }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#7d7357;padding:6px 12px;border:1px solid rgba(110,100,75,.4);border-radius:999px;transition:all .2s" style-hover="color:#262a45;border-color:rgba(60,55,80,.6)">close ✕</span>
+    <div onClick="{{ closeOverlay }}" style="position:fixed;inset:0;background:rgba(6,8,16,.78);backdrop-filter:blur(5px);z-index:50;display:flex;align-items:center;justify-content:center;padding:clamp(14px,4vw,40px);animation:backdropIn .25s ease both">
+      <div onClick="{{ stopProp }}" style="position:relative;width:min(760px,100%);max-height:88vh;overflow:auto;animation:entryUp .4s ease both;background:linear-gradient(180deg,#191d33,#12162a);border-radius:8px;border:1px solid rgba(150,160,220,.2);box-shadow:0 30px 80px rgba(0,0,0,.65),inset 0 0 0 1px rgba(240,217,168,.06)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(22px,4vw,34px) 12px;border-bottom:1px solid rgba(150,160,220,.14)">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#8a93c4;text-transform:uppercase">U.S. Light List · No. {{ open.no }}</span>
+          <span onClick="{{ closeOverlay }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#93a0e8;padding:6px 12px;border:1px solid rgba(150,160,220,.3);border-radius:999px;transition:all .2s" style-hover="color:#e8ebfa;border-color:rgba(240,217,168,.5)">close ✕</span>
         </div>
-        <div style="display:flex;flex-wrap:wrap;padding:6px clamp(18px,4vw,30px) clamp(20px,4vw,28px)">
-          <div style="flex:1.4;min-width:280px;padding:10px clamp(16px,3vw,26px) 10px 4px;display:flex;flex-direction:column;gap:13px">
-            <div style="font-family:'Gloock',serif;font-size:clamp(23px,4vw,30px);color:#20233c;line-height:1.15">{{ open.title }}</div>
-            <div style="font-size:16.5px;line-height:1.65;color:#3b3f5e">{{ open.details1 }}</div>
-            <div style="font-size:16.5px;line-height:1.65;color:#3b3f5e">{{ open.details2 }}</div>
-            <div style="font-size:15px;color:#8a7f63;font-style:italic">{{ open.moral }}</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#8a7f63;margin-top:4px">— j, keeper</div>
-          </div>
-          <div style="width:1.5px;background:rgba(110,100,75,.35);align-self:stretch"></div>
-          <div style="flex:1;min-width:250px;padding:10px 4px 10px clamp(16px,3vw,26px);display:flex;flex-direction:column;gap:15px">
-            <div style="position:relative;align-self:flex-end;margin:2px 4px 0 0">
-              {{ open.stampEl }}
-              <svg width="104" height="44" viewBox="0 0 104 44" fill="none" stroke="rgba(95,110,196,.5)" stroke-width="1.2" style="position:absolute;top:4px;right:-10px;pointer-events:none"><circle cx="22" cy="22" r="17" stroke-dasharray="3 4"></circle><path d="M44 12 q7 -3 14 0 t14 0 t14 0 M44 21 q7 -3 14 0 t14 0 t14 0 M44 30 q7 -3 14 0 t14 0 t14 0"></path></svg>
+        <div style="padding:clamp(20px,4vw,34px);display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+            <div style="{{ open.lampBox }}">
+              <div style="{{ open.haloUnder }}"></div>
+              <div style="{{ open.halo }}"></div>
+              <svg width="40" height="54" viewBox="0 0 26 34" fill="none" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-46%);opacity:.6"><path d="M13 3 L17 10 L9 10 Z" fill="rgba(150,160,220,.4)"></path><rect x="10" y="10" width="6" height="15" fill="none" stroke="rgba(150,160,220,.45)" stroke-width="1.3"></rect><path d="M10 14 h6 M10 19 h6" stroke="rgba(150,160,220,.34)" stroke-width="1.1"></path><path d="M5 30 q8 -4 16 0" stroke="rgba(150,160,220,.36)" stroke-width="1.3" fill="none"></path></svg>
+              <div style="{{ open.core }}"></div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:5px;font-size:15px;line-height:1.5">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#a39876;text-transform:uppercase">to:</span>
-              <span style="font-style:italic;color:#3b3f5e;border-bottom:1px solid rgba(110,100,75,.3);padding-bottom:3px">{{ open.to }}</span>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#a39876;text-transform:uppercase;margin-top:8px">from:</span>
-              <span style="font-style:italic;color:#3b3f5e;border-bottom:1px solid rgba(110,100,75,.3);padding-bottom:3px">{{ open.from }}</span>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#a39876;text-transform:uppercase;margin-top:8px">postmarked:</span>
-              <span style="font-style:italic;color:#3b3f5e;border-bottom:1px solid rgba(110,100,75,.3);padding-bottom:3px">{{ open.year }}</span>
-            </div>
-            <div style="background:#fdfcf8;padding:7px 7px 22px;box-shadow:0 5px 14px rgba(0,0,0,.25);transform:rotate(-1.5deg)">
-              <div style="width:100%;height:120px;overflow:hidden;background:#e6e2d6">
-                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ open.slotId }}" shape="rect" placeholder="drop a snapshot" style="display:block;width:100%;height:120px" hint-size="100%,120px"></x-import>
+            <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:'Gloock',serif;font-size:clamp(26px,4.5vw,34px);color:#f2f4fd;line-height:1.1">{{ open.title }}</span>
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <span style="{{ open.pillStyle }}">{{ open.pillLabel }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.1em;color:#c3cbf2">{{ open.code }}</span>
               </div>
+              <span style="font-size:15.5px;font-style:italic;color:#8f9be0;line-height:1.5">{{ open.decoded }}</span>
             </div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8a6d3b;margin-top:auto">{{ open.tagsText }}</div>
           </div>
-        </div>
+          <div style="display:flex;gap:22px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#93a0e8;padding:14px 0;border-top:1px solid rgba(150,160,220,.14);border-bottom:1px solid rgba(150,160,220,.14)">
+            <span>established · <span style="color:#c3cbf2">{{ open.est }}</span></span>
+            <span>district · <span style="color:#c3cbf2">argsea</span></span>
+            <span>keeper · <span style="color:#c3cbf2">j. smith</span></span>
+          </div>
+          <div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">
+            <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
+              <div style="font-size:16.5px;line-height:1.7;color:#c8cef0">{{ open.details1 }}</div>
+              <div style="font-size:16.5px;line-height:1.7;color:#c8cef0">{{ open.details2 }}</div>
+            </div>
+            <div style="flex:0 1 220px;min-width:180px;display:flex;flex-direction:column;gap:8px">
+              <div style="background:#fdfcf8;padding:6px 6px 20px;box-shadow:0 8px 22px rgba(0,0,0,.45);transform:rotate(-1.6deg)">
+                <div style="width:100%;height:130px;overflow:hidden;background:#e6e2d6">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ open.slotId }}" shape="rect" placeholder="a photo from the station" style="display:block;width:100%;height:130px" hint-size="100%,130px"></x-import>
+                </div>
+              </div>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;text-align:center">from the station archive</span>
+            </div>
+          </div>
+          <div style="font-size:15px;color:#8f9be0;font-style:italic">{{ open.moral }}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:2px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a6d3b">{{ open.tagsText }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#5f6ec4;font-style:italic">— logged by the keeper</span>
+          </div>
         </div>
       </div>
     </div>
   </sc-if>
 
-  <!-- footer -->
-  <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:26px clamp(20px,5vw,52px) 24px">
-    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · argsea.com</span>
-    <span style="font-size:15px;color:#8f9be0;font-style:italic">Every project was, at some point, a terrible idea that worked.</span>
-    <div style="display:flex;gap:16px;font-family:'IBM Plex Mono',monospace;font-size:12px">
-      <a href="#" style="color:#93a0e8">github</a><a href="#" style="color:#93a0e8">linkedin</a><a href="mailto:hello@argsea.com" style="color:#93a0e8">email</a>
-    </div>
-  </div>
 </div>
-
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;stock&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;cream&quot;, &quot;indigo&quot;], &quot;default&quot;: &quot;cream&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;A/B test&quot;}, &quot;wash&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;sepia&quot;, &quot;cyanotype&quot;, &quot;silver&quot;], &quot;default&quot;: &quot;sepia&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;A/B test&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;reflections&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Scene&quot;}, &quot;starfield&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Scene&quot;}}">
 class Component extends DCLogic {
-  state = { filter: 'all', openIdx: null, flip: false };
+  state = { filter: 'all', openIdx: null, hoverIdx: null };
 
   cats = ['all', 'backend', 'games', 'this website', 'tinkering'];
 
+  pal = {
+    white: { glow: '246,236,207' },
+    red:   { glow: '231,122,112' },
+    green: { glow: '111,202,151' },
+    dark:  { glow: '120,132,170' },
+  };
+
   projects = [
-    { title: 'The Great Un-monolithing', cat: 'backend', anim: 'bobA 7s ease-in-out infinite',
+    { title: 'The Great Un-monolithing', cat: 'backend', color: 'white', kind: 'flash', period: 8, est: '2024', status: 'lit',
       desc: 'One giant app became many small, well-behaved services. Readers never noticed. That was the point.',
       tags: ['kubernetes', 'python', 'rabbitmq'],
       details1: 'The old system was one enormous application that did everything and feared nothing, least of all my weekends. We took it apart piece by piece: a message queue in the middle, services around it, Kubernetes herding the containers.',
       details2: 'The success metric was silence. No reader ever noticed a thing — the paper published every single day while we swapped the engine mid-flight.',
-      moral: 'Moral: the best migrations are the boring ones.',
-      to: 'everyone who reads the news without thinking about queues', from: 'justin, from inside the cluster', year: '2024 — ongoing' },
-    { title: 'Newsroom plumbing', cat: 'backend', anim: 'bobB 8s ease-in-out .4s infinite',
+      moral: 'Moral: the best migrations are the boring ones.' },
+    { title: 'Newsroom plumbing', cat: 'backend', color: 'white', kind: 'fixed', period: 0, est: '2016', status: 'lit',
       desc: 'A publishing workflow a real paper runs on, every day, deadlines and all.',
       tags: ['rest', 'mongodb', 'nginx'],
       details1: "Reporters write, editors edit, and somewhere between 'done' and 'published' lives an entire hidden city of pipes. I designed and built a good chunk of that city: APIs, storage, caching, the works.",
       details2: 'It runs on deadlines that do not move for anybody. The plumbing holds. Mostly nobody knows it exists, which is exactly how plumbing should work.',
-      moral: 'Moral: if they never think about you, you did it right.',
-      to: 'the 6pm deadline', from: 'the pipes beneath the newsroom', year: '2016 — ongoing' },
-    { title: '100k good mornings', cat: 'backend', anim: 'bobC 6.5s ease-in-out .8s infinite',
+      moral: 'Moral: a fixed light never blinks — it just holds.' },
+    { title: '100k good mornings', cat: 'backend', color: 'white', kind: 'occult', period: 6, est: '2018', status: 'lit',
       desc: 'An automated newsletter that beats the sunrise into six figures of inboxes.',
       tags: ['php', 'redis', 'linux'],
       details1: 'Every morning, before coffee exists, an automated system assembles the day\u2019s news and delivers it to over 100,000 inboxes. It has done this more reliably than I get out of bed.',
       details2: 'The fun part was making it boring: retries, queues, monitoring, and a healthy paranoia about what happens at 4am when nobody is watching.',
-      moral: 'Moral: automation is just kindness to your future self, scheduled.',
-      to: '100,000 people who are not awake yet', from: 'a cron job with ambition', year: '2018 — ongoing' },
-    { title: 'Meo Wave Race', cat: 'games', anim: 'bobA 7.5s ease-in-out 1.2s infinite',
-      desc: 'A cat/boat racing game for the CS50 final. The cat is the boat. Ask me anything.',
+      moral: 'Moral: automation is just kindness to your future self, scheduled.' },
+    { title: 'Meo Wave Race', cat: 'games', color: 'green', kind: 'flash', period: 4, est: '2020', status: 'dark', disco: '2020',
+      desc: 'A cat/boat racing game for the CS50 final. The cat is the boat. Lit once, brilliantly, then retired.',
       tags: ['unity', 'c#', 'blender'],
       details1: 'For the CS50 final I made a racing game where a cat is also a boat. I modeled the cat. I modeled the waves. I wrote shaders. I regret nothing.',
-      details2: 'It shipped, it runs, and it remains my entire game development career: one game made, one game finished, undefeated.',
-      moral: 'Moral: retire at the top.',
-      to: 'anyone who says scope creep is inevitable', from: 'a cat that is also a boat', year: '2020' },
-    { title: 'This website', cat: 'this website', anim: 'bobB 7s ease-in-out .2s infinite',
-      desc: "The site you're on. Rebuilt whenever the mood strikes, which is often.",
+      details2: 'It shipped, it ran, and then I put out the light on purpose. One game made, one game finished, undefeated. A light discontinued at its peak is still a light that worked.',
+      moral: 'Moral: retire at the top.' },
+    { title: 'This website', cat: 'this website', color: 'white', kind: 'iso', period: 3, est: '2026', status: 'lit',
+      desc: "The light you're standing in. Its characteristic changes without notice, by order of the keeper.",
       tags: ['meta', 'html', 'whimsy'],
-      details1: 'You are here. Previous versions had a space theme and a particle system that heated homes across Pittsburgh. This one has a lighthouse, postcards, and a hobby graveyard.',
-      details2: 'It gets rebuilt whenever the mood strikes, which historically is often. Consider this postcard a snapshot of a moving target.',
-      moral: 'Moral: the portfolio is also the hobby.',
-      to: 'future justin, who will redesign this', from: 'present justin, who is sorry', year: '2026 edition' },
-    // TEST DATA — remove
-    ...Array.from({ length: 14 }, (_, k) => ({
-      title: ['Cache invalidator', 'The log barge', 'Queue whisperer', 'Backup lighthouse', 'The cron museum', 'Rate limiter deluxe', 'Config archaeology', 'The staging swamp', 'Webhook lasso', 'The retry engine', 'Schema drift patrol', 'The load balancer', 'Metrics tide chart', 'The dead-letter office'][k],
-      cat: ['backend', 'tinkering', 'backend', 'tinkering', 'backend', 'backend', 'tinkering', 'backend', 'backend', 'backend', 'backend', 'backend', 'tinkering', 'backend'][k],
-      anim: `bob${'ABC'[k % 3]} ${6.5 + (k % 4) * 0.5}s ease-in-out ${(k % 5) * 0.3}s infinite`,
-      desc: 'Test card ' + (k + 1) + ' — here to stress the wall.',
-      tags: ['test', 'wall', 'stress'],
-      details1: 'A placeholder project for testing the wall at volume.', details2: 'It does nothing else.',
-      moral: 'Moral: test with more than you have.',
-      to: 'the layout', from: 'the test harness', year: String(2015 + (k % 10)),
-    })),
-    { title: 'The home lab', cat: 'tinkering', anim: 'bobC 8s ease-in-out .6s infinite',
-      desc: 'Plex, HTPC, and a small fleet of machines that mostly behave.',
+      details1: 'You are here. Previous versions had a space theme and a particle system that heated homes across Pittsburgh. This one has a lighthouse, a hobby graveyard, and a light list.',
+      details2: 'It gets rebuilt whenever the mood strikes, which historically is often. Consider this entry accurate until roughly the moment you finish reading it.',
+      moral: 'Moral: the portfolio is also the hobby.' },
+    { title: 'The home lab', cat: 'tinkering', color: 'red', kind: 'fixed', period: 0, est: '2021', status: 'lit',
+      desc: 'Plex, HTPC, and a small fleet of machines that mostly behave. The red light that stays on at home.',
       tags: ['plex', 'linux', 'cachyos'],
       details1: 'A Plex server, an HTPC, CachyOS on the desktop, and a small fleet of machines that mostly behave. This is the one hobby that survives every purge, because it is just the day job wearing pajamas.',
       details2: 'Current status, as always: one tweak from perfect. The tweak changes weekly. Perfect remains at a fixed distance, like the horizon.',
-      moral: 'Moral: some hobbies are load-bearing.',
-      to: 'the family, who just wanted to watch a movie', from: 'the server closet', year: '2021 — forever' },
+      moral: 'Moral: some lights you keep burning just for the family.' },
   ];
 
-  stamps = {
-    'The Great Un-monolithing': { shape: 'rect', motif: 'lighthouse', ink: '#f0d9a8', cents: '3¢' },
-    'Newsroom plumbing': { shape: 'circle', motif: 'text', ink: '#93a0e8', text: 'DAILY SINCE 1786' },
-    '100k good mornings': { shape: 'rect', motif: 'sun', ink: '#f0d9a8', cents: '5¢' },
-    'Meo Wave Race': { shape: 'rect', motif: 'boat', ink: '#93a0e8', cents: '8¢' },
-    'This website': { shape: 'circle', motif: 'lighthouse', ink: '#f0d9a8' },
-    'The home lab': { shape: 'rect', motif: 'moon', ink: '#93a0e8', cents: '1¢' },
-  };
-
-  stampMotifSvg(motif, ink, size) {
-    const e = React.createElement;
-    const alt = ink === '#a5813c' ? '#5f6ec4' : '#a5813c';
-    const p = (d, extra) => e('path', { d, stroke: ink, strokeWidth: 1.6, fill: 'none', strokeLinecap: 'round', ...extra });
-    const base = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none' };
-    if (motif === 'lighthouse') return e('svg', { ...base, viewBox: '0 0 26 30', height: size * 1.15 },
-      e('path', { key: 1, d: 'M13 4 L17 11 L9 11 Z', fill: ink }),
-      e('rect', { key: 2, x: 10, y: 11, width: 6, height: 12, stroke: alt, strokeWidth: 1.6, fill: 'none' }),
-      p('M7 26 q6 -3 12 0', { key: 3, stroke: '#5f6ec4' }));
-    if (motif === 'boat') return e('svg', { ...base, viewBox: '0 0 30 24' },
-      e('path', { key: 1, d: 'M4 15 L26 15 L21 22 L9 22 Z', fill: alt }),
-      p('M15 15 V3', { key: 2, stroke: '#5f6ec4', strokeWidth: 1.5 }),
-      e('path', { key: 3, d: 'M15 3 L24 13 L15 13 Z', fill: ink }));
-    if (motif === 'sun') return e('svg', base,
-      e('circle', { key: 1, cx: 12, cy: 12, r: 4.5, stroke: ink, strokeWidth: 1.6 }),
-      p('M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6L17.3 6.7M6.7 17.3l-2.1 2.1', { key: 2 }));
-    if (motif === 'wave') return e('svg', base,
-      p('M2 9q2.5-4 5 0t5 0t5 0t5 0', { key: 1 }),
-      p('M2 15q2.5-4 5 0t5 0t5 0t5 0', { key: 2 }));
-    if (motif === 'moon') return e('svg', base,
-      e('path', { key: 1, d: 'M15.5 3a9 9 0 1 0 5.5 15.5A8 8 0 0 1 15.5 3', stroke: ink, strokeWidth: 1.6, fill: 'none', strokeLinejoin: 'round' }),
-      e('circle', { key: 2, cx: 18, cy: 7, r: 1, fill: alt }));
-    return e('svg', base,
-      e('circle', { key: 1, cx: 12, cy: 5, r: 2.2, stroke: ink, strokeWidth: 1.6 }),
-      p('M12 7.2V19M8.5 10.5h7M4.5 13.5a7.5 7.5 0 0 0 15 0M4.5 13.5l-1.6 1.8M4.5 13.5l2.2 1M19.5 13.5l1.6 1.8M19.5 13.5l-2.2 1', { key: 2 }));
-  }
-
-  renderStamp(stamp, scale = 1) {
-    const e = React.createElement;
-    const st = stamp || { shape: 'rect', motif: 'lighthouse', ink: '#f0d9a8', cents: '3¢' };
-    const paperInk = { '#f0d9a8': '#a5813c', '#93a0e8': '#5f6ec4' };
-    const ink = paperInk[st.ink] || st.ink || '#a5813c';
-    const mono = "'IBM Plex Mono', monospace";
-    const words = (st.text || 'AIR MAIL').trim().split(/\s+/);
-    const content = st.motif === 'text'
-      ? e('div', { style: { fontFamily: mono, fontSize: 7.5 * scale, letterSpacing: '.1em', color: ink, textAlign: 'center', lineHeight: 1.6, textTransform: 'uppercase', overflow: 'hidden' } },
-          ...words.flatMap((w, i) => i ? [e('br', { key: 'b' + i }), w] : [w]))
-      : this.stampMotifSvg(st.motif, ink, 18 * scale);
-    if (st.shape === 'circle') {
-      return e('div', { style: { width: 52 * scale, height: 52 * scale, boxSizing: 'border-box', border: `1.2px dashed ${ink}73`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wiggle 7s ease-in-out infinite', flexShrink: 0 } }, content);
-    }
-    return e('div', { style: { width: 34 * scale, height: 42 * scale, boxSizing: 'border-box', border: `1.5px solid ${ink}80`, borderRadius: 3, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wiggle 6s ease-in-out infinite', flexShrink: 0 } },
-      content,
-      st.cents ? e('span', { key: 'c', style: { position: 'absolute', top: 1.5 * scale, right: 2.5 * scale, fontFamily: mono, fontSize: 6.5 * scale, color: ink } }, st.cents) : null);
-  }
-
   quips = {
-    all: 'nothing hidden yet',
-    backend: 'the day-job greatest hits',
-    games: 'undefeated: one for one',
-    'this website': 'it counts',
-    tinkering: 'the hobby that survives every purge',
+    all: 'the whole coast',
+    backend: 'the mains — always burning',
+    games: 'one light, lit once, brilliantly',
+    'this website': 'you are standing in it',
+    tinkering: 'the small lights, kept for love',
   };
 
   componentDidMount() {
@@ -305,191 +254,204 @@ class Component extends DCLogic {
     window.removeEventListener('resize', this.onResize);
   }
 
-  // hand-placed wall slots (designed at 1150px, scaled down proportionally)
-  wallSlots = [
-    { l: '1%',  t: 46,  w: 400, r: -2.2, z: 3 },
-    { l: '38%', t: 0,   w: 330, r: 1.7,  z: 2 },
-    { l: '69%', t: 74,  w: 320, r: -1.3, z: 4 },
-    { l: '9%',  t: 384, w: 320, r: 2.3,  z: 2 },
-    { l: '41%', t: 296, w: 360, r: -1.6, z: 5 },
-    { l: '73%', t: 388, w: 296, r: 1.4,  z: 3 },
-  ];
-  backTitles = { 'Newsroom plumbing': true };
-
-  // slots beyond the curated six are generated: 3 loose columns, jittered
-  slotFor(i) {
-    if (i < this.wallSlots.length) return this.wallSlots[i];
-    const cols = [{ l: 1, w: 380 }, { l: 38, w: 330 }, { l: 70, w: 306 }];
-    const jL = [0, 2.5, -1.5, 1, -2, 3];
-    const jT = [0, 46, 22, 60, 10, 34];
-    const jW = [0, -26, 18, -40, 30, -12];
-    const rots = [-2.1, 1.5, -1.2, 2.2, -1.7, 1.1];
-    const row = Math.floor(i / 3), col = i % 3;
+  codeFor(p) {
+    const c = { white: 'W', red: 'R', green: 'G' }[p.color] || 'W';
+    if (p.kind === 'fixed') return 'F ' + c;
+    const pre = { flash: 'Fl', occult: 'Oc', iso: 'Iso' }[p.kind] || 'Fl';
+    return `${pre} ${c} ${p.period}s`;
+  }
+  decode(p) {
+    const cn = { white: 'white', red: 'red', green: 'green' }[p.color] || 'white';
+    if (p.status === 'dark') return `formerly ${this.plain(p, cn)} — extinguished ${p.disco || ''}`.trim();
+    return this.plain(p, cn);
+  }
+  plain(p, cn) {
+    if (p.kind === 'fixed') return `fixed ${cn} — a steady light that never blinks`;
     return {
-      l: (cols[col].l + jL[i % 6]) + '%',
-      t: row * 356 + jT[(i * 2 + col) % 6],
-      w: cols[col].w + jW[(i * 3 + row) % 6],
-      r: rots[(i + row) % 6],
-      z: 2 + ((i * 7) % 4),
-    };
+      flash: `flashing ${cn} — dark, then a bright flash every ${p.period} seconds`,
+      occult: `occulting ${cn} — steady, with a brief eclipse every ${p.period} seconds`,
+      iso: `isophase ${cn} — equal parts light and dark, every ${p.period} seconds`,
+    }[p.kind] || `${cn} light`;
+  }
+  charAnim(p) {
+    if (p.status === 'dark') return 'none';
+    const dur = Math.min(6, Math.max(3, p.period || 4));
+    const n = { flash: 'flashChar', occult: 'occultChar', iso: 'isoChar', fixed: null }[p.kind];
+    return n ? `${n} ${dur}s ease-in-out infinite` : 'haloBreath 5s ease-in-out infinite';
+  }
+  coreAnim(p) {
+    if (p.status === 'dark' || p.kind === 'fixed') return 'none';
+    const dur = Math.min(6, Math.max(3, p.period || 4));
+    const n = { flash: 'flashChar', occult: 'occultChar', iso: 'isoChar' }[p.kind];
+    return `${n} ${dur}s ease-in-out infinite`;
   }
 
-  tackStyle(i) {
-    const lefts = ['47%', '52%', '49%', '54%', '46%', '51%'];
-    return {
-      position: 'absolute', top: '-5px', left: lefts[i % lefts.length], width: '12px', height: '12px',
-      borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #ecd9a4, #8a6d3b 70%)',
-      boxShadow: '0 2px 4px rgba(0,0,0,.55), 0 0 0 1px rgba(60,48,24,.4)', zIndex: 6, pointerEvents: 'none',
-    };
-  }
-
-  stockStyles() {
-    const indigo = (this.props.stock ?? 'cream') === 'indigo';
-    const news = "'Newsreader', serif";
+  pill(p) {
     const mono = "'IBM Plex Mono', monospace";
-    const inkShadow = indigo
-      ? '0 0 3px rgba(8,10,22,.9), 0 1px 2px rgba(8,10,22,.8)'
-      : '0 0 2px rgba(30,24,14,.95), 0 0 5px rgba(30,24,14,.75), 0 1px 2px rgba(30,24,14,.85)';
-    return {
-      photoWrapStyle: { position: 'relative', overflow: 'hidden', background: indigo ? '#141830' : '#ddd5c0', aspectRatio: '1.55 / 1', flex: 'none' },
-      photoFilterStyle: {
-        position: 'absolute', inset: 0,
-        filter: {
-          sepia: indigo ? 'grayscale(.55) contrast(.95) brightness(.8)' : 'sepia(.8) contrast(.92) brightness(.92) saturate(.75)',
-          cyanotype: 'grayscale(1) sepia(1) hue-rotate(180deg) saturate(1.5) brightness(.92) contrast(1.02)',
-          silver: 'grayscale(1) contrast(1.05) brightness(.95)',
-        }[this.props.wash ?? 'sepia'],
-      },
-      photoOverlayStyle: {
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: indigo
-          ? 'linear-gradient(0deg, rgba(21,24,48,.55), rgba(21,24,48,.12)),radial-gradient(ellipse at 50% 32%, transparent 52%, rgba(10,12,26,.5) 100%)'
-          : 'linear-gradient(0deg, rgba(42,34,20,.55) 0%, rgba(42,34,20,.22) 22%, transparent 42%),radial-gradient(ellipse at 50% 32%, transparent 52%, rgba(58,46,26,.34) 100%)',
-      },
-      captionTitleStyle: { fontFamily: news, fontStyle: 'italic', fontSize: '16.5px', lineHeight: 1.25, color: indigo ? '#eef0fb' : '#fbf5e4', textShadow: inkShadow },
-      captionSubStyle: { fontFamily: news, fontStyle: 'italic', fontSize: '12.5px', color: indigo ? 'rgba(238,240,251,.8)' : 'rgba(251,245,228,.85)', textShadow: inkShadow },
-      descStyle: { fontSize: '14.5px', lineHeight: 1.5, color: indigo ? '#a5aed4' : '#565b7e', fontStyle: 'italic' },
-      tagsStyle: { fontFamily: mono, fontSize: '11px', color: indigo ? '#93a0e8' : '#8a6d3b', marginTop: 'auto' },
-    };
+    const base = { fontFamily: mono, fontSize: '10.5px', letterSpacing: '.14em', textTransform: 'uppercase', padding: '3px 10px', borderRadius: '999px', whiteSpace: 'nowrap', display: 'inline-block' };
+    if (p.status === 'dark') return { label: `dark · ${p.disco || ''}`.trim(), style: { ...base, color: '#8a93c4', border: '1px solid rgba(138,147,196,.4)', background: 'rgba(138,147,196,.08)' } };
+    return { label: 'lit', style: { ...base, color: '#f0d9a8', border: '1px solid rgba(240,217,168,.5)', background: 'rgba(240,217,168,.12)' } };
   }
 
-  cardStyle(anim) {
-    if ((this.props.stock ?? 'cream') === 'indigo') {
-      return {
-        position: 'relative', boxSizing: 'border-box',
-        background: 'linear-gradient(180deg,#20253f,#171b30)',
-        border: '1px solid rgba(150,160,220,.28)',
-        borderRadius: '4px', padding: '13px',
-        boxShadow: 'inset 0 0 0 5px rgba(28,32,60,.9), inset 0 0 0 6px rgba(150,160,220,.3), 0 12px 28px rgba(0,0,0,.4)',
-        display: 'flex', flexDirection: 'column', gap: '0', animation: anim,
-      };
-    }
+  bigLamp(p) {
+    const dark = p.status === 'dark';
+    const c = this.pal[dark ? 'dark' : p.color];
     return {
-      position: 'relative', boxSizing: 'border-box',
-      background: 'linear-gradient(180deg,#efeadb,#e9e2d0)',
-      border: '1px solid #d8cfb6',
-      borderRadius: '4px', padding: '13px 13px 16px',
-      boxShadow: 'inset 0 0 0 5px rgba(244,240,228,.9), inset 0 0 0 6px rgba(110,100,75,.28), 0 12px 28px rgba(0,0,0,.4)',
-      display: 'flex', flexDirection: 'column', gap: '0', animation: anim,
+      lampBox: { position: 'relative', width: '100px', height: '124px', flex: 'none' },
+      haloUnder: { position: 'absolute', left: '50%', top: '42%', width: '88px', height: '88px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${c.glow},${dark ? 0.05 : 0.16}) 0%, transparent 70%)`, pointerEvents: 'none' },
+      halo: { position: 'absolute', left: '50%', top: '42%', width: '124px', height: '124px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${c.glow},${dark ? 0.05 : 0.5}) 0%, transparent 62%)`, filter: 'blur(3px)', animation: this.charAnim(p), pointerEvents: 'none' },
+      core: { position: 'absolute', left: '50%', top: '42%', width: '13px', height: '13px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: dark ? '#59647f' : '#fff', boxShadow: `0 0 13px 4px rgba(${c.glow},${dark ? 0.18 : 0.9})`, animation: this.coreAnim(p), pointerEvents: 'none' },
     };
   }
 
   renderVals() {
     const f = this.state.filter;
     const visible = this.projects.filter((p) => f === 'all' || p.cat === f);
-    const enterName = this.state.flip ? 'enterA' : 'enterB';
+    const mono = "'IBM Plex Mono', monospace";
+    const vw = this.state.vw || 1200;
+    const mobile = vw < 880;
+    const refl = this.props.reflections ?? true;
+    const starfield = this.props.starfield ?? true;
 
-    const vw = this.state.vw || 1150;
-    const pagePad = Math.min(52, Math.max(20, vw * 0.05));
-    const wallW = Math.min(1150, vw - pagePad * 2);
-    const mobile = wallW < 700;
-    const scale = mobile ? 1 : wallW / 1150;
-
-    const mkCard = (p, i) => {
-      const slot = this.slotFor(i);
-      const posStyle = mobile
-        ? {
-            position: 'relative', width: 'min(100%, 440px)', margin: '0 auto',
-            transform: `rotate(${slot.r}deg)`, cursor: 'pointer', transition: 'transform .25s',
-            animation: `${enterName} .45s ease ${i * 0.07}s both`, order: i,
-          }
-        : {
-            position: 'absolute', left: slot.l, top: slot.t * scale + 'px', width: slot.w * scale + 'px',
-            transform: `rotate(${slot.r}deg)`, zIndex: slot.z, cursor: 'pointer', transition: 'transform .25s',
-            animation: `${enterName} .45s ease ${i * 0.07}s both`,
-          };
-      return {
-        ...p,
-        posStyle,
-        tackStyle: this.tackStyle(i),
-        style: this.cardStyle(p.anim),
-        slotId: 'proj-' + p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        captionLine: 'from production, ' + (p.year || ''),
-        pencilLine: p.title.toLowerCase() + ', ' + (p.year || '').replace(' — ', '–'),
-        stampEl: this.renderStamp(this.stamps[p.title], 0.8),
-        ...this.stockStyles(),
-        tagsText: p.tags.join('  ·  '),
-        onClick: () => this.setState({ openIdx: this.projects.indexOf(p) }),
-      };
-    };
-
-    const cards = visible.map(mkCard);
-    const wallFronts = cards.filter((c) => !this.backTitles[c.title]);
-    const wallBacks = cards.filter((c) => this.backTitles[c.title]);
-
-    const ghostSlot = this.slotFor(visible.length);
-    const ghost = mobile ? null : {
-      posStyle: {
-        position: 'absolute', left: ghostSlot.l, top: ghostSlot.t * scale + 'px', width: ghostSlot.w * scale + 'px',
-        transform: `rotate(${ghostSlot.r}deg)`, zIndex: 1, pointerEvents: 'none',
-        animation: `${enterName} .45s ease ${visible.length * 0.07}s both`,
-      },
-      tackStyle: this.tackStyle(visible.length),
-    };
-
-    let wallH = 0;
-    if (!mobile) {
-      visible.forEach((p, i) => {
-        const slot = this.slotFor(i);
-        wallH = Math.max(wallH, (slot.t + slot.w / 1.55 + 62) * scale);
-      });
-      wallH = Math.max(wallH, (ghostSlot.t + ghostSlot.w / 1.55 + 62) * scale);
-    }
-    const wallStyle = mobile
-      ? { position: 'relative', display: 'flex', flexDirection: 'column', gap: '40px' }
-      : { position: 'relative', height: wallH + 'px', maxWidth: '1150px', margin: '0 auto' };
-
-    const chipRots = [-1.5, 1.2, -0.8, 1.6, -1.1];
-    const chipBase = {
-      position: 'relative', padding: '7px 15px 7px 22px', borderRadius: '3px',
-      fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', cursor: 'pointer',
-      userSelect: 'none', transition: 'all .2s', boxShadow: '0 3px 8px rgba(0,0,0,.35)',
-    };
-    const chips = this.cats.map((c, i) => ({
+    const chipBase = { padding: '7px 16px', borderRadius: '999px', fontFamily: mono, fontSize: '12px', letterSpacing: '.04em', cursor: 'pointer', userSelect: 'none', transition: 'all .2s' };
+    const chips = this.cats.map((c) => ({
       label: c,
-      onClick: () => this.setState((s) => ({ filter: c, flip: !s.flip })),
+      onClick: () => this.setState({ filter: c }),
       style: c === f
-        ? { ...chipBase, transform: `rotate(${chipRots[i % 5]}deg)`, background: 'linear-gradient(180deg,#f0d9a8,#e4c98c)', color: '#3d331c', border: '1px solid rgba(110,90,45,.55)' }
-        : { ...chipBase, transform: `rotate(${chipRots[i % 5]}deg)`, background: 'linear-gradient(180deg,#d9cdb0,#cbbd9c)', color: '#4a4433', border: '1px solid rgba(110,100,75,.5)' },
+        ? { ...chipBase, background: 'rgba(240,217,168,.12)', color: '#f0d9a8', border: '1px solid rgba(240,217,168,.55)' }
+        : { ...chipBase, background: 'rgba(147,160,232,.06)', color: '#93a0e8', border: '1px solid rgba(150,160,220,.28)' },
     }));
 
+    // ---- panorama ----
+    const H = 216, horizonY = 132;
+    const beacons = this.projects.map((p, i) => {
+      const dark = p.status === 'dark';
+      const c = this.pal[dark ? 'dark' : p.color];
+      const x = 4 + ((i * 0.618034) % 1) * 92;
+      const elev = 10 + ((i * 37) % 24);
+      const fs = 0.75 + ((i * 13) % 5) * 0.14;
+      const match = f === 'all' || p.cat === f;
+      const hovered = this.state.hoverIdx === i;
+      const here = p.title === 'This website';
+      return {
+        tip: here ? `${p.title} · ${this.codeFor(p)} · you are standing in this one` : `${p.title} · ${this.codeFor(p)}${dark ? ' · dark' : ''}`,
+        ring: here ? { position: 'absolute', inset: '9px', border: '1px dashed rgba(240,217,168,.55)', borderRadius: '50%', animation: 'haloBreath 4s ease-in-out infinite', pointerEvents: 'none' } : null,
+        wrapStyle: {
+          position: 'absolute', left: x + '%', top: (horizonY - elev) + 'px', transform: 'translate(-50%,-50%)',
+          width: '46px', height: '46px', cursor: 'pointer', zIndex: 3,
+          opacity: match ? 1 : 0.12, filter: hovered ? 'brightness(1.9)' : 'none',
+          transition: 'opacity .35s, filter .25s',
+        },
+        halo: { position: 'absolute', left: '50%', top: '50%', width: Math.round(34 * fs) + 'px', height: Math.round(34 * fs) + 'px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${c.glow},${dark ? 0.1 : 0.55}) 0%, transparent 64%)`, filter: 'blur(2px)', animation: this.charAnim(p), pointerEvents: 'none' },
+        core: { position: 'absolute', left: '50%', top: '50%', width: Math.max(3, Math.round(5 * fs)) + 'px', height: Math.max(3, Math.round(5 * fs)) + 'px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: dark ? '#4d5670' : '#fff', boxShadow: `0 0 ${Math.round(8 * fs)}px ${Math.round(2 * fs)}px rgba(${c.glow},${dark ? 0.2 : 0.85})`, animation: this.coreAnim(p), pointerEvents: 'none' },
+        reflect: refl && !dark ? { position: 'absolute', left: '50%', top: (23 + elev) + 'px', transform: 'translateX(-50%)', width: '2.5px', height: Math.round(14 + elev * 0.7) + 'px', background: `linear-gradient(180deg, rgba(${c.glow},.4) 0%, transparent 100%)`, filter: 'blur(1.2px)', animation: this.charAnim(p), pointerEvents: 'none' } : null,
+        onClick: () => this.setState({ openIdx: i }),
+        onEnter: () => this.setState({ hoverIdx: i }),
+        onLeave: () => this.setState({ hoverIdx: null }),
+      };
+    });
+
+    const stars = [
+      'radial-gradient(1.4px 1.4px at 12% 12%, rgba(255,255,255,.55), transparent)',
+      'radial-gradient(1px 1px at 26% 32%, rgba(255,255,255,.38), transparent)',
+      'radial-gradient(1.2px 1.2px at 41% 9%, rgba(200,206,240,.5), transparent)',
+      'radial-gradient(1px 1px at 57% 24%, rgba(255,255,255,.32), transparent)',
+      'radial-gradient(1.5px 1.5px at 72% 14%, rgba(240,217,168,.42), transparent)',
+      'radial-gradient(1px 1px at 86% 28%, rgba(255,255,255,.4), transparent)',
+      'radial-gradient(1px 1px at 8% 44%, rgba(200,206,240,.3), transparent)',
+      'radial-gradient(1.2px 1.2px at 64% 40%, rgba(255,255,255,.28), transparent)',
+      'radial-gradient(1px 1px at 94% 8%, rgba(255,255,255,.35), transparent)',
+      'radial-gradient(1px 1px at 33% 50%, rgba(200,206,240,.25), transparent)',
+    ].join(',');
+
+    const sceneStyle = {
+      position: 'relative', width: '100%', overflow: 'hidden',
+      flex: 1, display: 'flex', flexDirection: 'column',
+      background: 'linear-gradient(180deg,#131628 0%,#0d1122 190px,#0a0d1a 100%)',
+    };
+    const panoStyle = {
+      position: 'relative', height: H + 'px', overflow: 'hidden', flex: 'none',
+      background: (starfield ? stars + ', ' : '') + 'linear-gradient(180deg,rgba(19,22,40,0) 0%,#0e1428 62%,#0d1224 100%)',
+    };
+    const seaStyle = {
+      position: 'absolute', left: 0, right: 0, top: horizonY + 'px', bottom: 0,
+      background: 'repeating-linear-gradient(0deg, rgba(147,160,232,.028) 0 1px, transparent 1px 7px), linear-gradient(180deg,#0c1122,#080b18)',
+    };
+    const horizonStyle = {
+      position: 'absolute', left: 0, right: 0, top: horizonY + 'px', height: '1px',
+      background: 'linear-gradient(90deg, transparent 2%, rgba(147,160,232,.22) 30%, rgba(147,160,232,.22) 70%, transparent 98%)',
+    };
+    const moonStyle = { position: 'absolute', top: '-70px', right: '10%', width: '280px', height: '280px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(147,160,232,.11) 0%, transparent 66%)', pointerEvents: 'none' };
+    const railStyle = {
+      position: 'absolute', left: 0, right: 0, bottom: 0, height: '30px', zIndex: 4, pointerEvents: 'none',
+      borderTop: '1px solid rgba(147,160,232,.13)',
+      background: 'repeating-linear-gradient(90deg, rgba(6,8,16,.95) 0 3px, transparent 3px 72px), linear-gradient(180deg, rgba(6,8,16,.55), rgba(6,8,16,.95))',
+    };
+
+    // ---- register ----
+    const cols = '48px 40px minmax(0,1fr) 130px 64px 130px 56px';
+    const colHeaderStyle = mobile ? { display: 'none' } : {
+      display: 'grid', gridTemplateColumns: cols, gap: '14px', alignItems: 'baseline',
+      padding: '12px 10px 9px', fontFamily: mono, fontSize: '10px', letterSpacing: '.16em',
+      textTransform: 'uppercase', color: '#5f6ec4', borderBottom: '1px solid rgba(150,160,220,.1)',
+    };
+
+    const lights = visible.map((p) => {
+      const i = this.projects.indexOf(p);
+      const dark = p.status === 'dark';
+      const c = this.pal[dark ? 'dark' : p.color];
+      const pl = this.pill(p);
+      return {
+        ...p,
+        no: String(i + 1).padStart(3, '0'),
+        code: this.codeFor(p),
+        deskCols: !mobile,
+        mobilePill: mobile,
+        mobileChar: mobile,
+        mobileCharLine: `${this.codeFor(p)} · est. ${p.est}`,
+        rowStyle: mobile
+          ? { display: 'flex', alignItems: 'center', gap: '16px', padding: '18px 8px', borderBottom: '1px solid rgba(150,160,220,.09)', cursor: 'pointer', transition: 'background .25s', background: this.state.hoverIdx === i ? 'rgba(147,160,232,.06)' : 'transparent' }
+          : { display: 'grid', gridTemplateColumns: cols, gap: '14px', alignItems: 'center', padding: '15px 10px', borderBottom: '1px solid rgba(150,160,220,.09)', cursor: 'pointer', transition: 'background .25s', background: this.state.hoverIdx === i ? 'rgba(147,160,232,.06)' : 'transparent' },
+        noStyle: { fontFamily: mono, fontSize: '11px', color: '#4d5680', display: mobile ? 'none' : 'block' },
+        miniBox: { position: 'relative', width: '36px', height: '36px', flex: 'none' },
+        miniHalo: { position: 'absolute', left: '50%', top: '50%', width: '30px', height: '30px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${c.glow},${dark ? 0.08 : 0.45}) 0%, transparent 64%)`, filter: 'blur(1.5px)', animation: this.charAnim(p), pointerEvents: 'none' },
+        miniCore: { position: 'absolute', left: '50%', top: '50%', width: '6px', height: '6px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: dark ? '#4d5670' : '#fff', boxShadow: `0 0 7px 2px rgba(${c.glow},${dark ? 0.2 : 0.8})`, animation: this.coreAnim(p), pointerEvents: 'none' },
+        nameStyle: { fontFamily: "'Gloock', serif", fontSize: mobile ? '19px' : '20px', color: dark ? '#9aa1c4' : '#eef0fb', lineHeight: 1.15 },
+        descStyle: { fontSize: '14px', fontStyle: 'italic', color: dark ? '#767e9f' : '#a5aed4', lineHeight: 1.45, textWrap: 'pretty' },
+        charStyle: { fontFamily: mono, fontSize: '12.5px', letterSpacing: '.06em', color: dark ? '#7a83ad' : `rgb(${c.glow})`, whiteSpace: 'nowrap' },
+        estStyle: { fontFamily: mono, fontSize: '12px', color: '#8a93c4' },
+        pillLabel: pl.label, pillStyle: pl.style,
+        onClick: () => this.setState({ openIdx: i }),
+        onEnter: () => this.setState({ hoverIdx: i }),
+        onLeave: () => this.setState({ hoverIdx: null }),
+      };
+    });
+
+    const innerStyle = { position: 'relative', width: '100%', boxSizing: 'border-box', maxWidth: '1060px', margin: '0 auto', padding: 'clamp(18px,3.5vw,34px) clamp(16px,4vw,40px) clamp(30px,5vw,48px)' };
+
     const openP = this.state.openIdx == null ? null : this.projects[this.state.openIdx];
+    const pl = openP ? this.pill(openP) : null;
     const open = openP ? {
       ...openP,
-      tagsText: openP.tags.join('  ·  '),
-      stampEl: this.renderStamp(this.stamps[openP.title], 1.15),
+      ...this.bigLamp(openP),
+      no: String(this.projects.indexOf(openP) + 1).padStart(3, '0'),
+      code: this.codeFor(openP),
+      decoded: this.decode(openP),
       slotId: 'proj-' + openP.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      pillLabel: pl.label, pillStyle: pl.style,
+      tagsText: openP.tags.join('  ·  '),
     } : null;
 
     return {
-      chips, open, wallFronts, wallBacks, wallStyle, ghost,
-      countLine: `${visible.length} of ${this.projects.length} pinned — ${this.quips[f]}`,
+      chips, beacons, lights, open,
+      sceneStyle, panoStyle, seaStyle, horizonStyle, moonStyle, railStyle, colHeaderStyle, innerStyle,
+      litCount: this.projects.filter((p) => p.status === 'lit').length,
+      countLine: `${visible.length} of ${this.projects.length} lights · ${this.quips[f]}`,
       closeOverlay: () => this.setState({ openIdx: null }),
       stopProp: (e) => e.stopPropagation(),
     };
   }
 }
-
 </script>
 </body>
 </html>
