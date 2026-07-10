@@ -11,8 +11,21 @@ interface Props {
 const { width, height, tilt = false } = Astro.props;
 ---
 <svg width={width} height={height} viewBox="0 0 26 30" fill="none" style={tilt ? 'transform:rotate(-4deg)' : undefined}>
-	<path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" />
+	<path class="lamp" d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" />
 	<rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4" />
 	<path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4" />
 	<path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none" />
 </svg>
+
+<style>
+	/* The lamp is lit, not painted: the mock's own lampPulse on the flame.
+	   The reduced-motion kill switch leaves it resting at full brightness. */
+	.lamp {
+		animation: lampPulse 5s ease-in-out infinite;
+	}
+
+	@keyframes lampPulse {
+		0%, 100% { opacity: .55; }
+		50%      { opacity: 1; }
+	}
+</style>
