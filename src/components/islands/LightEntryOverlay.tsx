@@ -116,9 +116,9 @@ export default function LightEntryOverlay({ project, catHere = false, catDesigns
 						</div>
 
 						<div className="light-entry__meta">
-							<span>first lit · <span className="light-entry__meta-value">{project.firstLit}</span></span>
+							<span>established · <span className="light-entry__meta-value">{project.firstLit}</span></span>
 							<span>district · <span className="light-entry__meta-value">argsea</span></span>
-							<span>keeper · <span className="light-entry__meta-value">j</span></span>
+							<span>keeper · <span className="light-entry__meta-value">j. smith</span></span>
 						</div>
 
 						<div className="light-entry__cols">
@@ -154,7 +154,7 @@ export default function LightEntryOverlay({ project, catHere = false, catDesigns
 
 						<div className="light-entry__footer">
 							<span className="light-entry__tags">{(project.tags ?? []).join('  ·  ')}</span>
-							<span className="light-entry__signoff">- j, keeper</span>
+							<span className="light-entry__signoff">logged by the keeper</span>
 						</div>
 					</div>
 				</div>

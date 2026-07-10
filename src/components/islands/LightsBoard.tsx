@@ -1,10 +1,11 @@
 // The stateful part of the Projects page: filter pills + count line, the
-// night coast (beacons positioned from the API's wallPos), the light-list
-// register below it, and the shared entry overlay. Content arrives as
-// build-time props; this island only holds `filter`, `open`, and the
-// row-flash state a beacon click triggers.
+// night coast (beacon x pinned by the API's wallPos, everything else per
+// the mock's own formulas), the light-list register below it, and the
+// shared entry overlay. Content arrives as build-time props; this island
+// only holds `filter`, `open`, and the row-flash state a beacon click
+// triggers.
 import { useEffect, useRef, useState } from 'react';
-import type { FigureheadDesign, Light, Project, WallPos } from '../../lib/api';
+import type { FigureheadDesign, Project, WallPos } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { pageCatPick } from '../../lib/catSpots';
 import { useLamp } from './useLamp';
@@ -24,55 +25,43 @@ const QUIPS: Record<Filter, string> = {
 	'tinkering':    'the small lights, kept for love',
 };
 
-// Not in the design comp: the plan's one asked-for distinctive touch, a dot
-// on the active pill that runs the real engine. Each filter borrows the
-// characteristic of the light that best represents it rather than an
-// arbitrary blink, so the dot reads as a light off this coast.
-const FILTER_LIGHT: Record<Filter, Light> = {
-	'all':          { kind: 'iso',   color: 'white', period: 3, extinguished: '', letter: '' },
-	'backend':      { kind: 'flash', color: 'white', period: 8, extinguished: '', letter: '' },
-	'games':        { kind: 'flash', color: 'green', period: 4, extinguished: '', letter: '' },
-	'this website': { kind: 'iso',   color: 'white', period: 3, extinguished: '', letter: '' },
-	'tinkering':    { kind: 'fixed', color: 'red',   period: 0, extinguished: '', letter: '' },
-};
+// The panorama's fixed aspect (the mock's own H/horizonY, H=260): horizon
+// sits 150px down a 260px band (see .coast__pano in LightsBoard.css). Every
+// beacon's y and the water furniture below are placed against this number.
+const HORIZON_Y = 150;
 
-// The panorama's fixed aspect: horizon sits 132px down a 352px band (a 220px
-// sea below it), same numbers the wallPos mapping below is built against.
-// Only the sea's own depth grew; HORIZON_Y itself never moves, which is what
-// keeps every lamp, headland, and the boat's track pinned in place below.
-const HORIZON_Y = 132;
-
-// The This-website light stands on its own islet, front-center and closer to
-// the viewer than the horizon-pinned lamps, so it scales up rather than
-// riding the per-index jitter the rest use; the other lights are untouched.
+// Beacon scale: 0.6 for every far light hugging the horizon, 1.5 for the
+// This-website light standing front-center on its own islet. Operator
+// amendment: the mock's own golden-ratio x formula is NOT used here; a
+// beacon's horizontal position still comes from the API's wallPos (below),
+// This-website's overriding to front-center regardless of its own wallPos.
+const FAR_SCALE = 0.6;
 const HERE_SCALE = 1.5;
 
-// Specular twinkle near the horizon: deterministic positions/timings (no
-// Math.random) so server and client render the same dots on hydration. Long,
-// staggered delays and durations keep them from ever syncing up.
-const TWINKLES = [
-	{ left: '6%',  top: '10px', delay: '.2s',  duration: '6.5s' },
-	{ left: '14%', top: '26px', delay: '2.1s', duration: '7.8s' },
-	{ left: '23%', top: '6px',  delay: '4.4s', duration: '5.6s' },
-	{ left: '34%', top: '32px', delay: '1.3s', duration: '8.4s' },
-	{ left: '46%', top: '15px', delay: '5.9s', duration: '6.9s' },
-	{ left: '58%', top: '38px', delay: '.8s',  duration: '7.2s' },
-	{ left: '67%', top: '9px',  delay: '3.6s', duration: '9.1s' },
-	{ left: '78%', top: '28px', delay: '6.7s', duration: '6.1s' },
-	{ left: '88%', top: '18px', delay: '2.9s', duration: '8.8s' },
-	{ left: '95%', top: '40px', delay: '4.9s', duration: '7.5s' },
-];
-
 /** A safety net for a project with no wallPos yet: the design's deterministic scatter. */
-function fallbackSpot(index: number): { x: number; y: number } {
-	return { x: (index * 61.8034) % 100, y: ((index * 37) % 24) / 24 * 100 };
+function fallbackX(index: number): number {
+	return (index * 61.8034) % 100;
 }
 
-/** wallPos (0-100 shore/elevation percentages) to panorama pixels; elevPx also drives the reflection streak below. */
-function beaconGeometry(wallPos: WallPos | null, index: number) {
-	const { x, y } = wallPos ?? fallbackSpot(index);
-	const elevPx = 10 + y * 0.24;
-	return { left: `${4 + x * 0.92}%`, top: `${HORIZON_Y - elevPx}px`, elevPx };
+/** wallPos's x (0-100 shore percentage) to a panorama left offset; the existing mapping, unchanged. */
+function beaconGeometry(wallPos: WallPos | null, index: number): { left: string } {
+	const x = wallPos?.x ?? fallbackX(index);
+	return { left: `${4 + x * 0.92}%` };
+}
+
+/** The mock's far-light y: clamped to the horizon, jittered a couple px per index so the coast doesn't read as a ruled line. */
+function farY(index: number): number {
+	return Math.round(HORIZON_Y - 13 * FAR_SCALE + ((index * 37) % 5) - 2);
+}
+
+/** The mock's near-light y: This-website's fixed stand, well below the horizon toward the viewer. */
+function hereY(): number {
+	return Math.round(HORIZON_Y + 62 - 13 * HERE_SCALE);
+}
+
+/** The mock's halo/core size factor: per-index jitter scaled by how close the light stands (depth 0 far, 1 here). */
+function sizeFactor(index: number, depth: 0 | 1): number {
+	return (0.8 + ((index * 13) % 5) * 0.08) * (0.6 + depth * 0.75);
 }
 
 function reducedMotion(): boolean {
@@ -145,47 +134,30 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 
 			<div className="coast">
 				<div className="coast__pano">
-					<div className="coast__sea">
-						{TWINKLES.map((twinkle, index) => (
-							<span
-								key={index}
-								className="coast__twinkle"
-								style={{ left: twinkle.left, top: twinkle.top, animationDelay: twinkle.delay, animationDuration: twinkle.duration }}
-							/>
-						))}
-						<div className="coast__swell coast__swell--a" />
-						<div className="coast__swell coast__swell--b" />
-						<div className="coast__swell coast__swell--c" />
-						<div className="coast__swell coast__swell--d" />
-						<div className="coast__glitter" />
-						<div className="coast__boat">
-							<svg className="coast__boat-hull" width="40" height="28" viewBox="0 0 66 46" fill="none">
-								<path d="M31 3 V32" stroke="#7c88c9" strokeWidth="1.3" />
-								<path d="M33 6 L46 29 L33 29 Z" fill="#c9c2ab" />
-								<path d="M29 8 L18 29 L29 29 Z" fill="#a89f85" />
-								<path d="M31 2 L39 5 L31 8 Z" fill="#f0d9a8" />
-								<path d="M12 32 L52 32 L46 40 L18 40 Z" fill="#1e2547" stroke="#7c88c9" strokeWidth="1.1" strokeLinejoin="round" />
-								<path d="M15 35 H49" stroke="rgba(240,217,168,.4)" strokeWidth=".8" />
-							</svg>
-						</div>
+					<div className="coast__sea" />
+					<div className="coast__horizon" />
+					<div className="coast__swell coast__swell--a" />
+					<div className="coast__swell coast__swell--b" />
+					<div className="coast__swell coast__swell--c" />
+					<div className="coast__swell coast__swell--d" />
+					<div className="coast__glitter" />
+					<div className="coast__boat">
+						<svg className="coast__boat-hull" width="34" height="24" viewBox="0 0 66 46" fill="none">
+							<path d="M31 3 V32" stroke="#7c88c9" strokeWidth="1.3" />
+							<path d="M33 6 L46 29 L33 29 Z" fill="#c9c2ab" />
+							<path d="M29 8 L18 29 L29 29 Z" fill="#a89f85" />
+							<path d="M31 2 L39 5 L31 8 Z" fill="#f0d9a8" />
+							<path d="M12 32 L52 32 L46 40 L18 40 Z" fill="#1e2547" stroke="#7c88c9" strokeWidth="1.1" strokeLinejoin="round" />
+						</svg>
 					</div>
-					{/* A private little squall, way out: charm on the same sailing
-					    idiom as the boat, just up in the sky band above the horizon
-					    rather than nested in .coast__sea. */}
+					{/* A private little squall, way out: the same sailBy idiom as
+					    the boat, just up in the sky band above the horizon. */}
 					<div className="coast__squall">
 						<div className="coast__squall-rain" />
 						<div className="coast__squall-cloud coast__squall-cloud--mid" title="a passing squall. somebody's on call tonight" />
 						<div className="coast__squall-cloud coast__squall-cloud--left" />
 						<div className="coast__squall-cloud coast__squall-cloud--right" />
 						<div className="coast__squall-shadow" />
-					</div>
-					<div className="coast__horizon-glow coast__horizon-glow--above" />
-					<div className="coast__horizon" />
-					<div className="coast__horizon-glow coast__horizon-glow--below" />
-					<div className="coast__coastline">
-						<div className="coast__headland coast__headland--a" />
-						<div className="coast__headland coast__headland--b" />
-						<div className="coast__headland coast__headland--c" />
 					</div>
 					{projects.map((project, index) => (
 						<Beacon
@@ -210,7 +182,7 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 						<span className="register__head-district">District · argsea</span>
 					</div>
 					<div className="register__cols">
-						<span>no.</span><span /><span>light</span><span>characteristic</span><span>first lit</span><span>status</span><span />
+						<span>no.</span><span /><span>light</span><span>characteristic</span><span>est.</span><span>status</span><span />
 					</div>
 					{/* Every row stays mounted; a non-matching one just collapses in
 					    place (see .register__row--collapsed in LightsBoard.css), so
@@ -251,22 +223,26 @@ function Beacon({ project, index, matches, isHere, hovered, onActivate, onHover,
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
-	// A little size jitter per beacon, deterministic on index (design's touch);
-	// the here light additionally scales up by HERE_SCALE on top of its own jitter.
-	const fs = 0.75 + ((index * 13) % 5) * 0.14;
-	const scale = isHere ? HERE_SCALE : 1;
-	// Hovering grows the halo box itself (mock's ~1.45x); the core's own box
+
+	const depth: 0 | 1 = isHere ? 1 : 0;
+	const scale = isHere ? HERE_SCALE : FAR_SCALE;
+	// The mock's own per-index halo/core jitter; wrapper/stub/islet/reflect
+	// sizes below are bucket-constant (only scale/depth, not index), so those
+	// stay plain CSS keyed on .beacon--here rather than computed here.
+	const fs = sizeFactor(index, depth);
+	const wrapSize = Math.round(46 * scale);
+	// Hovering grows the halo box itself (mock's 1.45x); the core's own box
 	// stays put and only its glow blooms, via coreBlur/coreSpread below.
-	const haloSize = Math.round(34 * fs * scale * (hovered ? 1.45 : 1));
-	const coreSize = Math.max(3, Math.round(5 * fs * scale));
-	const coreBlur = Math.round((hovered ? 15 : 8) * fs * scale);
-	const coreSpread = Math.round((hovered ? 5 : 2) * fs * scale);
-	// This-website stands front-center on its own islet rather than riding
-	// the horizon; elevPx still feeds the reflect formula below, just as a
-	// deliberately taller stand-in for "closer, so its reflection runs longer."
-	const { left, top, elevPx } = isHere
-		? { left: '50%', top: `${HORIZON_Y + 46}px`, elevPx: 40 }
-		: beaconGeometry(project.wallPos, index);
+	const haloSize = Math.round(34 * fs * (hovered ? 1.45 : 1));
+	const coreSize = Math.max(3, Math.round(5 * fs));
+	const coreBlur = Math.round((hovered ? 15 : 8) * fs);
+	const coreSpread = Math.round((hovered ? 5 : 2) * fs);
+
+	// Operator amendment: This-website ignores its own wallPos and stands
+	// front-center as the focal point; every other light still takes its x
+	// from the API's wallPos, clamped to the horizon on y (no elevation).
+	const left = isHere ? '50%' : beaconGeometry(project.wallPos, index).left;
+	const top = `${isHere ? hereY() : farY(index)}px`;
 
 	// Hovering holds the lamp at full bright instead of blinking through it:
 	// forcing 'fixed' routes ignite() through its static-opacity branch (the
@@ -295,7 +271,7 @@ function Beacon({ project, index, matches, isHere, hovered, onActivate, onHover,
 	return (
 		<div
 			className={`beacon${isHere ? ' beacon--here' : ''}${hovered ? ' beacon--hover' : ''}`}
-			style={{ left, top, opacity: matches ? 1 : 0.12, pointerEvents: matches ? 'auto' : 'none' }}
+			style={{ left, top, width: wrapSize, height: wrapSize, opacity: matches ? 1 : 0.12, pointerEvents: matches ? 'auto' : 'none' }}
 			role="button"
 			tabIndex={matches ? 0 : -1}
 			aria-hidden={!matches}
@@ -312,30 +288,32 @@ function Beacon({ project, index, matches, isHere, hovered, onActivate, onHover,
 			onFocus={onHover}
 			onBlur={onUnhover}
 		>
-			{isHere ? (
-				// A wide islet instead of a tower, carrying a miniature graveyard
-				// and a shipwreck easter egg: the light you're standing in gets to
-				// stand on something, not just burn at the horizon like the rest.
-				<div className="beacon__islet">
-					<div className="beacon__grave">
-						<span className="beacon__headstone beacon__headstone--a" />
-						<span className="beacon__headstone beacon__headstone--b" />
-						<span className="beacon__cross" />
-						<span className="beacon__headstone beacon__headstone--c" />
-					</div>
-					<div className="beacon__wreck">
-						<span className="beacon__wreck-hull" />
-						<span className="beacon__wreck-mast" />
-					</div>
-				</div>
-			) : (
-				// Grounds the beacon instead of leaving it floating like a star:
-				// the tower reaches exactly from the lamp down to the horizon
-				// (elevPx is that same distance), rooted in a small knoll.
-				<div className="beacon__base" style={{ height: elevPx }}>
-					<div className="beacon__knoll" />
+			{isHere && (
+				// A wide islet instead of open water: the light you're standing
+				// in gets to stand on something, carrying a miniature graveyard
+				// and a shipwreck easter egg tucked at its far edge.
+				<div className="beacon__islet" />
+			)}
+			{isHere && (
+				<div className="beacon__grave">
+					<span className="beacon__headstone beacon__headstone--a" />
+					<span className="beacon__headstone beacon__headstone--b" />
+					<span className="beacon__cross" />
+					<span className="beacon__headstone beacon__headstone--c" />
+					<span className="beacon__headstone beacon__headstone--d" />
+					<span className="beacon__wreck-hull" />
+					<span className="beacon__wreck-piece" />
+					<span className="beacon__wreck-mast" />
 				</div>
 			)}
+			{/* Every light, here or far, is this same lighthouse-stub SVG,
+			    scaled per .beacon--here below: open water, no headlands. */}
+			<svg className="beacon__stub" width="12" height="16" viewBox="0 0 26 34" fill="none">
+				<path d="M13 3 L17 10 L9 10 Z" fill="rgba(150,160,220,.4)" />
+				<rect x="10" y="10" width="6" height="15" fill="none" stroke="rgba(150,160,220,.45)" strokeWidth="1.3" />
+				<path d="M10 14 h6 M10 19 h6" stroke="rgba(150,160,220,.34)" strokeWidth="1.1" />
+				<path d="M5 30 q8 -4 16 0" stroke="rgba(150,160,220,.36)" strokeWidth="1.3" fill="none" />
+			</svg>
 			<div
 				ref={haloRef}
 				className="beacon__halo"
@@ -355,7 +333,7 @@ function Beacon({ project, index, matches, isHere, hovered, onActivate, onHover,
 				<div
 					ref={reflectRef}
 					className="beacon__reflect"
-					style={{ top: `${23 + elevPx}px`, height: `${Math.round(14 + elevPx * 0.7)}px`, background: `linear-gradient(180deg, rgba(${glow},1) 0%, transparent 100%)` }}
+					style={{ background: `linear-gradient(180deg, rgba(${glow},1) 0%, transparent 100%)` }}
 				/>
 			)}
 			{isHere && (
@@ -428,7 +406,7 @@ function RegisterRow({ project, index, matches, flashed, hovered, onOpen, onHove
 					<StatusPill dark={dark} year={light.extinguished} className="register__pill--mobile" />
 				</div>
 				<span className="register__desc" style={dark ? { color: '#767e9f' } : undefined}>{project.shortDesc}</span>
-				<span className="register__mobile-char">{code} · first lit {project.firstLit}</span>
+				<span className="register__mobile-char">{code} · est. {project.firstLit}</span>
 			</div>
 			<span className="register__code" style={{ color: dark ? '#7a83ad' : `rgb(${glow})` }}>{code}</span>
 			<span className="register__first-lit">{project.firstLit}</span>
@@ -444,16 +422,10 @@ function StatusPill({ dark, year, className }: { dark: boolean; year: string; cl
 }
 
 function FilterChip({ name, active, onSelect }: { name: Filter; active: boolean; onSelect: (name: Filter) => void }) {
-	const light = FILTER_LIGHT[name];
-	const glow = glowFor(light);
-	// Same 0.25 floor as the you-are-here ring: a blinking active chip dims
-	// in its dark phase instead of vanishing off the filter row entirely.
-	const dotRef = useLamp(light, 0.9, 0.25);
-
 	return (
 		<button className={`chip ${active ? 'chip--active' : 'chip--idle'}`} onClick={() => onSelect(name)}>
 			{name}
-			{active && <span ref={dotRef} className="chip__dot" style={{ background: `rgb(${glow})`, boxShadow: `0 0 6px 2px rgba(${glow},.7)` }} />}
+			{active && <span className="chip__dot" />}
 		</button>
 	);
 }

@@ -51,6 +51,21 @@
 
 	/* Shape & rhythm */
 	--gutter: clamp(20px, 5vw, 52px);
+
+	/* The night sky's star speckles: shared between the full-page starfield
+	   layer and the coast panorama's own background (Projects.dc.html's
+	   `stars` array, reused both places there too). */
+	--stars-bg:
+		radial-gradient(1.4px 1.4px at 12% 12%, rgba(255, 255, 255, .55), transparent),
+		radial-gradient(1px 1px at 26% 32%, rgba(255, 255, 255, .38), transparent),
+		radial-gradient(1.2px 1.2px at 41% 9%, rgba(200, 206, 240, .5), transparent),
+		radial-gradient(1px 1px at 57% 24%, rgba(255, 255, 255, .32), transparent),
+		radial-gradient(1.5px 1.5px at 72% 14%, rgba(240, 217, 168, .42), transparent),
+		radial-gradient(1px 1px at 86% 28%, rgba(255, 255, 255, .4), transparent),
+		radial-gradient(1px 1px at 8% 44%, rgba(200, 206, 240, .3), transparent),
+		radial-gradient(1.2px 1.2px at 64% 40%, rgba(255, 255, 255, .28), transparent),
+		radial-gradient(1px 1px at 94% 8%, rgba(255, 255, 255, .35), transparent),
+		radial-gradient(1px 1px at 33% 50%, rgba(200, 206, 240, .25), transparent);
 }
 
 html {
@@ -169,7 +184,8 @@ a {
 	padding: 7px 16px;
 	border-radius: 999px;
 	font-family: var(--font-mono);
-	font-size: 12.5px;
+	font-size: 12px;
+	letter-spacing: .04em;
 	cursor: pointer;
 	user-select: none;
 	transition: all .2s;
@@ -177,12 +193,14 @@ a {
 }
 
 .chip--idle {
-	border: 1px solid var(--border-chip);
-	color: var(--text-body);
+	border: 1px solid rgba(150, 160, 220, .28);
+	background: rgba(147, 160, 232, .06);
+	color: var(--periwinkle);
 }
 
 .chip--active {
-	border: 1.5px dashed rgba(240, 217, 168, .6);
+	border: 1.5px dashed rgba(240, 217, 168, .7);
+	background: rgba(240, 217, 168, .07);
 	color: var(--gold);
 }
 
@@ -301,6 +319,15 @@ a {
 @keyframes backdropOut {
 	from { opacity: 1; }
 	to   { opacity: 0; }
+}
+
+/* The one sailing idiom every drifting-across-the-sky/sea object shares
+   (cirrus, the boat, the squall): left, not transform, so a wrapper's own
+   top/width/height stay simple inline numbers instead of fighting a second
+   positioning system. */
+@keyframes sailBy {
+	0%   { left: -8%; }
+	100% { left: 108%; }
 }
 
 /* Firefly dots: positions are per-page, glow and drift are shared */
