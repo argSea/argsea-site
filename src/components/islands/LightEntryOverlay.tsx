@@ -14,6 +14,15 @@ import { useEscapeKey } from './useEscapeKey';
 import HarborCat from './HarborCat';
 import './LightEntryOverlay.css';
 
+// The close animation's own duration: the entryDown/backdropOut CSS
+// (LightEntryOverlay.css) is timed to the same 220ms so the real unmount
+// lands exactly when the animation finishes, not before or after it.
+const CLOSE_MS = 220;
+
+function reducedMotion(): boolean {
+	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 interface Props {
 	project:     Project;
 	catHere?:    boolean;
@@ -32,7 +41,27 @@ export default function LightEntryOverlay({ project, catHere = false, catDesigns
 	const closeRef = useRef<HTMLButtonElement>(null);
 	const [photoIndex, setPhotoIndex] = useState(0);
 
-	useEscapeKey(true, onClose);
+	// The overlay animates itself shut before telling the parent to unmount
+	// it: closing guards against a second trigger mid-animation, and reduced
+	// motion (no entryDown/backdropOut to wait on) just closes immediately.
+	const [closing, setClosing] = useState(false);
+	const closeTimer = useRef<number | undefined>(undefined);
+
+	const requestClose = () => {
+		if (closing) {
+			return;
+		}
+		if (reducedMotion()) {
+			onClose();
+			return;
+		}
+		setClosing(true);
+		closeTimer.current = window.setTimeout(onClose, CLOSE_MS);
+	};
+
+	useEscapeKey(true, requestClose);
+
+	useEffect(() => () => window.clearTimeout(closeTimer.current), []);
 
 	useEffect(() => {
 		closeRef.current?.focus();
@@ -49,13 +78,13 @@ export default function LightEntryOverlay({ project, catHere = false, catDesigns
 	// context, same as HarborCatDirector's cat-mount, instead of being
 	// trapped under the cat inside .page's own context.
 	return createPortal(
-		<div className="overlay-backdrop" onClick={onClose}>
-			<div className="light-entry-wrap" onClick={(event) => event.stopPropagation()}>
+		<div className={`overlay-backdrop${closing ? ' overlay-backdrop--closing' : ''}`} onClick={requestClose}>
+			<div className={`light-entry-wrap${closing ? ' light-entry-wrap--closing' : ''}`} onClick={(event) => event.stopPropagation()}>
 				{catHere && <div className="cat-mount cat-mount--light-entry"><HarborCat pose="perched" context="postcard" designs={catDesigns} /></div>}
 				<div className="overlay-card light-entry">
 					<div className="overlay-head">
 						<span className="overlay-kicker">Light List · argsea district · No. {registryNo(project.order)}</span>
-						<button ref={closeRef} className="pill-close" onClick={onClose}>close ✕</button>
+						<button ref={closeRef} className="pill-close" onClick={requestClose}>close ✕</button>
 					</div>
 
 					<div className="light-entry__body">

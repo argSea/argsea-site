@@ -1,9 +1,9 @@
 // Projects page (fixtures build), now the lights: the coast pins one beacon
 // per published project, filtering dims the rest of the coast without
-// moving them while the register narrows to just the matches, a beacon
-// click scrolls to its row without opening the entry, and reduced motion
-// holds every lamp static (no Web Animations API animation running), per
-// the hard "every light burns steady" rule.
+// moving them while the register keeps every row mounted and collapses the
+// non-matches in place, a beacon click scrolls to its row without opening
+// the entry, and reduced motion holds every lamp static (no Web Animations
+// API animation running), per the hard "every light burns steady" rule.
 import { test, expect } from '@playwright/test';
 
 test('the coast lights one beacon per published project', async ({ page }) => {
@@ -17,8 +17,9 @@ test('filtering narrows the register and dims the rest of the coast', async ({ p
 
 	await page.locator('.filter-row .chip', { hasText: 'games' }).click();
 
-	// the register only lists what matches
-	const rows = page.locator('.register .register__row');
+	// every row stays mounted; only what matches stays expanded
+	await expect(page.locator('.register .register__row')).toHaveCount(8);
+	const rows = page.locator('.register .register__row:not(.register__row--collapsed)');
 	await expect(rows).toHaveCount(1);
 	await expect(rows.locator('.register__name')).toHaveText('Meo Wave Race');
 
@@ -77,7 +78,7 @@ test('an extinguished light reads dark on the register and in its entry', async 
 	await page.goto('/projects');
 	await page.locator('.filter-row .chip', { hasText: 'games' }).click();
 
-	const row = page.locator('.register .register__row').first();
+	const row = page.locator('.register .register__row:not(.register__row--collapsed)');
 	await expect(row.locator('.register__status .status-pill')).toHaveText('dark · 2020');
 
 	await row.click();

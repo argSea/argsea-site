@@ -10,12 +10,70 @@ const copy = await getSiteCopy();
 const catDesigns = await getFigurehead();
 ---
 <BaseLayout title="The lights · argsea.com" active="projects" quipKey="quipProjects">
+	<!-- Real furniture, not backdrop: each piece carries data-plx so the
+	     mousemove script below can move it independently. The ambient sky
+	     ramp stays a page::before background (see the style block); this sits
+	     on top of it and behind everything else, same z-index:-1 layer. -->
+	<div class="sky" aria-hidden="true">
+		<div class="sky__milkyway" data-plx="3"></div>
+		<span class="sky__twinkle" style="left: 6%; top: 190px; animation-delay: .2s; animation-duration: 4.2s" data-plx="4"></span>
+		<span class="sky__twinkle" style="left: 16%; top: 60px; animation-delay: 1s; animation-duration: 5.1s" data-plx="4"></span>
+		<span class="sky__twinkle" style="left: 29%; top: 250px; animation-delay: .5s; animation-duration: 6s" data-plx="4"></span>
+		<span class="sky__twinkle" style="left: 41%; top: 100px; animation-delay: 2s; animation-duration: 4.6s" data-plx="4"></span>
+		<span class="sky__twinkle" style="left: 58%; top: 210px; animation-delay: 1.4s; animation-duration: 5.5s" data-plx="4"></span>
+		<span class="sky__twinkle" style="left: 72%; top: 45px; animation-delay: .8s; animation-duration: 6.4s" data-plx="4"></span>
+		<span class="sky__twinkle" style="left: 86%; top: 160px; animation-delay: 2.4s; animation-duration: 5.8s" data-plx="4"></span>
+		<div class="sky__cirrus sky__cirrus--a" data-plx="5"></div>
+		<div class="sky__cirrus sky__cirrus--b" data-plx="5"></div>
+		<div class="sky__moon-halo" data-plx="7"></div>
+		<div class="sky__moon-ring" data-plx="7"></div>
+		<div class="sky__moon-disc" data-plx="7">
+			<span class="sky__crater sky__crater--a"></span>
+			<span class="sky__crater sky__crater--b"></span>
+			<span class="sky__crater sky__crater--c"></span>
+		</div>
+	</div>
 	<section class="head">
 		<h1 class="head__title fade-up fade-up--1">The lights</h1>
 		<p class="head__intro fade-up fade-up--2">The view from the lamp room. Every system I keep burning is out there on the coast, logged by its <em>characteristic</em>, the blink that tells you which light you are looking at. Click one to read its entry.</p>
 	</section>
 	<LightsBoard client:load projects={projects} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
 </BaseLayout>
+
+<script>
+	// Mouse parallax for the sky furniture only: a small, self-contained
+	// listener rather than a React island, since nothing here needs state.
+	// Gated on pointer:fine + motion so touch devices and reduced-motion
+	// readers never pay for it. Astro ships page <script> as a module, which
+	// only ever runs once per load, so there's no repeat-mount to leak a
+	// second listener from.
+	if (matchMedia('(pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		let mouseX = 0;
+		let mouseY = 0;
+		let raf = 0;
+
+		const applyParallax = () => {
+			raf = 0;
+			const dx = mouseX / window.innerWidth - 0.5;
+			const dy = mouseY / window.innerHeight - 0.5;
+			// translate is its own CSS property, composed alongside transform
+			// rather than replacing it, so this never fights the keyframe
+			// transforms already animating the cirrus/craters/twinklers.
+			document.querySelectorAll<HTMLElement>('[data-plx]').forEach((el) => {
+				const factor = Number(el.dataset.plx) || 0;
+				el.style.translate = `${(-dx * factor).toFixed(1)}px ${(-dy * factor * 0.6).toFixed(1)}px`;
+			});
+		};
+
+		window.addEventListener('mousemove', (event) => {
+			mouseX = event.clientX;
+			mouseY = event.clientY;
+			if (!raf) {
+				raf = requestAnimationFrame(applyParallax);
+			}
+		});
+	}
+</script>
 
 <style>
 	.head {
@@ -68,12 +126,9 @@ const catDesigns = await getFigurehead();
 		inset: 0;
 		z-index: -1;
 		pointer-events: none;
-		/* The moon: a soft disc, its own blurred halo, and a thin low-opacity
-		   ring at roughly twice the disc's radius, high in the sky band near
-		   the header copy. Layer order matters: disc, halo, then ring, then
-		   the sky gradient underneath everything else. Scaled to about two
-		   thirds of its original size (disc falloff, halo, and ring radius
-		   all shrunk together): it was reading too big for the sky band. */
+		/* The moon moved to real .sky elements below (it needs its own DOM
+		   node to carry data-plx for the mousemove parallax); this pseudo now
+		   only draws the ambient ramp. */
 		/* The sky ramp: unlike the old two-stop version that flattened at
 		   .55 well before the coast began, this keeps darkening in more
 		   steps and its last stop is a fully opaque #080b18 (not an rgba,
@@ -81,10 +136,129 @@ const catDesigns = await getFigurehead();
 		   reached), the same terminal tone the coast itself ends on, hit
 		   well before any header's real height, so nothing below that point
 		   (register, footer) ever pops lighter again. */
-		background:
-			radial-gradient(circle at right 9% top 176px, rgba(234, 237, 250, .92) 0, rgba(210, 217, 245, .5) 12px, rgba(184, 193, 236, .16) 24px, transparent 36px),
-			radial-gradient(circle at right 9% top 176px, rgba(147, 160, 232, .16) 0, transparent 95px),
-			radial-gradient(circle at right 9% top 176px, transparent 52px, rgba(182, 192, 236, .13) 56px, transparent 60px),
-			linear-gradient(180deg, rgba(10, 13, 26, 0) 90px, rgba(11, 14, 29, .45) 260px, rgba(11, 14, 27, .72) 460px, #080b18 700px);
+		background: linear-gradient(180deg, rgba(10, 13, 26, 0) 90px, rgba(11, 14, 29, .45) 260px, rgba(11, 14, 27, .72) 460px, #080b18 700px);
 	}
+
+	/* --- sky furniture: real elements (not the ramp above) so mousemove
+	   parallax can move each piece by its own data-plx factor. Anchored the
+	   same way the old moon gradient was (right 9%/top 176px, translate
+	   -50%/-50% to recenter on that point) so its position stays proven
+	   across viewports without retuning. Sits behind the header copy, same
+	   z-index:-1 layer as .page::before, painted after it so the furniture
+	   reads on top of the ramp. */
+	.sky {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+	}
+
+	.sky__milkyway {
+		position: absolute;
+		left: -10%;
+		top: 60px;
+		width: 120%;
+		height: 120px;
+		transform: rotate(-9deg);
+		filter: blur(8px);
+		background:
+			radial-gradient(1px 1px at 8% 42%, rgba(222, 228, 250, .4), transparent),
+			radial-gradient(1px 1px at 18% 58%, rgba(222, 228, 250, .28), transparent),
+			radial-gradient(1px 1px at 27% 38%, rgba(222, 228, 250, .34), transparent),
+			radial-gradient(1px 1px at 38% 62%, rgba(222, 228, 250, .24), transparent),
+			radial-gradient(1px 1px at 47% 44%, rgba(222, 228, 250, .36), transparent),
+			radial-gradient(1px 1px at 58% 60%, rgba(222, 228, 250, .26), transparent),
+			radial-gradient(1px 1px at 68% 40%, rgba(222, 228, 250, .32), transparent),
+			radial-gradient(1px 1px at 79% 56%, rgba(222, 228, 250, .22), transparent),
+			radial-gradient(1px 1px at 90% 46%, rgba(222, 228, 250, .3), transparent),
+			linear-gradient(180deg, transparent, rgba(180, 190, 240, .05) 34%, rgba(207, 214, 245, .09) 50%, rgba(180, 190, 240, .045) 66%, transparent);
+	}
+
+	.sky__twinkle {
+		position: absolute;
+		width: 2px;
+		height: 2px;
+		border-radius: 50%;
+		background: #e8ebfa;
+		animation: skyTwinkle ease-in-out infinite;
+	}
+
+	@keyframes skyTwinkle {
+		0%, 100% { opacity: .2; }
+		50%      { opacity: .85; }
+	}
+
+	.sky__cirrus {
+		position: absolute;
+		left: -15%;
+		border-radius: 50%;
+		filter: blur(4px);
+		background: linear-gradient(180deg, rgba(200, 208, 245, .1), rgba(200, 208, 245, .015));
+	}
+
+	.sky__cirrus--a {
+		top: 50px;
+		width: 220px;
+		height: 16px;
+		animation: skyCirrusDrift 280s linear -60s infinite;
+	}
+
+	.sky__cirrus--b {
+		top: 130px;
+		width: 160px;
+		height: 13px;
+		opacity: .75;
+		animation: skyCirrusDrift 340s linear -210s infinite;
+	}
+
+	/* translateX, not left, to match .coast__boat's own sailing idiom
+	   (LightsBoard.css); the large negative delays above are what keep the
+	   two clouds from ever reading as a synced pair. */
+	@keyframes skyCirrusDrift {
+		from { transform: translateX(0); }
+		to   { transform: translateX(130vw); }
+	}
+
+	.sky__moon-halo,
+	.sky__moon-ring,
+	.sky__moon-disc {
+		position: absolute;
+		right: 9%;
+		top: 176px;
+		border-radius: 50%;
+	}
+
+	.sky__moon-halo {
+		width: 190px;
+		height: 190px;
+		transform: translate(50%, -50%);
+		background: radial-gradient(circle, rgba(147, 160, 232, .16) 0%, transparent 66%);
+	}
+
+	.sky__moon-ring {
+		width: 66px;
+		height: 66px;
+		transform: translate(50%, -50%);
+		border: 1px solid rgba(182, 192, 236, .16);
+		filter: blur(1px);
+	}
+
+	.sky__moon-disc {
+		width: 30px;
+		height: 30px;
+		transform: translate(50%, -50%);
+		background: radial-gradient(circle at 38% 32%, #eef0fc, #d2d9f5 55%, rgba(184, 193, 236, .6) 80%, transparent 100%);
+		box-shadow: 0 0 20px 6px rgba(210, 217, 245, .4);
+		overflow: hidden;
+	}
+
+	.sky__crater {
+		position: absolute;
+		border-radius: 50%;
+		background: rgba(150, 158, 196, .35);
+	}
+
+	.sky__crater--a { left: 32%; top: 38%; width: 5px;   height: 5px; }
+	.sky__crater--b { left: 58%; top: 56%; width: 3.5px; height: 3.5px; }
+	.sky__crater--c { left: 52%; top: 22%; width: 2.5px; height: 2.5px; }
 </style>

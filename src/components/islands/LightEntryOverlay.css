@@ -5,7 +5,14 @@
 .light-entry-wrap {
 	position: relative;
 	width: min(760px, 100%);
-	animation: lightEntryIn .4s ease both;
+	animation: entryUp .45s cubic-bezier(.2, .8, .25, 1) both;
+}
+
+/* Set by LightEntryOverlay.tsx once a close (✕, backdrop, Escape) has been
+   requested; entryDown runs in place of entryUp for the same ~220ms the
+   component waits before actually unmounting. */
+.light-entry-wrap--closing {
+	animation: entryDown .22s ease both;
 }
 
 .overlay-card.light-entry {
@@ -14,9 +21,14 @@
 	box-shadow: 0 30px 80px rgba(0, 0, 0, .65), inset 0 0 0 1px rgba(240, 217, 168, .06);
 }
 
-@keyframes lightEntryIn {
+@keyframes entryUp {
 	from { opacity: 0; transform: translateY(24px) scale(.985); }
 	to   { opacity: 1; transform: none; }
+}
+
+@keyframes entryDown {
+	from { opacity: 1; transform: none; }
+	to   { opacity: 0; transform: translateY(18px) scale(.985); }
 }
 
 .light-entry__body {

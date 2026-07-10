@@ -3,7 +3,7 @@
 // register below it, and the shared entry overlay. Content arrives as
 // build-time props; this island only holds `filter`, `open`, and the
 // row-flash state a beacon click triggers.
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FigureheadDesign, Light, Project, WallPos } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { pageCatPick } from '../../lib/catSpots';
@@ -42,6 +42,11 @@ const FILTER_LIGHT: Record<Filter, Light> = {
 // keeps every lamp, headland, and the boat's track pinned in place below.
 const HORIZON_Y = 132;
 
+// The This-website light stands on its own islet, front-center and closer to
+// the viewer than the horizon-pinned lamps, so it scales up rather than
+// riding the per-index jitter the rest use; the other lights are untouched.
+const HERE_SCALE = 1.5;
+
 // Specular twinkle near the horizon: deterministic positions/timings (no
 // Math.random) so server and client render the same dots on hydration. Long,
 // staggered delays and durations keep them from ever syncing up.
@@ -79,12 +84,6 @@ function matchesFilter(project: Project, target: Filter): boolean {
 	return target === 'all' || project.category === target;
 }
 
-// The register's FLIP glide duration: drives the WAAPI call below and times
-// the min-height settle's resizing window (its .4s CSS transition in
-// LightsBoard.css, matched by eye, not by reference); entering/leaving rows
-// are their own separate keyframes and don't use this.
-const GLIDE_MS = 400;
-
 interface Props {
 	projects:    Project[];
 	catEnabled:  boolean;
@@ -99,23 +98,10 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 	const [flashId, setFlashId] = useState<string | null>(null);
 	const flashTimer = useRef<number | undefined>(undefined);
 
-	// The register locks to its full-list size at mount so filtering swaps
-	// rows inside a steady page instead of yanking the footer up and down.
-	// It does eventually give height back (see the settle effect below): once
-	// a filter's leavers are gone, the lock glides to the survivors' real
-	// height rather than holding the full-list size forever.
-	const registerRef = useRef<HTMLDivElement | null>(null);
-	const [registerMin, setRegisterMin] = useState<number | undefined>(undefined);
-	const [registerResizing, setRegisterResizing] = useState(false);
-	const resizeTimer = useRef<number | undefined>(undefined);
-
-	useEffect(() => {
-		if (registerRef.current) {
-			setRegisterMin(registerRef.current.scrollHeight);
-		}
-	}, []);
-
-	useEffect(() => () => window.clearTimeout(resizeTimer.current), []);
+	// Shared between a beacon and its register row: hovering (or focusing)
+	// either one highlights both, keyed by project id rather than index so
+	// it survives the filter reordering neither list actually does anymore.
+	const [hoverId, setHoverId] = useState<string | null>(null);
 
 	useEffect(() => () => window.clearTimeout(flashTimer.current), []);
 
@@ -126,162 +112,15 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 	const close = () => setOpenId(null);
 
 	const matching = new Set(projects.filter((project) => matchesFilter(project, filter)).map((project) => project.id));
-	// The register only lists what matches; the coast keeps every beacon lit
-	// and dims the rest, so the panorama never reflows on a filter change.
+	// The coast keeps every beacon lit and dims the rest; the register keeps
+	// every row mounted too and collapses the rest (see .register__row in
+	// LightsBoard.css), so neither ever reflows on a filter change.
 	const visible = projects.filter((project) => matching.has(project.id));
 	const open = openId === null ? null : projects.find((project) => project.id === openId) ?? null;
 	const hereId = projects.find((project) => project.category === 'this website')?.id ?? null;
 	const burningCount = projects.filter((project) => !(project.light ?? DEFAULT_LIGHT).extinguished).length;
 
-	// FLIP glide on a filter change: survivors keep their row node (measured in
-	// pickFilter, animated below), leavers are pulled out of flow to fade in
-	// place at their captured top, newcomers mount fresh. rowNodes is the live
-	// map pickFilter reads from; flipFrom holds each survivor's pre-change top
-	// until the layout effect below applies the invert.
-	const rowNodes = useRef(new Map<string, HTMLDivElement>());
-	const flipFrom = useRef(new Map<string, number>());
-	const flipAnimations = useRef(new Map<string, Animation>());
-	const prevVisibleIds = useRef<Set<string>>(new Set(matching));
-	const [leaving, setLeaving] = useState<Map<string, { project: Project; top: number; left: number; width: number }>>(new Map());
-	const [enteringIds, setEnteringIds] = useState<Set<string>>(new Set());
-
-	// The register-void fix: once a filter's leavers are gone (or immediately,
-	// if there were none), glide the locked min-height to the survivors' real
-	// height instead of leaving a dead gap on a short filter. Guarded on
-	// registerMin already being set so this never fires on the initial mount
-	// pass, only after a real filter change; reduced motion just skips the
-	// transition (the global kill switch already strips it), so the re-lock
-	// there is instant with no extra branching needed.
-	useEffect(() => {
-		if (leaving.size > 0 || registerMin === undefined) {
-			return;
-		}
-		const node = registerRef.current;
-		if (!node) {
-			return;
-		}
-		// scrollHeight is clamped by the locked min-height still applied at
-		// this instant, so it never reads shorter than the current lock; drop
-		// it for the one synchronous measurement, then let the state update
-		// below put the real (old or new) value back.
-		const lockedMinHeight = node.style.minHeight;
-		node.style.minHeight = '';
-		const natural = node.scrollHeight;
-		node.style.minHeight = lockedMinHeight;
-		if (natural === registerMin) {
-			return;
-		}
-		setRegisterResizing(true);
-		setRegisterMin(natural);
-		window.clearTimeout(resizeTimer.current);
-		resizeTimer.current = window.setTimeout(() => setRegisterResizing(false), GLIDE_MS);
-	}, [leaving]);
-
-	// Same cleanup discipline as the lamp animations: cancel in-flight glides
-	// on unmount so nothing keeps ticking against a detached node.
-	useEffect(() => () => {
-		flipAnimations.current.forEach((animation) => animation.cancel());
-	}, []);
-
-	// Survivors glide from their pre-change position via WAAPI, which the CSS
-	// reduced-motion kill switch never touches on its own; pickFilter simply
-	// never populates flipFrom when motion is reduced, so this loop is a no-op.
-	useLayoutEffect(() => {
-		flipFrom.current.forEach((oldTop, id) => {
-			const node = rowNodes.current.get(id);
-			if (!node) {
-				return;
-			}
-			const delta = oldTop - node.getBoundingClientRect().top;
-			if (!delta) {
-				return;
-			}
-			flipAnimations.current.get(id)?.cancel();
-			const animation = node.animate(
-				[{ transform: `translateY(${delta}px)` }, { transform: 'none' }],
-				{ duration: GLIDE_MS, easing: 'ease', fill: 'backwards' },
-			);
-			flipAnimations.current.set(id, animation);
-		});
-		flipFrom.current.clear();
-	}, [filter]);
-
-	const settleLeave = (id: string) => {
-		setLeaving((previous) => {
-			if (!previous.has(id)) {
-				return previous;
-			}
-			const next = new Map(previous);
-			next.delete(id);
-			return next;
-		});
-	};
-
-	const pickFilter = (next: Filter) => {
-		if (next === filter) {
-			return;
-		}
-		const nextIds = new Set(projects.filter((project) => matchesFilter(project, next)).map((project) => project.id));
-
-		// Reduced motion is an instant swap: no captured rects, no glide, no
-		// fade, the register just shows the new set on the next render.
-		if (reducedMotion()) {
-			setFilter(next);
-			setLeaving(new Map());
-			setEnteringIds(new Set());
-			prevVisibleIds.current = nextIds;
-			return;
-		}
-
-		// left/width ride along with top: a leaver is pulled to position:absolute,
-		// whose containing block is .register's padding box, not the content box
-		// in-flow rows sit in, so the fade-out needs its own captured horizontal
-		// rect too or it snaps to the padding edge for the length of the fade.
-		const containerRect = registerRef.current?.getBoundingClientRect();
-		const containerTop = containerRect?.top ?? 0;
-		const containerLeft = containerRect?.left ?? 0;
-		const departing = new Map<string, { project: Project; top: number; left: number; width: number }>();
-		flipFrom.current.clear();
-
-		prevVisibleIds.current.forEach((id) => {
-			const node = rowNodes.current.get(id);
-			if (!node) {
-				return;
-			}
-			if (nextIds.has(id)) {
-				flipFrom.current.set(id, node.getBoundingClientRect().top);
-				return;
-			}
-			const project = projects.find((candidate) => candidate.id === id);
-			if (project) {
-				const rect = node.getBoundingClientRect();
-				departing.set(id, {
-					project,
-					top: rect.top - containerTop,
-					left: rect.left - containerLeft,
-					width: rect.width,
-				});
-			}
-		});
-
-		const arriving = new Set<string>();
-		nextIds.forEach((id) => {
-			if (!prevVisibleIds.current.has(id)) {
-				arriving.add(id);
-			}
-		});
-
-		setFilter(next);
-		setLeaving((previous) => {
-			const merged = new Map(previous);
-			// a row back in the new filter cancels its own leave, even mid-fade
-			nextIds.forEach((id) => merged.delete(id));
-			departing.forEach((value, id) => merged.set(id, value));
-			return merged;
-		});
-		setEnteringIds(arriving);
-		prevVisibleIds.current = nextIds;
-	};
+	const pickFilter = (next: Filter) => setFilter(next);
 
 	// A beacon click never opens the entry: it points at the light's row.
 	const goToRow = (id: string) => {
@@ -330,6 +169,16 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 							</svg>
 						</div>
 					</div>
+					{/* A private little squall, way out: charm on the same sailing
+					    idiom as the boat, just up in the sky band above the horizon
+					    rather than nested in .coast__sea. */}
+					<div className="coast__squall">
+						<div className="coast__squall-rain" />
+						<div className="coast__squall-cloud coast__squall-cloud--mid" title="a passing squall. somebody's on call tonight" />
+						<div className="coast__squall-cloud coast__squall-cloud--left" />
+						<div className="coast__squall-cloud coast__squall-cloud--right" />
+						<div className="coast__squall-shadow" />
+					</div>
 					<div className="coast__horizon-glow coast__horizon-glow--above" />
 					<div className="coast__horizon" />
 					<div className="coast__horizon-glow coast__horizon-glow--below" />
@@ -345,14 +194,17 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 							index={index}
 							matches={matching.has(project.id)}
 							isHere={project.id === hereId}
+							hovered={hoverId === project.id}
 							onActivate={goToRow}
+							onHover={() => setHoverId(project.id)}
+							onUnhover={() => setHoverId((current) => (current === project.id ? null : current))}
 						/>
 					))}
 					<div className="coast__rail" />
 					<span className="coast__caption">the coast tonight · {burningCount} burning</span>
 				</div>
 
-				<div className={`register${registerResizing ? ' register--resizing' : ''}`} ref={registerRef} style={{ minHeight: registerMin }}>
+				<div className="register">
 					<div className="register__head">
 						<span className="register__head-label">The light list</span>
 						<span className="register__head-district">District · argsea</span>
@@ -360,36 +212,20 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 					<div className="register__cols">
 						<span>no.</span><span /><span>light</span><span>characteristic</span><span>first lit</span><span>status</span><span />
 					</div>
-					{visible.map((project) => (
+					{/* Every row stays mounted; a non-matching one just collapses in
+					    place (see .register__row--collapsed in LightsBoard.css), so
+					    the register never reflows rows in or out on a filter change. */}
+					{projects.map((project, index) => (
 						<RegisterRow
 							key={project.id}
 							project={project}
+							index={index}
+							matches={matching.has(project.id)}
 							flashed={flashId === project.id}
-							entering={enteringIds.has(project.id)}
-							rowRef={(node) => {
-								if (node) {
-									rowNodes.current.set(project.id, node);
-								} else {
-									rowNodes.current.delete(project.id);
-									// this id's glide (if any) is riding a node that's now
-									// detached; nothing will ever cancel it otherwise
-									flipAnimations.current.get(project.id)?.cancel();
-									flipAnimations.current.delete(project.id);
-								}
-							}}
+							hovered={hoverId === project.id}
 							onOpen={setOpenId}
-						/>
-					))}
-					{Array.from(leaving.entries()).map(([id, { project, top, left, width }]) => (
-						<RegisterRow
-							key={id}
-							project={project}
-							flashed={false}
-							leavingTop={top}
-							leavingLeft={left}
-							leavingWidth={width}
-							onOpen={setOpenId}
-							onLeaveEnd={() => settleLeave(id)}
+							onHover={() => setHoverId(project.id)}
+							onUnhover={() => setHoverId((current) => (current === project.id ? null : current))}
 						/>
 					))}
 				</div>
@@ -405,41 +241,60 @@ interface BeaconProps {
 	index:      number;
 	matches:    boolean;
 	isHere:     boolean;
+	hovered:    boolean;
 	onActivate: (id: string) => void;
+	onHover:    () => void;
+	onUnhover:  () => void;
 }
 
-function Beacon({ project, index, matches, isHere, onActivate }: BeaconProps) {
+function Beacon({ project, index, matches, isHere, hovered, onActivate, onHover, onUnhover }: BeaconProps) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
-	// A little size jitter per beacon, deterministic on index (design's touch)
+	// A little size jitter per beacon, deterministic on index (design's touch);
+	// the here light additionally scales up by HERE_SCALE on top of its own jitter.
 	const fs = 0.75 + ((index * 13) % 5) * 0.14;
-	const haloSize = Math.round(34 * fs);
-	const coreSize = Math.max(3, Math.round(5 * fs));
-	const { left, top, elevPx } = beaconGeometry(project.wallPos, index);
+	const scale = isHere ? HERE_SCALE : 1;
+	// Hovering grows the halo box itself (mock's ~1.45x); the core's own box
+	// stays put and only its glow blooms, via coreBlur/coreSpread below.
+	const haloSize = Math.round(34 * fs * scale * (hovered ? 1.45 : 1));
+	const coreSize = Math.max(3, Math.round(5 * fs * scale));
+	const coreBlur = Math.round((hovered ? 15 : 8) * fs * scale);
+	const coreSpread = Math.round((hovered ? 5 : 2) * fs * scale);
+	// This-website stands front-center on its own islet rather than riding
+	// the horizon; elevPx still feeds the reflect formula below, just as a
+	// deliberately taller stand-in for "closer, so its reflection runs longer."
+	const { left, top, elevPx } = isHere
+		? { left: '50%', top: `${HORIZON_Y + 46}px`, elevPx: 40 }
+		: beaconGeometry(project.wallPos, index);
 
-	const haloRef = useLamp(light, dark ? 0.1 : 0.55);
-	const coreRef = useLamp(light, dark ? 0.2 : 0.85);
+	// Hovering holds the lamp at full bright instead of blinking through it:
+	// forcing 'fixed' routes ignite() through its static-opacity branch (the
+	// same one an actually-fixed light already uses), so no new timing is
+	// needed and the real characteristic just resumes once the hover ends.
+	const effectiveLight = hovered ? { ...light, kind: 'fixed' as const } : light;
+	const haloRef = useLamp(effectiveLight, dark ? 0.1 : 0.55);
+	const coreRef = useLamp(effectiveLight, dark ? 0.2 : 0.85);
 	// A dark phase dims the reflection rather than vanishing it: same floor
 	// pattern as the you-are-here ring, so the water never goes fully blank.
-	const reflectRef = useLamp(light, 0.4, 0.1);
+	const reflectRef = useLamp(effectiveLight, 0.4, 0.1);
 	// The you-are-here ring rides the same phase-locked clock as the lamp for a
 	// blinking characteristic, dimming to a quarter opacity in the dark phase
 	// rather than vanishing, so it keeps wayfinding through long dark spans. A
 	// fixed light keeps its old independent idle breath (CSS, untouched below).
 	const blinkingRing = light.kind !== 'fixed';
-	const ringRef = useLamp(light, dark ? 0.25 : 1, 0.25);
+	const ringRef = useLamp(effectiveLight, dark ? 0.25 : 1, 0.25);
 
 	const code = codeFor(light);
 	const tip = isHere
-		? `${project.title} · ${code} · you are standing in this one`
+		? `${project.title} · ${code} · you are here. but you are also there. wait`
 		: `${project.title} · ${code}${dark ? ' · dark' : ''}`;
 
 	const activate = () => onActivate(project.id);
 
 	return (
 		<div
-			className="beacon"
+			className={`beacon${isHere ? ' beacon--here' : ''}${hovered ? ' beacon--hover' : ''}`}
 			style={{ left, top, opacity: matches ? 1 : 0.12, pointerEvents: matches ? 'auto' : 'none' }}
 			role="button"
 			tabIndex={matches ? 0 : -1}
@@ -452,13 +307,35 @@ function Beacon({ project, index, matches, isHere, onActivate }: BeaconProps) {
 					activate();
 				}
 			}}
+			onMouseEnter={onHover}
+			onMouseLeave={onUnhover}
+			onFocus={onHover}
+			onBlur={onUnhover}
 		>
-			{/* Grounds the beacon instead of leaving it floating like a star:
-			    the tower reaches exactly from the lamp down to the horizon
-			    (elevPx is that same distance), rooted in a small knoll. */}
-			<div className="beacon__base" style={{ height: elevPx }}>
-				<div className="beacon__knoll" />
-			</div>
+			{isHere ? (
+				// A wide islet instead of a tower, carrying a miniature graveyard
+				// and a shipwreck easter egg: the light you're standing in gets to
+				// stand on something, not just burn at the horizon like the rest.
+				<div className="beacon__islet">
+					<div className="beacon__grave">
+						<span className="beacon__headstone beacon__headstone--a" />
+						<span className="beacon__headstone beacon__headstone--b" />
+						<span className="beacon__cross" />
+						<span className="beacon__headstone beacon__headstone--c" />
+					</div>
+					<div className="beacon__wreck">
+						<span className="beacon__wreck-hull" />
+						<span className="beacon__wreck-mast" />
+					</div>
+				</div>
+			) : (
+				// Grounds the beacon instead of leaving it floating like a star:
+				// the tower reaches exactly from the lamp down to the horizon
+				// (elevPx is that same distance), rooted in a small knoll.
+				<div className="beacon__base" style={{ height: elevPx }}>
+					<div className="beacon__knoll" />
+				</div>
+			)}
 			<div
 				ref={haloRef}
 				className="beacon__halo"
@@ -471,7 +348,7 @@ function Beacon({ project, index, matches, isHere, onActivate }: BeaconProps) {
 					width: coreSize,
 					height: coreSize,
 					background: dark ? '#4d5670' : '#fff',
-					boxShadow: `0 0 ${Math.round(8 * fs)}px ${Math.round(2 * fs)}px rgba(${glow},1)`,
+					boxShadow: `0 0 ${coreBlur}px ${coreSpread}px rgba(${glow},1)`,
 				}}
 			/>
 			{!dark && (
@@ -491,24 +368,22 @@ function Beacon({ project, index, matches, isHere, onActivate }: BeaconProps) {
 }
 
 interface RegisterRowProps {
-	project:       Project;
-	flashed:       boolean;
-	entering?:     boolean;                            // fades in in place, delayed so the glide reads first
-	leavingTop?:   number;                              // set only for a row mid fade-out: its captured, register-relative top/left/width
-	leavingLeft?:  number;
-	leavingWidth?: number;
-	rowRef?:       (node: HTMLDivElement | null) => void; // in-flow rows only, so pickFilter can measure them for the glide
-	onOpen:        (id: string) => void;
-	onLeaveEnd?:   () => void;                          // fires when a leaving row's fade-out finishes, so the parent can drop it
+	project:   Project;
+	index:     number;    // drives the initial-load stagger delay
+	matches:   boolean;   // false collapses the row in place (see .register__row--collapsed)
+	flashed:   boolean;
+	hovered:   boolean;
+	onOpen:    (id: string) => void;
+	onHover:   () => void;
+	onUnhover: () => void;
 }
 
-function RegisterRow({ project, flashed, entering = false, leavingTop, leavingLeft, leavingWidth, rowRef, onOpen, onLeaveEnd }: RegisterRowProps) {
+function RegisterRow({ project, index, matches, flashed, hovered, onOpen, onHover, onUnhover }: RegisterRowProps) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
 	const code = codeFor(light);
 	const no = registryNo(project.order);
-	const leaving = leavingTop !== undefined;
 
 	const haloRef = useLamp(light, dark ? 0.08 : 0.45);
 	const coreRef = useLamp(light, dark ? 0.2 : 0.8);
@@ -517,19 +392,19 @@ function RegisterRow({ project, flashed, entering = false, leavingTop, leavingLe
 
 	const className = [
 		'register__row',
-		entering ? 'register__row--entering' : '',
-		leaving ? 'register__row--leaving' : '',
+		matches ? '' : 'register__row--collapsed',
+		hovered ? 'register__row--hover' : '',
 		flashed ? 'register__row--flash' : '',
 	].filter(Boolean).join(' ');
 
 	return (
 		<div
 			id={`light-row-${project.id}`}
-			ref={rowRef}
 			className={className}
-			style={leaving ? { top: leavingTop, left: leavingLeft, width: leavingWidth, pointerEvents: 'none' } : undefined}
+			style={{ animationDelay: `${index * 45}ms` }}
 			role="button"
-			tabIndex={leaving ? -1 : 0}
+			tabIndex={matches ? 0 : -1}
+			aria-hidden={!matches}
 			onClick={open}
 			onKeyDown={(event) => {
 				if (event.key === 'Enter' || event.key === ' ') {
@@ -537,7 +412,10 @@ function RegisterRow({ project, flashed, entering = false, leavingTop, leavingLe
 					open();
 				}
 			}}
-			onAnimationEnd={leaving ? onLeaveEnd : undefined}
+			onMouseEnter={onHover}
+			onMouseLeave={onUnhover}
+			onFocus={onHover}
+			onBlur={onUnhover}
 		>
 			<span className="register__no">{no}</span>
 			<div className="register__lamp">
