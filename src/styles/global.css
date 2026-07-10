@@ -286,11 +286,6 @@ a {
 	50%      { transform: rotate(3deg); }
 }
 
-@keyframes swayChip {
-	0%, 100% { transform: rotate(-1deg); }
-	50%      { transform: rotate(1deg); }
-}
-
 @keyframes backdropIn {
 	from { opacity: 0; }
 	to   { opacity: 1; }

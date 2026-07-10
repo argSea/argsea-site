@@ -1,8 +1,8 @@
 // "Lights I keep burning" on the homepage: the featured trio (or the first
 // three by order, so the section never empties). Each card carries the same
 // decoded characteristic line the entry overlay does, from the shared decode
-// helper. Clicking a card opens the same Light List entry the coast uses.
-// The only state is which card is open.
+// helper. Clicking a card opens the same Light List entry the coast uses;
+// hovering one holds its glow-frame blink steady bright.
 import { useState } from 'react';
 import type { FigureheadDesign, Light, Project } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor } from '../../lib/lightChar';
@@ -54,9 +54,13 @@ function LightCard({ project, bobClass, onOpen }: { project: Project; bobClass: 
 	const light: Light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
+	const [hovered, setHovered] = useState(false);
 
 	const haloRef = useLamp(light, dark ? 0.1 : 0.5);
 	const coreRef = useLamp(light, dark ? 0.2 : 0.85);
+	// Same light, same shared clock as the halo/core above: the frame blinks in
+	// lockstep with them, no timing of its own. Hover holds it steady bright.
+	const glowRef = useLamp(light, dark ? 0.15 : 1, 0.15, hovered);
 
 	return (
 		<div
@@ -64,6 +68,8 @@ function LightCard({ project, bobClass, onOpen }: { project: Project; bobClass: 
 			role="button"
 			tabIndex={0}
 			onClick={onOpen}
+			onMouseEnter={() => setHovered(true)}
+			onMouseLeave={() => setHovered(false)}
 			onKeyDown={(event) => {
 				if (event.key === 'Enter' || event.key === ' ') {
 					event.preventDefault();
@@ -72,6 +78,7 @@ function LightCard({ project, bobClass, onOpen }: { project: Project; bobClass: 
 			}}
 		>
 			<div className={`home-lights__card ${bobClass}`}>
+				<div ref={glowRef} className="home-lights__glow-frame" style={{ borderColor: `rgba(${glow},.35)`, boxShadow: `0 0 22px rgba(${glow},.16), inset 0 0 18px rgba(${glow},.07)` }} />
 				<div className="home-lights__lamp">
 					<div ref={haloRef} className="home-lights__halo" style={{ background: `radial-gradient(circle, rgba(${glow},1) 0%, transparent 64%)` }} />
 					<div ref={coreRef} className="home-lights__core" style={{ background: dark ? '#4d5670' : '#fff', boxShadow: `0 0 8px 2px rgba(${glow},1)` }} />

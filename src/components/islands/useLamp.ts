@@ -10,9 +10,12 @@ import { ignite } from '../../lib/lightChar';
  * actually changes, never on an unrelated re-render. The ref callback is
  * memoized so React doesn't churn it (and el.current) on every render.
  * floor is the dark-phase opacity (0 by default); a caller can raise it so
- * the element dims instead of vanishing between flashes.
+ * the element dims instead of vanishing between flashes. held freezes the
+ * element at peak opacity instead of igniting it, for a caller that wants to
+ * hold the lamp steady bright on its own trigger (e.g. hover) without
+ * touching the shared phase-locked clock.
  */
-export function useLamp(light: Light, peak: number, floor = 0): React.RefCallback<HTMLElement> {
+export function useLamp(light: Light, peak: number, floor = 0, held = false): React.RefCallback<HTMLElement> {
 	const el = useRef<HTMLElement | null>(null);
 	const setEl = useCallback((node: HTMLElement | null) => { el.current = node; }, []);
 
@@ -20,9 +23,14 @@ export function useLamp(light: Light, peak: number, floor = 0): React.RefCallbac
 		if (!el.current) {
 			return;
 		}
+		if (held) {
+			el.current.getAnimations().forEach((animation) => animation.cancel());
+			el.current.style.opacity = String(peak);
+			return;
+		}
 		const animation = ignite(el.current, light, peak, floor);
 		return () => animation?.cancel();
-	}, [light.kind, light.color, light.period, light.extinguished, light.letter, peak, floor]);
+	}, [light.kind, light.color, light.period, light.extinguished, light.letter, peak, floor, held]);
 
 	return setEl;
 }
