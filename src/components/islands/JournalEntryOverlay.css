@@ -1,0 +1,149 @@
+/* The journal entry: a warm-paper card shared by the Notes page and the home
+   journal strip. It sits on the dark site chrome, so it carries its own
+   cool-ink / warm-tan-mono palette rather than the page's periwinkle tokens. */
+
+.letter-wrap {
+	position: relative;
+	width: min(680px, 100%);
+	animation: cardInNote .35s ease both;
+}
+
+.letter-wrap.letter-wrap--closing {
+	animation: cardOut .22s ease both;
+}
+
+.overlay-backdrop.overlay-backdrop--closing {
+	animation: backdropOut .22s ease both;
+}
+
+.letter {
+	width: 100%;
+	box-sizing: border-box;
+	background: linear-gradient(180deg, #f1ecdd, #eae3d1);
+	border: none;
+}
+
+/* Book-spine radius, asymmetric like the list paper; overrides .overlay-card's
+   14px via the compound selector's higher specificity, not source order. */
+.overlay-card.letter {
+	border-radius: 6px 12px 12px 6px;
+}
+
+.letter .overlay-head {
+	border-bottom: 1.5px dashed rgba(110, 100, 75, .35);
+}
+
+.letter .overlay-kicker {
+	color: #8a7f63;
+}
+
+.letter .pill-close {
+	color: #7d7357;
+	border-color: rgba(110, 100, 75, .4);
+}
+
+.letter .pill-close:hover {
+	color: #262a45;
+	border-color: rgba(60, 55, 80, .6);
+}
+
+/* The cat perches on the entry's top-left edge when the pick lands on this overlay */
+.cat-mount--note {
+	top: -50px;
+	left: 34px;
+	width: 64px;
+	height: 74px;
+	z-index: 3;
+}
+
+@keyframes cardInNote {
+	from { opacity: 0; transform: rotate(1.5deg) translateY(34px) scale(.97); }
+	to   { opacity: 1; transform: rotate(0deg) translateY(0) scale(1); }
+}
+
+@keyframes cardOut {
+	from { opacity: 1; transform: none; }
+	to   { opacity: 0; transform: rotate(-2deg) translateY(26px) scale(.97); }
+}
+
+@keyframes backdropOut {
+	from { opacity: 1; }
+	to   { opacity: 0; }
+}
+
+.letter__content {
+	padding: clamp(24px, 5vw, 36px);
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	position: relative;
+}
+
+.letter__conditions {
+	font-style: italic;
+	font-size: 14.5px;
+	color: #9b8f6d;
+	margin-bottom: -6px;
+}
+
+.letter__title {
+	font-family: var(--font-display);
+	font-size: clamp(24px, 4vw, 30px);
+	color: #20233c;
+	line-height: 1.2;
+}
+
+.letter__body {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.letter__body p {
+	margin: 0;
+	font-size: 17px;
+	line-height: 1.7;
+	color: #3b3f5e;
+}
+
+/* Sign-off (left) and doodle marginalia (right) share one row, like the mock */
+.letter__signrow {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 24px;
+	flex-wrap: wrap;
+}
+
+.letter__signature {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: #8a7f63;
+	margin-top: 8px;
+}
+
+/* The doodle + its handwritten caption, tilted like something scrawled in the
+   margin after the fact */
+.letter__marginalia {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 2px;
+	margin-top: -4px;
+	padding-right: 6px;
+	transform: rotate(-2deg);
+}
+
+.letter__doodle {
+	flex: none;
+	width: 100px;
+	height: auto;
+	overflow: visible;
+}
+
+.letter__doodle-caption {
+	font-family: var(--font-body);
+	font-style: italic;
+	font-size: 13px;
+	color: #8a7f63;
+}

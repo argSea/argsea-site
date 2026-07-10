@@ -14,7 +14,9 @@ import LighthouseMark from '../components/LighthouseMark.astro';
 import WaveDivider from '../components/WaveDivider.astro';
 import HomeLights from '../components/islands/HomeLights';
 import JournalStrip from '../components/JournalStrip.astro';
-import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead, getNotes } from '../lib/api';
+import JournalStripDirector from '../components/islands/JournalStripDirector';
+import NextHobbyChip from '../components/islands/NextHobbyChip';
+import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead, getNotes, getDoodles, getSuggestions } from '../lib/api';
 
 const projects = await getProjects();
 // The list arrives order-sorted; the cap is defensive: the admin owns the
@@ -24,9 +26,11 @@ const preview = (featured.length > 0 ? featured : projects).slice(0, 3);
 // getNotes() sorts newest-first; cap at three so a growing journal never
 // crowds the strip below the mantel
 const journalPreview = (await getNotes()).slice(0, 3);
+const journalDoodles = await getDoodles();
 const copy = await getSiteCopy();
 const keeper = await getKeeperProfile();
 const catDesigns = await getFigurehead();
+const suggestions = await getSuggestions();
 
 // The smuggler's hold: the copy singleton's egg toggles gate what gets wired.
 // Bottle off (or an emptied proverb list) leaves the boat sailing, unpokeable.
@@ -47,21 +51,15 @@ const manifest = [
 ];
 
 // The list arrives order-sorted: active hobbies are the mantel, resting ones
-// the graveyard. Sways cycle through hand-tuned timings so the chips don't beat
-// in unison.
+// the graveyard. Tilts alternate so the headstones don't all lean the same way.
 const hobbies = await getHobbies();
 const learning = hobbies.filter((hobby) => hobby.active);
 const resting = hobbies.filter((hobby) => !hobby.active);
 
-const sways = [
-	'swayChip 5s ease-in-out infinite',
-	'swayChip 6s ease-in-out 1s infinite',
-	'swayChip 5.5s ease-in-out .5s infinite',
-	'swayChip 6.5s ease-in-out 1.5s infinite',
-];
+const tilts = [-2, 1.5, -1, 2.2, -1.5, 1.8];
 const graveyardChips = resting.map((hobby, index) => ({
 	text: `${hobby.name} ${hobby.epitaph}`.trim(),
-	sway: sways[index % sways.length],
+	tilt: tilts[index % tilts.length],
 }));
 ---
 <BaseLayout title="Justin Smith · argsea.com" active="hello" quipKey="quipHello">
@@ -96,7 +94,8 @@ const graveyardChips = resting.map((hobby, index) => ({
 		<HomeLights client:load projects={preview} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
 	</section>
 
-	<JournalStrip notes={journalPreview} />
+	<JournalStrip notes={journalPreview} doodles={journalDoodles} />
+	<JournalStripDirector client:idle notes={journalPreview} doodles={journalDoodles} signoff={keeper.signoff} />
 
 	<!-- the cargo manifest -->
 	<section class="manifest">
@@ -131,16 +130,28 @@ const graveyardChips = resting.map((hobby, index) => ({
 				<span class="panel__aside">One tweak from perfect, forever.</span>
 			</div>
 			<div class="panel panel--graveyard">
+				<div class="grave-lantern" aria-hidden="true">
+					<span class="grave-lantern__post"></span>
+					<span class="grave-lantern__box"></span>
+					<span class="grave-lantern__core"></span>
+					<span class="grave-lantern__halo"></span>
+				</div>
 				<span class="panel__label">The hobby graveyard</span>
 				<div class="panel__chips">
 					{graveyardChips.map((chip) => (
-						<span class="grave-chip" style={`animation:${chip.sway}`}>{chip.text}</span>
+						<span class="grave-chip" style={`--tilt:${chip.tilt}deg`}>{chip.text}</span>
 					))}
 				</div>
+				<div class="grave-firefly grave-firefly--a" aria-hidden="true"><span class="grave-firefly__halo"></span><span class="grave-firefly__dot"></span></div>
+				<div class="grave-firefly grave-firefly--b" aria-hidden="true"><span class="grave-firefly__halo"></span><span class="grave-firefly__dot"></span></div>
+				<div class="grave-firefly grave-firefly--c" aria-hidden="true"><span class="grave-firefly__halo"></span><span class="grave-firefly__dot"></span></div>
 				<span class="panel__aside panel__aside--dim">Nothing here is dead. It's just resting until the next season of me.</span>
 			</div>
 		</div>
-		<div class="mono-comment">// the graveyard only grows. that's fine.</div>
+		<div class="hobbies-preview__foot">
+			<span class="mono-comment">// the graveyard only grows. that's fine.</span>
+			<NextHobbyChip client:load values={suggestions.map((s) => s.value)} variant="headstone" />
+		</div>
 	</section>
 
 	<!-- contact band -->
@@ -341,6 +352,7 @@ const graveyardChips = resting.map((hobby, index) => ({
 	}
 
 	.panel--graveyard {
+		position: relative;
 		background: var(--card-alt);
 		border: 1px solid rgba(150, 160, 220, .18);
 		transform: rotate(.3deg);
@@ -396,17 +408,135 @@ const graveyardChips = resting.map((hobby, index) => ({
 
 	.panel__chips {
 		display: flex;
-		gap: 9px;
+		gap: 10px 9px;
 		flex-wrap: wrap;
+		align-items: flex-end;
 	}
 
+	/* Headstones: rounded tops over flat bottoms, a static per-chip tilt
+	   pivoting from the ground, and a soft shadow pooled underneath. */
 	.grave-chip {
-		padding: 6px 14px;
+		padding: 7px 14px 6px;
 		border: 1px solid var(--border-chip);
-		border-radius: 999px;
+		border-bottom-color: rgba(150, 160, 220, .16);
+		border-radius: 11px 11px 2px 2px;
 		font-family: var(--font-mono);
 		font-size: 12.5px;
 		color: var(--text-body);
+		transform: rotate(var(--tilt));
+		transform-origin: 50% 100%;
+		box-shadow: 0 6px 6px -4px rgba(0, 0, 0, .55);
+	}
+
+	/* The keeper's lantern, watching over the graveyard from the card's corner */
+	.grave-lantern__post {
+		position: absolute;
+		top: 14px;
+		right: 18px;
+		width: 3px;
+		height: 26px;
+		background: #2a2f52;
+	}
+
+	.grave-lantern__box {
+		position: absolute;
+		top: 8px;
+		right: 15px;
+		width: 9px;
+		height: 10px;
+		background: #141225;
+		border: 1px solid rgba(240, 217, 168, .5);
+		border-radius: 2px;
+	}
+
+	.grave-lantern__core {
+		position: absolute;
+		top: 10.5px;
+		right: 17px;
+		width: 5px;
+		height: 5.5px;
+		border-radius: 50%;
+		background: var(--gold);
+		box-shadow: 0 0 9px 2px rgba(240, 217, 168, .65);
+		animation: lampPulse 6s ease-in-out infinite;
+	}
+
+	.grave-lantern__halo {
+		position: absolute;
+		top: -24px;
+		right: -28px;
+		width: 130px;
+		height: 110px;
+		border-radius: 50%;
+		background: radial-gradient(circle, rgba(240, 196, 120, .15), transparent 62%);
+		filter: blur(2px);
+		animation: lampPulse 6s ease-in-out infinite;
+		pointer-events: none;
+	}
+
+	@keyframes lampPulse {
+		0%, 100% { opacity: .55; }
+		50%      { opacity: 1; }
+	}
+
+	/* Three fireflies roaming the graveyard card; hidden outright under
+	   reduced motion rather than left frozen mid-roam. */
+	.grave-firefly {
+		position: absolute;
+		pointer-events: none;
+		z-index: 2;
+	}
+
+	.grave-firefly--a { left: 20%; top: 54%; animation: fireflyRoam 11s ease-in-out infinite; }
+	.grave-firefly--b { left: 58%; top: 36%; animation: fireflyRoam 14s ease-in-out -5s infinite reverse; }
+	.grave-firefly--c { left: 74%; top: 66%; animation: fireflyRoam 9s ease-in-out -2s infinite; }
+
+	.grave-firefly__halo {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 46px;
+		height: 46px;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		background: radial-gradient(circle, rgba(240, 196, 120, .26), transparent 65%);
+		filter: blur(2px);
+		animation: lampPulse 3.2s ease-in-out infinite;
+	}
+
+	.grave-firefly__dot {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 3px;
+		height: 3px;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		background: var(--gold);
+		box-shadow: 0 0 6px 2px rgba(240, 217, 168, .55);
+		animation: lampPulse 3.2s ease-in-out infinite;
+	}
+
+	@keyframes fireflyRoam {
+		0%, 100% { translate: 0 0; }
+		18%      { translate: 34px -18px; }
+		38%      { translate: 9px -40px; }
+		55%      { translate: -28px -14px; }
+		72%      { translate: -44px 10px; }
+		86%      { translate: -12px 20px; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.grave-firefly {
+			display: none;
+		}
+	}
+
+	.hobbies-preview__foot {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		flex-wrap: wrap;
 	}
 
 	/* --- contact band --- */

@@ -22,3 +22,12 @@
 .next-chip:active {
 	transform: scale(.96);
 }
+
+/* The home graveyard's variant: an empty headstone, pre-dug for the next
+   hobby, alongside the other headstones' rounded-top/flat-bottom shape. */
+.next-chip--headstone {
+	border-radius: 11px 11px 2px 2px;
+	transform: rotate(1.2deg);
+	transform-origin: 50% 100%;
+	box-shadow: 0 6px 6px -4px rgba(0, 0, 0, .45);
+}

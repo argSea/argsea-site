@@ -1,14 +1,60 @@
 ---
-// Homepage journal preview: static rows straight to /notes, no overlay of its
-// own (the full spread with its binding/ribbon lives on the Notes page).
-// Renders nothing once the keeper has zero published notes.
-import type { Note } from '../lib/api';
+// Homepage journal preview: static rows straight to /notes (JournalStripDirector
+// intercepts a plain click to open the shared journal-entry overlay in place;
+// no JS or a modified click just navigates there instead). Renders nothing
+// once the keeper has zero published notes. Paw prints and the hover doodle
+// are pure CSS decoration, no JS needed to show them.
+import type { Doodle, Note } from '../lib/api';
 
 interface Props {
-	notes: Note[];
+	notes:   Note[];
+	doodles: Doodle[];
 }
 
-const { notes } = Astro.props;
+const { notes, doodles } = Astro.props;
+
+const doodleFor = (doodleId: string | null): Doodle | null =>
+	doodleId ? doodles.find((doodle) => doodle.id === doodleId) ?? null : null;
+
+// The animation transform-origin a shape carries, as an inline style (mirrors
+// HarborCat.tsx / JournalEntryOverlay.tsx's shape rendering; Astro can't
+// share that React helper with a static component, so the shape-to-SVG
+// mapping is repeated here for the row's hover-ghost doodle).
+const shapeOriginStyle = (origin?: [number, number]) =>
+	origin ? `transform-origin:${origin[0]}px ${origin[1]}px` : undefined;
+
+// Astro's SVG typings want the linecap/linejoin literal unions; the shape
+// contract stores them as plain strings, so cast at the boundary, same as
+// HarborCat.tsx / JournalEntryOverlay.tsx do for the React version.
+const linecap = (value?: string) => value as 'butt' | 'round' | 'square' | 'inherit' | undefined;
+const linejoin = (value?: string) => value as 'miter' | 'round' | 'bevel' | 'inherit' | undefined;
+
+// The paw-print "sneak" walks row 1 → row 2 → row 3 across one shared 13s
+// loop; each row gets its own resting position/tilt and its three paws their
+// own stagger, straight from the design mock. Notes beyond three recycle them.
+const PAW_ROWS = [
+	{ style: 'top:8px;right:16px', rotate: -9, paws: [
+		{ transform: 'rotate(-12deg)', delay: 0 },
+		{ transform: 'translateY(7px) rotate(-4deg)', delay: .6 },
+		{ transform: 'rotate(-16deg)', delay: 1.2 },
+	] },
+	{ style: 'top:16px;right:44px', rotate: 6, paws: [
+		{ transform: 'rotate(9deg)', delay: 4.3 },
+		{ transform: 'translateY(-7px) rotate(3deg)', delay: 4.9 },
+		{ transform: 'rotate(13deg)', delay: 5.5 },
+	] },
+	{ style: 'bottom:8px;right:24px', rotate: -15, paws: [
+		{ transform: 'rotate(-20deg)', delay: 8.6 },
+		{ transform: 'translateY(6px) rotate(-10deg)', delay: 9.2 },
+		{ transform: 'rotate(-24deg)', delay: 9.8 },
+	] },
+];
+
+const rows = notes.map((note, index) => ({
+	note,
+	doodle: doodleFor(note.doodleId),
+	paw:    PAW_ROWS[index % PAW_ROWS.length],
+}));
 ---
 {notes.length > 0 && (
 	<section class="journal-strip">
@@ -17,14 +63,42 @@ const { notes } = Astro.props;
 			<a href="/notes" class="mono-link">the full journal →</a>
 		</div>
 		<div class="journal-strip__block">
-			{notes.map((note) => (
-				<a href="/notes" class="journal-strip__row">
+			{rows.map(({ note, doodle, paw }) => (
+				<a href="/notes" class="journal-strip__row" data-journal-row={note.id}>
 					<span class="journal-strip__date">{note.date}</span>
 					<span class="journal-strip__middle">
 						<span class="journal-strip__title">{note.title}</span>
 						<span class="journal-strip__teaser">{note.teaser}</span>
 					</span>
 					<span class="journal-strip__conditions">{note.conditions}</span>
+					<span class="journal-strip__paws" aria-hidden="true" title="the cat read this one" style={`${paw.style};transform:rotate(${paw.rotate}deg)`}>
+						{paw.paws.map((p) => (
+							<svg width="13" height="12" viewBox="0 0 15 14" class="journal-strip__paw" style={`transform:${p.transform};animation-delay:${p.delay}s`}>
+								<ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9" />
+								<ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9" />
+								<ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9" />
+								<ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9" />
+								<ellipse cx="12.6" cy="6" rx="1.4" ry="1.8" />
+							</svg>
+						))}
+					</span>
+					{doodle && (
+						<span class="journal-strip__doodle" aria-hidden="true">
+							<svg viewBox={doodle.viewBox} class="journal-strip__doodle-svg">
+								{doodle.shapes.map((shape) => (
+									shape.type === 'path' ? (
+										<path d={shape.d} style={shapeOriginStyle(shape.origin)} fill={shape.fill} stroke={shape.stroke} stroke-width={shape.strokeWidth} opacity={shape.opacity} stroke-linecap={linecap(shape.linecap)} stroke-linejoin={linejoin(shape.linejoin)} />
+									) : shape.type === 'ellipse' ? (
+										<ellipse cx={shape.cx} cy={shape.cy} rx={shape.rx} ry={shape.ry} style={shapeOriginStyle(shape.origin)} fill={shape.fill} stroke={shape.stroke} stroke-width={shape.strokeWidth} opacity={shape.opacity} stroke-linecap={linecap(shape.linecap)} stroke-linejoin={linejoin(shape.linejoin)} />
+									) : shape.type === 'rect' ? (
+										<rect x={shape.x} y={shape.y} width={shape.w} height={shape.h} style={shapeOriginStyle(shape.origin)} fill={shape.fill} stroke={shape.stroke} stroke-width={shape.strokeWidth} opacity={shape.opacity} stroke-linecap={linecap(shape.linecap)} stroke-linejoin={linejoin(shape.linejoin)} />
+									) : (
+										<line x1={shape.x1} y1={shape.y1} x2={shape.x2} y2={shape.y2} style={shapeOriginStyle(shape.origin)} fill={shape.fill} stroke={shape.stroke} stroke-width={shape.strokeWidth} opacity={shape.opacity} stroke-linecap={linecap(shape.linecap)} stroke-linejoin={linejoin(shape.linejoin)} />
+									)
+								))}
+							</svg>
+						</span>
+					)}
 				</a>
 			))}
 		</div>
@@ -49,6 +123,7 @@ const { notes } = Astro.props;
 	}
 
 	.journal-strip__row {
+		position: relative;
 		display: flex;
 		gap: 8px 20px;
 		align-items: baseline;
@@ -110,6 +185,62 @@ const { notes } = Astro.props;
 		color: var(--periwinkle-deep);
 		margin-left: auto;
 		flex: none;
+	}
+
+	/* The cat's paw prints, sneaking across the rows: a shared 13s loop, each
+	   paw's own opacity keyframe staggered so the walk reads row to row. The
+	   base opacity is 0 (only pawStep ever raises it), so the reduced-motion
+	   kill-switch, which drops the animation, leaves them fully absent rather
+	   than frozen mid-step. */
+	.journal-strip__paws {
+		position: absolute;
+		display: flex;
+		gap: 15px;
+		opacity: .62;
+	}
+
+	.journal-strip__paw {
+		fill: var(--periwinkle);
+		opacity: 0;
+		animation: pawStep 13s linear infinite both;
+	}
+
+	@keyframes pawStep {
+		0%, 1.5%  { opacity: 0; }
+		5%        { opacity: 1; }
+		33%       { opacity: 1; }
+		45%, 100% { opacity: 0; }
+	}
+
+	/* The hover-ghost doodle: the note's real doodle, low-opacity, a small
+	   rotate/rise on reveal. Centered on the row via translateY(-50%), chained
+	   ahead of the same rotate/rise the hover state adds. */
+	.journal-strip__doodle {
+		position: absolute;
+		right: 210px;
+		top: 50%;
+		pointer-events: none;
+	}
+
+	.journal-strip__doodle-svg {
+		width: 70px;
+		height: auto;
+		overflow: visible;
+		opacity: 0;
+		transform: translateY(-50%) rotate(-2deg) translateY(3px);
+		transition: opacity .3s ease, transform .3s ease;
+	}
+
+	.journal-strip__row:hover .journal-strip__doodle-svg {
+		opacity: .5;
+		transform: translateY(-50%) rotate(-2deg) translateY(0);
+	}
+
+	@media (max-width: 760px) {
+		.journal-strip__paws,
+		.journal-strip__doodle {
+			display: none;
+		}
 	}
 
 	@media (max-width: 560px) {
