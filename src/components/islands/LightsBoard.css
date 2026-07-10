@@ -17,9 +17,12 @@
 }
 
 .chip__dot {
-	width: 7px;
-	height: 7px;
+	width: 6px;
+	height: 6px;
 	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 0 7px 2px rgba(246, 236, 207, .85);
+	animation: coastHaloBreath 3.5s ease-in-out infinite;
 	flex: none;
 }
 
@@ -42,82 +45,35 @@
 	display: flex;
 	flex-direction: column;
 	margin-top: 34px;
-	/* Fades in from transparent rather than opening on a flat #0d1224: the
-	   page's own sky ramp (projects.astro's .page::before) is still darkening
-	   through here on every viewport we've checked, so this only needs to
-	   pick up that same trend instead of snapping to it. Section-anchored
-	   darkening past that, not pixel height: holds at the panorama's own
-	   bottom tone through its fixed 352px, then deepens across whatever the
-	   register's real height turns out to be (a filtered-down list or a
-	   future longer one), always landing on the same #080b18 the sky ramp
-	   tops out at, so the footer's band never rebounds lighter behind it.
-	   That terminal value also matches .coast__sea's own bottom tone below. */
-	background: linear-gradient(180deg, rgba(13, 18, 36, 0) 0, #0d1224 110px, #0d1224 352px, #080b18 100%);
+	background: linear-gradient(180deg, #0c1122 0%, #0a0d1a 420px, #0a0d1a 100%);
 }
 
 .coast__pano {
 	position: relative;
-	height: 352px;
+	height: 260px;
 	overflow: hidden;
 	flex: none;
-	/* Star field Y-coords are px, not %, so the sky holds its shape as the
-	   pano grows taller for the deeper sea below: percentages here would
-	   have scaled every star toward the horizon along with the box. X stays
-	   a percentage since the width isn't changing. */
 	background:
-		radial-gradient(1.4px 1.4px at 12% 26px, rgba(255, 255, 255, .55), transparent),
-		radial-gradient(1px 1px at 26% 69px, rgba(255, 255, 255, .38), transparent),
-		radial-gradient(1.2px 1.2px at 41% 19px, rgba(200, 206, 240, .5), transparent),
-		radial-gradient(1px 1px at 57% 52px, rgba(255, 255, 255, .32), transparent),
-		radial-gradient(1.5px 1.5px at 72% 30px, rgba(240, 217, 168, .42), transparent),
-		radial-gradient(1px 1px at 86% 60px, rgba(255, 255, 255, .4), transparent),
-		radial-gradient(1px 1px at 8% 95px, rgba(200, 206, 240, .3), transparent),
-		radial-gradient(1.2px 1.2px at 64% 86px, rgba(255, 255, 255, .28), transparent),
-		radial-gradient(1px 1px at 94% 17px, rgba(255, 255, 255, .35), transparent),
-		radial-gradient(1px 1px at 33% 108px, rgba(200, 206, 240, .25), transparent),
-		linear-gradient(180deg, rgba(19, 22, 40, 0) 0, #0e1428 134px, #0d1224 216px);
+		var(--stars-bg),
+		linear-gradient(180deg, #101a3e 0%, #121d47 28%, #16204e 46%, #2c3870 54.5%, #4a5590 57.5%, #0c1122 58%);
 }
 
-/* Brightened toward design/Office.dc.html's own water (#222c60 -> #161d48 ->
-   #0f1434 -> #070a1e), swapping its last stop for our own #080b18 terminal
-   so the sea keeps landing on the same tone the footer does. */
 .coast__sea {
 	position: absolute;
 	left: 0;
 	right: 0;
-	top: 132px;
+	top: 150px;
 	bottom: 0;
-	background:
-		repeating-linear-gradient(0deg, rgba(147, 160, 232, .028) 0 1px, transparent 1px 7px),
-		linear-gradient(180deg, #222c60 0%, #161d48 20%, #0f1434 48%, #080b18 100%);
+	background: linear-gradient(180deg, #222c60 0%, #161d48 26%, #0f1434 56%, #070a1e 100%);
 }
 
-/* --- living water: specular twinkle, drifting wave lines, the boat --- */
+/* --- living water: drifting wave lines, the glitter, the boat --- */
 
-.coast__twinkle {
-	position: absolute;
-	width: 2px;
-	height: 2px;
-	border-radius: 50%;
-	background: rgba(220, 226, 250, .85);
-	opacity: 0;
-	pointer-events: none;
-	animation: coastTwinkle 7s ease-in-out infinite;
-}
-
-@keyframes coastTwinkle {
-	0%, 92% { opacity: 0; }
-	96%     { opacity: .8; }
-	100%    { opacity: 0; }
-}
-
-/* Scallop swell bands, far to near, lifted from design/Office.dc.html's water
-   (the same arc tile, repeated at four widths): nearer bands are wider-spaced,
-   more opaque, and drift faster, so the sea reads as layered swell instead of
-   a few flat lines. Positioned as a percentage of .coast__sea's own height
-   (its containing block), now at the doc's own 61/69/79/90% spread: with the
-   sea grown to a real height, the rail's 30px overlay is a small enough slice
-   of it that the near bands no longer need to sit higher to read through it. */
+/* Scallop swell bands, far to near: the same arc tile, repeated at four
+   widths, each row a little wider-spaced and more opaque than the last so
+   the sea reads as layered swell instead of a few flat lines. Positioned in
+   the panorama's own px, not the sea's: the mock nests these as siblings of
+   seaStyle, not inside it. */
 .coast__swell {
 	position: absolute;
 	left: 0;
@@ -127,42 +83,34 @@
 }
 
 .coast__swell--a {
-	top: 61%;
-	height: 14px;
-	opacity: .09;
-	background-size: 90px 14px;
-	mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
-	-webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+	top: 168px;
+	height: 12px;
+	opacity: .1;
+	background-size: 90px 12px;
 	animation: coastSwellDriftA 21s linear infinite;
 }
 
 .coast__swell--b {
-	top: 69%;
-	height: 16px;
-	opacity: .13;
-	background-size: 70px 16px;
-	mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
-	-webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+	top: 186px;
+	height: 14px;
+	opacity: .14;
+	background-size: 70px 14px;
 	animation: coastSwellDriftB 15s linear infinite;
 }
 
 .coast__swell--c {
-	top: 79%;
-	height: 18px;
-	opacity: .19;
-	background-size: 55px 18px;
-	mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
-	-webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+	top: 204px;
+	height: 16px;
+	opacity: .18;
+	background-size: 55px 16px;
 	animation: coastSwellDriftC 10s linear infinite;
 }
 
 .coast__swell--d {
-	top: 90%;
-	height: 18px;
-	opacity: .28;
-	background-size: 42px 18px;
-	mask-image: linear-gradient(90deg, transparent, black 4%, black 96%, transparent);
-	-webkit-mask-image: linear-gradient(90deg, transparent, black 4%, black 96%, transparent);
+	top: 224px;
+	height: 16px;
+	opacity: .22;
+	background-size: 42px 16px;
 	animation: coastSwellDriftD 7s linear infinite;
 }
 
@@ -171,57 +119,47 @@
 @keyframes coastSwellDriftC { to { background-position-x: -55px; } }
 @keyframes coastSwellDriftD { to { background-position-x: -84px; } }
 
-/* Moon glitter path: a clipped trapezoid of repeating light lines descending
-   from the horizon at the moon's own x, so the smaller moon still casts on
-   the water below it. Fades out by 60% of the sea's height rather than
-   riding all the way down, so it reads on open water instead of guttering
-   out under the rail (the rail overlay sits at z-index 4 and, in the grown
-   sea, only covers its bottom ~14%; the same fixed 30px was a third of the
-   old shallow sea, now it's a sliver). The line alpha runs hotter than the
-   office doc's .2 because that ceiling was calibrated against the doc's much
-   brighter sea; over our near-black water the same alpha disappears. The
-   mid-opacity base is what reduced motion rests on once the breathing
-   keyframe is killed. */
+/* Moon glitter path: a clipped trapezoid of repeating light lines under the
+   moon's own x, a fixed box (not a full-height clip) sized and positioned
+   exactly where the moon's light would hit the water. */
 .coast__glitter {
 	position: absolute;
-	right: 9%;
-	top: 0;
-	height: 100%;
-	width: 26px;
+	right: 8%;
+	top: 150px;
+	width: 24px;
+	height: 72px;
 	pointer-events: none;
 	clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
-	background: repeating-linear-gradient(180deg, rgba(236, 231, 216, .32) 0 1.5px, transparent 1.5px 7px);
-	filter: blur(1.2px);
-	opacity: .75;
-	mask-image: linear-gradient(180deg, black 12%, black 42%, transparent 60%);
-	-webkit-mask-image: linear-gradient(180deg, black 12%, black 42%, transparent 60%);
+	background: repeating-linear-gradient(180deg, rgba(236, 231, 216, .16) 0 1.5px, transparent 1.5px 6px);
+	filter: blur(1px);
+	mask-image: linear-gradient(180deg, black 30%, transparent 96%);
+	-webkit-mask-image: linear-gradient(180deg, black 30%, transparent 96%);
 	animation: coastGlitterBreathe 4.5s ease-in-out infinite;
 }
 
 @keyframes coastGlitterBreathe {
-	0%, 100% { opacity: .55; }
-	50%      { opacity: .95; }
+	0%, 100% { opacity: .45; }
+	50%      { opacity: .85; }
 }
 
 /* The Argo, crossing at the horizon: charm, not spectacle, on a loop long
-   enough (~150s) that it's discovered rather than noticed. */
+   enough (150s) that it's discovered rather than noticed. sailBy (global.css)
+   animates left, not transform, so top/width/height here stay plain numbers. */
 .coast__boat {
 	position: absolute;
-	top: 4px;
-	left: -30px;
+	left: -8%;
+	top: 128px;
+	width: 34px;
+	height: 26px;
 	z-index: 2;
 	pointer-events: none;
-	animation: coastBoatSail 150s linear infinite;
+	animation: sailBy 150s linear -50s infinite;
 }
 
 .coast__boat-hull {
 	display: block;
+	overflow: visible;
 	animation: coastBoatBob 4.5s ease-in-out infinite;
-}
-
-@keyframes coastBoatSail {
-	from { transform: translateX(0); }
-	to   { transform: translateX(calc(102vw + 30px)); }
 }
 
 @keyframes coastBoatBob {
@@ -235,13 +173,13 @@
    a visitor can actually hover. */
 .coast__squall {
 	position: absolute;
-	left: -12%;
-	top: 40px;
+	left: -8%;
+	top: 88px;
 	width: 150px;
 	height: 64px;
 	z-index: 2;
 	pointer-events: none;
-	animation: coastSquallDrift 130s linear -45s infinite;
+	animation: sailBy 130s linear -30s infinite;
 }
 
 .coast__squall-rain {
@@ -255,11 +193,6 @@
 	mask-image: linear-gradient(180deg, rgba(0, 0, 0, .9), rgba(0, 0, 0, .25));
 	-webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, .9), rgba(0, 0, 0, .25));
 	animation: coastSquallRain 1.1s linear infinite;
-}
-
-@keyframes coastSquallDrift {
-	from { transform: translateX(0); }
-	to   { transform: translateX(122vw); }
 }
 
 @keyframes coastSquallRain {
@@ -313,41 +246,20 @@
 	pointer-events: none;
 }
 
+/* The horizon: one 22px glow band, not a crisp line, sitting 8px above the
+   horizon itself (150px). */
 .coast__horizon {
 	position: absolute;
 	left: 0;
 	right: 0;
-	top: 132px;
-	height: 1px;
-	background: linear-gradient(90deg, transparent 2%, rgba(147, 160, 232, .22) 30%, rgba(147, 160, 232, .22) 70%, transparent 98%);
-}
-
-/* Horizon glow: two thin bands hugging the horizon line, lifted from the
-   office doc's water. The line itself stays crisp, this just gives it a
-   soft halo above and a fainter one bleeding into the sea below. */
-.coast__horizon-glow {
-	position: absolute;
-	left: 0;
-	right: 0;
+	top: 142px;
+	height: 22px;
 	pointer-events: none;
+	background: linear-gradient(180deg, transparent 0%, rgba(180, 190, 240, .24) 36%, rgba(180, 190, 240, .13) 41%, transparent 100%);
 }
 
-.coast__horizon-glow--above {
-	top: 124px;
-	height: 8px;
-	background: linear-gradient(180deg, transparent, rgba(180, 190, 240, .26));
-}
-
-.coast__horizon-glow--below {
-	top: 132px;
-	height: 14px;
-	background: linear-gradient(180deg, rgba(180, 190, 240, .15), transparent);
-}
-
-/* The inter-post wash opens near transparent at the top and only goes solid
-   toward the caption's own strip: the near swell bands live in the rail's
-   upper half, and the old flat .55 top was eating exactly the bands meant to
-   read strongest. The posts and the border line still draw the rail. */
+/* The inter-post wash: near-transparent at the top, solid toward the
+   caption's own strip. The posts and the border line still draw the rail. */
 .coast__rail {
 	position: absolute;
 	left: 0;
@@ -359,7 +271,7 @@
 	border-top: 1px solid rgba(147, 160, 232, .13);
 	background:
 		repeating-linear-gradient(90deg, rgba(6, 8, 16, .95) 0 3px, transparent 3px 72px),
-		linear-gradient(180deg, rgba(6, 8, 16, .12), rgba(6, 8, 16, .4) 55%, rgba(6, 8, 16, .95));
+		linear-gradient(180deg, rgba(6, 8, 16, .55), rgba(6, 8, 16, .95));
 }
 
 .coast__caption {
@@ -374,38 +286,15 @@
 	z-index: 5;
 }
 
-/* --- land under the beacons: a coastline silhouette anchored to the horizon --- */
-
-.coast__coastline {
-	position: absolute;
-	left: 0;
-	right: 0;
-	bottom: 220px; /* 352px pano height minus horizonY (132px): sits the land on the horizon line */
-	height: 0;
-	z-index: 2;
-	pointer-events: none;
-}
-
-.coast__headland {
-	position: absolute;
-	bottom: 0;
-	border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-}
-
-.coast__headland--a { left: -6%;  width: 48%; height: 26px; background: #05060c; opacity: .95; }
-.coast__headland--b { left: 26%; width: 54%; height: 17px; background: #04050a; opacity: .88; }
-.coast__headland--c { left: 58%; width: 48%; height: 22px; background: #030409; opacity: .93; }
-
-/* --- beacons --- */
+/* --- beacons: open water, no headlands. Every light is this same small
+   lighthouse-stub SVG; This-website additionally stands on its own islet. --- */
 
 .beacon {
 	position: absolute;
-	width: 46px;
-	height: 46px;
 	transform: translate(-50%, -50%);
 	cursor: pointer;
 	z-index: 3;
-	transition: opacity .35s ease, filter .2s ease;
+	transition: opacity .35s ease, filter .25s ease;
 }
 
 .beacon:focus-visible {
@@ -419,6 +308,22 @@
    passed into useLamp, not through this filter. */
 .beacon--hover {
 	filter: brightness(2.2) saturate(1.15);
+}
+
+.beacon__stub {
+	position: absolute;
+	left: 50%;
+	top: calc(50% - 2px);
+	transform: translateX(-50%);
+	width: 7px;
+	height: 10px;
+	pointer-events: none;
+}
+
+.beacon--here .beacon__stub {
+	top: calc(50% - 5px);
+	width: 18px;
+	height: 24px;
 }
 
 .beacon__halo {
@@ -442,77 +347,54 @@
 	transition: box-shadow .25s ease;
 }
 
-/* The tower base + knoll: rendered first so the lamp's halo/core paint over
-   its top, height set inline to elevPx (the same distance the lamp sits
-   above the horizon) so it always lands exactly on the horizon line. */
-.beacon__base {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	width: 3px;
-	transform: translateX(-50%);
-	background: linear-gradient(180deg, rgba(10, 13, 26, .7), rgba(8, 10, 20, .95));
-	pointer-events: none;
-}
-
-.beacon__knoll {
-	position: absolute;
-	left: 50%;
-	bottom: -4px;
-	width: 15px;
-	height: 7px;
-	transform: translateX(-50%);
-	border-radius: 50%;
-	background: #0a0d1a;
-	pointer-events: none;
-}
-
-/* --- the This-website islet: a wide mound standing in for the tower/knoll,
+/* --- the This-website islet: a wide mound standing in for open water,
    carrying a miniature graveyard and a shipwreck easter egg --- */
 
 .beacon__islet {
 	position: absolute;
 	left: 50%;
-	top: calc(50% + 11px);
+	top: calc(50% + 14px);
 	transform: translateX(-50%);
-	width: 96px;
-	height: 9px;
+	width: 114px;
+	height: 12px;
 	border-radius: 60% 70% 0 0 / 100% 100% 0 0;
 	background: linear-gradient(180deg, #0d1330, #070a1c);
 	pointer-events: none;
 }
 
+/* One shared 112x16 box for the whole cluster (four headstones, a cross, and
+   a broken hull + mast tucked at the far edge), each child positioned by its
+   own left/right offset within it, same as the mock's single grave/wreck box. */
 .beacon__grave {
 	position: absolute;
-	left: 8px;
-	bottom: 1px;
-	width: 46px;
-	height: 10px;
+	left: 50%;
+	top: calc(50% + 2px);
+	transform: translateX(-50%);
+	width: 112px;
+	height: 16px;
 	pointer-events: none;
 }
 
 .beacon__headstone {
 	position: absolute;
-	bottom: 0;
-	width: 5px;
-	height: 8px;
 	background: #0b0e21;
 	border: 1px solid rgba(147, 160, 232, .28);
 	border-bottom: none;
-	border-radius: 2.5px 2.5px 0 0;
 }
 
-.beacon__headstone--a { left: 0;    transform: rotate(-4deg); }
-.beacon__headstone--b { left: 12px; height: 9px; transform: rotate(3deg); }
-.beacon__headstone--c { left: 36px; height: 8px; transform: rotate(-3deg); }
+.beacon__headstone--a { left: 12px;  bottom: 1px; width: 4.5px; height: 7px; border-radius: 2px 2px 0 0;     transform: rotate(-4deg); }
+.beacon__headstone--b { left: 25px;  bottom: 3px; width: 5px;   height: 8px; border-radius: 2.5px 2.5px 0 0; transform: rotate(3deg); }
+.beacon__headstone--c { right: 24px; bottom: 3px; width: 5px;   height: 8px; border-radius: 2.5px 2.5px 0 0; transform: rotate(5deg); }
+.beacon__headstone--d { right: 13px; bottom: 1px; width: 4.5px; height: 7px; border-radius: 2px 2px 0 0;     transform: rotate(-3deg); }
 
 .beacon__cross {
 	position: absolute;
-	left: 23px;
-	bottom: 0;
+	left: 36px;
+	bottom: 2px;
 	width: 2px;
-	height: 10px;
+	height: 9px;
 	background: #141936;
+	transform: rotate(2deg);
 }
 
 .beacon__cross::before {
@@ -525,33 +407,34 @@
 	background: #141936;
 }
 
-/* ~7px, tucked at the far edge of the islet: a broken hull and a tilted mast */
-.beacon__wreck {
-	position: absolute;
-	right: 6px;
-	bottom: 0;
-	width: 12px;
-	height: 7px;
-	pointer-events: none;
-}
-
 .beacon__wreck-hull {
 	position: absolute;
-	right: 0;
+	right: 2.5px;
 	bottom: 0;
-	width: 7px;
-	height: 3px;
-	background: rgba(147, 160, 232, .3);
+	width: 5px;
+	height: 2.5px;
+	background: #0a0e22;
 	clip-path: polygon(0 100%, 20% 30%, 60% 55%, 100% 100%);
+}
+
+.beacon__wreck-piece {
+	position: absolute;
+	right: 4.5px;
+	bottom: 1px;
+	width: 7px;
+	height: 2px;
+	background: #10152e;
+	border-radius: 0 0 3px 3px;
+	transform: rotate(-12deg);
 }
 
 .beacon__wreck-mast {
 	position: absolute;
-	right: 2px;
-	bottom: 1px;
+	right: 8px;
+	bottom: 2.5px;
 	width: 1px;
-	height: 5px;
-	background: rgba(147, 160, 232, .26);
+	height: 4.5px;
+	background: #10152e;
 	transform: rotate(26deg);
 	transform-origin: bottom;
 }
@@ -561,26 +444,28 @@
 .beacon__reflect {
 	position: absolute;
 	left: 50%;
-	width: 2.5px;
+	top: calc(50% + 8px);
+	width: 1.5px;
+	height: 7px;
 	transform: translateX(-50%);
 	filter: blur(1.2px);
 	border-radius: 0 0 2px 2px;
 	pointer-events: none;
 }
 
+.beacon--here .beacon__reflect {
+	top: calc(50% + 21px);
+	width: 3.8px;
+	height: 51px;
+}
+
 .beacon__ring {
 	position: absolute;
-	inset: 9px;
+	inset: 14px;
 	border: 1px dashed rgba(240, 217, 168, .55);
 	border-radius: 50%;
 	animation: coastHaloBreath 4s ease-in-out infinite;
 	pointer-events: none;
-}
-
-/* Scales with HERE_SCALE (LightsBoard.tsx) so the breathing ring still reads
-   as sized-to-the-lamp rather than a leftover from the far-scale beacons. */
-.beacon--here .beacon__ring {
-	inset: 13px;
 }
 
 /* A blinking characteristic hands the ring's opacity to the same phase-locked
@@ -635,7 +520,7 @@
 .register__row {
 	box-sizing: border-box;
 	display: grid;
-	grid-template-columns: 48px 40px minmax(0, 1fr) 130px 90px 130px 56px;
+	grid-template-columns: 48px 40px minmax(0, 1fr) 130px 64px 130px 56px;
 	gap: 14px;
 	align-items: center;
 }
@@ -747,6 +632,7 @@
 	font-style: italic;
 	color: var(--text-body);
 	line-height: 1.45;
+	text-wrap: pretty;
 }
 
 .register__mobile-char {
@@ -766,7 +652,7 @@
 .register__first-lit {
 	font-family: var(--font-mono);
 	font-size: 12px;
-	color: var(--periwinkle);
+	color: #8a93c4;
 }
 
 .register__read {
@@ -807,8 +693,8 @@
 }
 
 /*
- * Mobile: the desktop grid columns (no., characteristic, first lit, status,
- * read →) drop out; the status pill and a combined code/first-lit line move
+ * Mobile: the desktop grid columns (no., characteristic, est., status,
+ * read →) drop out; the status pill and a combined code/est. line move
  * in next to the description instead (design's mobile variant).
  */
 @media (max-width: 880px) {
@@ -829,6 +715,10 @@
 	.register__status,
 	.register__read {
 		display: none;
+	}
+
+	.register__name {
+		font-size: 19px;
 	}
 
 	.register__mobile-char {
