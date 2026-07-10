@@ -50,9 +50,10 @@
 	   overlays the pano's last 30px with an rgba(6,8,16,.95) wash, whose
 	   composite over the sea's #070a1e lands on #060811. Starting anywhere
 	   else (the sea tone was the previous mistake) draws a full-width edge
-	   right under the rail. From #060811 it drifts to the mock's register
-	   tone slowly enough to read as one night. */
-	background: linear-gradient(180deg, #060811 260px, #0a0d1a 860px);
+	   right under the rail. The drift to the mock's register tone completes
+	   by 500px, just under the shortest filtered coast, so the bottom edge
+	   is always flat #0a0d1a where it meets the footer's matching backdrop. */
+	background: linear-gradient(180deg, #060811 260px, #0a0d1a 500px);
 }
 
 .coast__pano {

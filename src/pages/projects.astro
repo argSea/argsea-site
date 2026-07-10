@@ -139,17 +139,22 @@ const keeper = await getKeeperProfile();
 		/* The moon moved to real .sky elements below (it needs its own DOM
 		   node to carry data-plx for the mousemove parallax); this pseudo now
 		   only draws the ambient ramp. */
-		/* The mock's own skyStyle brightens downward and holds flat at
-		   #101a3e; it never has to reach black because its canvas is one
-		   short viewport. Ours is a real page, and .coast (LightsBoard.css)
-		   is a sibling of the footer, not a container around it: with only
-		   the mock's flat #101a3e past 260px, the footer's transparent band
-		   would show that flat tone right where .coast has already gone
-		   dark, a hard seam. So this keeps the mock's first three stops
-		   verbatim, then (deviation, flagged in the PR) keeps descending to
-		   the same #0a0d1a the coast itself ends on, landing well before any
-		   real page's footer. */
-		background: linear-gradient(180deg, #0d0f1c 0%, #0e1226 120px, #101a3e 260px, #0a0d1a 900px);
+		/* Held flat at #101a3e past 260px, exactly the mock's skyStyle: the
+		   panorama's own top stop is that same #101a3e, so wherever the coast
+		   begins (its y shifts with header wrapping), sky meets pano with no
+		   edge. A previous version kept descending toward the register tone
+		   here and drew a hard full-width seam across the pano's top. The
+		   only other place this ramp ever shows, the footer band, gets the
+		   scene's opaque terminal below instead. */
+		background: linear-gradient(180deg, #0d0f1c 0%, #0e1226 120px, #101a3e 260px, #101a3e 100%);
+	}
+
+	/* The mock's footer sits inside the scene on its #0a0d1a terminal; ours
+	   is a shared transparent component, so on this page it takes that same
+	   backdrop or the flat #101a3e sky above would glow through it. Safe to
+	   write unscoped: this stylesheet only ships with /projects. */
+	:global(.site-footer) {
+		background: #0a0d1a;
 	}
 
 	/* --- sky furniture: real elements (not the ramp above) so mousemove
