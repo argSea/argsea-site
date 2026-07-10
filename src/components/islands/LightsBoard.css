@@ -46,10 +46,13 @@
 	flex-direction: column;
 	margin-top: 34px;
 	/* The first 260px sit fully behind the opaque panorama, so what matters
-	   is the value at its bottom edge: it must equal the sea's own terminal
-	   #070a1e or a seam draws itself right under the rail. From there it
-	   drifts to the mock's register tone slowly enough to read as one night. */
-	background: linear-gradient(180deg, #070a1e 260px, #0a0d1a 860px);
+	   is the value at its bottom edge. That edge is not the raw sea: the rail
+	   overlays the pano's last 30px with an rgba(6,8,16,.95) wash, whose
+	   composite over the sea's #070a1e lands on #060811. Starting anywhere
+	   else (the sea tone was the previous mistake) draws a full-width edge
+	   right under the rail. From #060811 it drifts to the mock's register
+	   tone slowly enough to read as one night. */
+	background: linear-gradient(180deg, #060811 260px, #0a0d1a 860px);
 }
 
 .coast__pano {
