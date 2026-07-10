@@ -1,9 +1,9 @@
 // Projects page (fixtures build), now the lights: the coast pins one beacon
 // per published project, filtering dims the rest of the coast without
 // moving them while the register keeps every row mounted and collapses the
-// non-matches in place, a beacon click scrolls to its row without opening
-// the entry, and reduced motion holds every lamp static (no Web Animations
-// API animation running), per the hard "every light burns steady" rule.
+// non-matches in place, a beacon click opens that light's entry, and
+// reduced motion holds every lamp static (no Web Animations API animation
+// running), per the hard "every light burns steady" rule.
 import { test, expect } from '@playwright/test';
 
 test('the coast lights one beacon per published project', async ({ page }) => {
@@ -33,12 +33,13 @@ test('filtering narrows the register and dims the rest of the coast', async ({ p
 	}).toPass();
 });
 
-test('a beacon click scrolls to its register row and flashes it, not the entry', async ({ page }) => {
+test('a beacon click opens its light entry', async ({ page }) => {
 	await page.goto('/projects');
 	await page.locator('.coast__pano .beacon').first().click();
 
-	await expect(page.locator('.overlay-card')).toHaveCount(0);
-	await expect(page.locator('#light-row-fixture-project-1')).toHaveClass(/register__row--flash/);
+	const overlay = page.locator('.overlay-card');
+	await expect(overlay).toBeVisible();
+	await expect(overlay.locator('.light-entry__title')).toHaveText('The Great Un-monolithing');
 });
 
 test('a register row opens the Light List entry', async ({ page }) => {

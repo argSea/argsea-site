@@ -25,12 +25,13 @@ function reducedMotion(): boolean {
 
 interface Props {
 	project:     Project;
+	signoff:     string;
 	catHere?:    boolean;
 	catDesigns?: FigureheadDesign[];
 	onClose:     () => void;
 }
 
-export default function LightEntryOverlay({ project, catHere = false, catDesigns, onClose }: Props) {
+export default function LightEntryOverlay({ project, signoff, catHere = false, catDesigns, onClose }: Props) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
@@ -154,7 +155,7 @@ export default function LightEntryOverlay({ project, catHere = false, catDesigns
 
 						<div className="light-entry__footer">
 							<span className="light-entry__tags">{(project.tags ?? []).join('  ·  ')}</span>
-							<span className="light-entry__signoff">logged by the keeper</span>
+							<span className="light-entry__signoff">{signoff}</span>
 						</div>
 					</div>
 				</div>
