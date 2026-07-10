@@ -203,15 +203,15 @@
 	50%      { opacity: .95; }
 }
 
-/* A small dark sailboat crossing at the horizon: charm, not spectacle, on a
-   loop long enough (~90s) that it's discovered rather than noticed. */
+/* The Argo, crossing at the horizon: charm, not spectacle, on a loop long
+   enough (~150s) that it's discovered rather than noticed. */
 .coast__boat {
 	position: absolute;
 	top: 4px;
 	left: -30px;
 	z-index: 2;
 	pointer-events: none;
-	animation: coastBoatSail 95s linear infinite;
+	animation: coastBoatSail 150s linear infinite;
 }
 
 .coast__boat-hull {
@@ -226,7 +226,91 @@
 
 @keyframes coastBoatBob {
 	0%, 100% { transform: translateY(0) rotate(-1.2deg); }
-	50%      { transform: translateY(-4px) rotate(1deg); }
+	50%      { transform: translateY(-2px) rotate(1deg); }
+}
+
+/* A private little squall, way out: blurred cloud blobs over a diagonal rain
+   hatch, up in the sky band above the horizon rather than on the water. Only
+   the middle blob takes pointer events, so its tooltip is the one thing here
+   a visitor can actually hover. */
+.coast__squall {
+	position: absolute;
+	left: -12%;
+	top: 40px;
+	width: 150px;
+	height: 64px;
+	z-index: 2;
+	pointer-events: none;
+	animation: coastSquallDrift 130s linear -45s infinite;
+}
+
+.coast__squall-rain {
+	position: absolute;
+	left: 16px;
+	right: 16px;
+	top: 26px;
+	bottom: 2px;
+	background: repeating-linear-gradient(102deg, rgba(180, 190, 240, .2) 0 1px, transparent 1px 5px);
+	clip-path: polygon(6% 0, 94% 0, 100% 100%, 0 100%);
+	mask-image: linear-gradient(180deg, rgba(0, 0, 0, .9), rgba(0, 0, 0, .25));
+	-webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, .9), rgba(0, 0, 0, .25));
+	animation: coastSquallRain 1.1s linear infinite;
+}
+
+@keyframes coastSquallDrift {
+	from { transform: translateX(0); }
+	to   { transform: translateX(122vw); }
+}
+
+@keyframes coastSquallRain {
+	to { background-position: -10px 26px; }
+}
+
+.coast__squall-cloud {
+	position: absolute;
+	border-radius: 50%;
+	filter: blur(3px);
+	opacity: .85;
+	pointer-events: none;
+}
+
+.coast__squall-cloud--mid {
+	left: 10px;
+	right: 10px;
+	top: 12px;
+	height: 18px;
+	background: #141b3a;
+	opacity: .9;
+	pointer-events: auto;
+	cursor: default;
+}
+
+.coast__squall-cloud--left {
+	left: 2px;
+	top: 18px;
+	width: 70px;
+	height: 14px;
+	background: #10162f;
+}
+
+.coast__squall-cloud--right {
+	right: 0;
+	top: 16px;
+	width: 80px;
+	height: 15px;
+	background: #171e40;
+}
+
+.coast__squall-shadow {
+	position: absolute;
+	left: 20px;
+	right: 20px;
+	top: 60px;
+	height: 3px;
+	border-radius: 50%;
+	background: rgba(180, 190, 240, .14);
+	filter: blur(2px);
+	pointer-events: none;
 }
 
 .coast__horizon {
@@ -324,10 +408,17 @@
 	transition: opacity .35s ease, filter .2s ease;
 }
 
-.beacon:hover,
 .beacon:focus-visible {
-	filter: brightness(1.9);
 	outline: none;
+}
+
+/* Hover full-bright: driven from React state (hoverId in LightsBoard.tsx),
+   not a plain :hover pseudo, since hovering the register row needs to light
+   this up too. brightness/saturate is the mock's own boost; the halo/core
+   themselves hold their blink at peak opacity via the forced-fixed light
+   passed into useLamp, not through this filter. */
+.beacon--hover {
+	filter: brightness(2.2) saturate(1.15);
 }
 
 .beacon__halo {
@@ -338,6 +429,7 @@
 	border-radius: 50%;
 	filter: blur(2px);
 	pointer-events: none;
+	transition: width .25s ease, height .25s ease;
 }
 
 .beacon__core {
@@ -347,6 +439,7 @@
 	transform: translate(-50%, -50%);
 	border-radius: 50%;
 	pointer-events: none;
+	transition: box-shadow .25s ease;
 }
 
 /* The tower base + knoll: rendered first so the lamp's halo/core paint over
@@ -374,6 +467,95 @@
 	pointer-events: none;
 }
 
+/* --- the This-website islet: a wide mound standing in for the tower/knoll,
+   carrying a miniature graveyard and a shipwreck easter egg --- */
+
+.beacon__islet {
+	position: absolute;
+	left: 50%;
+	top: calc(50% + 11px);
+	transform: translateX(-50%);
+	width: 96px;
+	height: 9px;
+	border-radius: 60% 70% 0 0 / 100% 100% 0 0;
+	background: linear-gradient(180deg, #0d1330, #070a1c);
+	pointer-events: none;
+}
+
+.beacon__grave {
+	position: absolute;
+	left: 8px;
+	bottom: 1px;
+	width: 46px;
+	height: 10px;
+	pointer-events: none;
+}
+
+.beacon__headstone {
+	position: absolute;
+	bottom: 0;
+	width: 5px;
+	height: 8px;
+	background: #0b0e21;
+	border: 1px solid rgba(147, 160, 232, .28);
+	border-bottom: none;
+	border-radius: 2.5px 2.5px 0 0;
+}
+
+.beacon__headstone--a { left: 0;    transform: rotate(-4deg); }
+.beacon__headstone--b { left: 12px; height: 9px; transform: rotate(3deg); }
+.beacon__headstone--c { left: 36px; height: 8px; transform: rotate(-3deg); }
+
+.beacon__cross {
+	position: absolute;
+	left: 23px;
+	bottom: 0;
+	width: 2px;
+	height: 10px;
+	background: #141936;
+}
+
+.beacon__cross::before {
+	content: '';
+	position: absolute;
+	left: -2px;
+	top: 2px;
+	width: 6px;
+	height: 2px;
+	background: #141936;
+}
+
+/* ~7px, tucked at the far edge of the islet: a broken hull and a tilted mast */
+.beacon__wreck {
+	position: absolute;
+	right: 6px;
+	bottom: 0;
+	width: 12px;
+	height: 7px;
+	pointer-events: none;
+}
+
+.beacon__wreck-hull {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	width: 7px;
+	height: 3px;
+	background: rgba(147, 160, 232, .3);
+	clip-path: polygon(0 100%, 20% 30%, 60% 55%, 100% 100%);
+}
+
+.beacon__wreck-mast {
+	position: absolute;
+	right: 2px;
+	bottom: 1px;
+	width: 1px;
+	height: 5px;
+	background: rgba(147, 160, 232, .26);
+	transform: rotate(26deg);
+	transform-origin: bottom;
+}
+
 /* Water reflection: a streak below the horizon, in sync with the beacon
    above it but dimmer (peak .4 vs the core's .85, see LightsBoard.tsx) */
 .beacon__reflect {
@@ -393,6 +575,12 @@
 	border-radius: 50%;
 	animation: coastHaloBreath 4s ease-in-out infinite;
 	pointer-events: none;
+}
+
+/* Scales with HERE_SCALE (LightsBoard.tsx) so the breathing ring still reads
+   as sized-to-the-lamp rather than a leftover from the far-scale beacons. */
+.beacon--here .beacon__ring {
+	inset: 13px;
 }
 
 /* A blinking characteristic hands the ring's opacity to the same phase-locked
@@ -416,13 +604,6 @@
 	max-width: 1060px;
 	margin: 0 auto;
 	padding: clamp(18px, 3.5vw, 34px) clamp(16px, 4vw, 40px) clamp(30px, 5vw, 48px);
-}
-
-/* Only present while the locked min-height is gliding to its post-filter
-   natural size (see the settle effect in LightsBoard.tsx), so the initial
-   mount's snap-to-full-height stays instant, same as it always has. */
-.register--resizing {
-	transition: min-height .4s ease;
 }
 
 .register__head {
@@ -452,9 +633,6 @@
 
 .register__cols,
 .register__row {
-	/* border-box so a leaver's JS-set width (captured via getBoundingClientRect,
-	   itself always border-box) lands on the same box it measured, padding
-	   included, instead of rendering 20px wider than its in-flow self */
 	box-sizing: border-box;
 	display: grid;
 	grid-template-columns: 48px 40px minmax(0, 1fr) 130px 90px 130px 56px;
@@ -473,47 +651,30 @@
 	border-bottom: 1px solid rgba(150, 160, 220, .1);
 }
 
+/* Every row stays mounted at all times; a non-matching filter collapses it
+   in place instead of unmounting it (see .register__row--collapsed below).
+   overflow:hidden is what makes the max-height transition actually clip the
+   content rather than just clamping the box while everything overflows it. */
 .register__row {
 	padding: 15px 10px;
+	overflow: hidden;
 	border-bottom: 1px solid rgba(150, 160, 220, .09);
 	cursor: pointer;
-	transition: background .25s;
+	max-height: 220px;
+	animation: fadeUp .45s ease backwards;
+	transition: background .25s, max-height .45s cubic-bezier(.2, .8, .25, 1), opacity .3s, padding .45s cubic-bezier(.2, .8, .25, 1), border-color .3s;
 }
 
 .register__row:hover,
-.register__row:focus-visible {
+.register__row:focus-visible,
+.register__row--hover {
 	background: rgba(147, 160, 232, .06);
 	outline: none;
 }
 
-/* FLIP filter transition (see pickFilter in LightsBoard.tsx): a survivor
-   glides via WAAPI, so it carries no class here. A newcomer fades in at its
-   final position, delayed so the glide reads first. A leaver is pulled out
-   of flow (JS sets its captured top/left/width) and fades out fast so
-   survivors close the gap under it. Both come before the flash rule below
-   so a beacon click still wins on a row mid-transition. */
-.register__row--entering {
-	animation: registerRowEnter .3s ease .15s both;
-}
-
-.register__row--leaving {
-	/* left/width ride in via JS, not left:0/right:0: this is an absolute
-	   child of .register (position: relative), so left:0/right:0 would
-	   resolve against .register's padding box and ignore its horizontal
-	   padding, snapping and stretching the row at the moment it starts to fade */
-	position: absolute;
-	animation: registerRowLeave .18s ease both;
-}
-
-@keyframes registerRowEnter {
-	from { opacity: 0; }
-	to   { opacity: 1; }
-}
-
-@keyframes registerRowLeave {
-	from { opacity: 1; }
-	to   { opacity: 0; }
-}
+/* backwards, not both: once the stagger plays out it has to let go of
+   opacity, or it'd keep pinning the row at opacity:1 forever and the
+   collapse transition below would never be able to fade it back down. */
 
 .register__row--flash {
 	animation: registerFlash .9s ease;
@@ -677,4 +838,16 @@
 	.register__pill--mobile {
 		display: inline-block;
 	}
+}
+
+/* Kept after the mobile block on purpose: .register__row's own padding
+   shorthand changes per breakpoint above, and this only ever needs to zero
+   the vertical padding, at any width, so it has to come last to win either way. */
+.register__row--collapsed {
+	padding-top: 0;
+	padding-bottom: 0;
+	max-height: 0;
+	opacity: 0;
+	pointer-events: none;
+	border-color: transparent;
 }
