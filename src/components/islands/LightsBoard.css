@@ -45,15 +45,14 @@
 	display: flex;
 	flex-direction: column;
 	margin-top: 34px;
-	/* The first 260px sit fully behind the opaque panorama, so what matters
-	   is the value at its bottom edge. That edge is not the raw sea: the rail
-	   overlays the pano's last 30px with an rgba(6,8,16,.95) wash, whose
-	   composite over the sea's #070a1e lands on #060811. Starting anywhere
-	   else (the sea tone was the previous mistake) draws a full-width edge
-	   right under the rail. The drift to the mock's register tone completes
-	   by 500px, just under the shortest filtered coast, so the bottom edge
-	   is always flat #0a0d1a where it meets the footer's matching backdrop. */
-	background: linear-gradient(180deg, #060811 260px, #0a0d1a 500px);
+	/* The mock's sceneStyle, verbatim (operator-adopted): the register sits
+	   on a lighter navy panel that reads about #0b0f1d where it emerges under
+	   the rail and settles to #0a0d1a by 420px, above the shortest filtered
+	   coast, so the bottom edge always meets the footer's matching backdrop
+	   flat. The tonal step at the rail's own lower edge is the mock's own
+	   contrast between the dark balustrade and this panel; it is content, not
+	   a seam, so do not re-darken this to chase it. */
+	background: linear-gradient(180deg, #0c1122 0%, #0a0d1a 420px, #0a0d1a 100%);
 }
 
 .coast__pano {
