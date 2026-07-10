@@ -91,7 +91,7 @@ const graveyardChips = resting.map((hobby, index) => ({
 			<span class="section-label">Lights I keep burning</span>
 			<a href="/projects" class="mono-link">the whole coast →</a>
 		</div>
-		<HomeLights client:load projects={preview} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
+		<HomeLights client:load projects={preview} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
 	</section>
 
 	<JournalStrip notes={journalPreview} doodles={journalDoodles} />

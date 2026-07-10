@@ -45,7 +45,11 @@
 	display: flex;
 	flex-direction: column;
 	margin-top: 34px;
-	background: linear-gradient(180deg, #0c1122 0%, #0a0d1a 420px, #0a0d1a 100%);
+	/* The first 260px sit fully behind the opaque panorama, so what matters
+	   is the value at its bottom edge: it must equal the sea's own terminal
+	   #070a1e or a seam draws itself right under the rail. From there it
+	   drifts to the mock's register tone slowly enough to read as one night. */
+	background: linear-gradient(180deg, #070a1e 260px, #0a0d1a 860px);
 }
 
 .coast__pano {
@@ -560,15 +564,6 @@
 /* backwards, not both: once the stagger plays out it has to let go of
    opacity, or it'd keep pinning the row at opacity:1 forever and the
    collapse transition below would never be able to fade it back down. */
-
-.register__row--flash {
-	animation: registerFlash .9s ease;
-}
-
-@keyframes registerFlash {
-	0%   { background: rgba(240, 217, 168, .22); }
-	100% { background: transparent; }
-}
 
 .register__no {
 	font-family: var(--font-mono);

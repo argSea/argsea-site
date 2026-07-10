@@ -2,9 +2,8 @@
 // night coast (beacon x pinned by the API's wallPos, everything else per
 // the mock's own formulas), the light-list register below it, and the
 // shared entry overlay. Content arrives as build-time props; this island
-// only holds `filter`, `open`, and the row-flash state a beacon click
-// triggers.
-import { useEffect, useRef, useState } from 'react';
+// only holds `filter`, `open`, and the beacon/row hover pairing.
+import { useState } from 'react';
 import type { FigureheadDesign, Project, WallPos } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { pageCatPick } from '../../lib/catSpots';
@@ -64,10 +63,6 @@ function sizeFactor(index: number, depth: 0 | 1): number {
 	return (0.8 + ((index * 13) % 5) * 0.08) * (0.6 + depth * 0.75);
 }
 
-function reducedMotion(): boolean {
-	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
 /** Whether a project belongs to a filter, 'all' being the pass-everything case. */
 function matchesFilter(project: Project, target: Filter): boolean {
 	return target === 'all' || project.category === target;
@@ -75,24 +70,21 @@ function matchesFilter(project: Project, target: Filter): boolean {
 
 interface Props {
 	projects:    Project[];
+	signoff:     string;
 	catEnabled:  boolean;
 	catPages?:   Record<string, boolean>;
 	catSpots?:   Record<string, boolean>;
 	catDesigns?: FigureheadDesign[];
 }
 
-export default function LightsBoard({ projects, catEnabled, catPages, catSpots, catDesigns }: Props) {
+export default function LightsBoard({ projects, signoff, catEnabled, catPages, catSpots, catDesigns }: Props) {
 	const [filter, setFilter] = useState<Filter>('all');
 	const [openId, setOpenId] = useState<string | null>(null);
-	const [flashId, setFlashId] = useState<string | null>(null);
-	const flashTimer = useRef<number | undefined>(undefined);
 
 	// Shared between a beacon and its register row: hovering (or focusing)
 	// either one highlights both, keyed by project id rather than index so
 	// it survives the filter reordering neither list actually does anymore.
 	const [hoverId, setHoverId] = useState<string | null>(null);
-
-	useEffect(() => () => window.clearTimeout(flashTimer.current), []);
 
 	// The cat rides the opened entry only when the page's one-cat pick is this spot
 	const pick = catEnabled ? pageCatPick('projects', catPages, catSpots) : null;
@@ -110,18 +102,6 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 	const burningCount = projects.filter((project) => !(project.light ?? DEFAULT_LIGHT).extinguished).length;
 
 	const pickFilter = (next: Filter) => setFilter(next);
-
-	// A beacon click never opens the entry: it points at the light's row.
-	const goToRow = (id: string) => {
-		const row = document.getElementById(`light-row-${id}`);
-		if (!row) {
-			return;
-		}
-		row.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'center' });
-		window.clearTimeout(flashTimer.current);
-		setFlashId(id);
-		flashTimer.current = window.setTimeout(() => setFlashId(null), 900);
-	};
 
 	return (
 		<>
@@ -167,7 +147,7 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 							matches={matching.has(project.id)}
 							isHere={project.id === hereId}
 							hovered={hoverId === project.id}
-							onActivate={goToRow}
+							onActivate={setOpenId}
 							onHover={() => setHoverId(project.id)}
 							onUnhover={() => setHoverId((current) => (current === project.id ? null : current))}
 						/>
@@ -193,7 +173,6 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 							project={project}
 							index={index}
 							matches={matching.has(project.id)}
-							flashed={flashId === project.id}
 							hovered={hoverId === project.id}
 							onOpen={setOpenId}
 							onHover={() => setHoverId(project.id)}
@@ -203,7 +182,7 @@ export default function LightsBoard({ projects, catEnabled, catPages, catSpots, 
 				</div>
 			</div>
 
-			{open && <LightEntryOverlay project={open} catHere={catHere} catDesigns={catDesigns} onClose={close} />}
+			{open && <LightEntryOverlay project={open} signoff={signoff} catHere={catHere} catDesigns={catDesigns} onClose={close} />}
 		</>
 	);
 }
@@ -349,14 +328,13 @@ interface RegisterRowProps {
 	project:   Project;
 	index:     number;    // drives the initial-load stagger delay
 	matches:   boolean;   // false collapses the row in place (see .register__row--collapsed)
-	flashed:   boolean;
 	hovered:   boolean;
 	onOpen:    (id: string) => void;
 	onHover:   () => void;
 	onUnhover: () => void;
 }
 
-function RegisterRow({ project, index, matches, flashed, hovered, onOpen, onHover, onUnhover }: RegisterRowProps) {
+function RegisterRow({ project, index, matches, hovered, onOpen, onHover, onUnhover }: RegisterRowProps) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
@@ -372,7 +350,6 @@ function RegisterRow({ project, index, matches, flashed, hovered, onOpen, onHove
 		'register__row',
 		matches ? '' : 'register__row--collapsed',
 		hovered ? 'register__row--hover' : '',
-		flashed ? 'register__row--flash' : '',
 	].filter(Boolean).join(' ');
 
 	return (

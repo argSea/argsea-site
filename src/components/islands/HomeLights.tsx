@@ -16,13 +16,14 @@ const BOB_CLASSES = ['home-lights__card--bob-a', 'home-lights__card--bob-b', 'ho
 
 interface Props {
 	projects:    Project[];
+	signoff:     string;
 	catEnabled:  boolean;
 	catPages?:   Record<string, boolean>;
 	catSpots?:   Record<string, boolean>;
 	catDesigns?: FigureheadDesign[];
 }
 
-export default function HomeLights({ projects, catEnabled, catPages, catSpots, catDesigns }: Props) {
+export default function HomeLights({ projects, signoff, catEnabled, catPages, catSpots, catDesigns }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 
 	// The cat rides the opened entry only when the page's one-cat pick is this spot
@@ -45,7 +46,7 @@ export default function HomeLights({ projects, catEnabled, catPages, catSpots, c
 				))}
 			</div>
 
-			{open && <LightEntryOverlay project={open} catHere={catHere} catDesigns={catDesigns} onClose={close} />}
+			{open && <LightEntryOverlay project={open} signoff={signoff} catHere={catHere} catDesigns={catDesigns} onClose={close} />}
 		</>
 	);
 }
