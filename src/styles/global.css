@@ -184,7 +184,8 @@ a {
 	padding: 7px 16px;
 	border-radius: 999px;
 	font-family: var(--font-mono);
-	font-size: 12.5px;
+	font-size: 12px;
+	letter-spacing: .04em;
 	cursor: pointer;
 	user-select: none;
 	transition: all .2s;
