@@ -163,6 +163,11 @@ const keeper = await getKeeperProfile();
 		position: absolute;
 		inset: 0;
 		z-index: -1;
+		/* Everything in here deliberately pokes past the page (the stars'
+		   -24px inset, the moon halo's negative top, sailBy riding to 108%),
+		   so the layer must clip or that overflow feeds .page's scrollable
+		   area and the page grows a second, inner scrollbar. */
+		overflow: hidden;
 		pointer-events: none;
 	}
 

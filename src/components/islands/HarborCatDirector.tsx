@@ -77,7 +77,11 @@ export default function HarborCatDirector({ page, catPages, catSpots, catDesigns
 				align === 'left'   ? rect.left - 4 :
 				                     rect.right - size.w + 6;
 			left = Math.max(GUTTER, Math.min(left + window.scrollX + dx, docW - size.w - GUTTER));
-			const top = Math.max(window.scrollY + 2, anchorY);
+			// Clamp to the top of the document, never the viewport: a re-measure
+			// can fire mid-scroll (hover class flips, animationend), and a
+			// viewport clamp would keep re-gluing the cat to wherever the screen
+			// happens to be instead of leaving it on its perch.
+			const top = Math.max(2, anchorY);
 			const side: 'left' | 'right' = left + size.w / 2 > docW / 2 ? 'left' : 'right';
 			setPlacement({ left, top, w: size.w, h: size.h, side });
 		};
