@@ -197,7 +197,6 @@ const rows = notes.map((note, index) => ({
 		display: flex;
 		gap: 15px;
 		opacity: .62;
-		pointer-events: none;
 	}
 
 	.journal-strip__paw {
@@ -238,13 +237,15 @@ const rows = notes.map((note, index) => ({
 	}
 
 	@media (max-width: 760px) {
-		.journal-strip__conditions {
-			margin-left: 0;
-		}
-
 		.journal-strip__paws,
 		.journal-strip__doodle {
 			display: none;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.journal-strip__conditions {
+			margin-left: 0;
 		}
 	}
 </style>
