@@ -15,7 +15,13 @@ html{background:#131628}
 body{margin:0;background:linear-gradient(180deg,#11131f 0%,#131628 100%)}
 a{text-decoration:none}
 a:hover{color:#e8ebfa}
-a[data-log-row]:hover [data-log-title]{color:#f0d9a8 !important}
+[data-log-row]:hover [data-log-title]{color:#f0d9a8 !important}
+@keyframes pawStep{0%,1.5%{opacity:0}5%{opacity:1}33%{opacity:1}45%,100%{opacity:0}}
+[data-log-doodle]{opacity:0;transform:rotate(-2deg) translateY(3px);transition:opacity .3s ease,transform .3s ease}
+[data-log-row]:hover [data-log-doodle]{opacity:.5;transform:rotate(-2deg) translateY(0)}
+@keyframes backdropOut{from{opacity:1}to{opacity:0}}
+@keyframes cardOut{from{opacity:1;transform:none}to{opacity:0;transform:rotate(-2deg) translateY(26px) scale(.97)}}
+@keyframes cardInNote{from{opacity:0;transform:rotate(1.5deg) translateY(34px) scale(.97)}to{opacity:1;transform:rotate(0deg) translateY(0) scale(1)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes drift{0%,100%{transform:translate(0,0)}25%{transform:translate(9px,-14px)}50%{transform:translate(-7px,-22px)}75%{transform:translate(6px,-9px)}}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
@@ -41,6 +47,7 @@ a[data-log-row]:hover [data-log-title]{color:#f0d9a8 !important}
 @keyframes backdropIn{from{opacity:0}to{opacity:1}}
 @keyframes cardIn{from{opacity:0;transform:rotate(-3deg) translateY(34px) scale(.96)}to{opacity:1;transform:rotate(0deg) translateY(0) scale(1)}}
 @keyframes swayChip{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
+@keyframes fireflyRoam{0%,100%{translate:0 0}18%{translate:34px -18px}38%{translate:9px -40px}55%{translate:-28px -14px}72%{translate:-44px 10px}86%{translate:-12px 20px}}
 @media(max-width:760px){[data-hide-mobile]{display:none !important}}
 </style>
 </helmet>
@@ -123,8 +130,9 @@ a[data-log-row]:hover [data-log-title]{color:#f0d9a8 !important}
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px;align-items:stretch">
       <sc-for list="{{ featured }}" as="p" hint-placeholder-count="3">
-        <div onClick="{{ p.onClick }}" style="display:block;cursor:pointer;transition:transform .25s" style-hover="transform:translateY(-5px)">
+        <div onClick="{{ p.onClick }}" onMouseEnter="{{ p.onEnter }}" onMouseLeave="{{ p.onLeave }}" style="display:block;cursor:pointer;transition:transform .25s" style-hover="transform:translateY(-5px)">
           <div style="{{ p.cardStyle }}">
+            <div style="{{ p.glowFrame }}"></div>
             <div style="{{ p.lampBox }}"><div style="{{ p.halo }}"></div><div style="{{ p.core }}"></div></div>
             <div style="font-family:'Gloock',serif;font-size:21px;color:#eef0fb;padding-right:44px">{{ p.title }}</div>
             <span style="{{ p.charStyle }}">{{ p.charLine }}</span>
@@ -188,36 +196,93 @@ a[data-log-row]:hover [data-log-title]{color:#f0d9a8 !important}
     </div>
   </sc-if>
 
+  <!-- overlay: a journal entry, on the actual paper -->
+  <sc-if value="{{ log }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeLog }}" style="{{ logBackdropStyle }}">
+      <div onClick="{{ stopProp }}" style="{{ logCardStyle }}">
+        <dc-import name="HarborCat" context="note" hint-size="64px,74px" style="position:absolute;top:-50px;left:34px;width:64px;height:74px;z-index:3"></dc-import>
+        <div style="max-height:86vh;overflow:auto;background:linear-gradient(180deg,#f1ecdd,#eae3d1);border-radius:6px 12px 12px 6px;box-shadow:0 30px 80px rgba(0,0,0,.6)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(20px,4vw,32px);border-bottom:1.5px dashed rgba(110,100,75,.35)">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#8a7f63;text-transform:uppercase">Journal entry · {{ log.date }}</span>
+          <span onClick="{{ closeLog }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#7d7357;padding:6px 12px;border:1px solid rgba(110,100,75,.4);border-radius:999px;transition:all .2s" style-hover="color:#262a45;border-color:rgba(60,55,80,.6)">close ✕</span>
+        </div>
+        <div style="padding:clamp(24px,5vw,36px);display:flex;flex-direction:column;gap:16px">
+          <div style="font-size:14.5px;font-style:italic;color:#9b8f6d;margin-bottom:-6px">{{ log.wx }}</div>
+          <div style="font-family:'Gloock',serif;font-size:clamp(24px,4vw,30px);color:#20233c;line-height:1.2">{{ log.title }}</div>
+          <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ log.p1 }}</div>
+          <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ log.p2 }}</div>
+          <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ log.p3 }}</div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#8a7f63;margin-top:8px">— j, keeper</div>
+            <sc-if value="{{ log.hasDoodle }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;margin-top:-4px;padding-right:6px;transform:rotate(-2deg)">
+                <sc-if value="{{ log.doodleDiagram }}" hint-placeholder-val="{{ false }}">
+                  <svg width="96" height="58" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg>
+                </sc-if>
+                <sc-if value="{{ log.doodleBoat }}" hint-placeholder-val="{{ false }}">
+                  <svg width="100" height="62" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path></svg>
+                </sc-if>
+                <sc-if value="{{ log.doodleQueue }}" hint-placeholder-val="{{ false }}">
+                  <svg width="104" height="48" viewBox="0 0 110 50" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path></svg>
+                </sc-if>
+                <span style="font-size:13px;font-style:italic;color:#8a7f63">{{ log.doodleCaption }}</span>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
   <!-- from the log -->
   <div style="padding:0 clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column">
     <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-bottom:12px">
       <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">From the keeper's journal</span>
       <a href="Notes.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">the full journal →</a>
     </div>
-    <a href="Notes.dc.html" data-log-row="true" style="display:flex;gap:8px 20px;align-items:baseline;flex-wrap:wrap;border-top:1px solid rgba(150,160,220,.2);padding:15px 0">
+    <div onClick="{{ openLog0 }}" data-log-row="true" style="position:relative;cursor:pointer;display:flex;gap:8px 20px;align-items:baseline;flex-wrap:wrap;border-top:1px solid rgba(150,160,220,.2);padding:15px 0">
       <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;flex:none;width:72px">jun 2026</span>
       <span style="display:flex;flex-direction:column;gap:3px;flex:1 1 300px;min-width:0">
         <span data-log-title="true" style="font-family:'Newsreader',serif;font-weight:500;font-size:18.5px;color:#e8ebfa;line-height:1.3;transition:color .2s">What re-architecting taught me about not architecting</span>
         <span style="font-size:15px;font-style:italic;color:#a5aed4;line-height:1.5;text-wrap:pretty">Sometimes the best system design is the meeting where you talk everyone out of a new system.</span>
       </span>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;margin-left:auto;flex:none">light steady · no incidents</span>
-    </a>
-    <a href="Notes.dc.html" data-log-row="true" style="display:flex;gap:8px 20px;align-items:baseline;flex-wrap:wrap;border-top:1px solid rgba(150,160,220,.2);padding:15px 0">
+      <span data-hide-mobile title="the cat read this one" style="position:absolute;right:16px;top:8px;display:flex;gap:15px;transform:rotate(-9deg);opacity:.62">
+        <svg width="13" height="12" viewBox="0 0 15 14" fill="#93a0e8" style="transform:rotate(-12deg);animation:pawStep 13s linear 0s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
+        <svg width="13" height="12" viewBox="0 0 15 14" fill="#93a0e8" style="transform:translateY(7px) rotate(-4deg);animation:pawStep 13s linear .6s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
+        <svg width="13" height="12" viewBox="0 0 15 14" fill="#93a0e8" style="transform:rotate(-16deg);animation:pawStep 13s linear 1.2s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
+      </span>
+      <span data-log-doodle="true" data-hide-mobile style="position:absolute;right:210px;top:50%;margin-top:-20px;pointer-events:none"><svg width="66" height="40" viewBox="0 0 100 62" fill="none" stroke="#93a0e8" stroke-width="1.7" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg></span>
+    </div>
+    <div onClick="{{ openLog1 }}" data-log-row="true" style="position:relative;cursor:pointer;display:flex;gap:8px 20px;align-items:baseline;flex-wrap:wrap;border-top:1px solid rgba(150,160,220,.2);padding:15px 0">
       <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;flex:none;width:72px">apr 2026</span>
       <span style="display:flex;flex-direction:column;gap:3px;flex:1 1 300px;min-width:0">
         <span data-log-title="true" style="font-family:'Newsreader',serif;font-weight:500;font-size:18.5px;color:#e8ebfa;line-height:1.3;transition:color .2s">CachyOS, three months in</span>
         <span style="font-size:15px;font-style:italic;color:#a5aed4;line-height:1.5;text-wrap:pretty">A review from someone who will absolutely distro-hop again and lie about it.</span>
       </span>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;margin-left:auto;flex:none">fog inland · desktop suspiciously calm</span>
-    </a>
-    <a href="Notes.dc.html" data-log-row="true" style="display:flex;gap:8px 20px;align-items:baseline;flex-wrap:wrap;border-top:1px solid rgba(150,160,220,.2);padding:15px 0">
+      <span data-hide-mobile title="the cat read this one" style="position:absolute;right:44px;top:16px;display:flex;gap:16px;transform:rotate(6deg);opacity:.62">
+        <svg width="13" height="12" viewBox="0 0 15 14" fill="#93a0e8" style="transform:rotate(9deg);animation:pawStep 13s linear 4.3s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
+        <svg width="13" height="12" viewBox="0 0 15 14" fill="#93a0e8" style="transform:translateY(-7px) rotate(3deg);animation:pawStep 13s linear 4.9s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
+        <svg width="13" height="12" viewBox="0 0 15 14" fill="#93a0e8" style="transform:rotate(13deg);animation:pawStep 13s linear 5.5s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
+      </span>
+      <span data-log-doodle="true" data-hide-mobile style="position:absolute;right:210px;top:50%;margin-top:-21px;pointer-events:none"><svg width="68" height="42" viewBox="0 0 100 62" fill="none" stroke="#93a0e8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path></svg></span>
+    </div>
+    <div onClick="{{ openLog2 }}" data-log-row="true" style="position:relative;cursor:pointer;display:flex;gap:8px 20px;align-items:baseline;flex-wrap:wrap;border-top:1px solid rgba(150,160,220,.2);padding:15px 0">
       <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;flex:none;width:72px">feb 2026</span>
       <span style="display:flex;flex-direction:column;gap:3px;flex:1 1 300px;min-width:0">
         <span data-log-title="true" style="font-family:'Newsreader',serif;font-weight:500;font-size:18.5px;color:#e8ebfa;line-height:1.3;transition:color .2s">The queue is the product</span>
         <span style="font-size:15px;font-style:italic;color:#a5aed4;line-height:1.5;text-wrap:pretty">Notes on message queues after a decade of them quietly running the news.</span>
       </span>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;margin-left:auto;flex:none">wind NW · queue quiet</span>
-    </a>
+      <span data-hide-mobile title="the cat read this one" style="position:absolute;right:24px;bottom:8px;display:flex;gap:15px;transform:rotate(-15deg);opacity:.62">
+        <svg width="13" height="12" viewBox="0 0 15 14" fill="#93a0e8" style="transform:rotate(-20deg);animation:pawStep 13s linear 8.6s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
+        <svg width="13" height="12" viewBox="0 0 15 14" fill="#93a0e8" style="transform:translateY(6px) rotate(-10deg);animation:pawStep 13s linear 9.2s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
+        <svg width="13" height="12" viewBox="0 0 15 14" fill="#93a0e8" style="transform:rotate(-24deg);animation:pawStep 13s linear 9.8s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
+      </span>
+      <span data-log-doodle="true" data-hide-mobile style="position:absolute;right:210px;top:50%;margin-top:-15px;pointer-events:none"><svg width="70" height="32" viewBox="0 0 110 50" fill="none" stroke="#93a0e8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path></svg></span>
+    </div>
   </div>
 
   <!-- keeper's stores -->
@@ -257,20 +322,38 @@ a[data-log-row]:hover [data-log-title]{color:#f0d9a8 !important}
         </div>
         <span style="font-size:14.5px;color:#a5aed4;font-style:italic">One tweak from perfect, forever.</span>
       </div>
-      <div style="padding:24px 26px;background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;transform:rotate(.3deg);display:flex;flex-direction:column;gap:12px;transition:transform .25s" style-hover="transform:rotate(0deg)">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:#93a0e8;text-transform:uppercase">The hobby graveyard</span>
-        <div style="display:flex;gap:9px;flex-wrap:wrap">
-          <span style="padding:6px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;animation:swayChip 5s ease-in-out infinite">piano † got good enough</span>
-          <span style="padding:6px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;animation:swayChip 6s ease-in-out 1s infinite">music theory † see piano</span>
-          <span style="padding:6px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;animation:swayChip 5.5s ease-in-out .5s infinite">game dev † shipped one</span>
-          <span style="padding:6px 14px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;animation:swayChip 6.5s ease-in-out 1.5s infinite">running † it was a phase</span>
+      <div style="position:relative;padding:24px 26px;background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;transform:rotate(.3deg);display:flex;flex-direction:column;gap:12px;transition:transform .25s" style-hover="transform:rotate(0deg)">
+        <!-- the keeper's lantern, keeping watch -->
+        <div style="position:absolute;top:14px;right:18px;width:3px;height:26px;background:#2a2f52"></div>
+        <div style="position:absolute;top:8px;right:15px;width:9px;height:10px;background:#141225;border:1px solid rgba(240,217,168,.5);border-radius:2px"></div>
+        <div style="position:absolute;top:10.5px;right:17px;width:5px;height:5.5px;background:#f0d9a8;box-shadow:0 0 9px 2px rgba(240,217,168,.65);animation:lampPulse 6s ease-in-out infinite"></div>
+        <div style="position:absolute;top:-24px;right:-28px;width:130px;height:110px;background:radial-gradient(circle,rgba(240,196,120,.15),transparent 62%);filter:blur(2px);animation:lampPulse 6s ease-in-out infinite;pointer-events:none"></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:#93a0e8;text-transform:uppercase;padding-right:34px">The hobby graveyard</span>
+        <div style="display:flex;gap:10px 9px;flex-wrap:wrap;align-items:flex-end">
+          <span style="padding:7px 14px 6px;border:1px solid rgba(150,160,220,.32);border-bottom-color:rgba(150,160,220,.16);border-radius:11px 11px 2px 2px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;transform:rotate(-2deg);transform-origin:50% 100%;box-shadow:0 6px 6px -4px rgba(0,0,0,.55)">piano † got good enough</span>
+          <span style="padding:7px 14px 6px;border:1px solid rgba(150,160,220,.32);border-bottom-color:rgba(150,160,220,.16);border-radius:11px 11px 2px 2px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;transform:rotate(1.5deg);transform-origin:50% 100%;box-shadow:0 6px 6px -4px rgba(0,0,0,.55)">music theory † see piano</span>
+          <span style="padding:7px 14px 6px;border:1px solid rgba(150,160,220,.32);border-bottom-color:rgba(150,160,220,.16);border-radius:11px 11px 2px 2px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;transform:rotate(-1deg);transform-origin:50% 100%;box-shadow:0 6px 6px -4px rgba(0,0,0,.55)">game dev † shipped one</span>
+          <span style="padding:7px 14px 6px;border:1px solid rgba(150,160,220,.32);border-bottom-color:rgba(150,160,220,.16);border-radius:11px 11px 2px 2px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;transform:rotate(2.2deg);transform-origin:50% 100%;box-shadow:0 6px 6px -4px rgba(0,0,0,.55)">running † it was a phase</span>
+        </div>
+        <!-- fireflies, being disruptive -->
+        <div style="position:absolute;left:20%;top:54%;animation:fireflyRoam 11s ease-in-out infinite;pointer-events:none;z-index:2">
+          <div style="position:absolute;left:50%;top:50%;width:46px;height:46px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.26),transparent 65%);filter:blur(2px);animation:lampPulse 3.2s ease-in-out infinite"></div>
+          <div style="width:3px;height:3px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 6px 2px rgba(240,217,168,.55);animation:lampPulse 3.2s ease-in-out infinite"></div>
+        </div>
+        <div style="position:absolute;left:58%;top:36%;animation:fireflyRoam 14s ease-in-out -5s infinite reverse;pointer-events:none;z-index:2">
+          <div style="position:absolute;left:50%;top:50%;width:38px;height:38px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.22),transparent 65%);filter:blur(2px);animation:lampPulse 4.1s ease-in-out .8s infinite"></div>
+          <div style="width:2.5px;height:2.5px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 5px 2px rgba(240,217,168,.5);animation:lampPulse 4.1s ease-in-out .8s infinite"></div>
+        </div>
+        <div style="position:absolute;left:74%;top:66%;animation:fireflyRoam 9s ease-in-out -2s infinite;pointer-events:none;z-index:2">
+          <div style="position:absolute;left:50%;top:50%;width:32px;height:32px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.2),transparent 65%);filter:blur(2px);animation:lampPulse 2.7s ease-in-out .4s infinite"></div>
+          <div style="width:2px;height:2px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 5px 1.5px rgba(240,217,168,.45);animation:lampPulse 2.7s ease-in-out .4s infinite"></div>
         </div>
         <span style="font-size:14.5px;color:#7a83ad;font-style:italic">Nothing here is dead. It's just resting until the next season of me.</span>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
       <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// the graveyard only grows. that's fine.</span>
-      <span onClick="{{ cycleNext }}" style="padding:6px 14px;border:1.5px dashed rgba(240,217,168,.6);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transform:rotate(-1deg);transition:transform .15s" style-hover="transform:rotate(0deg) scale(1.04)" style-active="transform:scale(.96)">next: {{ nextHobby }}</span>
+      <span onClick="{{ cycleNext }}" title="pre-dug, awaiting the next hobby" style="padding:7px 14px 6px;border:1.5px dashed rgba(240,217,168,.55);border-radius:11px 11px 2px 2px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transform:rotate(1.2deg);transform-origin:50% 100%;box-shadow:0 6px 6px -4px rgba(0,0,0,.45);transition:transform .15s" style-hover="transform:rotate(0deg) scale(1.04)" style-active="transform:scale(.96)">next: {{ nextHobby }}</span>
     </div>
   </div>
 
@@ -309,7 +392,32 @@ a[data-log-row]:hover [data-log-title]{color:#f0d9a8 !important}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { openIdx: null, bottle: null, nextIdx: 0 };
+  state = { openIdx: null, bottle: null, nextIdx: 0, openLog: null, logClosing: false, hoverFeat: null };
+
+  // same entries as Notes.dc.html — keep in sync
+  logEntries = [
+    { date: 'jun 2026', title: 'What re-architecting taught me about not architecting',
+      wx: 'light steady · no incidents', doodle: 'diagram', doodleCaption: 'the new system — not built',
+      p1: 'The most valuable architecture work I did last year produced zero diagrams. It was a meeting where we decided not to build a new system, because the old one was fine and the problem was actually a missing index.',
+      p2: 'Nobody frames that. There is no conference talk called "We Kept The Thing." But keeping the thing — understanding it well enough to defend it — is harder than replacing it, and pays better.',
+      p3: 'So my current architecture checklist starts with one question: what if we did nothing? It is amazing how often "nothing" is a strong candidate.' },
+    { date: 'apr 2026', title: 'CachyOS, three months in', doodle: 'boat', doodleCaption: 'the next distro, on the horizon',
+      wx: 'fog inland · desktop suspiciously calm',
+      p1: 'Three months on CachyOS and everything works, which is deeply unsettling. A Linux desktop is supposed to be a relationship with problems. This one just... boots.',
+      p2: 'I have compensated by inventing problems: kernel flavors, shader pre-caching, a systemd unit that exists purely because I wanted to write one.',
+      p3: 'Verdict: excellent. Will I still be here next year? History says no. History also says I will claim the next distro is "finally the one," so take this note as a hostage statement.' },
+    { date: 'feb 2026', title: 'The queue is the product',
+      wx: 'wind NW · queue quiet', doodle: 'queue', doodleCaption: 'the product.',
+      p1: 'A decade of publishing systems has convinced me the real product is not the website or the app. It is the queue: the quiet agreement about what happens next, in what order, and what happens when it fails.',
+      p2: 'Every incident postmortem I have ever written eventually finds a place where two systems disagreed about that. Every fix eventually looks like a queue wearing a disguise.',
+      p3: 'If you can only design one thing well, design the handoff. The rest is UI.' },
+  ];
+
+  closeLog = () => {
+    if (this.state.logClosing || this.state.openLog == null) return;
+    this.setState({ logClosing: true });
+    setTimeout(() => this.setState({ openLog: null, logClosing: false }), 220);
+  };
 
   suggestions = ['???', 'blacksmithing?', 'sourdough?', 'birdwatching?', '3d printing?', 'kayaking?', 'chess?', 'fermenting things?', 'ham radio?', 'no. surely not.'];
 
@@ -381,7 +489,11 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
-    this.onKey = (e) => { if (e.key === 'Escape') this.setState({ openIdx: null, bottle: null }); };
+    this.onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      if (this.state.openLog != null) this.closeLog();
+      else this.setState({ openIdx: null, bottle: null });
+    };
     window.addEventListener('keydown', this.onKey);
   }
   componentWillUnmount() { window.removeEventListener('keydown', this.onKey); clearTimeout(this.bottleTimer); }
@@ -411,14 +523,26 @@ class Component extends DCLogic {
       est: (openP.year || '').slice(0, 4),
       ...this.featLamp(openMeta),
     } : null;
+    const logClosing = this.state.logClosing;
     return {
       open,
+      log: (() => {
+        const n = this.state.openLog == null ? null : this.logEntries[this.state.openLog];
+        return n ? { ...n, hasDoodle: !!n.doodle, doodleDiagram: n.doodle === 'diagram', doodleBoat: n.doodle === 'boat', doodleQueue: n.doodle === 'queue' } : null;
+      })(),
+      logBackdropStyle: { position: 'fixed', inset: 0, background: 'rgba(8,10,20,.72)', backdropFilter: 'blur(5px)', zIndex: 55, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(14px,4vw,40px)', animation: logClosing ? 'backdropOut .22s ease both' : 'backdropIn .25s ease both' },
+      logCardStyle: { position: 'relative', width: 'min(680px,100%)', animation: logClosing ? 'cardOut .22s ease both' : 'cardInNote .35s ease both' },
+      closeLog: this.closeLog,
+      openLog0: () => this.setState({ openLog: 0 }),
+      openLog1: () => this.setState({ openLog: 1 }),
+      openLog2: () => this.setState({ openLog: 2 }),
       featured: this.projects.map((p, i) => {
         const m = this.featuredMeta[i];
         const glow = '246,236,207';
         const dur = Math.min(6, Math.max(3, m.period || 4));
         const charName = { flash: 'flashChar', occult: 'occultChar', iso: 'isoChar', fixed: null }[m.kind];
         const anim = m.kind === 'fixed' ? 'haloBreath 5s ease-in-out infinite' : `${charName} ${dur}s ease-in-out infinite`;
+        const hovered = this.state.hoverFeat === i;
         return {
           title: p.title,
           desc: m.desc,
@@ -434,6 +558,9 @@ class Component extends DCLogic {
           lampBox: { position: 'absolute', top: '10px', right: '12px', width: '40px', height: '40px' },
           halo: { position: 'absolute', left: '50%', top: '50%', width: '34px', height: '34px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${glow},.45) 0%, transparent 64%)`, filter: 'blur(2px)', animation: anim, pointerEvents: 'none' },
           core: { position: 'absolute', left: '50%', top: '50%', width: '6px', height: '6px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: '#fff', boxShadow: `0 0 8px 2px rgba(${glow},.85)`, animation: m.kind === 'fixed' ? 'none' : anim, pointerEvents: 'none' },
+          glowFrame: { position: 'absolute', inset: 0, borderRadius: '12px', border: '1px solid rgba(246,236,207,.35)', boxShadow: `0 0 22px rgba(${glow},.16), inset 0 0 18px rgba(${glow},.07)`, animation: hovered ? 'none' : anim, pointerEvents: 'none' },
+          onEnter: () => this.setState({ hoverFeat: i }),
+          onLeave: () => this.setState({ hoverFeat: null }),
           onClick: () => this.setState({ openIdx: i }),
         };
       }),

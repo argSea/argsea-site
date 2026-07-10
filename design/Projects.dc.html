@@ -11,8 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Gloock&amp;family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
-html{background:#131628}
-body{margin:0;background:linear-gradient(180deg,#11131f 0%,#131628 100%)}
+html{background:#0d0f1c}
+body{margin:0;background:none}
 a{text-decoration:none}
 a:hover{color:#e8ebfa}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -24,10 +24,53 @@ a:hover{color:#e8ebfa}
 @keyframes haloBreath{0%,100%{opacity:.55}50%{opacity:.85}}
 @keyframes backdropIn{from{opacity:0}to{opacity:1}}
 @keyframes entryUp{from{opacity:0;transform:translateY(24px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes sailBy{0%{left:-8%}100%{left:108%}}
+@keyframes slideA{to{background-position-x:-90px}}
+@keyframes slideB{to{background-position-x:-70px}}
+@keyframes slideC{to{background-position-x:-55px}}
+@keyframes slideD{to{background-position-x:-84px}}
+@keyframes rainFall{to{background-position:-10px 26px}}
+@keyframes backdropOut{from{opacity:1}to{opacity:0}}
+@keyframes entryDown{from{opacity:1;transform:none}to{opacity:0;transform:translateY(18px) scale(.985)}}
+@keyframes bobBoat{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-2px) rotate(1deg)}}
+@keyframes glitter{0%,100%{opacity:.45}50%{opacity:.85}}
+@keyframes drift{0%,100%{transform:translate(0,0)}25%{transform:translate(6px,-9px)}50%{transform:translate(-5px,-14px)}75%{transform:translate(4px,-6px)}}
+@keyframes twinkle{0%,100%{opacity:.2}50%{opacity:.85}}
 </style>
 </helmet>
 
-<div style="min-height:100vh;color:#dde1f0;font-family:'Newsreader',serif;display:flex;flex-direction:column;overflow-x:hidden">
+<div style="position:relative;min-height:100vh;color:#dde1f0;font-family:'Newsreader',serif;display:flex;flex-direction:column;overflow-x:hidden">
+
+  <!-- the sky, all the way up -->
+  <div style="{{ skyStyle }}">
+    <sc-if value="{{ starsOn }}" hint-placeholder-val="{{ true }}"><div data-plx="4" style="{{ starsStyle }}"></div></sc-if>
+    <!-- milky way -->
+    <div data-plx="3" style="position:absolute;left:-15%;top:26px;width:140%;height:130px;pointer-events:none">
+      <div style="position:absolute;inset:0;transform:rotate(-11deg)">
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(180,190,240,.05) 34%,rgba(207,214,245,.09) 50%,rgba(180,190,240,.045) 66%,transparent);filter:blur(10px)"></div>
+        <div style="position:absolute;left:6%;top:46%;width:1.5px;height:1.5px;background:transparent;box-shadow:24px 6px 0 rgba(222,228,250,.4),70px -8px 0 rgba(222,228,250,.26),120px 12px 0 rgba(222,228,250,.34),180px -4px 0 rgba(222,228,250,.22),240px 8px 0 rgba(222,228,250,.4),305px -10px 0 rgba(222,228,250,.28),375px 4px 0 rgba(222,228,250,.36),450px -6px 0 rgba(222,228,250,.22),530px 10px 0 rgba(222,228,250,.32),615px -2px 0 rgba(222,228,250,.26),705px 6px 0 rgba(222,228,250,.36),800px -8px 0 rgba(222,228,250,.22),900px 2px 0 rgba(222,228,250,.3),1010px -5px 0 rgba(222,228,250,.24),1130px 7px 0 rgba(222,228,250,.3)"></div>
+      </div>
+    </div>
+    <!-- twinklers -->
+    <div data-plx="4" style="position:absolute;left:6%;top:180px;width:2px;height:2px;border-radius:50%;background:#e8ebfa;animation:twinkle 4.2s ease-in-out infinite"></div>
+    <div data-plx="4" style="position:absolute;left:16%;top:44px;width:2px;height:2px;border-radius:50%;background:#e8ebfa;animation:twinkle 5.1s ease-in-out 1s infinite"></div>
+    <div data-plx="4" style="position:absolute;left:29%;top:238px;width:2.5px;height:2.5px;border-radius:50%;background:#e8ebfa;animation:twinkle 6s ease-in-out .5s infinite"></div>
+    <div data-plx="4" style="position:absolute;left:41%;top:90px;width:2px;height:2px;border-radius:50%;background:#e8ebfa;animation:twinkle 4.6s ease-in-out 2s infinite"></div>
+    <div data-plx="4" style="position:absolute;left:58%;top:198px;width:2px;height:2px;border-radius:50%;background:#e8ebfa;animation:twinkle 5.5s ease-in-out 1.4s infinite"></div>
+    <div data-plx="4" style="position:absolute;left:72%;top:30px;width:2px;height:2px;border-radius:50%;background:#e8ebfa;animation:twinkle 6.4s ease-in-out .8s infinite"></div>
+    <div data-plx="4" style="position:absolute;left:90%;top:150px;width:2px;height:2px;border-radius:50%;background:#e8ebfa;animation:twinkle 5.8s ease-in-out 2.4s infinite"></div>
+    <!-- cirrus -->
+    <div data-plx="5" style="position:absolute;left:-8%;top:38px;width:190px;height:14px;border-radius:50%;background:linear-gradient(180deg,rgba(200,208,245,.1),rgba(200,208,245,.015));filter:blur(4px);animation:sailBy 280s linear -60s infinite;pointer-events:none"></div>
+    <div data-plx="5" style="position:absolute;left:-8%;top:92px;width:130px;height:11px;border-radius:50%;background:linear-gradient(180deg,rgba(200,208,245,.07),rgba(200,208,245,.01));filter:blur(4px);animation:sailBy 340s linear -210s infinite;pointer-events:none"></div>
+    <!-- the moon -->
+    <div data-plx="7" style="position:absolute;top:-103px;right:calc(8% - 159px);width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(236,231,216,.12) 0%,transparent 66%)"></div>
+    <div data-plx="7" style="position:absolute;top:35px;right:calc(8% - 21px);width:64px;height:64px;border-radius:50%;border:1px solid rgba(236,231,216,.13);filter:blur(1.2px)"></div>
+    <div data-plx="7" style="position:absolute;top:56px;right:8%;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#f6f1e2,#ddd6bf 62%,#c4bda6);box-shadow:0 0 24px 7px rgba(236,231,216,.32);overflow:hidden">
+      <div style="position:absolute;left:5px;top:7px;width:4.5px;height:4.5px;border-radius:50%;background:rgba(160,150,120,.4)"></div>
+      <div style="position:absolute;left:12px;top:12px;width:3px;height:3px;border-radius:50%;background:rgba(160,150,120,.35)"></div>
+      <div style="position:absolute;left:11px;top:4px;width:2px;height:2px;border-radius:50%;background:rgba(160,150,120,.3)"></div>
+    </div>
+  </div>
 
   <!-- nav -->
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:clamp(18px,3vw,30px) clamp(20px,5vw,52px) 10px">
@@ -53,7 +96,7 @@ a:hover{color:#e8ebfa}
     <div style="font-size:clamp(16px,2.3vw,18px);color:#a5aed4;max-width:620px;line-height:1.6;animation:fadeUp .7s ease .15s both">The view from the lamp room. Every system I keep burning is out there on the coast, logged by its <span style="font-style:italic;color:#c3cbf2">characteristic</span> — the blink that tells you which light you're looking at. Click one to read its entry.</div>
     <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:8px;align-items:center;animation:fadeUp .7s ease .25s both">
       <sc-for list="{{ chips }}" as="chip" hint-placeholder-count="5">
-        <span style="{{ chip.style }}" style-hover="border-color:rgba(240,217,168,.5);color:#c3cbf2" onClick="{{ chip.onClick }}">{{ chip.label }}</span>
+        <span style="{{ chip.style }}" style-hover="border-color:rgba(240,217,168,.5);color:#c3cbf2" onClick="{{ chip.onClick }}">{{ chip.label }}<sc-if value="{{ chip.dot }}" hint-placeholder-val="{{ false }}"><span style="{{ chip.dot }}"></span></sc-if></span>
       </sc-for>
       <span style="font-family:'Newsreader',serif;font-style:italic;font-size:14px;color:#8f9be0;margin-left:auto;transform:rotate(-.8deg)">{{ countLine }}</span>
     </div>
@@ -68,8 +111,51 @@ a:hover{color:#e8ebfa}
         <div style="{{ moonStyle }}"></div>
         <div style="{{ seaStyle }}"></div>
         <div style="{{ horizonStyle }}"></div>
+
+        <!-- swells, far to near -->
+        <div style="position:absolute;left:0;right:0;top:168px;height:12px;opacity:.1;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.4)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;background-size:90px 12px;animation:slideA 21s linear infinite;pointer-events:none"></div>
+        <div style="position:absolute;left:0;right:0;top:186px;height:14px;opacity:.14;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.4)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;background-size:70px 14px;animation:slideB 15s linear infinite;pointer-events:none"></div>
+        <div style="position:absolute;left:0;right:0;top:204px;height:16px;opacity:.18;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.4)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;background-size:55px 16px;animation:slideC 10s linear infinite;pointer-events:none"></div>
+        <div style="position:absolute;left:0;right:0;top:224px;height:16px;opacity:.22;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.4)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;background-size:42px 16px;animation:slideD 7s linear infinite;pointer-events:none"></div>
+
+        <!-- the water, the glitter, and a boat between the lights -->
+        <div style="position:absolute;right:8%;top:150px;height:72px;width:24px;clip-path:polygon(40% 0,60% 0,100% 100%,0 100%);background:repeating-linear-gradient(180deg,rgba(236,231,216,.16) 0 1.5px,transparent 1.5px 6px);filter:blur(1px);animation:glitter 4.5s ease-in-out infinite;mask-image:linear-gradient(180deg,black 30%,transparent 96%);-webkit-mask-image:linear-gradient(180deg,black 30%,transparent 96%);pointer-events:none"></div>
+        <div style="position:absolute;left:-8%;top:128px;width:34px;height:26px;z-index:2;animation:sailBy 150s linear -50s infinite;pointer-events:none">
+          <svg width="34" height="24" viewBox="0 0 66 46" fill="none" style="animation:bobBoat 4.5s ease-in-out infinite;overflow:visible">
+            <path d="M31 3 V32" stroke="#7c88c9" stroke-width="1.3"></path>
+            <path d="M33 6 L46 29 L33 29 Z" fill="#c9c2ab"></path>
+            <path d="M29 8 L18 29 L29 29 Z" fill="#a89f85"></path>
+            <path d="M31 2 L39 5 L31 8 Z" fill="#f0d9a8"></path>
+            <path d="M12 32 L52 32 L46 40 L18 40 Z" fill="#1e2547" stroke="#7c88c9" stroke-width="1.1" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <!-- open water — every light out there is one of the keeper’s -->
+        <!-- a private little squall, way out -->
+        <div style="position:absolute;left:-8%;top:88px;width:150px;height:64px;z-index:2;animation:sailBy 130s linear -30s infinite;pointer-events:none">
+          <div style="position:absolute;left:16px;right:16px;top:26px;bottom:2px;background:repeating-linear-gradient(102deg,rgba(180,190,240,.2) 0 1px,transparent 1px 5px);clip-path:polygon(6% 0,94% 0,100% 100%,0 100%);mask-image:linear-gradient(180deg,rgba(0,0,0,.9),rgba(0,0,0,.25));-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.9),rgba(0,0,0,.25));animation:rainFall 1.1s linear infinite"></div>
+          <div title="a passing squall — somebody's on call tonight" style="position:absolute;left:10px;right:10px;top:12px;height:18px;border-radius:50%;background:#141b3a;filter:blur(3px);opacity:.9;pointer-events:auto"></div>
+          <div style="position:absolute;left:2px;top:18px;width:70px;height:14px;border-radius:50%;background:#10162f;filter:blur(3px);opacity:.85"></div>
+          <div style="position:absolute;right:0;top:16px;width:80px;height:15px;border-radius:50%;background:#171e40;filter:blur(3px);opacity:.85"></div>
+          <div style="position:absolute;left:20px;right:20px;top:60px;height:3px;border-radius:50%;background:rgba(180,190,240,.14);filter:blur(2px)"></div>
+        </div>
+
         <sc-for list="{{ beacons }}" as="b" hint-placeholder-count="6">
           <div style="{{ b.wrapStyle }}" title="{{ b.tip }}" onClick="{{ b.onClick }}" onMouseEnter="{{ b.onEnter }}" onMouseLeave="{{ b.onLeave }}">
+            <div style="{{ b.islet }}"></div>
+            <sc-if value="{{ b.grave }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ b.grave }}">
+                <div style="position:absolute;left:12px;bottom:1px;width:4.5px;height:7px;background:#0b0e21;border:1px solid rgba(147,160,232,.28);border-bottom:none;border-radius:2px 2px 0 0;transform:rotate(-4deg)"></div>
+                <div style="position:absolute;left:25px;bottom:3px;width:5px;height:8px;background:#0b0e21;border:1px solid rgba(147,160,232,.28);border-bottom:none;border-radius:2.5px 2.5px 0 0;transform:rotate(3deg)"></div>
+                <div style="position:absolute;left:36px;bottom:2px;width:2px;height:9px;background:#141936;transform:rotate(2deg)"><div style="position:absolute;left:-2px;top:2px;width:6px;height:2px;background:#141936"></div></div>
+                <div style="position:absolute;right:24px;bottom:3px;width:5px;height:8px;background:#0b0e21;border:1px solid rgba(147,160,232,.28);border-bottom:none;border-radius:2.5px 2.5px 0 0;transform:rotate(5deg)"></div>
+                <div style="position:absolute;right:13px;bottom:1px;width:4.5px;height:7px;background:#0b0e21;border:1px solid rgba(147,160,232,.28);border-bottom:none;border-radius:2px 2px 0 0;transform:rotate(-3deg)"></div>
+                <div style="position:absolute;right:2.5px;bottom:0;width:5px;height:2.5px;background:#0a0e22;clip-path:polygon(0 100%,20% 30%,60% 55%,100% 100%)"></div>
+                <div style="position:absolute;right:4.5px;bottom:1px;width:7px;height:2px;background:#10152e;border-radius:0 0 3px 3px;transform:rotate(-12deg)"></div>
+                <div style="position:absolute;right:8px;bottom:2.5px;width:1px;height:4.5px;background:#10152e;transform:rotate(26deg);transform-origin:bottom"></div>
+              </div>
+            </sc-if>
+            <svg width="12" height="16" viewBox="0 0 26 34" fill="none" style="{{ b.stub }}"><path d="M13 3 L17 10 L9 10 Z" fill="rgba(150,160,220,.4)"></path><rect x="10" y="10" width="6" height="15" fill="none" stroke="rgba(150,160,220,.45)" stroke-width="1.3"></rect><path d="M10 14 h6 M10 19 h6" stroke="rgba(150,160,220,.34)" stroke-width="1.1"></path><path d="M5 30 q8 -4 16 0" stroke="rgba(150,160,220,.36)" stroke-width="1.3" fill="none"></path></svg>
+            <sc-if value="{{ b.loom }}" hint-placeholder-val="{{ false }}"><div style="{{ b.loom }}"></div></sc-if>
             <div style="{{ b.halo }}"></div>
             <div style="{{ b.core }}"></div>
             <sc-if value="{{ b.reflect }}" hint-placeholder-val="{{ false }}"><div style="{{ b.reflect }}"></div></sc-if>
@@ -128,8 +214,8 @@ a:hover{color:#e8ebfa}
 
   <!-- overlay: the light-list entry -->
   <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
-    <div onClick="{{ closeOverlay }}" style="position:fixed;inset:0;background:rgba(6,8,16,.78);backdrop-filter:blur(5px);z-index:50;display:flex;align-items:center;justify-content:center;padding:clamp(14px,4vw,40px);animation:backdropIn .25s ease both">
-      <div onClick="{{ stopProp }}" style="position:relative;width:min(760px,100%);max-height:88vh;overflow:auto;animation:entryUp .4s ease both;background:linear-gradient(180deg,#191d33,#12162a);border-radius:8px;border:1px solid rgba(150,160,220,.2);box-shadow:0 30px 80px rgba(0,0,0,.65),inset 0 0 0 1px rgba(240,217,168,.06)">
+    <div onClick="{{ closeOverlay }}" style="{{ overlayStyle }}">
+      <div onClick="{{ stopProp }}" style="{{ entryStyle }}">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(22px,4vw,34px) 12px;border-bottom:1px solid rgba(150,160,220,.14)">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#8a93c4;text-transform:uppercase">U.S. Light List · No. {{ open.no }}</span>
           <span onClick="{{ closeOverlay }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#93a0e8;padding:6px 12px;border:1px solid rgba(150,160,220,.3);border-radius:999px;transition:all .2s" style-hover="color:#e8ebfa;border-color:rgba(240,217,168,.5)">close ✕</span>
@@ -184,9 +270,15 @@ a:hover{color:#e8ebfa}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;reflections&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Scene&quot;}, &quot;starfield&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Scene&quot;}}">
 class Component extends DCLogic {
-  state = { filter: 'all', openIdx: null, hoverIdx: null };
+  state = { filter: 'all', openIdx: null, hoverIdx: null, closing: false };
 
   cats = ['all', 'backend', 'games', 'this website', 'tinkering'];
+
+  closeOv = () => {
+    if (this.state.closing || this.state.openIdx == null) return;
+    this.setState({ closing: true });
+    setTimeout(() => this.setState({ openIdx: null, closing: false }), 220);
+  };
 
   pal = {
     white: { glow: '246,236,207' },
@@ -243,15 +335,33 @@ class Component extends DCLogic {
   };
 
   componentDidMount() {
-    this.onKey = (e) => { if (e.key === 'Escape') this.setState({ openIdx: null }); };
+    this.onKey = (e) => { if (e.key === 'Escape') this.closeOv(); };
     window.addEventListener('keydown', this.onKey);
     this.onResize = () => this.setState({ vw: window.innerWidth });
     window.addEventListener('resize', this.onResize);
     this.setState({ vw: window.innerWidth });
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches && matchMedia('(pointer: fine)').matches) {
+      this._raf = 0;
+      this._onMove = (e) => {
+        this._mx = e.clientX; this._my = e.clientY;
+        if (!this._raf) this._raf = requestAnimationFrame(() => {
+          this._raf = 0;
+          const dx = this._mx / innerWidth - 0.5, dy = this._my / innerHeight - 0.5;
+          const els = document.querySelectorAll('[data-plx]');
+          for (const el of els) {
+            const fpx = parseFloat(el.dataset.plx) || 0;
+            el.style.translate = `${(-dx * fpx).toFixed(1)}px ${(-dy * fpx * 0.6).toFixed(1)}px`;
+          }
+        });
+      };
+      window.addEventListener('mousemove', this._onMove);
+    }
   }
   componentWillUnmount() {
     window.removeEventListener('keydown', this.onKey);
     window.removeEventListener('resize', this.onResize);
+    if (this._onMove) window.removeEventListener('mousemove', this._onMove);
+    if (this._raf) cancelAnimationFrame(this._raf);
   }
 
   codeFor(p) {
@@ -317,34 +427,41 @@ class Component extends DCLogic {
     const chips = this.cats.map((c) => ({
       label: c,
       onClick: () => this.setState({ filter: c }),
+      dot: c === f ? { width: '6px', height: '6px', borderRadius: '50%', background: '#fff', boxShadow: '0 0 7px 2px rgba(246,236,207,.85)', animation: 'haloBreath 3.5s ease-in-out infinite', flex: 'none' } : null,
       style: c === f
-        ? { ...chipBase, background: 'rgba(240,217,168,.12)', color: '#f0d9a8', border: '1px solid rgba(240,217,168,.55)' }
-        : { ...chipBase, background: 'rgba(147,160,232,.06)', color: '#93a0e8', border: '1px solid rgba(150,160,220,.28)' },
+        ? { ...chipBase, display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(240,217,168,.07)', color: '#f0d9a8', border: '1.5px dashed rgba(240,217,168,.7)' }
+        : { ...chipBase, display: 'inline-flex', alignItems: 'center', border: '1px solid rgba(150,160,220,.28)', background: 'rgba(147,160,232,.06)', color: '#93a0e8' },
     }));
 
     // ---- panorama ----
-    const H = 216, horizonY = 132;
+    const H = 260, horizonY = 150;
     const beacons = this.projects.map((p, i) => {
       const dark = p.status === 'dark';
       const c = this.pal[dark ? 'dark' : p.color];
-      const x = 4 + ((i * 0.618034) % 1) * 92;
-      const elev = 10 + ((i * 37) % 24);
-      const fs = 0.75 + ((i * 13) % 5) * 0.14;
+      const x = 6 + ((i * 0.618034) % 1) * 90;
+      const here = p.title === 'This website';
+      const depth = here ? 1 : 0;
+      const s = 0.6 + depth * 0.9;
+      const fs = (0.8 + ((i * 13) % 5) * 0.08) * (0.6 + depth * 0.75);
+      const y = Math.round(horizonY + depth * 62 - 13 * s + (here ? 0 : ((i * 37) % 5) - 2));
       const match = f === 'all' || p.cat === f;
       const hovered = this.state.hoverIdx === i;
-      const here = p.title === 'This website';
       return {
-        tip: here ? `${p.title} · ${this.codeFor(p)} · you are standing in this one` : `${p.title} · ${this.codeFor(p)}${dark ? ' · dark' : ''}`,
-        ring: here ? { position: 'absolute', inset: '9px', border: '1px dashed rgba(240,217,168,.55)', borderRadius: '50%', animation: 'haloBreath 4s ease-in-out infinite', pointerEvents: 'none' } : null,
+        tip: here ? `${p.title} · ${this.codeFor(p)} · you are here. but you are also there. wait` : `${p.title} · ${this.codeFor(p)}${dark ? ' · dark' : ''}`,
+        ring: here ? { position: 'absolute', inset: Math.round(9 * s) + 'px', border: '1px dashed rgba(240,217,168,.55)', borderRadius: '50%', animation: 'haloBreath 4s ease-in-out infinite', pointerEvents: 'none' } : null,
         wrapStyle: {
-          position: 'absolute', left: x + '%', top: (horizonY - elev) + 'px', transform: 'translate(-50%,-50%)',
-          width: '46px', height: '46px', cursor: 'pointer', zIndex: 3,
-          opacity: match ? 1 : 0.12, filter: hovered ? 'brightness(1.9)' : 'none',
+          position: 'absolute', left: x + '%', top: y + 'px', transform: 'translate(-50%,-50%)',
+          width: Math.round(46 * s) + 'px', height: Math.round(46 * s) + 'px', cursor: 'pointer', zIndex: 3,
+          opacity: match ? 1 : 0.12, filter: hovered ? 'brightness(2.2) saturate(1.15)' : 'none',
           transition: 'opacity .35s, filter .25s',
         },
-        halo: { position: 'absolute', left: '50%', top: '50%', width: Math.round(34 * fs) + 'px', height: Math.round(34 * fs) + 'px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${c.glow},${dark ? 0.1 : 0.55}) 0%, transparent 64%)`, filter: 'blur(2px)', animation: this.charAnim(p), pointerEvents: 'none' },
-        core: { position: 'absolute', left: '50%', top: '50%', width: Math.max(3, Math.round(5 * fs)) + 'px', height: Math.max(3, Math.round(5 * fs)) + 'px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: dark ? '#4d5670' : '#fff', boxShadow: `0 0 ${Math.round(8 * fs)}px ${Math.round(2 * fs)}px rgba(${c.glow},${dark ? 0.2 : 0.85})`, animation: this.coreAnim(p), pointerEvents: 'none' },
-        reflect: refl && !dark ? { position: 'absolute', left: '50%', top: (23 + elev) + 'px', transform: 'translateX(-50%)', width: '2.5px', height: Math.round(14 + elev * 0.7) + 'px', background: `linear-gradient(180deg, rgba(${c.glow},.4) 0%, transparent 100%)`, filter: 'blur(1.2px)', animation: this.charAnim(p), pointerEvents: 'none' } : null,
+        halo: { position: 'absolute', left: '50%', top: '50%', width: Math.round(34 * fs * (hovered ? 1.45 : 1)) + 'px', height: Math.round(34 * fs * (hovered ? 1.45 : 1)) + 'px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${c.glow},${dark ? 0.1 : 0.55}) 0%, transparent 64%)`, filter: 'blur(2px)', animation: hovered ? 'none' : this.charAnim(p), transition: 'width .25s, height .25s', pointerEvents: 'none' },
+        core: { position: 'absolute', left: '50%', top: '50%', width: Math.max(3, Math.round(5 * fs)) + 'px', height: Math.max(3, Math.round(5 * fs)) + 'px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: dark ? '#4d5670' : '#fff', boxShadow: `0 0 ${Math.round((hovered ? 15 : 8) * fs)}px ${Math.round((hovered ? 5 : 2) * fs)}px rgba(${c.glow},${dark ? 0.2 : 0.85})`, animation: hovered ? 'none' : this.coreAnim(p), pointerEvents: 'none' },
+        stub: { position: 'absolute', left: '50%', top: 'calc(50% - ' + Math.round(3 * s) + 'px)', transform: 'translateX(-50%)', width: Math.round(12 * s) + 'px', height: Math.round(16 * s) + 'px', pointerEvents: 'none' },
+        islet: here ? { position: 'absolute', left: '50%', top: 'calc(50% + ' + Math.round(9 * s) + 'px)', transform: 'translateX(-50%)', width: Math.round(76 * s) + 'px', height: Math.round(8 * s) + 'px', borderRadius: '60% 70% 0 0 / 100% 100% 0 0', background: 'linear-gradient(180deg,#0d1330,#070a1c)', pointerEvents: 'none' } : { display: 'none' },
+        grave: here ? { position: 'absolute', left: '50%', top: 'calc(50% + 2px)', transform: 'translateX(-50%)', width: '112px', height: '16px', pointerEvents: 'none' } : null,
+        loom: null,
+        reflect: refl && !dark ? { position: 'absolute', left: '50%', top: 'calc(50% + ' + Math.round(14 * s) + 'px)', transform: 'translateX(-50%)', width: (2.5 * s).toFixed(1) + 'px', height: Math.round((12 + depth * 22) * s) + 'px', background: `linear-gradient(180deg, rgba(${c.glow},.4) 0%, transparent 100%)`, filter: 'blur(1.2px)', animation: hovered ? 'none' : this.charAnim(p), pointerEvents: 'none' } : null,
         onClick: () => this.setState({ openIdx: i }),
         onEnter: () => this.setState({ hoverIdx: i }),
         onLeave: () => this.setState({ hoverIdx: null }),
@@ -367,21 +484,26 @@ class Component extends DCLogic {
     const sceneStyle = {
       position: 'relative', width: '100%', overflow: 'hidden',
       flex: 1, display: 'flex', flexDirection: 'column',
-      background: 'linear-gradient(180deg,#131628 0%,#0d1122 190px,#0a0d1a 100%)',
+      background: 'linear-gradient(180deg,#0c1122 0%,#0a0d1a 420px,#0a0d1a 100%)',
     };
     const panoStyle = {
       position: 'relative', height: H + 'px', overflow: 'hidden', flex: 'none',
-      background: (starfield ? stars + ', ' : '') + 'linear-gradient(180deg,rgba(19,22,40,0) 0%,#0e1428 62%,#0d1224 100%)',
+      background: (starfield ? stars + ', ' : '') + 'linear-gradient(180deg,#101a3e 0%,#121d47 28%,#16204e 46%,#2c3870 54.5%,#4a5590 57.5%,#0c1122 58%)',
     };
     const seaStyle = {
       position: 'absolute', left: 0, right: 0, top: horizonY + 'px', bottom: 0,
-      background: 'repeating-linear-gradient(0deg, rgba(147,160,232,.028) 0 1px, transparent 1px 7px), linear-gradient(180deg,#0c1122,#080b18)',
+      background: 'linear-gradient(180deg,#222c60 0%,#161d48 26%,#0f1434 56%,#070a1e 100%)',
     };
     const horizonStyle = {
-      position: 'absolute', left: 0, right: 0, top: horizonY + 'px', height: '1px',
-      background: 'linear-gradient(90deg, transparent 2%, rgba(147,160,232,.22) 30%, rgba(147,160,232,.22) 70%, transparent 98%)',
+      position: 'absolute', left: 0, right: 0, top: (horizonY - 8) + 'px', height: '22px', pointerEvents: 'none',
+      background: 'linear-gradient(180deg,transparent 0%,rgba(180,190,240,.24) 36%,rgba(180,190,240,.13) 41%,transparent 100%)',
     };
-    const moonStyle = { position: 'absolute', top: '-70px', right: '10%', width: '280px', height: '280px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(147,160,232,.11) 0%, transparent 66%)', pointerEvents: 'none' };
+    const moonStyle = { display: 'none' };
+    const skyStyle = {
+      position: 'absolute', inset: 0, zIndex: -1, overflow: 'hidden', pointerEvents: 'none',
+      background: 'linear-gradient(180deg,#0d0f1c 0%,#0e1226 120px,#101a3e 260px,#101a3e 100%)',
+    };
+    const starsStyle = { position: 'absolute', inset: '-24px', background: stars, pointerEvents: 'none' };
     const railStyle = {
       position: 'absolute', left: 0, right: 0, bottom: 0, height: '30px', zIndex: 4, pointerEvents: 'none',
       borderTop: '1px solid rgba(147,160,232,.13)',
@@ -396,8 +518,9 @@ class Component extends DCLogic {
       textTransform: 'uppercase', color: '#5f6ec4', borderBottom: '1px solid rgba(150,160,220,.1)',
     };
 
-    const lights = visible.map((p) => {
+    const lights = this.projects.map((p, vi) => {
       const i = this.projects.indexOf(p);
+      const rowMatch = f === 'all' || p.cat === f;
       const dark = p.status === 'dark';
       const c = this.pal[dark ? 'dark' : p.color];
       const pl = this.pill(p);
@@ -410,8 +533,8 @@ class Component extends DCLogic {
         mobileChar: mobile,
         mobileCharLine: `${this.codeFor(p)} · est. ${p.est}`,
         rowStyle: mobile
-          ? { display: 'flex', alignItems: 'center', gap: '16px', padding: '18px 8px', borderBottom: '1px solid rgba(150,160,220,.09)', cursor: 'pointer', transition: 'background .25s', background: this.state.hoverIdx === i ? 'rgba(147,160,232,.06)' : 'transparent' }
-          : { display: 'grid', gridTemplateColumns: cols, gap: '14px', alignItems: 'center', padding: '15px 10px', borderBottom: '1px solid rgba(150,160,220,.09)', cursor: 'pointer', transition: 'background .25s', background: this.state.hoverIdx === i ? 'rgba(147,160,232,.06)' : 'transparent' },
+          ? { display: 'flex', alignItems: 'center', gap: '16px', padding: rowMatch ? '18px 8px' : '0 8px', maxHeight: rowMatch ? '220px' : '0px', opacity: rowMatch ? 1 : 0, overflow: 'hidden', boxSizing: 'border-box', borderBottom: rowMatch ? '1px solid rgba(150,160,220,.09)' : '1px solid transparent', cursor: 'pointer', pointerEvents: rowMatch ? 'auto' : 'none', transition: 'background .25s, max-height .45s cubic-bezier(.2,.8,.25,1), opacity .3s, padding .45s cubic-bezier(.2,.8,.25,1), border-color .3s', background: this.state.hoverIdx === i ? 'rgba(147,160,232,.06)' : 'transparent', animation: 'fadeUp .45s ease backwards', animationDelay: (vi * 45) + 'ms' }
+          : { display: 'grid', gridTemplateColumns: cols, gap: '14px', alignItems: 'center', padding: rowMatch ? '15px 10px' : '0 10px', maxHeight: rowMatch ? '220px' : '0px', opacity: rowMatch ? 1 : 0, overflow: 'hidden', boxSizing: 'border-box', borderBottom: rowMatch ? '1px solid rgba(150,160,220,.09)' : '1px solid transparent', cursor: 'pointer', pointerEvents: rowMatch ? 'auto' : 'none', transition: 'background .25s, max-height .45s cubic-bezier(.2,.8,.25,1), opacity .3s, padding .45s cubic-bezier(.2,.8,.25,1), border-color .3s', background: this.state.hoverIdx === i ? 'rgba(147,160,232,.06)' : 'transparent', animation: 'fadeUp .45s ease backwards', animationDelay: (vi * 45) + 'ms' },
         noStyle: { fontFamily: mono, fontSize: '11px', color: '#4d5680', display: mobile ? 'none' : 'block' },
         miniBox: { position: 'relative', width: '36px', height: '36px', flex: 'none' },
         miniHalo: { position: 'absolute', left: '50%', top: '50%', width: '30px', height: '30px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${c.glow},${dark ? 0.08 : 0.45}) 0%, transparent 64%)`, filter: 'blur(1.5px)', animation: this.charAnim(p), pointerEvents: 'none' },
@@ -429,6 +552,10 @@ class Component extends DCLogic {
 
     const innerStyle = { position: 'relative', width: '100%', boxSizing: 'border-box', maxWidth: '1060px', margin: '0 auto', padding: 'clamp(18px,3.5vw,34px) clamp(16px,4vw,40px) clamp(30px,5vw,48px)' };
 
+    const closing = this.state.closing;
+    const overlayStyle = { position: 'fixed', inset: 0, background: 'rgba(6,8,16,.78)', backdropFilter: 'blur(5px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(14px,4vw,40px)', animation: closing ? 'backdropOut .22s ease both' : 'backdropIn .25s ease both' };
+    const entryStyle = { position: 'relative', width: 'min(760px,100%)', maxHeight: '88vh', overflow: 'auto', background: 'linear-gradient(180deg,#191d33,#12162a)', borderRadius: '8px', border: '1px solid rgba(150,160,220,.2)', boxShadow: '0 30px 80px rgba(0,0,0,.65), inset 0 0 0 1px rgba(240,217,168,.06)', animation: closing ? 'entryDown .22s ease both' : 'entryUp .45s cubic-bezier(.2,.8,.25,1) both' };
+
     const openP = this.state.openIdx == null ? null : this.projects[this.state.openIdx];
     const pl = openP ? this.pill(openP) : null;
     const open = openP ? {
@@ -444,10 +571,11 @@ class Component extends DCLogic {
 
     return {
       chips, beacons, lights, open,
-      sceneStyle, panoStyle, seaStyle, horizonStyle, moonStyle, railStyle, colHeaderStyle, innerStyle,
+      sceneStyle, panoStyle, seaStyle, horizonStyle, moonStyle, skyStyle, railStyle, colHeaderStyle, innerStyle,
+      starsOn: starfield, starsStyle, overlayStyle, entryStyle,
       litCount: this.projects.filter((p) => p.status === 'lit').length,
       countLine: `${visible.length} of ${this.projects.length} lights · ${this.quips[f]}`,
-      closeOverlay: () => this.setState({ openIdx: null }),
+      closeOverlay: this.closeOv,
       stopProp: (e) => e.stopPropagation(),
     };
   }
