@@ -121,13 +121,6 @@
 	flex-wrap: wrap;
 }
 
-.light-entry__code {
-	font-family: var(--font-mono);
-	font-size: 13px;
-	letter-spacing: .1em;
-	color: var(--text-soft);
-}
-
 .light-entry__decoded {
 	font-size: 15.5px;
 	font-style: italic;
@@ -136,19 +129,15 @@
 }
 
 /* --- the masthead's meta line: code · est. · district, plus the pill ---
-   One line in the mock (no separate code span); .light-entry__code exists
-   only so a caller/spec can isolate the code text, and inherits this rule
-   rather than restyling. */
+   One uniform-colored line in the mock; .light-entry__code and
+   .light-entry__meta-value exist only so callers/specs can isolate the
+   fragments, and inherit this rule rather than restyling. */
 .light-entry__meta-line {
 	font-family: var(--font-mono);
 	font-size: 12px;
 	letter-spacing: .1em;
 	color: #8a93c4;
 	text-transform: uppercase;
-}
-
-.light-entry__meta-value {
-	color: var(--text-soft);
 }
 
 /* --- facts grid: up to 6 heading/fact pairs --- */
@@ -252,6 +241,8 @@
 	gap: 26px;
 	flex-wrap: wrap;
 	align-items: flex-start;
+	border-top: 1px solid rgba(150, 160, 220, .14);
+	padding-top: 18px;
 }
 
 .light-entry__left {
