@@ -1,0 +1,569 @@
+---
+// A project's full case-study log, per CaseStudy.dc.html: SSG'd only for
+// projects with a non-empty caseStudy (ruling: sessions/repo/2026-07-11-
+// portfolio-evolution-build.md, scope item 5). The keeper's-dialect markdown
+// is parsed at build time (src/lib/caseStudy.ts) and its mermaid blocks
+// rendered to static SVG in the same pass (src/lib/mermaid.ts) so the shipped
+// page carries zero runtime mermaid and no CDN.
+//
+// "next log" picks the next project with a case study, in list order,
+// wrapping; the mock's own version indexes into the filtered list using the
+// current project's position in the *full* list, which can pick an
+// unintuitive "next" once case studies aren't contiguous. That's flagged in
+// the mock's own transcription as a likely bug, not a deliberate design; this
+// port uses the sane version. Inert today either way: only one project
+// (the flagship) carries a case study, so `others` is always empty.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CaseStudyInline from '../../components/CaseStudyInline.astro';
+import LightBadge from '../../components/islands/LightBadge';
+import { getProjects, getKeeperProfile } from '../../lib/api';
+import { parseCaseStudy, type CaseStudyBlock } from '../../lib/caseStudy';
+import { renderMermaidBlocks, closeMermaidBrowser } from '../../lib/mermaid';
+import { DEFAULT_LIGHT, registryNo, codeFor } from '../../lib/lightChar';
+import { mediaUrl } from '../../lib/media';
+import type { Project } from '../../lib/api';
+
+export async function getStaticPaths() {
+	const projects = await getProjects();
+	const withCaseStudy = projects.filter((project) => project.caseStudy);
+
+	const paths = await Promise.all(withCaseStudy.map(async (project, index) => {
+		const blocks = parseCaseStudy(project.caseStudy);
+		await renderMermaidBlocks(blocks);
+		const next = withCaseStudy.length > 1 ? withCaseStudy[(index + 1) % withCaseStudy.length] : null;
+		return { params: { slug: project.slug }, props: { project, blocks, next } };
+	}));
+
+	// Every diagram across every case study is rendered by now; let the shared
+	// browser go so `astro build` can actually exit.
+	await closeMermaidBrowser();
+	return paths;
+}
+
+interface Props {
+	project: Project;
+	blocks:  CaseStudyBlock[];
+	next:    Project | null;
+}
+
+const { project, blocks, next } = Astro.props as Props;
+const keeper = await getKeeperProfile();
+
+const light = project.light ?? DEFAULT_LIGHT;
+const dark = Boolean(light.extinguished);
+---
+<BaseLayout title={`${project.title} · case study · argsea.com`} active="projects" quipKey="quipProjects">
+	{project.caseStudy ? (
+		<article class="cs">
+			<a href="/projects" class="cs-breadcrumb fade-up fade-up--1">← the light list</a>
+
+			<div class="cs-kicker-row fade-up fade-up--2">
+				<span class="cs-kicker">THE LIGHT LIST · NO. {registryNo(project.order)}</span>
+				<span class="cs-char">
+					<LightBadge client:visible light={project.light} />
+					{codeFor(light)}
+				</span>
+				<span class={`status-pill ${dark ? 'status-pill--dark' : 'status-pill--lit'}`}>{dark ? `dark · ${light.extinguished}` : 'lit'}</span>
+			</div>
+
+			<h1 class="cs-title fade-up fade-up--3">{project.title}</h1>
+			<p class="cs-desc fade-up fade-up--3">{project.shortDesc}</p>
+
+			{project.facts.length > 0 && (
+				<div class="cs-header-facts fade-up fade-up--4">
+					{project.facts.map((fact) => (
+						<div class="cs-header-facts__row">
+							<span class="cs-header-facts__label">{fact.heading}</span>
+							<span class="cs-header-facts__value">{fact.fact}</span>
+						</div>
+					))}
+				</div>
+			)}
+
+			<div class="cs-meta fade-up fade-up--4">
+				<span>established · <span class="cs-meta__value">{project.firstLit}</span></span>
+				<span>tags · <span class="cs-meta__value">{(project.tags ?? []).join(' · ')}</span></span>
+			</div>
+
+			<div class="cs-body">
+				{blocks.map((block) => {
+					switch (block.type) {
+						case 'heading':
+							return (
+								<div class="cs-heading" style={block.number === '01' ? 'margin-top:18px' : undefined}>
+									<span class="cs-heading__no">{block.number}</span>
+									<span class="cs-heading__text"><CaseStudyInline nodes={block.nodes} /></span>
+								</div>
+							);
+						case 'paragraph':
+							return <p class="cs-p"><CaseStudyInline nodes={block.nodes} /></p>;
+						case 'quote':
+							return (
+								<div class="cs-quote">
+									<span class="cs-quote__label">from the log</span>
+									<span class="cs-quote__text"><CaseStudyInline nodes={block.nodes} /></span>
+								</div>
+							);
+						case 'list':
+							return (
+								<div class="cs-list">
+									{block.items.map((item) => (
+										<div class="cs-list__row">
+											<span class="cs-list__marker">·</span>
+											<span class="cs-list__text"><CaseStudyInline nodes={item} /></span>
+										</div>
+									))}
+								</div>
+							);
+						case 'facts':
+							return (
+								<div class="cs-facts-block">
+									{block.rows.map((row) => (
+										<div class="cs-facts-block__row">
+											<span class="cs-facts-block__label">{row.label}</span>
+											<span class="cs-facts-block__value"><CaseStudyInline nodes={row.value} /></span>
+										</div>
+									))}
+								</div>
+							);
+						case 'outcomes':
+							return (
+								<div class="cs-outcomes">
+									{block.cards.map((card) => (
+										<div class="cs-outcomes__card">
+											<span class="cs-outcomes__big"><CaseStudyInline nodes={card.big} /></span>
+											<span class="cs-outcomes__caption"><CaseStudyInline nodes={card.caption} /></span>
+										</div>
+									))}
+								</div>
+							);
+						case 'code':
+							return <pre class="cs-code">{block.body}</pre>;
+						case 'mermaid':
+							return <div class="cs-mermaid" set:html={block.svg} />;
+						case 'figure':
+							return (
+								<figure class="cs-figure">
+									<div class="cs-figure__frame"><img src={mediaUrl(block.key)} alt={block.caption} loading="lazy" /></div>
+									{block.caption && <figcaption class="cs-figure__caption">{block.caption}</figcaption>}
+								</figure>
+							);
+						default:
+							return null;
+					}
+				})}
+			</div>
+
+			<div class="cs-footer">
+				<span class="cs-footer__signoff">{keeper.signoff}, the keeper · lamp checked nightly</span>
+				{next && <a href={`/projects/${next.slug}`} class="cs-footer__next">next log: {next.title} →</a>}
+			</div>
+		</article>
+	) : (
+		<div class="cs-missing">
+			<div class="cs-missing__title">No log for that light.</div>
+			<p class="cs-missing__body">Either the light does not exist, or the keeper has not written its entry up yet. The register knows all.</p>
+			<a href="/projects" class="cs-missing__link">← back to the light list</a>
+		</div>
+	)}
+</BaseLayout>
+
+<style>
+	.cs {
+		padding: clamp(40px, 7vw, 64px) var(--gutter) clamp(48px, 8vw, 80px);
+		max-width: 760px;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.cs-breadcrumb {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		letter-spacing: .16em;
+		color: var(--periwinkle);
+		text-transform: uppercase;
+	}
+
+	.cs-kicker-row {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		flex-wrap: wrap;
+		margin-top: 22px;
+	}
+
+	.cs-kicker {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		letter-spacing: .14em;
+		color: var(--periwinkle-deep);
+	}
+
+	.cs-char {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		font-family: var(--font-mono);
+		font-size: 12.5px;
+		letter-spacing: .08em;
+		color: var(--text-soft);
+	}
+
+	.cs-title {
+		margin: 10px 0 0;
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-size: clamp(30px, 5.5vw, 44px);
+		line-height: 1.12;
+		color: var(--text-strong);
+	}
+
+	.cs-desc {
+		margin: 10px 0 0;
+		font-size: clamp(16px, 2.3vw, 18px);
+		line-height: 1.6;
+		max-width: 680px;
+		font-style: italic;
+		color: var(--text-body);
+	}
+
+	.cs-header-facts {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+		gap: 14px 26px;
+		border-top: 1px solid rgba(150, 160, 220, .18);
+		border-bottom: 1px solid rgba(150, 160, 220, .18);
+		padding: 16px 0;
+		margin-top: 20px;
+	}
+
+	.cs-header-facts__row {
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+	}
+
+	.cs-header-facts__label {
+		font-family: var(--font-mono);
+		font-size: 10.5px;
+		letter-spacing: .14em;
+		color: var(--periwinkle-deep);
+		text-transform: uppercase;
+	}
+
+	.cs-header-facts__value {
+		font-size: 15px;
+		color: var(--text-soft);
+		line-height: 1.45;
+	}
+
+	.cs-meta {
+		display: flex;
+		gap: 22px;
+		flex-wrap: wrap;
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--periwinkle-deep);
+		margin-top: 16px;
+	}
+
+	.cs-meta__value {
+		color: var(--periwinkle);
+	}
+
+	.cs-body {
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* --- ## heading: a numbered section --- */
+	.cs-heading {
+		display: flex;
+		flex-direction: column;
+		gap: 7px;
+		margin-top: 46px;
+	}
+
+	.cs-heading__no {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: .2em;
+		color: var(--periwinkle-deep);
+	}
+
+	.cs-heading__text {
+		font-family: var(--font-display);
+		font-size: clamp(22px, 3.4vw, 28px);
+		color: var(--text-head);
+		line-height: 1.15;
+	}
+
+	/* --- plain paragraphs --- */
+	.cs-p {
+		margin: 16px 0 0;
+		font-size: 16.5px;
+		line-height: 1.72;
+		color: var(--text-body-strong);
+		text-wrap: pretty;
+	}
+
+	/* --- > from-the-log aside --- */
+	.cs-quote {
+		margin: 20px 0 0;
+		border-left: 2px solid rgba(240, 217, 168, .5);
+		padding: 2px 0 2px 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.cs-quote__label {
+		font-family: var(--font-mono);
+		font-size: 10px;
+		letter-spacing: .18em;
+		color: #8a7f63;
+		text-transform: uppercase;
+	}
+
+	.cs-quote__text {
+		font-size: 15.5px;
+		font-style: italic;
+		color: var(--text-quip);
+		line-height: 1.6;
+	}
+
+	/* --- - / * lists --- */
+	.cs-list {
+		margin: 16px 0 0;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.cs-list__row {
+		display: flex;
+		gap: 12px;
+		align-items: baseline;
+	}
+
+	.cs-list__marker {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--gold);
+		flex: none;
+	}
+
+	.cs-list__text {
+		font-size: 16px;
+		line-height: 1.65;
+		color: var(--text-body-strong);
+	}
+
+	/* --- :::facts::: grid --- */
+	.cs-facts-block {
+		margin: 18px 0 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 12px 26px;
+		border: 1.5px dashed rgba(150, 160, 220, .25);
+		border-radius: 12px;
+		padding: 16px 18px;
+	}
+
+	.cs-facts-block__row {
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+	}
+
+	.cs-facts-block__label {
+		font-family: var(--font-mono);
+		font-size: 10.5px;
+		letter-spacing: .14em;
+		color: var(--periwinkle-deep);
+		text-transform: uppercase;
+	}
+
+	.cs-facts-block__value {
+		font-size: 15px;
+		color: var(--text-soft);
+		line-height: 1.5;
+	}
+
+	/* --- :::outcomes::: cards --- */
+	.cs-outcomes {
+		margin: 18px 0 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 14px;
+	}
+
+	.cs-outcomes__card {
+		background: var(--card);
+		border: 1px solid rgba(150, 160, 220, .2);
+		border-radius: 12px;
+		padding: 18px 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		box-shadow: 0 8px 20px rgba(0, 0, 0, .3);
+	}
+
+	.cs-outcomes__big {
+		font-family: var(--font-display);
+		font-size: 22px;
+		color: var(--text-strong);
+		line-height: 1.15;
+	}
+
+	.cs-outcomes__caption {
+		font-family: var(--font-mono);
+		font-size: 11.5px;
+		line-height: 1.6;
+		color: var(--periwinkle);
+	}
+
+	/* --- fenced code (non-mermaid) --- */
+	.cs-code {
+		margin: 18px 0 0;
+		background: #131728;
+		border: 1px solid rgba(150, 160, 220, .18);
+		border-radius: 12px;
+		padding: 16px 18px;
+		overflow-x: auto;
+		font-family: var(--font-mono);
+		font-size: 13px;
+		line-height: 1.6;
+		color: var(--text-soft);
+		white-space: pre;
+	}
+
+	/* --- mermaid diagrams: rendered at build time, no runtime mermaid --- */
+	.cs-mermaid {
+		margin: 20px 0 0;
+		background: #141830;
+		border: 1px solid rgba(150, 160, 220, .18);
+		border-radius: 12px;
+		padding: 20px 16px;
+		overflow-x: auto;
+	}
+
+	.cs-mermaid :global(svg) {
+		max-width: 100%;
+		height: auto;
+		display: block;
+		margin: 0 auto;
+	}
+
+	.cs-mermaid :global(.cs-mermaid__error) {
+		margin: 0;
+		color: #e77a70;
+		font-family: var(--font-mono);
+		font-size: 12px;
+		white-space: pre-wrap;
+	}
+
+	/* --- ![caption](media-name) figures --- */
+	.cs-figure {
+		margin: 20px 0 0;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.cs-figure__frame {
+		background: #141830;
+		border: 1px solid rgba(150, 160, 220, .18);
+		border-radius: 12px;
+		overflow: hidden;
+		height: 340px;
+	}
+
+	.cs-figure__frame img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+	.cs-figure__caption {
+		margin: 0;
+		font-size: 13.5px;
+		font-style: italic;
+		color: var(--text-dim);
+		text-align: center;
+	}
+
+	/* --- inline: [? fact needed ?] amber chip --- */
+	.cs-body :global(.cs-chip) {
+		font-family: var(--font-mono);
+		font-size: 12.5px;
+		color: #e9b96e;
+		background: rgba(233, 185, 110, .07);
+		border-bottom: 1px dashed rgba(233, 185, 110, .55);
+		border-radius: 3px;
+		padding: 1px 7px;
+	}
+
+	.cs-body :global(.cs-inline-code) {
+		font-family: var(--font-mono);
+		font-size: .92em;
+		color: var(--text-soft);
+	}
+
+	.cs-footer {
+		margin-top: 44px;
+		border-top: 1.5px dashed rgba(150, 160, 220, .25);
+		padding-top: 16px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 14px;
+		flex-wrap: wrap;
+	}
+
+	.cs-footer__signoff {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--periwinkle-deep);
+		font-style: italic;
+	}
+
+	.cs-footer__next {
+		font-family: var(--font-mono);
+		font-size: 13px;
+		color: var(--gold);
+	}
+
+	/* --- missing-state: no case study resolved for this slug. Defensive only:
+	   getStaticPaths above never generates a path without one, per the
+	   scoping ruling, so this never actually renders in production; kept for
+	   fidelity to the mock and so the branch fails safe if that ever changes. --- */
+	.cs-missing {
+		padding: clamp(48px, 9vw, 96px) var(--gutter);
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		max-width: 640px;
+	}
+
+	.cs-missing__title {
+		font-family: var(--font-display);
+		font-size: clamp(26px, 4.5vw, 36px);
+		color: var(--text-strong);
+	}
+
+	.cs-missing__body {
+		margin: 0;
+		font-size: 16.5px;
+		line-height: 1.65;
+		color: var(--text-body);
+	}
+
+	.cs-missing__link {
+		font-family: var(--font-mono);
+		font-size: 13px;
+		color: var(--gold);
+	}
+</style>

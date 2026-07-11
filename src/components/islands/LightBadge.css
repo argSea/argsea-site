@@ -1,0 +1,35 @@
+/* The case-study header's mini light glyph: a 26x26 box housing a small
+   blurred halo and a solid core, same characteristic-engine vocabulary as
+   the register/home-mantel lamps, just scaled down for a kicker row. */
+
+.light-badge {
+	position: relative;
+	display: inline-block;
+	width: 26px;
+	height: 26px;
+	flex: none;
+	vertical-align: middle;
+}
+
+.light-badge__halo {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 20px;
+	height: 20px;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	filter: blur(1.5px);
+	pointer-events: none;
+}
+
+.light-badge__core {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 5px;
+	height: 5px;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	pointer-events: none;
+}
