@@ -55,108 +55,112 @@ const dark = Boolean(light.extinguished);
 <BaseLayout title={`${project.title} · case study · argsea.com`} active="projects" quipKey="quipProjects">
 	{project.caseStudy ? (
 		<article class="cs">
-			<a href="/projects" class="cs-breadcrumb fade-up fade-up--1">← the light list</a>
+			<div class="cs-header">
+				<a href="/projects" class="cs-breadcrumb fade-up fade-up--1">← the light list</a>
 
-			<div class="cs-kicker-row fade-up fade-up--2">
-				<span class="cs-kicker">THE LIGHT LIST · NO. {registryNo(project.order)}</span>
-				<span class="cs-char">
-					<LightBadge client:visible light={project.light} />
-					{codeFor(light)}
-				</span>
-				<span class={`status-pill ${dark ? 'status-pill--dark' : 'status-pill--lit'}`}>{dark ? `dark · ${light.extinguished}` : 'lit'}</span>
-			</div>
-
-			<h1 class="cs-title fade-up fade-up--3">{project.title}</h1>
-			<p class="cs-desc fade-up fade-up--3">{project.shortDesc}</p>
-
-			{project.facts.length > 0 && (
-				<div class="cs-header-facts fade-up fade-up--4">
-					{project.facts.map((fact) => (
-						<div class="cs-header-facts__row">
-							<span class="cs-header-facts__label">{fact.heading}</span>
-							<span class="cs-header-facts__value">{fact.fact}</span>
-						</div>
-					))}
+				<div class="cs-kicker-row fade-up fade-up--2">
+					<span class="cs-kicker">THE LIGHT LIST · NO. {registryNo(project.order)}</span>
+					<span class="cs-char">
+						<LightBadge client:visible light={project.light} />
+						{codeFor(light)}
+					</span>
+					<span class={`status-pill ${dark ? 'status-pill--dark' : 'status-pill--lit'}`}>{dark ? `dark · ${light.extinguished}` : 'lit'}</span>
 				</div>
-			)}
 
-			<div class="cs-meta fade-up fade-up--4">
-				<span>established · <span class="cs-meta__value">{project.firstLit}</span></span>
-				<span>tags · <span class="cs-meta__value">{(project.tags ?? []).join(' · ')}</span></span>
+				<h1 class="cs-title fade-up fade-up--3">{project.title}</h1>
+				<p class="cs-desc fade-up fade-up--3">{project.shortDesc}</p>
+
+				{(project.facts ?? []).length > 0 && (
+					<div class="cs-header-facts fade-up fade-up--4">
+						{(project.facts ?? []).map((fact) => (
+							<div class="cs-header-facts__row">
+								<span class="cs-header-facts__label">{fact.heading}</span>
+								<span class="cs-header-facts__value">{fact.fact}</span>
+							</div>
+						))}
+					</div>
+				)}
+
+				<div class="cs-meta fade-up fade-up--4">
+					<span>established · <span class="cs-meta__value">{project.firstLit}</span></span>
+					<span>tags · <span class="cs-meta__value">{(project.tags ?? []).join(' · ')}</span></span>
+				</div>
 			</div>
 
-			<div class="cs-body">
-				{blocks.map((block) => {
-					switch (block.type) {
-						case 'heading':
-							return (
-								<div class="cs-heading" style={block.number === '01' ? 'margin-top:18px' : undefined}>
-									<span class="cs-heading__no">{block.number}</span>
-									<span class="cs-heading__text"><CaseStudyInline nodes={block.nodes} /></span>
-								</div>
-							);
-						case 'paragraph':
-							return <p class="cs-p"><CaseStudyInline nodes={block.nodes} /></p>;
-						case 'quote':
-							return (
-								<div class="cs-quote">
-									<span class="cs-quote__label">from the log</span>
-									<span class="cs-quote__text"><CaseStudyInline nodes={block.nodes} /></span>
-								</div>
-							);
-						case 'list':
-							return (
-								<div class="cs-list">
-									{block.items.map((item) => (
-										<div class="cs-list__row">
-											<span class="cs-list__marker">·</span>
-											<span class="cs-list__text"><CaseStudyInline nodes={item} /></span>
-										</div>
-									))}
-								</div>
-							);
-						case 'facts':
-							return (
-								<div class="cs-facts-block">
-									{block.rows.map((row) => (
-										<div class="cs-facts-block__row">
-											<span class="cs-facts-block__label">{row.label}</span>
-											<span class="cs-facts-block__value"><CaseStudyInline nodes={row.value} /></span>
-										</div>
-									))}
-								</div>
-							);
-						case 'outcomes':
-							return (
-								<div class="cs-outcomes">
-									{block.cards.map((card) => (
-										<div class="cs-outcomes__card">
-											<span class="cs-outcomes__big"><CaseStudyInline nodes={card.big} /></span>
-											<span class="cs-outcomes__caption"><CaseStudyInline nodes={card.caption} /></span>
-										</div>
-									))}
-								</div>
-							);
-						case 'code':
-							return <pre class="cs-code">{block.body}</pre>;
-						case 'mermaid':
-							return <div class="cs-mermaid" set:html={block.svg} />;
-						case 'figure':
-							return (
-								<figure class="cs-figure">
-									<div class="cs-figure__frame"><img src={mediaUrl(block.key)} alt={block.caption} loading="lazy" /></div>
-									{block.caption && <figcaption class="cs-figure__caption">{block.caption}</figcaption>}
-								</figure>
-							);
-						default:
-							return null;
-					}
-				})}
-			</div>
+			<div class="cs-log">
+				<div class="cs-body">
+					{blocks.map((block) => {
+						switch (block.type) {
+							case 'heading':
+								return (
+									<div class="cs-heading" style={block.number === '01' ? 'margin-top:18px' : undefined}>
+										<span class="cs-heading__no">{block.number}</span>
+										<span class="cs-heading__text"><CaseStudyInline nodes={block.nodes} /></span>
+									</div>
+								);
+							case 'paragraph':
+								return <p class="cs-p"><CaseStudyInline nodes={block.nodes} /></p>;
+							case 'quote':
+								return (
+									<div class="cs-quote">
+										<span class="cs-quote__label">from the log</span>
+										<span class="cs-quote__text"><CaseStudyInline nodes={block.nodes} /></span>
+									</div>
+								);
+							case 'list':
+								return (
+									<div class="cs-list">
+										{block.items.map((item) => (
+											<div class="cs-list__row">
+												<span class="cs-list__marker">·</span>
+												<span class="cs-list__text"><CaseStudyInline nodes={item} /></span>
+											</div>
+										))}
+									</div>
+								);
+							case 'facts':
+								return (
+									<div class="cs-facts-block">
+										{block.rows.map((row) => (
+											<div class="cs-facts-block__row">
+												<span class="cs-facts-block__label">{row.label}</span>
+												<span class="cs-facts-block__value"><CaseStudyInline nodes={row.value} /></span>
+											</div>
+										))}
+									</div>
+								);
+							case 'outcomes':
+								return (
+									<div class="cs-outcomes">
+										{block.cards.map((card) => (
+											<div class="cs-outcomes__card">
+												<span class="cs-outcomes__big"><CaseStudyInline nodes={card.big} /></span>
+												<span class="cs-outcomes__caption"><CaseStudyInline nodes={card.caption} /></span>
+											</div>
+										))}
+									</div>
+								);
+							case 'code':
+								return <pre class="cs-code">{block.body}</pre>;
+							case 'mermaid':
+								return <div class="cs-mermaid" set:html={block.svg} />;
+							case 'figure':
+								return (
+									<figure class="cs-figure">
+										<div class="cs-figure__frame"><img src={mediaUrl(block.key)} alt={block.caption} loading="lazy" /></div>
+										{block.caption && <figcaption class="cs-figure__caption">{block.caption}</figcaption>}
+									</figure>
+								);
+							default:
+								return null;
+						}
+					})}
+				</div>
 
-			<div class="cs-footer">
-				<span class="cs-footer__signoff">{keeper.signoff}, the keeper · lamp checked nightly</span>
-				{next && <a href={`/projects/${next.slug}`} class="cs-footer__next">next log: {next.title} →</a>}
+				<div class="cs-footer">
+					<span class="cs-footer__signoff">{keeper.signoff}, the keeper · lamp checked nightly</span>
+					{next && <a href={`/projects/${next.slug}`} class="cs-footer__next">next log: {next.title} →</a>}
+				</div>
 			</div>
 		</article>
 	) : (
@@ -171,10 +175,19 @@ const dark = Boolean(light.extinguished);
 <style>
 	.cs {
 		padding: clamp(40px, 7vw, 64px) var(--gutter) clamp(48px, 8vw, 80px);
-		max-width: 760px;
-		margin: 0 auto;
 		display: flex;
 		flex-direction: column;
+	}
+
+	/* Left-aligned, not centered: the mock's entry header (900px) and log
+	   (860px) are two different widths, both hugging the same left gutter
+	   .cs already pads, not a single centered column. */
+	.cs-header {
+		max-width: 900px;
+	}
+
+	.cs-log {
+		max-width: 860px;
 	}
 
 	.cs-breadcrumb {
