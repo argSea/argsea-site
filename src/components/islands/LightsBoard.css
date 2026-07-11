@@ -156,8 +156,8 @@
 	position: absolute;
 	left: -8%;
 	top: 128px;
-	width: 34px;
-	height: 26px;
+	width: 26px;
+	height: 21px;
 	z-index: 2;
 	pointer-events: none;
 	animation: sailBy 150s linear -50s infinite;
@@ -342,6 +342,12 @@
 	filter: blur(2px);
 	pointer-events: none;
 	transition: width .25s ease, height .25s ease;
+}
+
+/* Ruling 5: a fixed, burning light breathes its halo (haloBreath, global.css)
+   instead of sitting fully static; the core stays steady. */
+.beacon__halo--breathe {
+	animation: haloBreath 5s ease-in-out infinite;
 }
 
 .beacon__core {
@@ -593,6 +599,12 @@
 	pointer-events: none;
 }
 
+/* Ruling 5: a fixed, burning light breathes its halo instead of sitting
+   fully static; the core stays steady. */
+.register__halo--breathe {
+	animation: haloBreath 5s ease-in-out infinite;
+}
+
 .register__core {
 	position: absolute;
 	left: 50%;
@@ -658,32 +670,19 @@
 	font-size: 12px;
 	color: var(--periwinkle-deep);
 	opacity: .8;
-}
-
-.status-pill {
-	font-family: var(--font-mono);
-	font-size: 10.5px;
-	letter-spacing: .14em;
-	text-transform: uppercase;
-	padding: 3px 10px;
-	border-radius: 999px;
 	white-space: nowrap;
-	display: inline-block;
 }
 
-.status-pill--lit {
+/* A light with a case study reads "full log →" in gold instead of the plain
+   muted "read →"; either way the whole row opens the entry, this is just the
+   preview of what's waiting inside it. */
+.register__read--full {
 	color: var(--gold);
-	border: 1px solid rgba(240, 217, 168, .5);
-	background: rgba(240, 217, 168, .12);
+	opacity: 1;
 }
 
-.status-pill--dark {
-	color: #8a93c4;
-	border: 1px solid rgba(138, 147, 196, .4);
-	background: rgba(138, 147, 196, .08);
-}
-
-/* Must come after .status-pill: same specificity, and this is the one that
+/* .status-pill/.status-pill--lit/.status-pill--dark are shared vocabulary,
+   see global.css. Must come after it: same specificity, and this is the one that
    needs to win at >=881px so the inline mobile pill doesn't double up with
    the desktop status column (the mobile media query below re-enables it). */
 .register__pill--mobile {

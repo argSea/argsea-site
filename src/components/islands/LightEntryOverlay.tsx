@@ -6,7 +6,7 @@
 // spot (the caller decides and passes catHere).
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import type { FigureheadDesign, Light, Project } from '../../lib/api';
+import type { FigureheadDesign, Light, Note, Project } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor, registryNo, timeline } from '../../lib/lightChar';
 import { mediaUrl } from '../../lib/media';
 import { useLamp } from './useLamp';
@@ -26,12 +26,13 @@ function reducedMotion(): boolean {
 interface Props {
 	project:     Project;
 	signoff:     string;
+	notes?:      Note[]; // the full journal, so noteIds can resolve to real titles; [] if the caller has none loaded
 	catHere?:    boolean;
 	catDesigns?: FigureheadDesign[];
 	onClose:     () => void;
 }
 
-export default function LightEntryOverlay({ project, signoff, catHere = false, catDesigns, onClose }: Props) {
+export default function LightEntryOverlay({ project, signoff, notes = [], catHere = false, catDesigns, onClose }: Props) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
@@ -71,9 +72,18 @@ export default function LightEntryOverlay({ project, signoff, catHere = false, c
 		return () => { document.body.style.overflow = previousOverflow; };
 	}, []);
 
-	const gallery = project.images && project.images.length
+	// Up to 6 prints total: the main polaroid plus up to 5 thumbs; a project
+	// with fewer photos than that just shows fewer, never a placeholder.
+	const gallery = (project.images && project.images.length
 		? project.images
-		: project.image ? [project.image] : [];
+		: project.image ? [project.image] : []
+	).slice(0, 6);
+	const thumbs = gallery.slice(1);
+
+	// Ties resolve by stable note id (ruling 6: sessions/repo/2026-07-11-bank-
+	// portfolio-evolution-mocks.md), never title matching.
+	const tiedNotes = notes.filter((note) => project.noteIds.includes(note.id));
+	const showNudge = tiedNotes.length === 0 && !project.caseStudy;
 
 	// Portaled to document.body so the backdrop sits in the root stacking
 	// context, same as HarborCatDirector's cat-mount, instead of being
@@ -122,6 +132,30 @@ export default function LightEntryOverlay({ project, signoff, catHere = false, c
 							<span>keeper · <span className="light-entry__meta-value">j. smith</span></span>
 						</div>
 
+						{project.facts.length > 0 && (
+							<div className="light-entry__facts">
+								{project.facts.map((fact) => (
+									<div key={fact.heading} className="light-entry__facts-row">
+										<span className="light-entry__facts-label">{fact.heading}</span>
+										<span className="light-entry__facts-value">{fact.fact}</span>
+									</div>
+								))}
+							</div>
+						)}
+
+						{tiedNotes.length > 0 && (
+							<div className="light-entry__notes">
+								<span className="light-entry__notes-label">notes found here</span>
+								<div className="light-entry__notes-links">
+									{tiedNotes.map((note) => (
+										<a key={note.id} href="/notes" title="it's in the journal · the other book" className="light-entry__notes-link">✎ {note.title} →</a>
+									))}
+								</div>
+							</div>
+						)}
+
+						{showNudge && <div className="light-entry__nudge">no notes here yet. the keeper has been meaning to.</div>}
+
 						<div className="light-entry__cols">
 							<div className="light-entry__left">
 								{/* body is sanitized HTML from the API; rendered as-is by contract */}
@@ -134,17 +168,20 @@ export default function LightEntryOverlay({ project, signoff, catHere = false, c
 										<img src={mediaUrl(gallery[photoIndex])} alt={project.title} />
 									</div>
 									<span className="light-entry__photo-caption">from the station archive</span>
-									{gallery.length > 1 && (
+									{thumbs.length > 0 && (
 										<div className="light-entry__thumbs">
-											{gallery.map((name, index) => (
-												<button
-													key={name}
-													className={`light-entry__thumb${index === photoIndex ? ' light-entry__thumb--active' : ''}`}
-													onClick={() => setPhotoIndex(index)}
-												>
-													<img src={mediaUrl(name)} alt="" />
-												</button>
-											))}
+											{thumbs.map((name, thumbIndex) => {
+												const index = thumbIndex + 1;
+												return (
+													<button
+														key={name}
+														className={`light-entry__thumb${index === photoIndex ? ' light-entry__thumb--active' : ''}`}
+														onClick={() => setPhotoIndex(index)}
+													>
+														<img src={mediaUrl(name)} alt="" />
+													</button>
+												);
+											})}
 										</div>
 									)}
 								</div>
@@ -152,6 +189,12 @@ export default function LightEntryOverlay({ project, signoff, catHere = false, c
 						</div>
 
 						<div className="light-entry__moral">{project.moral}</div>
+
+						{project.caseStudy && (
+							<div className="light-entry__caselink">
+								<a href={`/projects/${project.slug}`} className="light-entry__caselink-link">read the full log →</a>
+							</div>
+						)}
 
 						<div className="light-entry__footer">
 							<span className="light-entry__tags">{(project.tags ?? []).join('  ·  ')}</span>

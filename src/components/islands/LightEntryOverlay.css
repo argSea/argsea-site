@@ -169,6 +169,93 @@
 	color: var(--text-soft);
 }
 
+/* --- facts grid: up to 6 heading/fact pairs --- */
+.light-entry__facts {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+	gap: 12px 26px;
+	border-top: 1px solid rgba(150, 160, 220, .14);
+	padding: 16px 0 4px;
+}
+
+.light-entry__facts-row {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.light-entry__facts-label {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	letter-spacing: .14em;
+	color: var(--periwinkle-deep);
+	text-transform: uppercase;
+}
+
+.light-entry__facts-value {
+	font-size: 15px;
+	color: #c8cef0;
+	line-height: 1.45;
+}
+
+/* --- notes found here: the journal ties, resolved from project.noteIds --- */
+.light-entry__notes {
+	display: flex;
+	align-items: baseline;
+	gap: 12px;
+	flex-wrap: wrap;
+	border-top: 1px solid rgba(150, 160, 220, .14);
+	padding-top: 14px;
+}
+
+.light-entry__notes-label {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	letter-spacing: .14em;
+	color: var(--periwinkle-deep);
+	text-transform: uppercase;
+	flex: none;
+}
+
+.light-entry__notes-links {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 0;
+}
+
+.light-entry__notes-link {
+	font-size: 15px;
+	font-style: italic;
+	color: var(--periwinkle);
+	line-height: 1.45;
+	transition: color .2s;
+}
+
+.light-entry__notes-link:hover {
+	color: var(--gold);
+}
+
+/* --- no notes, no log: the nudge shown only when there's neither --- */
+.light-entry__nudge {
+	border-top: 1px solid rgba(150, 160, 220, .14);
+	padding-top: 14px;
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: var(--periwinkle-deep);
+	font-style: italic;
+}
+
+.light-entry__caselink {
+	display: flex;
+}
+
+.light-entry__caselink-link {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--gold);
+}
+
 .light-entry__cols {
 	display: flex;
 	gap: 26px;

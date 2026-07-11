@@ -6,7 +6,7 @@
 // caller's own one-cat pick landed on this overlay spot.
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import type { Doodle, FigureheadDesign, FigureheadShape, Note } from '../../lib/api';
+import type { Doodle, FigureheadDesign, FigureheadShape, Note, Project } from '../../lib/api';
 import { useEscapeKey } from './useEscapeKey';
 import HarborCat from './HarborCat';
 import './JournalEntryOverlay.css';
@@ -15,6 +15,7 @@ interface Props {
 	note:        Note;
 	doodle:      Doodle | null;
 	signoff:     string;
+	foundIn?:    Project[]; // the lights that tie this note via their own noteIds; [] or absent hides the block entirely
 	catHere?:    boolean;
 	catDesigns?: FigureheadDesign[];
 	onClose:     () => void;
@@ -63,7 +64,7 @@ function DoodleSvg({ doodle, className }: { doodle: Doodle; className: string })
 	);
 }
 
-export default function JournalEntryOverlay({ note, doodle, signoff, catHere = false, catDesigns, onClose }: Props) {
+export default function JournalEntryOverlay({ note, doodle, signoff, foundIn = [], catHere = false, catDesigns, onClose }: Props) {
 	const [closing, setClosing] = useState(false);
 	const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -102,6 +103,16 @@ export default function JournalEntryOverlay({ note, doodle, signoff, catHere = f
 						<div className="letter__title">{note.title}</div>
 						{/* body is sanitized HTML from the API, rendered as-is by contract */}
 						<div className="letter__body" dangerouslySetInnerHTML={{ __html: note.body }} />
+						{foundIn.length > 0 && (
+							<div className="letter__found-in">
+								<span className="letter__found-in-label">found in</span>
+								<div className="letter__found-in-links">
+									{foundIn.map((project) => (
+										<a key={project.id} href="/projects" title="a light on the coast · the full list" className="letter__found-in-link">✷ {project.title} →</a>
+									))}
+								</div>
+							</div>
+						)}
 						<div className="letter__signrow">
 							<div className="letter__signature">{signoff}</div>
 							{doodle && (

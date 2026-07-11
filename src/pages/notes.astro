@@ -5,9 +5,10 @@
 // island, which resolves each note's doodle by id.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NotesList from '../components/islands/NotesList';
-import { getNotes, getKeeperProfile, getSiteCopy, getFigurehead, getDoodles } from '../lib/api';
+import { getNotes, getProjects, getKeeperProfile, getSiteCopy, getFigurehead, getDoodles } from '../lib/api';
 
 const notes = await getNotes();
+const projects = await getProjects();
 const keeper = await getKeeperProfile();
 const copy = await getSiteCopy();
 const catDesigns = await getFigurehead();
@@ -15,14 +16,13 @@ const doodles = await getDoodles();
 ---
 <BaseLayout title="Notes · argsea.com" active="notes" quipKey="quipNotes">
 	<section class="head">
-		<span class="head__kicker section-label fade-up fade-up--1">THE OTHER BOOK</span>
+		<span class="head__kicker section-label fade-up fade-up--1">Notes · the other book</span>
 		<h1 class="head__title fade-up fade-up--1">The keeper's journal</h1>
-		{/* TODO: operator voice pass */}
-		<p class="head__intro fade-up fade-up--2">The official log stays in the tower: weather, tides, the lamp. This is where the rest goes. No schedule. No newsletter. No promises.</p>
+		<p class="head__intro fade-up fade-up--2">The official log lives up in the lamp room: weather, ships, uptime. This is where the rest goes. No schedule. No newsletter. No promises.</p>
 	</section>
 
 	<section class="list">
-		<NotesList client:load notes={notes} doodles={doodles} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
+		<NotesList client:load notes={notes} doodles={doodles} projects={projects} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
 	</section>
 </BaseLayout>
 

@@ -106,6 +106,44 @@
 	color: #3b3f5e;
 }
 
+/* --- found in: the lights this note ties to, resolved from project.noteIds --- */
+.letter__found-in {
+	display: flex;
+	align-items: baseline;
+	gap: 12px;
+	flex-wrap: wrap;
+	border-top: 1.5px dashed rgba(110, 100, 75, .3);
+	padding-top: 14px;
+}
+
+.letter__found-in-label {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	letter-spacing: .14em;
+	color: #8a7f63;
+	text-transform: uppercase;
+	flex: none;
+}
+
+.letter__found-in-links {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 0;
+}
+
+.letter__found-in-link {
+	font-size: 15px;
+	font-style: italic;
+	color: #6b6390;
+	line-height: 1.45;
+	transition: color .2s;
+}
+
+.letter__found-in-link:hover {
+	color: #8a6d3b;
+}
+
 /* Sign-off (left) and doodle marginalia (right) share one row, like the mock */
 .letter__signrow {
 	display: flex;
