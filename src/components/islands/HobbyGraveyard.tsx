@@ -18,6 +18,13 @@ import './HobbyGraveyard.css';
 const CLOSE_MS = 220;
 const FLOWERS_KEY = 'argsea-flowers';
 
+// The haunting moment (Hobbies.dc.html): every 53s, the haunt-kind hobby
+// goes golden for 2200ms and its log line swaps to the metronome line, per
+// the mock's own hauntTimer/hauntOff pair verbatim.
+const HAUNT_INTERVAL_MS = 53000;
+const HAUNT_DURATION_MS = 2200;
+const HAUNT_LOG_LINE = '…is that the metronome?';
+
 // The design's own base tilt per row index (mod 5), before wear adds its own
 // couple of degrees on top for stone markers.
 const TILTS = [0, -2.5, 2, -1.5, 2.5];
@@ -45,6 +52,7 @@ export default function HobbyGraveyard({ hobbies, suggestions, catEnabled, catPa
 	const [closing, setClosing] = useState(false);
 	const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 	const [flowers, setFlowers] = useState<Record<string, number>>({});
+	const [haunting, setHaunting] = useState(false);
 	const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
 	useEffect(() => {
@@ -59,6 +67,18 @@ export default function HobbyGraveyard({ hobbies, suggestions, catEnabled, catPa
 	}, []);
 
 	useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+	useEffect(() => {
+		let hauntOff: ReturnType<typeof setTimeout> | undefined;
+		const hauntTimer = setInterval(() => {
+			setHaunting(true);
+			hauntOff = setTimeout(() => setHaunting(false), HAUNT_DURATION_MS);
+		}, HAUNT_INTERVAL_MS);
+		return () => {
+			clearInterval(hauntTimer);
+			clearTimeout(hauntOff);
+		};
+	}, []);
 
 	const pick = catEnabled ? pageCatPick('hobbies', catPages, catSpots) : null;
 	const catHere = pick?.id === 'hobbies.record';
@@ -106,6 +126,7 @@ export default function HobbyGraveyard({ hobbies, suggestions, catEnabled, catPa
 						hobby={hobby}
 						index={index}
 						hovered={hoverIndex === index}
+						haunting={haunting && hobby.kind === 'haunt'}
 						flowerCount={flowers[hobby.id] ?? 0}
 						onOpen={() => setOpenIndex(index)}
 						onHover={() => setHoverIndex(index)}
@@ -145,15 +166,20 @@ interface RowProps {
 	hobby:       Hobby;
 	index:       number;
 	hovered:     boolean;
+	haunting:    boolean; // this row's own haunt-kind moment is live right now
 	flowerCount: number;
 	onOpen:      () => void;
 	onHover:     () => void;
 	onUnhover:   () => void;
 }
 
-function Row({ hobby, index, hovered, flowerCount, onOpen, onHover, onUnhover }: RowProps) {
+function Row({ hobby, index, hovered, haunting, flowerCount, onOpen, onHover, onUnhover }: RowProps) {
 	const alive = hobby.kind === 'alive';
 	const haunt = hobby.kind === 'haunt';
+	// hauntingNow golds the dot without the alive pulse (Hobbies.dc.html's
+	// lampDot: alive pulses, hauntingNow just golds, idle haunt rareFlickers);
+	// it also swaps the log line to the metronome copy.
+	const dotModifier = alive ? ' graveyard__lamp-dot--alive' : haunting ? ' graveyard__lamp-dot--haunting' : haunt ? ' graveyard__lamp-dot--haunt' : '';
 
 	return (
 		<div
@@ -170,17 +196,17 @@ function Row({ hobby, index, hovered, flowerCount, onOpen, onHover, onUnhover }:
 			onFocus={onHover}
 			onBlur={onUnhover}
 		>
-			<Marker hobby={hobby} index={index} hovered={hovered} flowerCount={flowerCount} />
+			<Marker hobby={hobby} index={index} hovered={hovered} haunting={haunting} flowerCount={flowerCount} />
 			<div className="graveyard__record">
 				<div className="graveyard__record-head">
 					<span className="graveyard__name">{hobby.name}</span>
 					<span className="graveyard__service">{hobby.service}</span>
 					<span className="graveyard__char-row">
-						<span className={`graveyard__lamp-dot${alive ? ' graveyard__lamp-dot--alive' : haunt ? ' graveyard__lamp-dot--haunt' : ''}`} />
+						<span className={`graveyard__lamp-dot${dotModifier}`} />
 						{hobby.char}
 					</span>
 				</div>
-				<span className="graveyard__log">{hobby.log}</span>
+				<span className="graveyard__log">{haunting ? HAUNT_LOG_LINE : hobby.log}</span>
 			</div>
 			<div className="graveyard__side">
 				<DispositionPill hobby={hobby} />
@@ -195,11 +221,11 @@ function DispositionPill({ hobby }: { hobby: Hobby }) {
 	return <span className={`graveyard__pill${modifier}`}>{hobby.disposition}</span>;
 }
 
-function Marker({ hobby, index, hovered, flowerCount }: { hobby: Hobby; index: number; hovered: boolean; flowerCount: number }) {
+function Marker({ hobby, index, hovered, haunting, flowerCount }: { hobby: Hobby; index: number; hovered: boolean; haunting: boolean; flowerCount: number }) {
 	const alive = hobby.kind === 'alive';
 	const w = effectiveWear(hobby);
 	const tilt = TILTS[index % TILTS.length];
-	const lit = hovered;
+	const lit = hovered || haunting;
 
 	const wrapStyle = {
 		transform: `rotate(${(tilt + w * 2).toFixed(2)}deg)`,
@@ -218,7 +244,7 @@ function Marker({ hobby, index, hovered, flowerCount }: { hobby: Hobby; index: n
 	} else if (hobby.marker === 'buoy') {
 		body = <BuoyMarker plot={plotLabel(hobby.order)} />;
 	} else {
-		body = <StoneMarker hobby={hobby} index={index} wear={w} lit={hovered} />;
+		body = <StoneMarker hobby={hobby} index={index} wear={w} lit={lit} />;
 	}
 
 	return (

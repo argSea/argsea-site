@@ -138,6 +138,14 @@
 	animation: rareFlicker 11s linear infinite;
 }
 
+/* The haunting moment (HobbyGraveyard.tsx): the haunt-kind dot golds like an
+   alive one but doesn't pulse, since the "on" state is the timer, not a loop. */
+.graveyard__lamp-dot--haunting {
+	background: var(--gold);
+	box-shadow: 0 0 7px 2px rgba(240, 217, 168, .55);
+	animation: none;
+}
+
 .graveyard__log {
 	font-size: 15px;
 	font-style: italic;
