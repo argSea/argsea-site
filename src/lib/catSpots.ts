@@ -39,7 +39,7 @@ export interface CatSpot {
 export const CATALOG: CatSpot[] = [
 	{ id: 'hello.header',    page: 'hello',    pose: 'lying',   context: 'header',    overlay: false, menuGated: true, anchor: { selector: '.site-nav .links a.active', edge: 'top', align: 'center', dy: 16 } },
 	{ id: 'hello.hero',      page: 'hello',    pose: 'perched', context: 'hero',      overlay: false, anchor: { selector: '.hero__headline',            edge: 'top',    align: 'left'   } },
-	{ id: 'hello.manifest',  page: 'hello',    pose: 'perched', context: 'manifest',  overlay: false, anchor: { selector: '.manifest__grid',            edge: 'bottom', align: 'right'  } },
+	{ id: 'hello.manifest',  page: 'hello',    pose: 'perched', context: 'manifest',  overlay: false, anchor: { selector: '.stores__grid',               edge: 'bottom', align: 'right'  } },
 	{ id: 'hello.graveyard', page: 'hello',    pose: 'perched', context: 'graveyard', overlay: false, anchor: { selector: '.panel--graveyard .panel__chips', edge: 'top', align: 'right' } },
 	{ id: 'hello.contact',   page: 'hello',    pose: 'perched', context: 'contact',   overlay: false, anchor: { selector: '.contact__headline',         edge: 'top',    align: 'center' } },
 	{ id: 'hello.postcard',  page: 'hello',    pose: 'perched', context: 'postcard',  overlay: true },

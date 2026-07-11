@@ -82,6 +82,14 @@ Read narrowly. Do not wander the repo.
   style so the kill-switch never breaks layout.
 - Fonts are self-hosted via `@fontsource` packages: no CDN fonts.
 
+## Voice: we are a lighthouse
+
+Copy and names speak as keepers at the light, first person. Ships and
+boats exist only as scenery observed from the station. The public site
+must stay legible to a stranger: a themed name explains itself in-frame
+or gets a plainer one. Full contract and vocabulary: caravan-meta
+`docs/argsea-identity.md`.
+
 ## Verification Rules
 - `npm run build`: must be green and emit all five pages into `dist/`.
 - `npm run check`: `astro check`, must report zero errors.

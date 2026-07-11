@@ -118,7 +118,7 @@ export interface Note {
 	updatedAt:     string;
 }
 
-// The smuggler's hold master switches: which easter eggs are live. Absent on
+// The smuggler's cove master switches: which easter eggs are live. Absent on
 // the wire reads as on; an older copy document must not silently sink an egg.
 export interface EggToggles {
 	bottle: boolean;
@@ -141,7 +141,7 @@ export interface Lighthouse {
 }
 
 // The "signal flags" singleton: the little lines of copy that fly over every
-// page, plus the smuggler's hold (easter-egg toggles and their content). All
+// page, plus the smuggler's cove (easter-egg toggles and their content). All
 // text fields are plain text; the API does not sanitize them as HTML, so
 // render them as text, never with set:html.
 export interface SiteCopy {

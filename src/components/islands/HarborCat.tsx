@@ -20,7 +20,7 @@ const QUIPS: Record<CatContext, string[]> = {
 	wreck:     ['told you to turn left.', 'i would not have hit that.', 'a cat never runs aground.', 'nice parking, captain.', 'i saw the rocks. did you?', 'this is why i steer.', 'should have asked the cat.'],
 	header:    ['mrrp.', 'this is my page now.', 'you may look. briefly.', 'i live up here.', 'the lighthouse sent me.', 'mind the tail.'],
 	hero:      ['mrrp.', 'yes, that is the guy.', 'he does keep the lights on. i supervise.', 'hire him. i vouch. mostly.', 'the boxes-and-arrows are mine.'],
-	manifest:  ['mrrp.', 'you forgot to list me.', 'i am also a tool. currently aboard.', 'inventory looks fine. i counted.', 'the queue is mine now.'],
+	manifest:  ['mrrp.', 'you forgot to list me.', 'i am also a tool. kept in the tower.', 'inventory looks fine. i counted.', 'the queue is mine now.'],
 	graveyard: ['mrrp.', 'good hobbies. all dead.', 'the graveyard is warm. i checked.', 'nothing here is resting harder than me.', 'i outlasted the piano.'],
 	contact:   ['mrrp.', 'say hi. or do not. i will know.', 'he answers email. i answer to no one.', 'the light is on.'],
 	card:      ['mrrp.', 'i sat on this one first.', 'this one shipped. i was there.', 'good project. mine now.', 'i approve. mostly.'],
