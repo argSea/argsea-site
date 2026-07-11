@@ -1,10 +1,10 @@
 ---
-// Hello: hero, wave-with-boat, lights preview, journal strip, cargo
-// manifest, hobbies preview, contact band, and the dictionary entry. The
+// Hello: hero, wave-with-boat, lights preview, journal strip, the keeper's
+// stores, hobbies preview, contact band, and the dictionary entry. The
 // lights preview is the mantel: the featured projects, or the first three by
 // order so the section never empties. It opens the Light List entry in
 // place; hero copy and the dictionary come from the SiteCopy singleton; the
-// say-hi email is the keeper's; the cargo manifest is approved copy
+// say-hi email is the keeper's; the keeper's stores is approved copy
 // hardcoded by design. The journal strip is the newest notes, static links
 // out to /notes, and disappears once there are none. The hobbies preview is
 // data-driven: active hobbies fill "currently learning", resting ones become
@@ -32,7 +32,7 @@ const keeper = await getKeeperProfile();
 const catDesigns = await getFigurehead();
 const suggestions = await getSuggestions();
 
-// The smuggler's hold: the copy singleton's egg toggles gate what gets wired.
+// The smuggler's cove: the copy singleton's egg toggles gate what gets wired.
 // Bottle off (or an emptied proverb list) leaves the boat sailing, unpokeable.
 // The cat's per-page/per-spot picking lives client-side (the director + the
 // overlay islands share one pick); the frontmatter just forwards the toggles.
@@ -44,7 +44,7 @@ const dictSegments = copy.dict
 	.split(/(\d+\.)(?=\s)/)
 	.map((text) => ({ text, isMarker: /^\d+\.$/.test(text) }));
 
-const manifest = [
+const stores = [
 	{ label: 'languages',      items: 'java · python · node.js · go · php' },
 	{ label: 'data & queues',  items: 'mongodb · redis · rabbitmq · varnish' },
 	{ label: 'infrastructure', items: 'kubernetes · docker · nginx · linux' },
@@ -97,17 +97,17 @@ const graveyardChips = resting.map((hobby, index) => ({
 	<JournalStrip notes={journalPreview} doodles={journalDoodles} />
 	<JournalStripDirector client:idle notes={journalPreview} doodles={journalDoodles} signoff={keeper.signoff} />
 
-	<!-- the cargo manifest -->
-	<section class="manifest">
-		<div class="manifest__head">
-			<span class="section-label">The cargo manifest</span>
-			<span class="manifest__aside">tools currently aboard</span>
+	<!-- the keeper's stores -->
+	<section class="stores">
+		<div class="stores__head">
+			<span class="section-label">The keeper's stores</span>
+			<span class="stores__aside">tools kept in the tower</span>
 		</div>
-		<div class="manifest__grid">
-			{manifest.map((column) => (
-				<div class="manifest__col">
-					<span class="manifest__label">{column.label}</span>
-					<span class="manifest__items">{column.items}</span>
+		<div class="stores__grid">
+			{stores.map((column) => (
+				<div class="stores__col">
+					<span class="stores__label">{column.label}</span>
+					<span class="stores__items">{column.items}</span>
 				</div>
 			))}
 		</div>
@@ -267,34 +267,34 @@ const graveyardChips = resting.map((hobby, index) => ({
 		gap: 18px;
 	}
 
-	/* --- cargo manifest --- */
-	.manifest {
+	/* --- the keeper's stores --- */
+	.stores {
 		padding: 0 var(--gutter) clamp(36px, 6vw, 56px);
 		display: flex;
 		flex-direction: column;
 		gap: 16px;
 	}
 
-	.manifest__head {
+	.stores__head {
 		display: flex;
 		align-items: baseline;
 		gap: 14px;
 		flex-wrap: wrap;
 	}
 
-	.manifest__aside {
+	.stores__aside {
 		font-size: 15px;
 		color: var(--periwinkle-deep);
 		font-style: italic;
 	}
 
-	.manifest__grid {
+	.stores__grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 		gap: 18px 28px;
 	}
 
-	.manifest__col {
+	.stores__col {
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
@@ -302,7 +302,7 @@ const graveyardChips = resting.map((hobby, index) => ({
 		padding-top: 12px;
 	}
 
-	.manifest__label {
+	.stores__label {
 		font-family: var(--font-mono);
 		font-size: 11.5px;
 		letter-spacing: .12em;
@@ -310,7 +310,7 @@ const graveyardChips = resting.map((hobby, index) => ({
 		text-transform: uppercase;
 	}
 
-	.manifest__items {
+	.stores__items {
 		font-family: var(--font-mono);
 		font-size: 13.5px;
 		color: var(--text-soft);

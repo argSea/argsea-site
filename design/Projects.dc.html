@@ -526,7 +526,7 @@ class Component extends DCLogic {
       const pl = this.pill(p);
       return {
         ...p,
-        no: String(i + 1).padStart(3, '0'),
+        no: String((i + 1) * 2).padStart(3, '0'),
         code: this.codeFor(p),
         deskCols: !mobile,
         mobilePill: mobile,

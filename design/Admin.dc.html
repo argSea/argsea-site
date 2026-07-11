@@ -468,7 +468,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
           </div>
         </sc-if>
 
-        <!-- ===== SMUGGLER'S HOLD (easter eggs) ===== -->
+        <!-- ===== SMUGGLER'S COVE (easter eggs) ===== -->
         <sc-if value="{{ isEggs }}" hint-placeholder-val="{{ false }}">
           <div data-screen-label="Smuggler's cove" style="display:flex;flex-direction:column;gap:22px">
             <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
@@ -515,7 +515,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                         <div style="display:flex;align-items:center;gap:10px">
                           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;width:20px;text-align:right;flex-shrink:0">{{ b.num }}</span>
                           <input type="text" data-idx="{{ b.idx }}" value="{{ b.value }}" onChange="{{ setBottle }}" style="flex:1;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-                          <span onClick="{{ b.remove }}" title="toss this one overboard" style="cursor:pointer;flex-shrink:0;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(150,160,220,.25);border-radius:8px;color:#7a83ad;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.55)">✕</span>
+                          <span onClick="{{ b.remove }}" title="let the tide take this one" style="cursor:pointer;flex-shrink:0;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(150,160,220,.25);border-radius:8px;color:#7a83ad;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.55)">✕</span>
                         </div>
                       </sc-for>
                       <span onClick="{{ addBottle }}" style="align-self:flex-start;cursor:pointer;padding:9px 16px;border:1px dashed rgba(147,160,232,.45);border-radius:8px;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:12.5px;transition:all .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">＋ cast a new one out</span>
@@ -2266,7 +2266,7 @@ class Component extends DCLogic {
       },
       // notes
       noteRows, newNote: () => this.openEdit('note', null),
-      notesCountLine: 'The official log stays on the bridge. This book takes opinions.',
+      notesCountLine: 'The official log stays in the watch room. This book takes opinions.',
       blogBarLine: noteBlogLine,
       // copy
       copy: s.copy, quipFields,
@@ -2290,7 +2290,7 @@ class Component extends DCLogic {
         this.setState((st) => ({ copy: { ...st.copy, lighthouses: st.copy.lighthouses.map((lh, ix) => ix === i ? { ...lh, [f]: v } : lh) } }));
       },
       addLight: () => this.setState((st) => ({ copy: { ...st.copy, lighthouses: [...st.copy.lighthouses, { name: '', pos: '', line: '' }] } })),
-      // easter eggs (smuggler's hold)
+      // easter eggs (smuggler's cove)
       eggLiveCount: this.eggDefs.filter((e) => e.status === 'live').length,
       eggLooseCount: this.eggDefs.filter((e) => e.status === 'live' && s.eggs[e.id]).length,
       eggFields: this.eggDefs.map((e) => {
