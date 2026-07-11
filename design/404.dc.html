@@ -72,7 +72,7 @@ a:hover{color:#e8ebfa}
       <div style="position:relative;max-width:440px;margin-top:38px;background:#171a2e;border:1px solid rgba(150,160,220,.3);border-radius:12px;padding:22px 26px 24px;box-shadow:0 20px 48px rgba(0,0,0,.5);animation:placardIn .8s ease .25s both;transform:rotate(-1deg)">
         <dc-import name="HarborCat" context="wreck" hint-size="60px,68px" style="position:absolute;top:-48px;right:30px;width:60px;height:68px;z-index:4"></dc-import>
         <div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:#f0d9a8;color:#151830;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:4px 12px;border-radius:999px;white-space:nowrap">⚠ Notice to Mariners</div>
-        <div style="font-size:16.5px;line-height:1.65;color:#c3cbf2;margin-top:8px;font-family:'Newsreader',serif">The page you set course for is not on any chart. Your vessel has run onto the shoals — no page lies beyond this point.</div>
+        <div style="font-size:16.5px;line-height:1.65;color:#c3cbf2;margin-top:8px;font-family:'Newsreader',serif">The page you set course for is not on any chart. Your vessel has run onto the shoals: no page lies beyond this point.</div>
         <div style="margin-top:16px;padding-top:14px;border-top:1px dashed rgba(150,160,220,.25);display:flex;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#7a83ad">
           <span onClick="{{ flipPosition }}" title="that position looks... charted" style="cursor:pointer;border-bottom:1px dotted rgba(150,160,220,.35);transition:color .2s;animation:posHint 2.2s ease-in-out 1.8s 2" style-hover="color:#f0d9a8">{{ positionLine }}</span>
           <span>depth: 0 fathoms</span>
@@ -149,7 +149,7 @@ class Component extends DCLogic {
 
   // admin-fed via the light list in the smuggler's cove; seeded here for the mock
   lights = [
-    { name: 'Fastnet Rock', pos: '51°23′N 9°36′W', line: 'Ireland’s teardrop — the last light the emigrants saw.' },
+    { name: 'Fastnet Rock', pos: '51°23′N 9°36′W', line: 'Ireland’s teardrop: the last light the emigrants saw.' },
     { name: 'La Jument', pos: '48°25′N 5°08′W', line: 'the keeper in the doorway, wave at his back. look it up.' },
     { name: 'Bell Rock', pos: '56°26′N 2°23′W', line: 'built on a rock that vanishes twice a day.' },
     { name: 'Cape Hatteras', pos: '35°15′N 75°32′W', line: 'the Graveyard of the Atlantic keeps a light on.' },
@@ -163,7 +163,7 @@ class Component extends DCLogic {
   renderVals() {
     const l = this.light || this.lights[0];
     return {
-      positionLine: this.state.revealed ? (l.name + ' — ' + l.line) : ('last position: ' + l.pos),
+      positionLine: this.state.revealed ? (l.name + ' · ' + l.line) : ('last position: ' + l.pos),
       flipPosition: () => this.setState({ revealed: !this.state.revealed }),
     };
   }

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&amp;family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="./site-data.js"></script>
+<script src="./image-slot.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<style>
+html{background:#11131f}
+image-slot{display:block;width:100%;height:100%}
+body{margin:0;background:linear-gradient(180deg,#11131f 0%,#131628 720px,#131628 100%)}
+a{text-decoration:none;color:#f0d9a8}
+a:hover{color:#e8ebfa}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes lampPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes flashChar{0%,68%{opacity:.08}78%{opacity:1}88%{opacity:.08}100%{opacity:.08}}
+@keyframes occultChar{0%,70%{opacity:1}80%{opacity:.09}90%{opacity:1}100%{opacity:1}}
+@keyframes isoChar{0%,42%{opacity:1}54%,96%{opacity:.12}100%{opacity:.12}}
+@keyframes haloBreath{0%,100%{opacity:.55}50%{opacity:.85}}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+.cs-mermaid svg{max-width:100%;height:auto;display:block;margin:0 auto}
+</style>
+</helmet>
+
+<div data-screen-label="Case study" style="min-height:100vh;color:#dde1f0;font-family:'Newsreader',serif;display:flex;flex-direction:column;overflow-x:hidden">
+
+  <!-- nav -->
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:clamp(18px,3vw,30px) clamp(20px,5vw,52px) 10px">
+    <a href="Hello.dc.html" style="display:flex;align-items:center;gap:12px">
+      <span style="position:relative;display:inline-flex">
+        <svg width="24" height="28" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
+      </span>
+      <span style="font-family:'Gloock',serif;font-size:19px;color:#e8ebfa">Justin Smith</span>
+    </a>
+    <div style="display:flex;flex-wrap:wrap;gap:clamp(14px,3vw,32px);font-family:'IBM Plex Mono',monospace;font-size:13px">
+      <a href="Hello.dc.html" style="color:#93a0e8">hello</a>
+      <a href="Projects.dc.html" style="color:#e8ebfa;border-bottom:2px solid #f0d9a8;padding-bottom:2px">projects</a>
+      <a href="Hobbies.dc.html" style="color:#93a0e8">hobbies</a>
+      <a href="Notes.dc.html" style="color:#93a0e8">notes</a>
+      <a href="Contact.dc.html" style="color:#93a0e8">contact</a>
+      <a href="#" style="color:#93a0e8">resume ↗</a>
+    </div>
+  </div>
+
+  <!-- entry header -->
+  <sc-if value="{{ p }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:clamp(36px,6vw,58px) clamp(20px,5vw,52px) 8px;display:flex;flex-direction:column;gap:18px;max-width:900px;box-sizing:border-box">
+      <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;color:#93a0e8;text-transform:uppercase;animation:fadeUp .6s ease both">← the light list</a>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;animation:fadeUp .6s ease .05s both">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#5f6ec4">THE LIGHT LIST · NO. {{ p.no }}</span>
+        <span style="display:inline-flex;align-items:center;gap:8px">
+          <span style="{{ p.miniBox }}"><span style="{{ p.miniHalo }}"></span><span style="{{ p.miniCore }}"></span></span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.08em;color:#c3cbf2">{{ p.code }}</span>
+        </span>
+        <span style="{{ p.pillStyle }}">{{ p.pillLabel }}</span>
+      </div>
+      <div style="font-family:'Gloock',serif;font-size:clamp(30px,5.5vw,44px);color:#f0f2fc;line-height:1.12;animation:fadeUp .6s ease .1s both">{{ p.title }}</div>
+      <div style="font-size:clamp(16px,2.3vw,18px);color:#a5aed4;line-height:1.6;max-width:680px;font-style:italic;animation:fadeUp .6s ease .15s both">{{ p.desc }}</div>
+      <sc-if value="{{ p.factRows }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px 26px;border-top:1px solid rgba(150,160,220,.18);border-bottom:1px solid rgba(150,160,220,.18);padding:16px 0;margin-top:6px;animation:fadeUp .6s ease .2s both">
+          <sc-for list="{{ p.factRows }}" as="fx" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase">{{ fx.k }}</span>
+              <span style="font-size:15px;color:#c8cef0;line-height:1.45">{{ fx.v }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="display:flex;gap:22px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;animation:fadeUp .6s ease .22s both">
+        <span>established · <span style="color:#93a0e8">{{ p.est }}</span></span>
+        <span>tags · <span style="color:#93a0e8">{{ p.tagsText }}</span></span>
+      </div>
+    </div>
+
+    <!-- the log itself -->
+    <div style="padding:0 clamp(20px,5vw,52px) clamp(44px,7vw,72px);max-width:860px;box-sizing:border-box;animation:fadeUp .6s ease .25s both">
+      {{ body }}
+      <div style="margin-top:44px;border-top:1.5px dashed rgba(150,160,220,.25);padding-top:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;font-style:italic">- j, the keeper · lamp checked nightly</span>
+        <sc-if value="{{ nextHref }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">next log: {{ nextTitle }} →</a>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- chart not found / still loading -->
+  <sc-if value="{{ missing }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:clamp(48px,9vw,96px) clamp(20px,5vw,52px);display:flex;flex-direction:column;gap:14px;max-width:640px">
+      <div style="font-family:'Gloock',serif;font-size:clamp(26px,4.5vw,36px);color:#f0f2fc">No log for that light.</div>
+      <div style="font-size:16.5px;line-height:1.65;color:#a5aed4">Either the light does not exist, or the keeper has not written its entry up yet. The register knows all.</div>
+      <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">← back to the light list</a>
+    </div>
+  </sc-if>
+
+  <!-- footer -->
+  <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 28px;padding:26px clamp(20px,5vw,52px) 24px;border-top:1px solid rgba(150,160,220,.12)">
+    <div style="flex:1 1 240px;max-width:400px;font-size:11px;line-height:1.55;color:#6b74a0;font-style:italic;text-wrap:pretty"><span style="font-family:'Gloock',serif;font-style:normal;font-size:12.5px;color:#a5aed4">argsea</span> <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-style:normal;color:#5f6ec4">/ˈɑːrɡ·siː/ · noun</span> &nbsp;1. the Argo, but for one &nbsp;2. <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-style:normal">argc</span>, but forever &nbsp;3. a sea of water, or of stars &nbsp;4. what a method signature becomes if I'm not supervised</div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+      <div style="display:flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:11px"><a href="#" style="color:#93a0e8">github</a><a href="#" style="color:#93a0e8">linkedin</a><a href="mailto:hello@argsea.com" style="color:#93a0e8">email</a></div>
+      <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">© 2026 · argsea.com</span>
+        <span style="font-size:12.5px;color:#8f9be0;font-style:italic">A light is just a promise you keep every night.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tick: 0 };
+
+  mono = "'IBM Plex Mono', monospace";
+  pal = { white: { glow: '246,236,207' }, red: { glow: '231,122,112' }, green: { glow: '111,202,151' }, dark: { glow: '120,132,170' } };
+
+  get lights() { return (window.ARGSEA_DATA && window.ARGSEA_DATA.projects) || []; }
+
+  slug(t) { return String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
+  codeFor(p) {
+    const c = { white: 'W', red: 'R', green: 'G' }[p.color] || 'W';
+    if (p.kind === 'fixed') return 'F ' + c;
+    const pre = { flash: 'Fl', occult: 'Oc', iso: 'Iso' }[p.kind] || 'Fl';
+    return `${pre} ${c} ${p.period}s`;
+  }
+  charAnim(p) {
+    if (p.status === 'dark') return 'none';
+    const dur = Math.min(6, Math.max(3, p.period || 4));
+    const n = { flash: 'flashChar', occult: 'occultChar', iso: 'isoChar', fixed: null }[p.kind];
+    return n ? `${n} ${dur}s ease-in-out infinite` : 'haloBreath 5s ease-in-out infinite';
+  }
+  coreAnim(p) {
+    if (p.status === 'dark' || p.kind === 'fixed') return 'none';
+    const dur = Math.min(6, Math.max(3, p.period || 4));
+    const n = { flash: 'flashChar', occult: 'occultChar', iso: 'isoChar' }[p.kind];
+    return `${n} ${dur}s ease-in-out infinite`;
+  }
+
+  get current() {
+    const L = this.lights;
+    if (!L.length) return null;
+    let q = null;
+    try { q = new URLSearchParams(window.location.search).get('light'); } catch (err) {}
+    let p = q ? L.find((x) => this.slug(x.title) === q) : null;
+    if (!p && !q) p = L.find((x) => x.flagship && x.caseStudy) || L.find((x) => x.caseStudy);
+    return (p && p.caseStudy) ? p : null;
+  }
+
+  componentDidMount() {
+    // data + mermaid both arrive async; nudge until both are settled
+    this._poll = setInterval(() => {
+      const dataReady = this.lights.length > 0;
+      const pending = document.querySelector('[data-mmsrc]:not([data-mmdone])');
+      if (dataReady && !this._dataSeen) { this._dataSeen = true; this.setState({ tick: this.state.tick + 1 }); }
+      if (window.mermaid && pending) this.renderMermaids();
+      if (dataReady && !pending && window.mermaid) clearInterval(this._poll);
+    }, 120);
+    setTimeout(() => clearInterval(this._poll), 15000);
+    this.renderMermaids();
+  }
+  componentDidUpdate() { this.renderMermaids(); }
+  componentWillUnmount() { clearInterval(this._poll); }
+
+  renderMermaids() {
+    const mm = window.mermaid;
+    if (!mm) return;
+    if (!this._mmInit) {
+      this._mmInit = true;
+      try {
+        mm.initialize({ startOnLoad: false, securityLevel: 'loose', theme: 'base', themeVariables: {
+          darkMode: true, background: '#161a2c', mainBkg: '#1a1e33',
+          primaryColor: '#1a1e33', primaryTextColor: '#dde1f0', primaryBorderColor: '#5f6ec4',
+          secondaryColor: '#1e2340', tertiaryColor: '#131728',
+          lineColor: '#93a0e8', textColor: '#c3cbf2', nodeBorder: '#5f6ec4',
+          clusterBkg: '#141830', clusterBorder: '#3a4067', edgeLabelBackground: '#131628',
+          fontFamily: "'IBM Plex Mono', monospace", fontSize: '13px',
+        } });
+      } catch (err) {}
+    }
+    const els = document.querySelectorAll('[data-mmsrc]:not([data-mmdone])');
+    els.forEach((el, i) => {
+      el.dataset.mmdone = '1';
+      const src = decodeURIComponent(el.dataset.mmsrc);
+      const id = 'mm-' + Math.random().toString(36).slice(2, 9) + '-' + i;
+      mm.render(id, src).then((out) => { el.innerHTML = out.svg; }).catch(() => {
+        el.innerHTML = '<pre style="margin:0;color:#e77a70;font-family:IBM Plex Mono,monospace;font-size:12px;white-space:pre-wrap">the chart would not draw. raw notation:\n' + src.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</pre>';
+      });
+    });
+  }
+
+  // ---- the keeper's markdown dialect ----
+  parseMd(md) {
+    const lines = String(md).split('\n');
+    const blocks = [];
+    let i = 0;
+    while (i < lines.length) {
+      const line = lines[i];
+      if (!line.trim()) { i++; continue; }
+      if (line.startsWith('```')) {
+        const lang = line.slice(3).trim().toLowerCase();
+        const buf = [];
+        i++;
+        while (i < lines.length && !lines[i].startsWith('```')) { buf.push(lines[i]); i++; }
+        i++;
+        blocks.push({ t: lang === 'mermaid' ? 'mermaid' : 'code', body: buf.join('\n') });
+        continue;
+      }
+      if (line.startsWith(':::')) {
+        const kind = line.slice(3).trim().toLowerCase();
+        const buf = [];
+        i++;
+        while (i < lines.length && !lines[i].startsWith(':::')) { if (lines[i].trim()) buf.push(lines[i].trim()); i++; }
+        i++;
+        blocks.push({ t: kind === 'outcomes' ? 'outcomes' : 'facts', rows: buf });
+        continue;
+      }
+      if (/^#{1,3} /.test(line)) { blocks.push({ t: 'h2', text: line.replace(/^#{1,3} /, '').trim() }); i++; continue; }
+      const mImg = line.match(/^!\[([^\]]*)\]\(([^)\s]+)\)\s*$/);
+      if (mImg) { blocks.push({ t: 'img', caption: mImg[1], key: mImg[2] }); i++; continue; }
+      if (line.startsWith('> ')) {
+        const buf = [line.slice(2)];
+        i++;
+        while (i < lines.length && lines[i].startsWith('> ')) { buf.push(lines[i].slice(2)); i++; }
+        blocks.push({ t: 'quote', text: buf.join(' ') });
+        continue;
+      }
+      if (/^[-*] /.test(line)) {
+        const items = [];
+        while (i < lines.length && /^[-*] /.test(lines[i])) { items.push(lines[i].slice(2)); i++; }
+        blocks.push({ t: 'ul', items });
+        continue;
+      }
+      const buf = [line];
+      i++;
+      while (i < lines.length && lines[i].trim() && !/^(#{1,3} |> |:::|```|[-*] )/.test(lines[i])) { buf.push(lines[i]); i++; }
+      blocks.push({ t: 'p', text: buf.join(' ') });
+    }
+    return blocks;
+  }
+
+  inline(text, keyBase) {
+    const h = React.createElement;
+    const nodes = [];
+    let rest = String(text);
+    let k = 0;
+    const re = /(\[\?[\s\S]+?\?\])|(`[^`]+`)|(\*\*[^*]+\*\*)|(\*[^*]+\*)/;
+    while (rest.length) {
+      const m = rest.match(re);
+      if (!m) { nodes.push(rest); break; }
+      if (m.index > 0) nodes.push(rest.slice(0, m.index));
+      const tok = m[0];
+      const key = keyBase + '-i' + (k++);
+      if (tok.startsWith('[?')) {
+        nodes.push(h('span', { key, title: 'a fact only the keeper can fill in', style: { fontFamily: this.mono, fontSize: '12.5px', color: '#e9b96e', background: 'rgba(233,185,110,.07)', borderBottom: '1px dashed rgba(233,185,110,.55)', borderRadius: '3px', padding: '1px 7px' } }, '[ ' + tok.slice(2, -2).trim() + ' ]'));
+      } else if (tok.startsWith('`')) {
+        nodes.push(h('span', { key, style: { fontFamily: this.mono, fontSize: '13.5px', color: '#c3cbf2', background: 'rgba(147,160,232,.12)', borderRadius: '4px', padding: '1px 6px' } }, tok.slice(1, -1)));
+      } else if (tok.startsWith('**')) {
+        nodes.push(h('span', { key, style: { color: '#e8ebfa', fontWeight: 500 } }, tok.slice(2, -2)));
+      } else {
+        nodes.push(h('em', { key, style: { color: '#a5aed4' } }, tok.slice(1, -1)));
+      }
+      rest = rest.slice(m.index + tok.length);
+    }
+    return nodes;
+  }
+
+  renderBlocks(blocks) {
+    const h = React.createElement;
+    const out = [];
+    let sec = 0;
+    blocks.forEach((b, bi) => {
+      const key = 'b' + bi;
+      if (b.t === 'h2') {
+        sec++;
+        out.push(h('div', { key, style: { display: 'flex', flexDirection: 'column', gap: '7px', marginTop: sec === 1 ? '18px' : '46px' } },
+          h('span', { style: { fontFamily: this.mono, fontSize: '11px', letterSpacing: '.2em', color: '#5f6ec4' } }, String(sec).padStart(2, '0')),
+          h('span', { style: { fontFamily: "'Gloock', serif", fontSize: 'clamp(22px,3.4vw,28px)', color: '#eef0fb', lineHeight: 1.15 } }, this.inline(b.text, key)),
+        ));
+      } else if (b.t === 'p') {
+        out.push(h('p', { key, style: { margin: '16px 0 0', fontSize: '16.5px', lineHeight: 1.72, color: '#b8c0e0', textWrap: 'pretty' } }, this.inline(b.text, key)));
+      } else if (b.t === 'quote') {
+        out.push(h('div', { key, style: { margin: '20px 0 0', borderLeft: '2px solid rgba(240,217,168,.5)', padding: '2px 0 2px 16px', display: 'flex', flexDirection: 'column', gap: '4px' } },
+          h('span', { style: { fontFamily: this.mono, fontSize: '10px', letterSpacing: '.18em', color: '#8a7f63', textTransform: 'uppercase' } }, 'from the log'),
+          h('span', { style: { fontSize: '15.5px', fontStyle: 'italic', color: '#8f9be0', lineHeight: 1.6 } }, this.inline(b.text, key)),
+        ));
+      } else if (b.t === 'ul') {
+        out.push(h('div', { key, style: { margin: '16px 0 0', display: 'flex', flexDirection: 'column', gap: '10px' } },
+          ...b.items.map((it, ii) => h('div', { key: key + '-' + ii, style: { display: 'flex', gap: '12px', alignItems: 'baseline' } },
+            h('span', { style: { fontFamily: this.mono, fontSize: '12px', color: '#f0d9a8', flex: 'none' } }, '·'),
+            h('span', { style: { fontSize: '16px', lineHeight: 1.65, color: '#b8c0e0' } }, this.inline(it, key + '-' + ii)),
+          )),
+        ));
+      } else if (b.t === 'facts') {
+        out.push(h('div', { key, style: { margin: '18px 0 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: '12px 26px', border: '1.5px dashed rgba(150,160,220,.25)', borderRadius: '12px', padding: '16px 18px' } },
+          ...b.rows.map((r, ri) => {
+            const ci = r.indexOf(':');
+            const kk = ci > -1 ? r.slice(0, ci).trim() : '';
+            const vv = ci > -1 ? r.slice(ci + 1).trim() : r;
+            return h('div', { key: key + '-' + ri, style: { display: 'flex', flexDirection: 'column', gap: '3px' } },
+              h('span', { style: { fontFamily: this.mono, fontSize: '10.5px', letterSpacing: '.14em', color: '#5f6ec4', textTransform: 'uppercase' } }, kk),
+              h('span', { style: { fontSize: '15px', color: '#c8cef0', lineHeight: 1.5 } }, this.inline(vv, key + '-' + ri)),
+            );
+          }),
+        ));
+      } else if (b.t === 'outcomes') {
+        out.push(h('div', { key, style: { margin: '18px 0 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: '14px' } },
+          ...b.rows.map((r, ri) => {
+            const parts = r.split('|');
+            const big = (parts[0] || '').trim();
+            const cap = (parts[1] || '').trim();
+            return h('div', { key: key + '-' + ri, style: { background: '#1a1e33', border: '1px solid rgba(150,160,220,.2)', borderRadius: '12px', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '6px', boxShadow: '0 8px 20px rgba(0,0,0,.3)' } },
+              h('span', { style: { fontFamily: "'Gloock', serif", fontSize: '22px', color: '#f0f2fc', lineHeight: 1.15 } }, this.inline(big, key + '-b' + ri)),
+              h('span', { style: { fontFamily: this.mono, fontSize: '11.5px', lineHeight: 1.6, color: '#93a0e8' } }, this.inline(cap, key + '-c' + ri)),
+            );
+          }),
+        ));
+      } else if (b.t === 'img') {
+        out.push(h('figure', { key, style: { margin: '20px 0 0', display: 'flex', flexDirection: 'column', gap: '8px' } },
+          h('div', { style: { background: '#141830', border: '1px solid rgba(150,160,220,.18)', borderRadius: '12px', overflow: 'hidden', height: '340px' } },
+            h('image-slot', { id: (this._imgPrefix || 'proj-img-') + b.key, fit: 'contain', shape: 'rect', placeholder: (b.caption || b.key) + ' · drop the image here', style: { display: 'block', width: '100%', height: '100%' } }),
+          ),
+          b.caption ? h('figcaption', { style: { margin: 0, fontSize: '13.5px', fontStyle: 'italic', color: '#7a83ad', textAlign: 'center' } }, b.caption) : null,
+        ));
+      } else if (b.t === 'mermaid') {
+        out.push(h('div', { key, className: 'cs-mermaid', 'data-mmsrc': encodeURIComponent(b.body), style: { margin: '20px 0 0', background: '#141830', border: '1px solid rgba(150,160,220,.18)', borderRadius: '12px', padding: '20px 16px', overflowX: 'auto', minHeight: '80px' } },
+          h('span', { style: { fontFamily: this.mono, fontSize: '11px', color: '#5f6ec4' } }, 'drawing the chart...'),
+        ));
+      } else if (b.t === 'code') {
+        out.push(h('pre', { key, style: { margin: '18px 0 0', background: '#131728', border: '1px solid rgba(150,160,220,.18)', borderRadius: '12px', padding: '16px 18px', overflowX: 'auto', fontFamily: this.mono, fontSize: '13px', lineHeight: 1.6, color: '#c3cbf2', whiteSpace: 'pre' } }, b.body));
+      }
+    });
+    return out;
+  }
+
+  pill(p) {
+    const base = { fontFamily: this.mono, fontSize: '10.5px', letterSpacing: '.14em', textTransform: 'uppercase', padding: '3px 10px', borderRadius: '999px', whiteSpace: 'nowrap', display: 'inline-block' };
+    if (p.status === 'dark') return { label: `dark · ${p.disco || ''}`.trim(), style: { ...base, color: '#8a93c4', border: '1px solid rgba(138,147,196,.4)', background: 'rgba(138,147,196,.08)' } };
+    return { label: 'lit', style: { ...base, color: '#f0d9a8', border: '1px solid rgba(240,217,168,.5)', background: 'rgba(240,217,168,.12)' } };
+  }
+
+  renderVals() {
+    const L = this.lights;
+    const cur = this.current;
+    const missing = L.length > 0 && !cur;
+    let p = null;
+    let body = null;
+    let nextHref = null;
+    let nextTitle = null;
+    if (cur) {
+      const i = L.indexOf(cur);
+      const dark = cur.status === 'dark';
+      const c = this.pal[dark ? 'dark' : cur.color] || this.pal.white;
+      const pl = this.pill(cur);
+      p = {
+        ...cur,
+        no: String((i + 1) * 2).padStart(3, '0'),
+        code: this.codeFor(cur),
+        tagsText: (cur.tags || []).join(' · '),
+        factRows: (() => {
+          if (Array.isArray(cur.facts)) { const r = cur.facts.filter((f) => f && f.k); return r.length ? r : null; }
+          return cur.facts ? Object.entries(cur.facts).map(([k, v]) => ({ k, v })) : null;
+        })(),
+        pillLabel: pl.label, pillStyle: pl.style,
+        miniBox: { position: 'relative', width: '26px', height: '26px', display: 'inline-block', flex: 'none' },
+        miniHalo: { position: 'absolute', left: '50%', top: '50%', width: '24px', height: '24px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${c.glow},${dark ? 0.08 : 0.45}) 0%, transparent 64%)`, filter: 'blur(1.5px)', animation: this.charAnim(cur), display: 'inline-block' },
+        miniCore: { position: 'absolute', left: '50%', top: '50%', width: '5px', height: '5px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: dark ? '#4d5670' : '#fff', boxShadow: `0 0 6px 2px rgba(${c.glow},${dark ? 0.2 : 0.8})`, animation: this.coreAnim(cur), display: 'inline-block' },
+      };
+      this._imgPrefix = 'proj-' + this.slug(cur.title) + '-img-';
+      body = React.createElement('div', { style: { display: 'flex', flexDirection: 'column' } }, ...this.renderBlocks(this.parseMd(cur.caseStudy)));
+      const others = L.filter((x) => x.caseStudy && x !== cur);
+      if (others.length) {
+        const nxt = others[(L.indexOf(cur) + 1) % others.length] || others[0];
+        nextHref = 'CaseStudy.dc.html?light=' + this.slug(nxt.title);
+        nextTitle = nxt.title;
+      }
+    }
+    return { p, body, missing, nextHref, nextTitle };
+  }
+}
+
+</script>
+</body>
+</html>

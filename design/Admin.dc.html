@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Gloock&amp;family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
 html{background:#131628}
+image-slot{display:block;width:100%;height:100%}
 body{margin:0;background:linear-gradient(180deg,#11131f 0%,#131628 100%)}
 a{text-decoration:none}
 a:hover{color:#e8ebfa}
@@ -96,19 +97,6 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
       </sc-for>
 
       <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:20px">
-        <div style="position:relative;display:flex;justify-content:flex-end;padding:0 12px;height:32px">
-          <sc-if value="{{ catSay }}" hint-placeholder-val="{{ false }}">
-            <div style="position:absolute;right:46px;bottom:24px;background:#1c2036;border:1px solid rgba(150,160,220,.35);border-radius:10px 10px 2px 10px;padding:6px 11px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#c3cbf2;white-space:nowrap;animation:bubblePop .2s ease both;z-index:5">{{ catSay }}</div>
-          </sc-if>
-          <div onClick="{{ pokeCat }}" title="the harbor cat" style="cursor:pointer;transition:transform .2s" style-hover="transform:translateY(-2px)">
-            <svg width="36" height="30" viewBox="0 0 34 30" fill="none">
-              <path d="M26 28 C31.5 27 32.5 22 29.5 19.5" stroke="#93a0e8" stroke-width="1.4" fill="none" stroke-linecap="round" style="transform-origin:26px 28px;animation:tailSwish 4s ease-in-out infinite"></path>
-              <path d="M7 28 C5 22 7.5 16 12 14 L11.5 8.5 L14.8 11.8 L18.2 11.8 L21.5 8.5 L21 14 C25.5 16 28 22 26 28 Z" fill="#232a4d" stroke="#93a0e8" stroke-width="1.4" stroke-linejoin="round"></path>
-              <circle cx="14" cy="16.5" r="1" fill="#f0d9a8"></circle>
-              <circle cx="19" cy="16.5" r="1" fill="#f0d9a8"></circle>
-            </svg>
-          </div>
-        </div>
         <div style="background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;transform:rotate(-.4deg)">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase">the lantern</span>
           <sc-if value="{{ deploying }}" hint-placeholder-val="{{ false }}">
@@ -187,7 +175,8 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                   </sc-for>
                 </div>
               </div>
-              <div style="background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:13px;box-shadow:0 10px 24px rgba(0,0,0,.35);transform:rotate(.25deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
+              <div style="position:relative;background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:13px;box-shadow:0 10px 24px rgba(0,0,0,.35);transform:rotate(.25deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
+                <dc-import name="HarborCat" quips="almost had it.|the fish owes me money.|the traffic can wait. the fish cannot.|two jumped. zero landed. rigged." hint-size="52px,60px" style="position:absolute;top:-46px;right:26px;width:52px;height:60px;z-index:3"></dc-import>
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">harbor traffic · this week</span>
                 <div style="display:flex;align-items:flex-end;gap:7px;height:64px">
                   <sc-for list="{{ trafficBars }}" as="tb" hint-placeholder-count="7">
@@ -196,8 +185,8 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                 </div>
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">1,204 ships sighted · busiest: thursday</span>
                 <div style="display:flex;flex-direction:column;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.7;border-top:1px solid rgba(150,160,220,.12);padding-top:11px">
-                  <span style="color:#a5aed4">top light · <span style="color:#f0d9a8">"Meo Wave Race" — 214 lookups</span></span>
-                  <span style="color:#a5aed4">top note · <span style="color:#c3cbf2">"The queue is the product" — 178 reads</span></span>
+                  <span style="color:#a5aed4">top light · <span style="color:#f0d9a8">"Meo Wave Race" - 214 lookups</span></span>
+                  <span style="color:#a5aed4">top note · <span style="color:#c3cbf2">"The queue is the product" - 178 reads</span></span>
                   <span style="color:#a5aed4">ports of origin · <span style="color:#c3cbf2">search 44% · direct 31% · fediverse 25%</span></span>
                 </div>
               </div>
@@ -257,14 +246,14 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                     </div>
                   </sc-for>
                 </div>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">◐ mock — the arrangement sticks to this desk. the public wall picks it up with the next hoist.</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">◐ mock · the arrangement sticks to this desk. the public wall picks it up with the next hoist.</span>
               </div>
             </sc-if>
 
             <sc-if value="{{ projTabIsRack }}" hint-placeholder-val="{{ true }}">
             <div style="background:rgba(240,217,168,.06);border:1.5px dashed rgba(240,217,168,.4);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;transform:rotate(.3deg);transition:transform .25s;animation:fadeUp .7s ease .1s both" style-hover="transform:rotate(0deg)">
               <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">in the front window · featured on the home page</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">in the front window · featured on the home page</span><dc-import name="HarborCat" quips="front window seat. as featured.|do not rotate me out.|three spots, and i count as zero." hint-size="52px,60px" style="position:absolute;top:-26px;left:40px;width:52px;height:60px;z-index:3"></dc-import>
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ featuredCountLine }}</span>
               </div>
               <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
@@ -272,7 +261,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                   <span style="padding:6px 14px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#f0d9a8;display:inline-flex;align-items:center;gap:8px;animation:swayChip 5.5s ease-in-out infinite">★ {{ f.label }}<span onClick="{{ f.onRemove }}" style="cursor:pointer;color:#5f6ec4;transition:color .2s" style-hover="color:#f0d9a8">✕</span></span>
                 </sc-for>
                 <sc-if value="{{ mantelHasRoom }}" hint-placeholder-val="{{ false }}">
-                  <span style="font-size:13.5px;color:#7a83ad;font-style:italic">room in the window — pin a light with ☆ below</span>
+                  <span style="font-size:13.5px;color:#7a83ad;font-style:italic">room in the window · pin a light with ☆ below</span>
                 </sc-if>
               </div>
             </div>
@@ -301,14 +290,15 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                 </div>
               </sc-for>
             </div>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// a dark light stays on the list — the coast remembers. changes shine with the next hoist.</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// a dark light stays on the list · the coast remembers. changes shine with the next hoist.</span>
             </sc-if>
           </div>
         </sc-if>
 
         <!-- ===== GRAVEYARD (hobbies) ===== -->
         <sc-if value="{{ isHobbies }}" hint-placeholder-val="{{ false }}">
-          <div data-screen-label="Graveyard admin" style="display:flex;flex-direction:column;gap:22px">
+          <div data-screen-label="Graveyard admin" style="display:flex;flex-direction:column;gap:22px;position:relative;padding-bottom:44px">
+            <dc-import name="HarborCat" pose="lying" quips="napping among the stones. respectfully.|every keeper buried here fed me once.|plot 03 is the warmest. do not tell running." hint-size="52px,60px" style="position:absolute;bottom:-6px;right:18px;width:62px;height:50px;z-index:3"></dc-import>
             <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;animation:fadeUp .7s ease .05s both">
               <div style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">groundskeeping</span>
@@ -325,9 +315,9 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                   <div style="display:flex;flex-direction:column;gap:4px;min-width:0;flex:1">
                     <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
                       <span style="font-family:'Gloock',serif;font-size:19px;color:#f0f2fc">{{ h.name }}</span>
-                      <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8">{{ h.dates }}</span>
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8">{{ h.service }} · {{ h.char }}</span>
                     </div>
-                    <span style="font-size:14.5px;color:#a5aed4;font-style:italic;line-height:1.5">{{ h.eulogy }}</span>
+                    <span style="font-size:14.5px;color:#a5aed4;font-style:italic;line-height:1.5">{{ h.log }}</span>
                   </div>
                   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0">
                     <span onClick="{{ h.onUp }}" title="move up" style="padding:7px 11px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">↑</span>
@@ -344,9 +334,9 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                   <div style="display:flex;flex-direction:column;gap:4px;min-width:0;flex:1">
                     <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
                       <span style="font-family:'Gloock',serif;font-size:19px;color:#eef0fb">{{ h.name }}</span>
-                      <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4">{{ h.epitaph }} · {{ h.dates }}</span>
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4">{{ h.disposition }} · {{ h.service }} · {{ h.marker }}</span>
                     </div>
-                    <span style="font-size:14.5px;color:#7a83ad;font-style:italic;line-height:1.5">{{ h.eulogy }}</span>
+                    <span style="font-size:14.5px;color:#7a83ad;font-style:italic;line-height:1.5">{{ h.log }}</span>
                   </div>
                   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0">
                     <span onClick="{{ h.onUp }}" title="move up" style="padding:7px 11px;border:1px solid rgba(150,160,220,.2);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;cursor:pointer;transition:border-color .2s,color .2s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8">↑</span>
@@ -377,7 +367,9 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
 
         <!-- ===== WRITING DESK (notes) ===== -->
         <sc-if value="{{ isNotes }}" hint-placeholder-val="{{ false }}">
-          <div data-screen-label="Writing desk" style="display:flex;flex-direction:column;gap:22px">
+          <div data-screen-label="Writing desk" style="display:flex;flex-direction:column;gap:22px;position:relative">
+            <div style="position:absolute;top:2px;right:196px;width:66px;height:54px;background:linear-gradient(180deg,#f1ecdd,#eae3d1);border-radius:3px;box-shadow:0 6px 14px rgba(0,0,0,.35);transform:rotate(-3deg);z-index:2"></div>
+            <dc-import name="HarborCat" quips="i am a doodle.|caption: cat, from life.|press me into an entry. i dare you." hint-size="52px,60px" style="position:absolute;top:-34px;right:202px;width:50px;height:58px;z-index:3"></dc-import>
             <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;animation:fadeUp .7s ease .05s both">
               <div style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the log book</span>
@@ -441,7 +433,10 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
 
               <div style="display:flex;flex-direction:column;gap:22px">
                 <div style="background:#1a1e33;border:1px solid rgba(150,160,220,.2);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 24px rgba(0,0,0,.35);transform:rotate(.3deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the hero</span>
+                  <div style="position:relative;display:flex;align-items:center;gap:12px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the hero</span>
+                    <dc-import name="HarborCat" quips="the hero, obviously.|kicker: cat. headline: cat.|write me in. i already fit the space." hint-size="52px,60px" style="position:absolute;top:-42px;left:96px;width:52px;height:60px;z-index:3"></dc-import>
+                  </div>
                   <label style="display:flex;flex-direction:column;gap:6px">
                     <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">kicker</span>
                     <input type="text" data-key="heroKicker" value="{{ copy.heroKicker }}" onChange="{{ setCopy }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.08em;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
@@ -474,7 +469,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
               <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">beneath the tower</span>
               <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Smuggler's cove</span>
-              <span style="font-size:15.5px;color:#a5aed4;font-style:italic">The hidden delights stowed around the site. Flip them on, flip them off — no one's watching. (The office gremlins stay on regardless.)</span>
+              <span style="font-size:15.5px;color:#a5aed4;font-style:italic">The hidden delights stowed around the site. Flip them on, flip them off, no one's watching. (The office gremlins stay on regardless.)</span>
             </div>
 
             <div style="display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;animation:fadeUp .7s ease .12s both">
@@ -525,6 +520,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                   <!-- harbor cat: where it roams -->
                   <sc-if value="{{ egg.isCat }}" hint-placeholder-val="{{ false }}">
                     <div style="{{ egg.bodyStyle }}">
+                      <dc-import name="HarborCat" quips="this switch stays on.|you may not stow me. i stow myself.|try it. see what happens to your drafts." hint-size="52px,60px" style="position:absolute;top:-38px;right:14px;width:52px;height:60px;z-index:4"></dc-import>
                       <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:2px">
                         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">where it roams</span>
                         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">lives at the lighthouse · out on its rounds</span>
@@ -586,7 +582,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">identity papers</span>
                 <label style="display:flex;flex-direction:column;gap:6px">
                   <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">name · what the harbor calls you</span>
-                  <input type="text" data-key="name" value="{{ keeper.name }}" onChange="{{ setKeeper }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#f0f2fc;font-family:'Gloock',serif;font-size:17px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  <span style="position:relative;display:block;width:100%"><input type="text" data-key="name" value="{{ keeper.name }}" onChange="{{ setKeeper }}" style="width:100%;padding-right:58px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#f0f2fc;font-family:'Gloock',serif;font-size:17px;outline:none" style-focus="border-color:rgba(240,217,168,.6)"><dc-import name="HarborCat" pose="lying" quips="the name field is warm.|justin, and also me.|sign it: the cat." hint-size="52px,60px" style="position:absolute;top:2px;right:8px;width:46px;height:40px;z-index:3"></dc-import></span>
                 </label>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                   <label style="display:flex;flex-direction:column;gap:6px">
@@ -647,6 +643,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                 <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Prints &amp; scans</span>
                 <span style="font-size:15.5px;color:#a5aed4;font-style:italic">{{ mediaCountLine }} Handle by the edges.</span>
               </div>
+              <span style="position:relative;flex:0 1 240px;display:inline-flex"><input type="text" value="{{ mediaQ }}" onChange="{{ setMediaQ }}" placeholder="search the prints..." style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:999px;padding:10px 16px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)"><dc-import name="HarborCat" pose="lying" quips="search results: one (1) cat.|the query box is warm.|filters: fur, whiskers." hint-size="52px,60px" style="position:absolute;top:-36px;right:14px;width:54px;height:46px;z-index:3"></dc-import></span>
               <button onClick="{{ addMedia }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ develop a print</button>
               <input type="file" accept="image/*" multiple ref="{{ mediaInputRef }}" onChange="{{ onFilePick }}" style="display:none">
             </div>
@@ -671,17 +668,65 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
           </div>
         </sc-if>
 
-        <!-- ===== FIGUREHEAD SHOP (the cat) ===== -->
+        <!-- ===== CARVING SHOP (svgs) ===== -->
         <sc-if value="{{ isFigurehead }}" hint-placeholder-val="{{ false }}">
-          <div data-screen-label="Figurehead shop" style="display:flex;flex-direction:column;gap:22px">
+          <div data-screen-label="Carving shop" style="display:flex;flex-direction:column;gap:22px;position:relative">
+            <dc-import name="HarborCat" quips="supervising.|carve nothing without me.|approval pending. indefinitely." hint-size="52px,60px" style="position:absolute;top:-10px;right:22px;width:54px;height:62px;z-index:3"></dc-import>
             <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the resident</span>
-              <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Figurehead shop</span>
-              <span style="font-size:15.5px;color:#a5aed4;font-style:italic">Where the lighthouse cat comes in for adjustments. It has approved none of them.</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the carvings</span>
+              <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">The carving shop</span>
+              <span style="font-size:15.5px;color:#a5aed4;font-style:italic">Every carving on the site, catalogued and on the bench. The cat supervises; it has approved none of it.</span>
             </div>
-            <div style="background:#1c2036;border:1px solid rgba(150,160,220,.22);border-radius:14px;padding:clamp(24px,4vw,40px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;min-height:280px;animation:fadeUp .7s ease .15s both">
-              <dc-import name="HarborCat" context="header" hint-size="96px,110px" style="width:96px;height:110px"></dc-import>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">◐ mock — the shop isn't fitted out yet. the cat, meanwhile, is fully operational.</span>
+            <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;animation:fadeUp .7s ease .15s both">
+              <div style="flex:0 1 300px;min-width:250px;background:#1c2036;border:1px solid rgba(150,160,220,.22);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:7px;max-height:600px;overflow-y:auto">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding-bottom:4px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the catalog</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ figCountLine }}</span>
+                </div>
+                <sc-for list="{{ figGroups }}" as="g" hint-placeholder-count="3">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;color:#5f6ec4;text-transform:uppercase;padding-top:9px">{{ g.page }}</span>
+                  <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="2">
+                    <div onClick="{{ it.onOpen }}" style="{{ it.rowStyle }}" style-hover="background:rgba(147,160,232,.08)">
+                      <span style="width:44px;height:34px;flex:none;display:flex;align-items:center;justify-content:center;background:#131728;border:1px solid rgba(150,160,220,.18);border-radius:6px;overflow:hidden">{{ it.thumb }}</span>
+                      <span style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                        <span style="font-family:'Gloock',serif;font-size:14px;color:#e8ebfa;line-height:1.2">{{ it.name }}</span>
+                        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;line-height:1.5">{{ it.where }}</span>
+                      </span>
+                    </div>
+                  </sc-for>
+                </sc-for>
+              </div>
+              <div style="flex:1 1 440px;min-width:320px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                  <div style="display:flex;gap:4px;background:#171a2e;border:1px solid rgba(150,160,220,.3);border-radius:999px;padding:5px 8px">
+                    <span title="straightedge · for show" style="padding:4px 9px;color:#93a0e8;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:color .2s" style-hover="color:#f0d9a8">◇</span>
+                    <span title="carving knife · for show" style="padding:4px 9px;color:#93a0e8;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:color .2s" style-hover="color:#f0d9a8">✎</span>
+                    <span title="plank · for show" style="padding:4px 9px;color:#93a0e8;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:color .2s" style-hover="color:#f0d9a8">▭</span>
+                    <span title="ring · for show" style="padding:4px 9px;color:#93a0e8;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:color .2s" style-hover="color:#f0d9a8">○</span>
+                    <span title="wood grain · for show" style="padding:4px 9px;color:#93a0e8;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:color .2s" style-hover="color:#f0d9a8">≋</span>
+                  </div>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// the chisels select. the markup below is what actually carves.</span>
+                  <span onClick="{{ figFresh }}" style="margin-left:auto;padding:7px 15px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transition:transform .2s" style-hover="transform:scale(1.04)">+ a fresh block</span>
+                </div>
+                <div style="position:relative;background:repeating-linear-gradient(90deg,#221d33 0 46px,#251f38 46px 92px),linear-gradient(180deg,#241e36,#1d1830);border:1px solid rgba(150,160,220,.22);border-radius:14px;min-height:560px;display:flex;align-items:center;justify-content:center;padding:44px;box-sizing:border-box">
+                  <span style="position:absolute;top:12px;left:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase">on the bench · {{ figName }}</span>
+                  <span style="transform:scale(3);display:inline-flex">{{ figBenchNode }}</span>
+                  <sc-if value="{{ figNote }}" hint-placeholder-val="{{ false }}">
+                    <span style="position:absolute;bottom:12px;left:16px;right:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a93c4;font-style:italic">{{ figNote }}</span>
+                  </sc-if>
+                </div>
+                <sc-if value="{{ figEditable }}" hint-placeholder-val="{{ true }}">
+                  <textarea value="{{ figSrc }}" onChange="{{ figEdit }}" rows="10" spellcheck="false" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:10px;padding:13px 14px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.65;outline:none;resize:vertical;white-space:pre-wrap" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+                </sc-if>
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">bolt it to ·</span>
+                  <select value="{{ figAssign }}" onChange="{{ figSetAssign }}" style="flex:1 1 220px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                    <sc-for list="{{ figAssignOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.id }}">{{ o.label }}</option></sc-for>
+                  </select>
+                  <span onClick="{{ figBolt }}" style="padding:10px 20px;background:#f0d9a8;color:#1b2033;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(147,160,232,.6);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(147,160,232,.6)">⚒ bolt it into place</span>
+                </div>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">◐ mock · the bench edits and assigns; bolted carvings ship with the next hoist.</span>
+              </div>
             </div>
           </div>
         </sc-if>
@@ -696,10 +741,11 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                 <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
                   <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">at the desk</span>
                   <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">Marginalia</span>
-                  <span style="font-size:15.5px;color:#a5aed4;font-style:italic">Quick sketches for the margins of a journal entry. Draw freely — pressing one into a note comes later.</span>
+                  <span style="font-size:15.5px;color:#a5aed4;font-style:italic">Quick sketches for the margins of a journal entry. Draw freely; pressing one into a note comes later.</span>
                 </div>
                 <div style="background:#1c2036;border:1px solid rgba(150,160,220,.22);border-radius:14px;padding:clamp(16px,3vw,24px);display:flex;flex-direction:column;gap:16px;animation:fadeUp .7s ease .15s both">
-                  <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px">
+                  <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;position:relative">
+                    <dc-import name="HarborCat" quips="the inks are guarded.|draw around me.|i drank the periwinkle. it was fine." hint-size="48px,56px" style="position:absolute;top:-58px;right:26px;width:48px;height:56px;z-index:3"></dc-import>
                     <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the desk</span>
                     <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">{{ margCountLine }}</span>
                   </div>
@@ -751,17 +797,18 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                       <sc-if value="{{ margOpenIsQueue }}" hint-placeholder-val="{{ false }}"><svg width="320" height="145" viewBox="0 0 110 50" fill="none" stroke="#454a70" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path></svg></sc-if>
                       <span style="position:absolute;bottom:12px;left:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a39876">{{ margOpenCaption }}</span>
                       <div style="position:absolute;right:10px;bottom:10px;display:flex;gap:2px;align-items:center;background:rgba(19,23,40,.88);border:1px solid rgba(150,160,220,.3);border-radius:999px;padding:3px 7px;font-family:'IBM Plex Mono',monospace;font-size:12px">
-                        <span title="undo — for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">↺</span>
-                        <span title="redo — for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">↻</span>
+                        <span title="undo · for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">↺</span>
+                        <span title="redo · for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">↻</span>
                         <span style="width:1px;height:14px;background:rgba(150,160,220,.25)"></span>
-                        <span title="zoom out — for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">−</span>
-                        <span title="zoom in — for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">+</span>
-                        <span title="fit the page — for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">⤢</span>
+                        <span title="zoom out · for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">−</span>
+                        <span title="zoom in · for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">+</span>
+                        <span title="fit the page · for show" style="padding:3px 7px;color:#93a0e8;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">⤢</span>
                       </div>
                     </div>
                   </div>
                   <div data-marg-tin style="width:236px;flex-shrink:0;background:#1c2036;border:1px solid rgba(150,160,220,.22);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:11px;box-sizing:border-box;transform:rotate(.3deg)">
                     <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the inkwells</span>
+                    <dc-import name="HarborCat" quips="the inks are guarded.|dip nothing. ask first.|i drank the periwinkle. it was fine." hint-size="48px,56px" style="position:absolute;top:-44px;right:12px;width:48px;height:56px;z-index:3"></dc-import>
                     <div style="display:flex;align-items:center;gap:10px">
                       <span style="width:46px;flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase">fill</span>
                       <div style="display:flex;gap:4px;flex-wrap:wrap">
@@ -794,7 +841,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                     </div>
                   </div>
                 </div>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">◐ mock — the nibs are dry. tools select; nothing draws yet.</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">◐ mock · the nibs are dry. tools select; nothing draws yet.</span>
               </div>
             </sc-if>
           </div>
@@ -849,12 +896,65 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
           </label>
           <label style="display:flex;flex-direction:column;gap:6px">
             <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">the entry · the full story</span>
-            <textarea data-field="body" value="{{ draft.body }}" onChange="{{ setField }}" rows="6" placeholder="the long version — what happened, what broke, what you'd do differently. renders in the light's full entry." style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:13px 14px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15.5px;line-height:1.65;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+            <textarea data-field="body" value="{{ draft.body }}" onChange="{{ setField }}" rows="6" placeholder="the long version: what happened, what broke, what you'd do differently. renders in the light's full entry." style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:13px 14px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15.5px;line-height:1.65;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
           </label>
           <label style="display:flex;flex-direction:column;gap:6px">
             <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">moral of the story</span>
             <input type="text" data-field="moral" value="{{ draft.moral }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
           </label>
+          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">notes found here</span>
+              <input type="text" value="{{ noteQ }}" onChange="{{ setNoteQ }}" placeholder="search the book..." style="flex:0 1 200px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:999px;padding:7px 13px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:11.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </div>
+            <sc-if value="{{ noteTied }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <sc-for list="{{ noteTied }}" as="na" hint-placeholder-count="2">
+                  <span onClick="{{ na.onToggle }}" title="untie it" style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;padding:6px 12px;border-radius:999px;cursor:pointer;user-select:none;color:#f0d9a8;border:1px solid rgba(240,217,168,.55);background:rgba(240,217,168,.08);transition:border-color .2s" style-hover="border-color:rgba(231,122,112,.7)">✓ {{ na.title }} · ✕</span>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ noteFound }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-wrap:wrap;gap:8px;max-height:112px;overflow-y:auto;padding-right:4px">
+                <sc-for list="{{ noteFound }}" as="na" hint-placeholder-count="3">
+                  <span onClick="{{ na.onToggle }}" style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;padding:6px 12px;border-radius:999px;cursor:pointer;user-select:none;color:#93a0e8;border:1px dashed rgba(147,160,232,.4);background:transparent;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.6)">+ {{ na.title }}</span>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ noteFoundEmpty }}" hint-placeholder-val="{{ false }}">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;font-style:italic">nothing in the book matches. the entry may not be written yet.</span>
+            </sc-if>
+            <sc-if value="{{ noteNudge }}" hint-placeholder-val="{{ false }}">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#e9b96e;font-style:italic">⚑ no note, no full log. even a short page keeps the record honest.</span>
+            </sc-if>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.7">// encouraged, never required. {{ noteHint }}</span>
+          </div>
+          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the facts · heading → fact, up to six</span>
+              <sc-if value="{{ factsCanAdd }}" hint-placeholder-val="{{ true }}">
+                <span onClick="{{ factAdd }}" style="padding:6px 14px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transition:transform .2s" style-hover="transform:scale(1.04)">+ add a fact</span>
+              </sc-if>
+            </div>
+            <sc-for list="{{ factRowsEdit }}" as="fr" hint-placeholder-count="2">
+              <div style="display:grid;grid-template-columns:minmax(100px,170px) 1fr 34px;gap:10px;align-items:center">
+                <input type="text" data-fi="{{ fr.i }}" data-fk="k" value="{{ fr.k }}" onChange="{{ factSet }}" placeholder="ownership" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 11px;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:lowercase;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                <input type="text" data-fi="{{ fr.i }}" data-fk="v" value="{{ fr.v }}" onChange="{{ factSet }}" placeholder="design to operations, solo" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 11px;color:#dde1f0;font-family:'Newsreader',serif;font-size:14.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                <span onClick="{{ fr.onRemove }}" title="strike it from the record" style="cursor:pointer;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#5f6ec4;padding:8px 0;transition:color .2s" style-hover="color:#e77a70">✕</span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ factsEmpty }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// no facts filed. the entry simply renders without the grid.</span></sc-if>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.7">// headings are yours, per light: ownership, scale, audience, fate, whatever this one needs answered first.</span>
+          </div>
+          <div style="border:1.5px dashed rgba(240,217,168,.35);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">the full log · case study, markdown</span>
+              <label style="padding:7px 15px;border:1px solid rgba(150,160,220,.35);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.7)">⇪ hoist a .md file<input type="file" accept=".md,.markdown,.txt" onChange="{{ caseFile }}" style="display:none"></label>
+            </div>
+            <textarea data-field="caseStudy" value="{{ draft.caseStudy }}" onChange="{{ setField }}" rows="10" placeholder="## The starting point&#10;&#10;plain paragraphs · > log asides · - lists · [? facts to fill in ?]&#10;&#10;:::facts&#10;timeline: 6 months&#10;:::&#10;&#10;```mermaid&#10;flowchart TB&#10;  a --> b&#10;```" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:13px 14px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.7">// any light can carry a full log. dialect: ## sections · &gt; from-the-log asides · - lists · [? fact needed ?] · :::facts and :::outcomes blocks · ```mermaid charts. leave empty and the light simply gets no "full log" link.</span>
+            <sc-if value="{{ caseFileNote }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8">{{ caseFileNote }}</span></sc-if>
+          </div>
           <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
             <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the address block</span>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
@@ -884,7 +984,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
               <div style="display:flex;flex-direction:column;gap:6px;flex:1;min-width:230px">
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.1em;color:#f0d9a8">{{ lightCode }}</span>
                 <span style="font-size:14.5px;font-style:italic;color:#a5aed4;line-height:1.5">{{ lightWords }}</span>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// its signature — how a stranger tells this light from the others on the coast.</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// its signature: how a stranger tells this light from the others on the coast.</span>
               </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px">
@@ -915,15 +1015,35 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             </label>
           </div>
           <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the photo · shown with the entry</span>
-            <div style="display:flex;gap:14px;flex-wrap:wrap">
-              <sc-for list="{{ printOptions }}" as="po" hint-placeholder-count="5">
-                <div onClick="{{ po.onPick }}" style="{{ po.style }}">
-                  <div style="{{ po.imgStyle }}"></div>
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#3d4468;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ po.name }}</span>
-                </div>
-              </sc-for>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the pictures · station archive, up to six</span>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <input type="text" value="{{ printQ }}" onChange="{{ setPrintQ }}" placeholder="search prints..." style="flex:0 1 180px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:999px;padding:7px 13px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:11.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                <sc-if value="{{ imgsCanAdd }}" hint-placeholder-val="{{ true }}">
+                <span onClick="{{ imgAdd }}" style="padding:6px 14px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transition:transform .2s" style-hover="transform:scale(1.04)">+ add a picture</span>
+              </sc-if>
+              </div>
             </div>
+            <sc-for list="{{ imgRowsEdit }}" as="ir" hint-placeholder-count="1">
+              <div style="display:grid;grid-template-columns:minmax(120px,200px) 1fr 34px;gap:10px;align-items:start">
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <sc-if value="{{ ir.first }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:#f0d9a8;text-transform:uppercase">⚑ entry photo · shows with the light</span></sc-if>
+                  <input type="text" data-ii="{{ ir.i }}" value="{{ ir.key }}" onChange="{{ imgSetKey }}" placeholder="name-this-picture" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 11px;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">![caption]({{ ir.key }})</span>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;max-height:118px;overflow-y:auto;padding-right:4px">
+                  <sc-for list="{{ ir.prints }}" as="pp" hint-placeholder-count="3">
+                    <div onClick="{{ pp.onPick }}" style="{{ pp.style }}">
+                      <div style="{{ pp.imgStyle }}"></div>
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#8a93c4;max-width:56px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ pp.name }}</span>
+                    </div>
+                  </sc-for>
+                  <sc-if value="{{ ir.noMedia }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;padding-top:10px">// nothing hanging to dry. develop prints in the darkroom first (❏ in the passage).</span></sc-if>
+                </div>
+                <span onClick="{{ ir.onRemove }}" title="strike it from the archive" style="cursor:pointer;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#5f6ec4;padding:8px 0;transition:color .2s" style-hover="color:#e77a70">✕</span>
+              </div>
+            </sc-for>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.7">// prints come from the darkroom: develop there, pick here. the first picture is the entry photo (polaroid and overlay), and any of them can be called in the full log as ![caption](name).</span>
           </div>
         </div>
       </sc-if>
@@ -933,21 +1053,67 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
         <div style="display:flex;flex-direction:column;gap:14px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <label style="display:flex;flex-direction:column;gap:6px">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">hobby</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">keeper (hobby)</span>
               <input type="text" data-field="name" value="{{ draft.name }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#f0f2fc;font-family:'Gloock',serif;font-size:18px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
             </label>
             <label style="display:flex;flex-direction:column;gap:6px">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">dates</span>
-              <input type="text" data-field="dates" value="{{ draft.dates }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">service · "one summer" reads as ancient</span>
+              <input type="text" data-field="service" value="{{ draft.service }}" onChange="{{ setField }}" placeholder="2023 - 2024" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:end">
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">light kept · characteristic</span>
+              <input type="text" data-field="char" value="{{ draft.char }}" onChange="{{ setField }}" placeholder="Fl W 3s" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">standing</span>
+              <span onClick="{{ toggleDraftAlive }}" style="{{ draftAliveStyle }}">{{ draftAliveLabel }}</span>
+            </div>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">disposition · the status pill</span>
+            <input type="text" data-field="disposition" value="{{ draft.disposition }}" onChange="{{ setField }}" placeholder="occasionally haunting" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+          </label>
+          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the marker · how the plot is kept</span>
+            <sc-if value="{{ hobbyDraftAlive }}" hint-placeholder-val="{{ false }}">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4">// the living don't get markers: their lamp stays lit on the plot</span>
+            </sc-if>
+            <sc-if value="{{ markerPickerOn }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:9px;flex-wrap:wrap">
+                <sc-for list="{{ markerChips }}" as="mk" hint-placeholder-count="5">
+                  <span onClick="{{ mk.onPick }}" style="{{ mk.style }}">{{ mk.label }}</span>
+                </sc-for>
+              </div>
+              <label style="display:flex;flex-direction:column;gap:6px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">weathering · {{ wearPct }}</span>
+                <input type="range" min="0" max="1" step="0.05" value="{{ draft.wear }}" onChange="{{ setWear }}" style="width:100%;accent-color:#f0d9a8">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// heavy wear cracks the stone. service dates without a year max this out on their own.</span>
+              </label>
+            </sc-if>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">from the log · the register line</span>
+            <input type="text" data-field="log" value="{{ draft.log }}" onChange="{{ setField }}" placeholder="Kettle warm. Shoes by the door. Sea calm." style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">final entry · quoted on the record</span>
+            <textarea data-field="lastLog" value="{{ draft.lastLog }}" onChange="{{ setField }}" rows="2" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+          </label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">what was found</span>
+              <input type="text" data-field="found" value="{{ draft.found }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-size:14.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">cause of vanishing</span>
+              <input type="text" data-field="cause" value="{{ draft.cause }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-size:14.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
             </label>
           </div>
           <label style="display:flex;flex-direction:column;gap:6px">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">epitaph · shows on the headstone</span>
-            <input type="text" data-field="epitaph" value="{{ draft.epitaph }}" onChange="{{ setField }}" placeholder="† it was a phase" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-          </label>
-          <label style="display:flex;flex-direction:column;gap:6px">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">eulogy</span>
-            <textarea data-field="eulogy" value="{{ draft.eulogy }}" onChange="{{ setField }}" rows="3" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">re-appointment odds</span>
+            <input type="text" data-field="return" value="{{ draft.return }}" onChange="{{ setField }}" placeholder="spring makes promises it won't keep" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-size:14.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
           </label>
         </div>
       </sc-if>
@@ -992,7 +1158,16 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             </div>
             <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// fresh carvings come from the scrimshaw bench</span>
           </div>
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">— signs itself "— j, keeper" on the way out</span>
+          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">kept in</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ noteLights }}" as="nlk" hint-placeholder-count="3">
+                <span onClick="{{ nlk.onToggle }}" style="{{ nlk.style }}" style-hover="border-color:rgba(240,217,168,.6)">{{ nlk.label }}</span>
+              </sc-for>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.7">// tap a light. visitors find the note in its entry.</span>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">- signs itself "- j, keeper" on the way out</span>
         </div>
       </sc-if>
 
@@ -1008,7 +1183,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
               <span onClick="{{ rv.onRestore }}" style="padding:6px 13px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8;cursor:pointer;transition:transform .2s;flex-shrink:0" style-hover="transform:scale(1.04)">roll back ↺</span>
             </div>
           </sc-for>
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">// rolling back loads that printing — status travels with it — file it to keep it.</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">// rolling back loads that printing · status travels with it · file it to keep it.</span>
         </div>
       </sc-if>
 
@@ -1067,7 +1242,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             <div style="font-size:17px;line-height:1.7;color:#b8c0e0;white-space:pre-line">{{ peekBody }}</div>
           </sc-if>
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#93a0e8;margin-top:8px">— j, keeper</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#93a0e8;margin-top:8px">- j, keeper</div>
             <sc-if value="{{ peekHasDoodle }}" hint-placeholder-val="{{ false }}">
               <div style="background:linear-gradient(180deg,#efeadb,#e9e2d0);border-radius:3px;padding:6px 10px;transform:rotate(-2deg);box-shadow:0 4px 10px rgba(0,0,0,.3);display:flex;align-items:center">
                 <sc-if value="{{ peekDoodleDiagram }}" hint-placeholder-val="{{ false }}"><svg width="72" height="44" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="2.2" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg></sc-if>
@@ -1097,20 +1272,22 @@ class Component extends DCLogic {
     user: '', pass: '', loginError: null,
     projects: [
       { title: 'The Great Un-monolithing', cat: 'backend', tags: ['kubernetes','python','rabbitmq'], status: 'published', img: 'unmonolith-diagram.png',
+        notes: ['What re-architecting taught me about not architecting', 'The queue is the product'],
+        images: [{ key: 'first-screenshot', print: 'unmonolith-diagram.png' }],
         stamp: { shape: 'rect', motif: 'lighthouse', ink: '#f0d9a8', cents: '3¢' },
         desc: 'One giant app became many small, well-behaved services. Readers never noticed. That was the point.',
         moral: 'Moral: the best migrations are the boring ones.',
-        to: 'everyone who reads the news without thinking about queues', from: 'justin, from inside the cluster', year: '2024 — ongoing' },
+        to: 'everyone who reads the news without thinking about queues', from: 'justin, from inside the cluster', year: '2024 - ongoing' },
       { title: 'Newsroom plumbing', cat: 'backend', tags: ['rest','mongodb','nginx'], status: 'published', img: 'newsroom-pipes.jpg',
         stamp: { shape: 'circle', motif: 'text', ink: '#93a0e8', text: 'DAILY SINCE 1786' },
         desc: 'A publishing workflow a real paper runs on, every day, deadlines and all.',
         moral: 'Moral: if they never think about you, you did it right.',
-        to: 'the 6pm deadline', from: 'the pipes beneath the newsroom', year: '2016 — ongoing' },
+        to: 'the 6pm deadline', from: 'the pipes beneath the newsroom', year: '2016 - ongoing' },
       { title: '100k good mornings', cat: 'backend', tags: ['php','redis','linux'], status: 'published', img: 'sunrise-newsletter.png',
         stamp: { shape: 'rect', motif: 'sun', ink: '#f0d9a8', cents: '5¢' },
         desc: 'An automated newsletter that beats the sunrise into six figures of inboxes.',
         moral: 'Moral: automation is just kindness to your future self, scheduled.',
-        to: '100,000 people who are not awake yet', from: 'a cron job with ambition', year: '2018 — ongoing' },
+        to: '100,000 people who are not awake yet', from: 'a cron job with ambition', year: '2018 - ongoing' },
       { title: 'Meo Wave Race', cat: 'games', tags: ['unity','c#','blender'], status: 'published', img: 'meo-wave-race-title.png',
         stamp: { shape: 'rect', motif: 'boat', ink: '#93a0e8', cents: '8¢' },
         desc: 'A cat/boat racing game for the CS50 final. The cat is the boat. Ask me anything.',
@@ -1125,15 +1302,33 @@ class Component extends DCLogic {
         stamp: { shape: 'rect', motif: 'moon', ink: '#93a0e8', cents: '1¢' },
         desc: 'Plex, HTPC, and a small fleet of machines that mostly behave.',
         moral: 'Moral: some hobbies are load-bearing.',
-        to: 'the family, who just wanted to watch a movie', from: 'the server closet', year: '2021 — forever' },
+        to: 'the family, who just wanted to watch a movie', from: 'the server closet', year: '2021 - forever' },
     ],
     hobbies: [
-      { name: 'The home lab', dates: '2021 — present', epitaph: '', eulogy: 'One tweak from perfect, forever.', active: true },
-      { name: 'CachyOS tinkering', dates: 'always', epitaph: '', eulogy: 'The hobby that survives every purge, because it is just the day job wearing a hat.', active: true },
-      { name: 'Piano', dates: '2023 — 2024', epitaph: '† got good enough', eulogy: 'Learned enough to be dangerous at family gatherings, then quietly closed the lid.', active: false },
-      { name: 'Music theory', dates: '2023 — 2024', epitaph: '† see piano', eulogy: 'See piano.', active: false },
-      { name: 'Game development', dates: '2020', epitaph: '† shipped one', eulogy: 'Shipped one game. Retired undefeated.', active: false },
-      { name: 'Running', dates: 'one summer', epitaph: '† it was a phase', eulogy: 'It was a phase. The shoes remain, as evidence.', active: false },
+      { name: 'The home lab', service: '2021 - present', char: 'F W', marker: 'stone', wear: 0, disposition: 'still on watch', active: true,
+        log: 'Still on watch. Do not bury. He can hear you.',
+        lastLog: '"All lamps green. One tweak from perfect. Will fix tonight." - every entry, verbatim, since 2021.',
+        found: 'nothing missing. that\u2019s the whole point.', cause: 'not applicable, knock wood', return: 'never left' },
+      { name: 'CachyOS tinkering', service: 'always', char: 'F W', marker: 'stone', wear: 0, disposition: 'still on watch', active: true,
+        log: 'The hobby that survives every purge, because it is just the day job wearing a hat.',
+        lastLog: '"One more systemd unit. For flavor." - recurring entry.',
+        found: 'a desktop that suspiciously just works', cause: 'not applicable', return: 'never left' },
+      { name: 'Piano', service: '2023 - 2024', char: 'Fl W 3s', marker: 'stone', wear: 0.15, disposition: 'occasionally haunting', active: false,
+        log: 'Light found cold. Bench tucked in. Metronome still ticking.',
+        lastLog: '"Got through the piece with both hands tonight. Good enough." - final entry, unsigned.',
+        found: 'one shaky recording the family still requests', cause: 'got good enough, which was the goal', return: 'likely, pending a child\u2019s curiosity' },
+      { name: 'Music theory', service: '2023 - 2024', char: 'Fl W 3s', marker: 'sticks', wear: 0.35, disposition: 'laid to rest', active: false,
+        log: 'Vanished the same night as the piano keeper. The two logs match exactly.',
+        lastLog: '"The circle of fifths is just modular arithmetic wearing a cape." - margin note.',
+        found: 'annotated chord charts, still in a drawer', cause: 'see piano', return: 'rises whenever piano does' },
+      { name: 'Game development', service: '2020', char: 'Iso G 4s', marker: 'stone', wear: 0.85, disposition: 'laid to rest · undefeated', active: false,
+        log: 'Kept one light, brightly, once. Extinguished it himself and signed the log.',
+        lastLog: '"Shipped. The cat is the boat. No further business." - signed with a flourish.',
+        found: 'Meo Wave Race, complete and undefeated', cause: 'retired at the top', return: 'unlikely, the record is perfect' },
+      { name: 'Running', service: 'one summer', char: 'Fl W 8s', marker: 'sticks', wear: 0.65, disposition: 'vanished without trace', active: false,
+        log: 'Missing since one summer. Kettle warm. Shoes by the door. Sea calm.',
+        lastLog: '"5k tomorrow, then every morning after." - only entry.',
+        found: 'the shoes. the shoes remain.', cause: 'no trace was ever found (the couch was not searched)', return: 'spring makes promises it won\u2019t keep' },
     ],
     notes: [
       { date: 'jun 2026', title: 'What re-architecting taught me about not architecting', status: 'published', wx: 'light steady · no incidents', doodle: 'diagram',
@@ -1145,7 +1340,7 @@ class Component extends DCLogic {
       { date: 'feb 2026', title: 'The queue is the product', status: 'published', wx: 'wind NW · queue quiet', doodle: 'queue',
         teaser: 'Notes on message queues after a decade of them quietly running the news.',
         body: 'A decade of publishing systems has convinced me the real product is not the website or the app...' },
-      { date: '—', title: 'The home lab ate my weekend', status: 'draft', wx: '', doodle: null,
+      { date: '-', title: 'The home lab ate my weekend', status: 'draft', wx: '', doodle: null,
         teaser: 'A confession, with uptime charts.',
         body: '' },
     ],
@@ -1155,10 +1350,10 @@ class Component extends DCLogic {
       quipHobbies: 'Flowers welcome. Watering optional.',
       quipNotes: 'Written by a human, edited by deadline.',
       quip404: 'You are the first person to find this exact wrong URL. Probably.',
-      heroKicker: 'HIYA — SENIOR SOFTWARE ENGINEER, PITTSBURGH PA',
+      heroKicker: 'JUSTIN SMITH · SENIOR SOFTWARE ENGINEER, PITTSBURGH PA',
       heroHeadline: 'I help keep the lights on behind the news.',
       heroBody: 'Backend engineering at the Post-Gazette: building, planning, a healthy amount of boxes-and-arrows. Dad the rest of the time. Serial picker-upper of hobbies.',
-      dict: '1. the Argo, but for one. 2. argc, but forever. 3. a sea of water, or of stars. 4. informal — what a method signature becomes if I\u2019m not supervised.',
+      dict: '1. the Argo, but for one. 2. argc, but forever. 3. a sea of water, or of stars. 4. informal · what a method signature becomes if I\u2019m not supervised.',
       bottleProverbs: [
         'A migration nobody notices is a migration done right.',
         'The queue does not care about your deadline. Respect it anyway.',
@@ -1172,7 +1367,7 @@ class Component extends DCLogic {
         'The sea provides. Usually a merge conflict.',
       ],
       lighthouses: [
-        { name: 'Fastnet Rock', pos: '51°23′N 9°36′W', line: 'Ireland’s teardrop — the last light the emigrants saw.' },
+        { name: 'Fastnet Rock', pos: '51°23′N 9°36′W', line: 'Ireland’s teardrop · the last light the emigrants saw.' },
         { name: 'La Jument', pos: '48°25′N 5°08′W', line: 'the keeper in the doorway, wave at his back. look it up.' },
         { name: 'Bell Rock', pos: '56°26′N 2°23′W', line: 'built on a rock that vanishes twice a day.' },
         { name: 'Cape Hatteras', pos: '35°15′N 75°32′W', line: 'the Graveyard of the Atlantic keeps a light on.' },
@@ -1194,7 +1389,7 @@ class Component extends DCLogic {
     suggestions: ['blacksmithing?','sourdough?','birdwatching?','3d printing?','kayaking?','chess?','fermenting things?','ham radio?'],
     newSuggestion: '',
     activity: [
-      { t: 'yesterday', msg: 'lantern hoisted — site rebuilt in 41s, zero complaints from the sea' },
+      { t: 'yesterday', msg: 'lantern hoisted · site rebuilt in 41s, zero complaints from the sea' },
       { t: '2 days ago', msg: 'note "What re-architecting taught me…" published' },
       { t: '4 days ago', msg: 'hobby "Running" moved to the graveyard (again)' },
       { t: 'last week', msg: 'postcard "This website" edited 11 times. it counts.' },
@@ -1204,7 +1399,7 @@ class Component extends DCLogic {
       title: 'Senior Software Engineer, Post-Gazette',
       bio: 'Backend engineer keeping the lights on behind the news. Dad. Serial picker-upper of hobbies.',
       email: 'hello@argsea.com', github: 'github.com/argsea', linkedin: 'linkedin.com/in/argsea',
-      signoff: '— j',
+      signoff: '- j',
     },
     edit: null, confirmDel: null, peek: null, changesSinceDeploy: 3,
     catSay: null, proverbIdx: 0,
@@ -1230,6 +1425,21 @@ class Component extends DCLogic {
     if (m && m.url) return `url("${m.url}") center/cover`;
     return m ? this.gradients[m.tone % 6] : this.gradients[0];
   }
+
+  // every hand-carved svg on the site, and where it hangs
+  svgCatalog = [
+    { id: 'lighthouse-logo', name: 'The lighthouse', page: 'every page', where: 'nav, top left · also the contact band', svg: '<svg width="24" height="28" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>' },
+    { id: 'boat', name: 'The little boat', page: 'hello · projects', where: 'sails the hero wave and drops the mail · also passes the coast offshore', svg: '<svg width="30" height="24" viewBox="0 0 30 24" fill="none"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>' },
+    { id: 'bottle', name: 'Message in a bottle', page: 'hello', where: 'bobs on the wave after the boat drops it', svg: '<svg width="32" height="20" viewBox="0 0 40 24" fill="none"><rect x="6" y="7" width="28" height="11" rx="5.5" fill="rgba(147,160,232,.22)" stroke="#93a0e8" stroke-width="1.3"></rect><rect x="33" y="9.5" width="5" height="6" rx="1.2" fill="#f0d9a8"></rect><path d="M12 10 h14 M12 12.5 h11 M12 15 h13" stroke="#f0d9a8" stroke-width="1" stroke-linecap="round" opacity=".85"></path></svg>' },
+    { id: 'tower-stub', name: 'Tower on the horizon', page: 'projects', where: 'every beacon on the coast · the entry overlay lamp', svg: '<svg width="26" height="34" viewBox="0 0 26 34" fill="none"><path d="M13 3 L17 10 L9 10 Z" fill="rgba(150,160,220,.4)"></path><rect x="10" y="10" width="6" height="15" fill="none" stroke="rgba(150,160,220,.45)" stroke-width="1.3"></rect><path d="M10 14 h6 M10 19 h6" stroke="rgba(150,160,220,.34)" stroke-width="1.1"></path><path d="M5 30 q8 -4 16 0" stroke="rgba(150,160,220,.36)" stroke-width="1.3" fill="none"></path></svg>' },
+    { id: 'paw', name: 'Paw print', page: 'hello · notes', where: 'walks across journal rows the cat has read', svg: '<svg width="13" height="12" viewBox="0 0 15 14" fill="#93a0e8"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>' },
+    { id: 'wave-line', name: 'The wave line', page: 'hello', where: 'the shoreline strip under the hero (repeating pattern)', svg: '<svg xmlns="http://www.w3.org/2000/svg" width="53" height="18"><path d="M0 9 Q 13.25 0, 26.5 9 T 53 9" stroke="rgba(147,160,232,0.5)" stroke-width="1.5" fill="none"/></svg>' },
+    { id: 'boat-wake', name: 'The boat wake', page: 'hello', where: 'ripples trailing the boat (repeating pattern)', svg: '<svg xmlns="http://www.w3.org/2000/svg" width="53" height="18"><path d="M0 9 Q 13.25 0, 26.5 9 T 53 9" stroke="rgba(240,217,168,0.5)" stroke-width="1.5" fill="none"/></svg>' },
+    // journal doodles are not carvings; they live at the marginalia desk
+    { id: 'stamp', name: 'Postage lighthouse', page: 'contact', where: 'the stamp corner of the postcard, postmark rings over it', svg: null, note: 'carved into the postcard itself. bring the whole card to the bench (Contact.dc.html) to re-cut it.' },
+    { id: 'wreck', name: 'The wreck', page: '404', where: 'run aground on the shoals, cat heckling from the placard', svg: null, note: 'salvage rights unresolved. edit it where it lies (404.dc.html).' },
+    { id: 'harbor-cat', name: 'The harbor cat', page: 'everywhere', where: 'postcards, notes, the wreck placard, this shop', svg: null, note: 'the cat sits for no editor. adjustments by appointment (HarborCat.dc.html), approval unlikely.' },
+  ];
 
   addFiles(fileList) {
     const files = Array.from(fileList || []).filter((f) => f.type.startsWith('image/') || /\.(png|jpe?g|gif|svg|webp)$/i.test(f.name));
@@ -1282,15 +1492,15 @@ class Component extends DCLogic {
 
   eggDefs = [
     { id: 'bottle', name: 'Message in a bottle', where: 'homepage · the drifting boat',
-      blurb: 'Poke the little boat sailing across the waves and it drops a corked bottle — a proverb unrolls from it, then drifts off.', status: 'live' },
+      blurb: 'Poke the little boat sailing across the waves and it drops a corked bottle · a proverb unrolls from it, then drifts off.', status: 'live' },
     { id: 'cat', name: 'The harbor cat', where: 'postcards · notes · the 404 wreck',
-      blurb: 'The lighthouse cat, out on its rounds. It perches on postcards and notes when they open — and heckles the shipwreck from the 404 placard.', status: 'live' },
+      blurb: 'The lighthouse cat, out on its rounds. It perches on postcards and notes when they open · and heckles the shipwreck from the 404 placard.', status: 'live' },
     { id: 'lights', name: 'The light list', where: 'the 404 wreck report',
-      blurb: 'Every wreck report lists a last known position — the real coordinates of a real lighthouse. Click them and the light introduces itself.', status: 'live' },
+      blurb: 'Every wreck report lists a last known position · the real coordinates of a real lighthouse. Click them and the light introduces itself.', status: 'live' },
   ];
 
   catLocMeta = [
-    { key: 'postcards', label: 'Postcards', hint: 'contact & homepage — when a card opens' },
+    { key: 'postcards', label: 'Postcards', hint: 'contact & homepage · when a card opens' },
     { key: 'notes', label: 'Notes', hint: 'when a note opens' },
     { key: 'p404', label: 'The wreck', hint: 'heckling the boat on the 404' },
   ];
@@ -1299,7 +1509,7 @@ class Component extends DCLogic {
     const on = !this.state.eggs[id];
     this.setState((st) => ({ eggs: { ...st.eggs, [id]: on } }));
     const def = this.eggDefs.find((e) => e.id === id);
-    this.showToast(on ? ('✧ ' + def.name + ' — loose on the site.') : ('· ' + def.name + ' — stowed away.'));
+    this.showToast(on ? ('✧ ' + def.name + ' · loose on the site.') : ('· ' + def.name + ' · stowed away.'));
   }
 
   catLocToggle(key) {
@@ -1338,7 +1548,7 @@ class Component extends DCLogic {
   ];
 
   margDefaults = [
-    { name: 'the new system — not built', motif: 'diagram', pressed: 'what re-architecting taught me…', updated: 'jun 2026' },
+    { name: 'the new system · not built', motif: 'diagram', pressed: 'what re-architecting taught me…', updated: 'jun 2026' },
     { name: 'a terrible boat', motif: 'boat', pressed: 'cachyos, three months in', updated: '9m ago' },
     { name: 'the product.', motif: 'queue', pressed: 'the queue is the product', updated: 'feb 2026' },
   ];
@@ -1363,7 +1573,7 @@ class Component extends DCLogic {
           transform: `rotate(${rots[i % rots.length]})`, transition: 'transform .2s',
           boxShadow: '0 10px 26px rgba(0,0,0,.35)',
         },
-        metaLine: sk.pressed ? `updated ${sk.updated} · pressed into: ${sk.pressed}` : `updated ${sk.updated} · loose — not pressed yet`,
+        metaLine: sk.pressed ? `updated ${sk.updated} · pressed into: ${sk.pressed}` : `updated ${sk.updated} · loose · not pressed yet`,
         onOpen: () => this.setState({ margOpen: i, margSketches: sketches }),
         delLabel: hot ? 'sure? tear it out.' : 'tear out',
         delStyle: {
@@ -1457,7 +1667,7 @@ class Component extends DCLogic {
       margOpenIsDiagram: !!open && open.motif === 'diagram',
       margOpenIsBoat: !!open && open.motif === 'boat',
       margOpenIsQueue: !!open && open.motif === 'queue',
-      margOpenCaption: open ? (open.motif === 'blank' ? 'a blank page — the nibs are dry' : 'on the desk — ' + open.name) : '',
+      margOpenCaption: open ? (open.motif === 'blank' ? 'a blank page · the nibs are dry' : 'on the desk · ' + open.name) : '',
       margTools,
       margFillWells: mkWells('margFill', s.margFill == null ? 4 : s.margFill),
       margStrokeWells: mkWells('margStroke', s.margStroke == null ? 0 : s.margStroke),
@@ -1489,11 +1699,11 @@ class Component extends DCLogic {
   }
 
   lightWords(ch) {
-    if (ch.kind === 'fixed') return `fixed ${ch.color} — a steady light that never blinks`;
+    if (ch.kind === 'fixed') return `fixed ${ch.color}: a steady light that never blinks`;
     return {
-      flash: `flashing ${ch.color} — dark, then a bright flash every ${ch.period} seconds`,
-      occult: `occulting ${ch.color} — steady, with a brief eclipse every ${ch.period} seconds`,
-      iso: `isophase ${ch.color} — equal parts light and dark, every ${ch.period} seconds`,
+      flash: `flashing ${ch.color}: dark, then a bright flash every ${ch.period} seconds`,
+      occult: `occulting ${ch.color}: steady, with a brief eclipse every ${ch.period} seconds`,
+      iso: `isophase ${ch.color}: equal parts light and dark, every ${ch.period} seconds`,
     }[ch.kind] || ch.color + ' light';
   }
 
@@ -1832,7 +2042,7 @@ class Component extends DCLogic {
           clearInterval(this.deployTimer);
           setTimeout(() => {
             this.setState({ deploying: false, lastDeploy: 'just now', changesSinceDeploy: 0 });
-            this.log('lantern hoisted — site rebuilt, lights on');
+            this.log('lantern hoisted · site rebuilt, lights on');
             this.showToast('✸ hoisted. the lamp is lit.');
           }, 500);
           return { deployPct: 100 };
@@ -1847,11 +2057,11 @@ class Component extends DCLogic {
     let draft;
     if (type === 'project') {
       draft = idx == null
-        ? { title: '', cat: 'backend', tagsText: '', desc: '', body: '', moral: 'Moral: ', to: '', from: '', year: '2026', img: null, stamp: this.randomStamp() }
-        : { ...s.projects[idx], tagsText: s.projects[idx].tags.join(', ') };
+        ? { title: '', cat: 'backend', tagsText: '', desc: '', body: '', moral: 'Moral: ', facts: [], images: [], notes: [], caseStudy: '', to: '', from: '', year: '2026', img: null, stamp: this.randomStamp() }
+        : { ...s.projects[idx], tagsText: s.projects[idx].tags.join(', '), caseStudy: s.projects[idx].caseStudy || '', facts: (s.projects[idx].facts || []).map((f) => ({ ...f })), notes: [...(s.projects[idx].notes || [])], images: (s.projects[idx].images || []).map((k) => (typeof k === 'string' ? { key: k, print: null } : { ...k })) };
     } else if (type === 'hobby') {
       draft = idx == null
-        ? { name: '', dates: '2026 — present', epitaph: '', eulogy: '', active: true }
+        ? { name: '', service: '2026 - present', char: 'Fl W 4s', marker: 'stone', wear: 0, disposition: 'still on watch', log: '', lastLog: '', found: '', cause: '', return: '', active: true }
         : { ...s.hobbies[idx] };
     } else {
       draft = idx == null
@@ -1881,7 +2091,7 @@ class Component extends DCLogic {
       });
       this.log(`light "${draft.title || 'untitled'}" ${idx == null ? 'kindled' : 'trimmed'}`);
       const projStatus = (item.status === 'published') ? 'lit ●' : 'dark ○';
-      this.showToast(idx == null ? '✺ a new light on the list' : restored ? `↺ earlier trimming filed — it's now ${projStatus}` : '✺ light trimmed and filed');
+      this.showToast(idx == null ? '✺ a new light on the list' : restored ? `↺ earlier trimming filed · it's now ${projStatus}` : '✺ light trimmed and filed');
     } else if (type === 'hobby') {
       this.setState((s) => {
         const hobbies = [...s.hobbies];
@@ -1904,7 +2114,7 @@ class Component extends DCLogic {
         return { notes, edit: null };
       });
       this.log(`entry "${draft.title || 'untitled'}" ${idx == null ? 'drafted' : 'edited'}`);
-      this.showToast(restored ? `↺ earlier printing filed — it's now ${item.status === 'published' ? 'inked ●' : 'pencilled ○'}` : '✎ entered in the log book');
+      this.showToast(restored ? `↺ earlier printing filed · it's now ${item.status === 'published' ? 'inked ●' : 'pencilled ○'}` : '✎ entered in the log book');
     }
   }
 
@@ -1920,7 +2130,7 @@ class Component extends DCLogic {
       { id: 'eggs', glyph: '✧', label: "smuggler's cove" },
       { id: 'media', glyph: '❏', label: 'the darkroom' },
       { id: 'doodles', glyph: '✐', label: 'marginalia' },
-      { id: 'figurehead', glyph: '♞', label: 'figurehead shop' },
+      { id: 'figurehead', glyph: '♞', label: 'the carving shop' },
       { id: 'keeper', glyph: '⌂', label: 'the keeper' },
     ];
 
@@ -1956,7 +2166,7 @@ class Component extends DCLogic {
         featStyle: this.featPill(s.featured.includes(p.title)),
         onFeat: () => {
           const feat = s.featured.includes(p.title);
-          if (!feat && s.featured.length >= 3) { this.showToast('the window only fits three — take one down first'); return; }
+          if (!feat && s.featured.length >= 3) { this.showToast('the window only fits three · take one down first'); return; }
           this.setState((st) => ({ featured: feat ? st.featured.filter((t) => t !== p.title) : [...st.featured, p.title] }));
           this.showToast(feat ? '☆ taken out of the window' : '★ set in the front window');
         },
@@ -1994,7 +2204,7 @@ class Component extends DCLogic {
         onToggle: () => {
           this.setState((st) => {
             const hobbies = [...st.hobbies];
-            hobbies[i] = { ...hobbies[i], active: !hobbies[i].active, epitaph: hobbies[i].active ? (hobbies[i].epitaph || '† resting') : '' };
+            hobbies[i] = { ...hobbies[i], active: !hobbies[i].active, disposition: hobbies[i].active ? 'laid to rest' : 'still on watch' };
             return { hobbies };
           });
           this.log(h.active ? `hobby "${h.name}" retired to the graveyard` : `hobby "${h.name}" revived. season ${Math.floor(Math.random() * 4) + 2}.`);
@@ -2023,7 +2233,7 @@ class Component extends DCLogic {
         onToggle: () => {
           this.setState((st) => {
             const notes = [...st.notes];
-            notes[i] = { ...notes[i], status: notes[i].status === 'published' ? 'draft' : 'published', date: notes[i].date === '—' ? 'jul 2026' : notes[i].date };
+            notes[i] = { ...notes[i], status: notes[i].status === 'published' ? 'draft' : 'published', date: notes[i].date === '-' ? 'jul 2026' : notes[i].date };
             return { notes };
           });
           this.markDirty();
@@ -2063,7 +2273,7 @@ class Component extends DCLogic {
         imgStyle: { height: '120px', borderRadius: '2px', background: m.url ? `url("${m.url}") center/cover` : this.gradients[m.tone % 6] },
         delLabel: hot ? 'sure?' : '✕',
         onDel: () => {
-          if (usedBy && s.confirmDel !== key) this.showToast(`⚠ still glued to ${usedBy} card${usedBy > 1 ? 's' : ''} — click again to tear it off`);
+          if (usedBy && s.confirmDel !== key) this.showToast(`⚠ still glued to ${usedBy} card${usedBy > 1 ? 's' : ''} · click again to tear it off`);
           this.askDelete(key, () => {
             this.setState((st) => ({
               media: st.media.filter((_, j) => j !== i),
@@ -2080,7 +2290,7 @@ class Component extends DCLogic {
     const editKickers = { project: 'light · ', hobby: 'headstone · ', note: 'journal entry · ' };
     const noteBlogLine = pubNotes >= 5
       ? `${pubNotes} inked. it's officially a journal now. condolences.`
-      : `${pubNotes} inked. the bar for "journal" is five. ${5 - pubNotes} to go — no rush.`;
+      : `${pubNotes} inked. the bar for "journal" is five. ${5 - pubNotes} to go · no rush.`;
 
     let doodleOptions = [];
     if (e && e.type === 'note') {
@@ -2125,11 +2335,11 @@ class Component extends DCLogic {
       hasRevs = revs.length > 0;
       revRows = revs.map((rv) => ({
         t: rv.t,
-        summary: '\u201C' + (rv.data.title || 'untitled') + '\u201D — ' + ((rv.data.desc || rv.data.teaser || '').slice(0, 70) || 'no description'),
+        summary: '\u201C' + (rv.data.title || 'untitled') + '\u201D · ' + ((rv.data.desc || rv.data.teaser || '').slice(0, 70) || 'no description'),
         onRestore: () => {
           const d = e.type === 'project' ? { ...rv.data, tagsText: (rv.data.tags || []).join(', ') } : { ...rv.data };
           this.setState((st) => ({ edit: { ...st.edit, draft: d, restored: true } }));
-          this.showToast('↺ earlier printing loaded — file it to keep it');
+          this.showToast('↺ earlier printing loaded · file it to keep it');
         },
       }));
     }
@@ -2148,19 +2358,19 @@ class Component extends DCLogic {
         color: sel ? '#f0d9a8' : '#a5aed4',
       });
       lightKindChips = [
-        { id: 'fixed', label: 'fixed — steady' },
+        { id: 'fixed', label: 'fixed · steady' },
         { id: 'flash', label: 'flashing' },
         { id: 'occult', label: 'occulting' },
         { id: 'iso', label: 'isophase' },
       ].map((o) => ({ label: o.label, style: chip(ch.kind === o.id), onClick: () => this.updateLight({ kind: o.id, period: o.id === 'fixed' ? 0 : (ch.period || 5) }) }));
       lightColorChips = [
-        { id: 'white', label: 'white — the mains' },
-        { id: 'red', label: 'red — kept for home' },
-        { id: 'green', label: 'green — the playful ones' },
+        { id: 'white', label: 'white · the mains' },
+        { id: 'red', label: 'red · kept for home' },
+        { id: 'green', label: 'green · the playful ones' },
       ].map((o) => ({ label: o.label, style: chip(ch.color === o.id), onClick: () => this.updateLight({ color: o.id }) }));
       lightHint = {
         fixed: 'a steady beam, never blinking. for the things that must simply always be on.',
-        flash: 'mostly dark, then one bright flash. for the dramatic ones — you notice when it speaks.',
+        flash: 'mostly dark, then one bright flash. for the dramatic ones, you notice when it speaks.',
         occult: 'mostly lit, with a brief eclipse. for the reliable ones with scheduled pauses.',
         iso: 'half light, half dark, evenly. for the ones rebuilt as often as they run.',
       }[ch.kind] || '';
@@ -2214,7 +2424,7 @@ class Component extends DCLogic {
       },
       rollback: () => this.askDelete('rollback', () => {
         this.setState({ lastDeploy: 'just now · rolled back' });
-        this.log('previous lantern re-hoisted — instant rollback, no rebuild');
+        this.log('previous lantern re-hoisted · instant rollback, no rebuild');
         this.showToast('↩ previous lantern re-hoisted. the old lights are back on.');
       }),
       boatStyle: { position: 'absolute', top: '-8px', left: `calc(${Math.min(s.deployPct, 96)}% - 11px)`, transition: 'left .12s linear' },
@@ -2336,6 +2546,7 @@ class Component extends DCLogic {
             boxShadow: '0 10px 24px rgba(0,0,0,.35)', opacity: live ? 1 : 0.62,
           },
           bodyStyle: {
+            position: 'relative',
             display: 'flex', flexDirection: 'column', gap: '10px',
             borderTop: '1px dashed rgba(150,160,220,.22)', paddingTop: '16px',
             opacity: on ? 1 : 0.5, transition: 'opacity .25s',
@@ -2360,9 +2571,60 @@ class Component extends DCLogic {
         const k = ev.target.dataset.key, v = ev.target.value;
         this.setState((st) => ({ copy: { ...st.copy, [k]: v } }));
       },
+      // the carving shop
+      ...((() => {
+        const custom = this.state.figCustom || [];
+        const all = [...this.svgCatalog, ...custom];
+        const selId = this.state.figSel || 'lighthouse-logo';
+        const sel = all.find((x) => x.id === selId) || all[0];
+        const src = this.state.figSrcId === sel.id && this.state.figSrc != null ? this.state.figSrc : (sel.svg || '');
+        const safe = (s) => String(s || '').replace(/<\s*script/gi, '&lt;script');
+        const mkNode = (markup, cap) => React.createElement('span', { style: { display: 'inline-flex', maxWidth: cap ? '40px' : 'none', maxHeight: cap ? '30px' : 'none', overflow: 'hidden' }, dangerouslySetInnerHTML: { __html: safe(markup) } });
+        const groups = [];
+        for (const it of all) {
+          const page = it.page || 'the bench';
+          let g = groups.find((x) => x.page === page);
+          if (!g) { g = { page, items: [] }; groups.push(g); }
+          g.items.push({
+            name: it.name, where: it.where || 'fresh off the bench, unassigned',
+            thumb: it.svg ? mkNode(it.svg, true) : React.createElement('span', { style: { fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: '#5f6ec4' } }, '△'),
+            rowStyle: { display: 'flex', gap: '10px', alignItems: 'center', padding: '7px 8px', borderRadius: '9px', cursor: 'pointer', background: sel.id === it.id ? 'rgba(240,217,168,.08)' : 'transparent', border: sel.id === it.id ? '1px solid rgba(240,217,168,.4)' : '1px solid transparent', transition: 'background .2s' },
+            onOpen: () => this.setState({ figSel: it.id, figSrc: it.svg || '', figSrcId: it.id, figAssign: it.id }),
+          });
+        }
+        return {
+          figGroups: groups,
+          figCountLine: `${this.svgCatalog.length} on the books · ${custom.length} fresh`,
+          figName: sel.name,
+          figSrc: src,
+          figNote: sel.svg ? null : sel.note,
+          figEditable: !!sel.svg || String(sel.id).startsWith('fresh-'),
+          figBenchNode: sel.svg || src ? mkNode(src || sel.svg, false) : React.createElement('span', { style: { fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: '#8a93c4' } }, '· not on this bench ·'),
+          figEdit: (ev) => this.setState({ figSrc: ev.target.value, figSrcId: sel.id }),
+          figFresh: () => {
+            const n = custom.length + 1;
+            const id = 'fresh-' + n;
+            const starter = '<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="12" stroke="#93a0e8" stroke-width="1.5"></circle><path d="M20 8 V3" stroke="#f0d9a8" stroke-width="1.5"></path></svg>';
+            this.setState({ figCustom: [...custom, { id, name: 'fresh carving no. ' + n, page: 'the bench', where: 'unassigned', svg: starter }], figSel: id, figSrc: starter, figSrcId: id, figAssign: 'lighthouse-logo' });
+            this.log('a fresh block on the bench. blade is sharp.');
+          },
+          figAssign: this.state.figAssign || sel.id,
+          figSetAssign: (ev) => this.setState({ figAssign: ev.target.value }),
+          figAssignOptions: this.svgCatalog.map((c) => ({ id: c.id, label: c.name + ' · ' + c.page })),
+          figBolt: () => {
+            const loc = this.svgCatalog.find((c) => c.id === (this.state.figAssign || sel.id));
+            this.showToast(`⚒ "${sel.name}" bolted to ${loc ? loc.name.toLowerCase() : 'its place'}. ships with the next hoist.`);
+            this.log(`carving "${sel.name}" assigned to ${loc ? loc.page : 'the site'} · ${loc ? loc.name : ''}`);
+          },
+        };
+      })()),
       // media
-      mediaTiles,
-      mediaCountLine: `${s.media.length} prints hanging to dry.`,
+      mediaTiles: (this.state.mediaQ || '').trim() ? mediaTiles.filter((t) => String(t.name || '').toLowerCase().includes(this.state.mediaQ.trim().toLowerCase())) : mediaTiles,
+      mediaQ: this.state.mediaQ || '',
+      setMediaQ: (ev) => this.setState({ mediaQ: ev.target.value }),
+      mediaCountLine: (this.state.mediaQ || '').trim()
+        ? `${mediaTiles.filter((t) => String(t.name || '').toLowerCase().includes(this.state.mediaQ.trim().toLowerCase())).length} of ${s.media.length} prints match.`
+        : `${s.media.length} prints hanging to dry.`,
       addMedia: () => { const el = this.mediaInputRef && this.mediaInputRef.current; if (el) el.click(); },
       mediaInputRef: this.mediaInputRef,
       onFilePick: (ev) => { this.addFiles(ev.target.files); ev.target.value = ''; },
@@ -2389,9 +2651,109 @@ class Component extends DCLogic {
       },
       setLightPeriod: (ev) => this.updateLight({ period: parseInt(ev.target.value, 10) }),
       setLightEst: (ev) => this.updateLight({ est: ev.target.value }),
+      markerPickerOn: e && e.type === 'hobby' && !e.draft.active,
+      hobbyDraftAlive: e && e.type === 'hobby' ? !!e.draft.active : false,
+      markerChips: e && e.type === 'hobby' ? ['stone', 'sticks', 'driftwood', 'cairn', 'buoy'].map((m) => ({
+        label: m,
+        onPick: () => this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, marker: m } } })),
+        style: { padding: '8px 16px', borderRadius: '999px', fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', cursor: 'pointer', userSelect: 'none', transition: 'all .2s', color: (e.draft.marker || 'stone') === m ? '#f0d9a8' : '#93a0e8', border: (e.draft.marker || 'stone') === m ? '1.5px dashed rgba(240,217,168,.7)' : '1px solid rgba(150,160,220,.28)', background: (e.draft.marker || 'stone') === m ? 'rgba(240,217,168,.07)' : 'rgba(147,160,232,.06)' },
+      })) : [],
+      setWear: (ev) => { const v = parseFloat(ev.target.value); this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, wear: isNaN(v) ? 0 : v } } })); },
+      wearPct: e && e.type === 'hobby' ? Math.round((parseFloat(e.draft.wear) || 0) * 100) + '%' : '',
+      toggleDraftAlive: () => this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, active: !st.edit.draft.active, disposition: st.edit.draft.active ? 'laid to rest' : 'still on watch' } } })),
+      draftAliveLabel: e && e.type === 'hobby' ? (e.draft.active ? '● still learning' : '❦ at rest') : '',
+      draftAliveStyle: e && e.type === 'hobby' ? { alignSelf: 'flex-start', padding: '11px 18px', borderRadius: '999px', fontFamily: "'IBM Plex Mono', monospace", fontSize: '12.5px', cursor: 'pointer', userSelect: 'none', transition: 'all .2s', color: e.draft.active ? '#f0d9a8' : '#8a93c4', border: e.draft.active ? '1.5px dashed rgba(240,217,168,.7)' : '1px solid rgba(138,147,196,.4)', background: e.draft.active ? 'rgba(240,217,168,.07)' : 'rgba(138,147,196,.07)' } : null,
       editProject: e && e.type === 'project', editHobby: e && e.type === 'hobby', editNote: e && e.type === 'note',
       editKicker: e ? (editKickers[e.type] + (e.idx == null ? 'a fresh one' : 'editing')) : '',
       saveLabel: e && e.idx == null ? 'file it' : 'save changes',
+      imgRowsEdit: ((e && e.draft && e.draft.images) || []).map((row, i) => {
+        const r = typeof row === 'string' ? { key: row, print: null } : row;
+        const tile = (name, img, selected, onPick) => ({
+          name,
+          onPick,
+          style: { display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center', cursor: 'pointer', padding: '6px', borderRadius: '8px', border: selected ? '1.5px solid rgba(240,217,168,.7)' : '1px solid rgba(150,160,220,.2)', background: selected ? 'rgba(240,217,168,.07)' : '#131728', transition: 'border-color .2s' },
+          imgStyle: { width: '52px', height: '38px', borderRadius: '4px', background: img ? this.toneGrad(img) : 'repeating-linear-gradient(45deg,#1a1e33 0 6px,#141830 6px 12px)' },
+        });
+        const setPrint = (print) => this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, images: (st.edit.draft.images || []).map((k, ki) => ki === i ? { ...(typeof k === 'string' ? { key: k } : k), print } : k) } } }));
+        return {
+          i, key: r.key, first: i === 0,
+          noMedia: !s.media.length,
+          prints: (() => {
+            const pq = ((e && e.printQ) || '').trim().toLowerCase();
+            const shown = s.media.filter((m) => !pq || String(m.name).toLowerCase().includes(pq) || m.name === r.print);
+            return [tile('no print', null, !r.print, () => setPrint(null)), ...shown.map((m) => tile(m.name, m.name, r.print === m.name, () => setPrint(m.name)))];
+          })(),
+          onRemove: () => this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, images: (st.edit.draft.images || []).filter((x, xi) => xi !== i) } } })),
+        };
+      }),
+      printQ: (e && e.printQ) || '',
+      setPrintQ: (ev) => this.setState((st) => ({ edit: { ...st.edit, printQ: ev.target.value } })),
+      imgsCanAdd: !!(e && e.draft) && ((e.draft.images || []).length < 6),
+      imgAdd: () => this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, images: [...(st.edit.draft.images || []), { key: '', print: null }] } } })),
+      imgSetKey: (ev) => {
+        const i = +ev.target.dataset.ii, v = ev.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-');
+        this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, images: (st.edit.draft.images || []).map((k, ki) => ki === i ? { ...(typeof k === 'string' ? { key: k } : k), key: v } : k) } } }));
+      },
+      factRowsEdit: ((e && e.draft && e.draft.facts) || []).map((f, i) => ({
+        i, k: f.k, v: f.v,
+        onRemove: () => this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, facts: (st.edit.draft.facts || []).filter((x, xi) => xi !== i) } } })),
+      })),
+      factsCanAdd: !!(e && e.draft) && ((e.draft.facts || []).length < 6),
+      noteLights: (e && e.type === 'note') ? s.projects.map((p, pi) => {
+        const title = (e.draft.title || '').trim();
+        const on = !!title && (p.notes || []).includes(title);
+        return {
+          label: (on ? '✓ ' : '○ ') + p.title,
+          style: { fontFamily: "'IBM Plex Mono', monospace", fontSize: '11.5px', padding: '6px 12px', borderRadius: '999px', cursor: title ? 'pointer' : 'not-allowed', userSelect: 'none', transition: 'border-color .2s',
+            color: on ? '#f0d9a8' : '#93a0e8', opacity: title ? 1 : .5,
+            border: on ? '1px solid rgba(240,217,168,.55)' : '1px dashed rgba(147,160,232,.4)',
+            background: on ? 'rgba(240,217,168,.08)' : 'transparent' },
+          onToggle: () => {
+            if (!title) { this.showToast('⚑ title the entry first; a tie needs a name.'); return; }
+            this.setState((st) => {
+              const projects = [...st.projects];
+              const cur = projects[pi].notes || [];
+              projects[pi] = { ...projects[pi], notes: cur.includes(title) ? cur.filter((t) => t !== title) : [...cur, title] };
+              return { projects };
+            });
+          },
+        };
+      }) : [],
+      noteQ: (e && e.noteQ) || '',
+      setNoteQ: (ev) => this.setState((st) => ({ edit: { ...st.edit, noteQ: ev.target.value } })),
+      ...((() => {
+        if (!(e && e.draft)) return { noteTied: null, noteFound: null, noteFoundEmpty: false, noteHint: '' };
+        const tiedTitles = e.draft.notes || [];
+        const toggle = (title) => () => this.setState((st) => {
+          const cur = st.edit.draft.notes || [];
+          const next = cur.includes(title) ? cur.filter((t) => t !== title) : [...cur, title];
+          return { edit: { ...st.edit, draft: { ...st.edit.draft, notes: next } } };
+        });
+        const tied = tiedTitles.map((t) => ({ title: t, onToggle: toggle(t) }));
+        const q = ((e && e.noteQ) || '').trim().toLowerCase();
+        const pool = s.notes.filter((n) => !tiedTitles.includes(n.title));
+        const found = q ? pool.filter((n) => n.title.toLowerCase().includes(q)).map((n) => ({ title: n.title, onToggle: toggle(n.title) })) : null;
+        const hint = q
+          ? 'tap a match to tuck it in.'
+          : (pool.length ? pool.length + ' entr' + (pool.length === 1 ? 'y' : 'ies') + ' in the book · search to tuck one in.' : 'the whole book is in this light already.');
+        return { noteTied: tied.length ? tied : null, noteFound: found && found.length ? found : null, noteFoundEmpty: !!q && !!found && !found.length, noteHint: hint };
+      })()),
+      noteNudge: !!(e && e.draft) && !((e.draft.notes || []).length) && !String(e.draft.caseStudy || '').trim(),
+      factsEmpty: !!(e && e.draft) && !((e.draft.facts || []).length),
+      factAdd: () => this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, facts: [...(st.edit.draft.facts || []), { k: '', v: '' }] } } })),
+      factSet: (ev) => {
+        const i = +ev.target.dataset.fi, key = ev.target.dataset.fk, v = ev.target.value;
+        this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, facts: (st.edit.draft.facts || []).map((f, fi) => fi === i ? { ...f, [key]: v } : f) } } }));
+      },
+      caseFile: (ev) => {
+        const file = ev.target.files && ev.target.files[0];
+        if (!file) return;
+        const rd = new FileReader();
+        rd.onload = () => this.setState((st) => st.edit ? ({ edit: { ...st.edit, draft: { ...st.edit.draft, caseStudy: String(rd.result || '') }, caseNote: '⚑ ' + file.name + ' hoisted aboard' } }) : null);
+        rd.readAsText(file);
+        ev.target.value = '';
+      },
+      caseFileNote: (e && e.caseNote) || null,
       setField: (ev) => {
         const f = ev.target.dataset.field, v = ev.target.value;
         this.setState((st) => ({ edit: { ...st.edit, draft: { ...st.edit.draft, [f]: v } } }));
@@ -2408,8 +2770,8 @@ class Component extends DCLogic {
       peekTags: (s.peek && s.peek.type === 'project' && s.projects[s.peek.idx].tags.join('  ·  ')) || '',
       peekStatusLine: s.peek
         ? ((s.peek.type === 'project' ? s.projects[s.peek.idx] : s.notes[s.peek.idx]).status === 'published'
-            ? 'published — this is live'
-            : 'draft — only you can see this')
+            ? 'published · this is live'
+            : 'draft · only you can see this')
         : '',
       peekWx: (s.peek && s.peek.type === 'note' && s.notes[s.peek.idx].wx) || '',
       peekHasDoodle: !!(s.peek && s.peek.type === 'note' && s.notes[s.peek.idx].doodle),
