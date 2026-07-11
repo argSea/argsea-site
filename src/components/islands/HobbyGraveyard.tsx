@@ -218,7 +218,7 @@ function Marker({ hobby, index, hovered, flowerCount }: { hobby: Hobby; index: n
 	} else if (hobby.marker === 'buoy') {
 		body = <BuoyMarker plot={plotLabel(hobby.order)} />;
 	} else {
-		body = <StoneMarker hobby={hobby} index={index} wear={w} />;
+		body = <StoneMarker hobby={hobby} index={index} wear={w} lit={hovered} />;
 	}
 
 	return (
@@ -229,9 +229,8 @@ function Marker({ hobby, index, hovered, flowerCount }: { hobby: Hobby; index: n
 	);
 }
 
-function StoneMarker({ hobby, index, wear }: { hobby: Hobby; index: number; wear: number }) {
+function StoneMarker({ hobby, index, wear, lit }: { hobby: Hobby; index: number; wear: number; lit: boolean }) {
 	const alive = hobby.kind === 'alive';
-	const lit = false; // hover glow is handled by the wrapper's filter for stone too
 	const radii = ['38px 36px 5px 4px', '12px 15px 4px 5px', '28px 33px 5px 4px', '33px 38px 4px 5px'];
 	const hasCrack = wear >= 0.8;
 
