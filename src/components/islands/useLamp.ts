@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import type { Light } from '../../lib/api';
-import { ignite } from '../../lib/lightChar';
+import { ENGINE_ANIMATION_ID, ignite } from '../../lib/lightChar';
 
 /**
  * Wires one element to the characteristic engine. Deps are the light's
@@ -24,7 +24,11 @@ export function useLamp(light: Light, peak: number, floor = 0, held = false): Re
 			return;
 		}
 		if (held) {
-			el.current.getAnimations().forEach((animation) => animation.cancel());
+			// Same targeted cancel as ignite(): only the engine's own animation,
+			// never a CSS one (e.g. haloBreath) sharing the element.
+			el.current.getAnimations()
+				.filter((animation) => animation.id === ENGINE_ANIMATION_ID)
+				.forEach((animation) => animation.cancel());
 			el.current.style.opacity = String(peak);
 			return;
 		}

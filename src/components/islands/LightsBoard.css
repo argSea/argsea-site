@@ -1,5 +1,14 @@
 /* The lights: filter pills, the night coast, and the register below it. */
 
+/* This board's own halo-breathe keyframe (Projects.dc.html/ProjectOverlay.dc.html:
+   .55/.85), distinct from global.css's haloBreath (.5/.8), which is Hello's
+   own tuning for the coast-in-miniature/flagship lamps. Same ruling-5 idea,
+   different surface, different numbers: never share one keyframe across both. */
+@keyframes boardHaloBreath {
+	0%, 100% { opacity: .55; }
+	50%      { opacity: .85; }
+}
+
 .filter-row {
 	display: flex;
 	gap: 9px;
@@ -344,10 +353,10 @@
 	transition: width .25s ease, height .25s ease;
 }
 
-/* Ruling 5: a fixed, burning light breathes its halo (haloBreath, global.css)
+/* Ruling 5: a fixed, burning light breathes its halo (boardHaloBreath, above)
    instead of sitting fully static; the core stays steady. */
 .beacon__halo--breathe {
-	animation: haloBreath 5s ease-in-out infinite;
+	animation: boardHaloBreath 5s ease-in-out infinite;
 }
 
 .beacon__core {
@@ -602,7 +611,7 @@
 /* Ruling 5: a fixed, burning light breathes its halo instead of sitting
    fully static; the core stays steady. */
 .register__halo--breathe {
-	animation: haloBreath 5s ease-in-out infinite;
+	animation: boardHaloBreath 5s ease-in-out infinite;
 }
 
 .register__core {
