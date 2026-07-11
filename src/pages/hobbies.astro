@@ -1,55 +1,51 @@
 ---
-// Hobbies: logbook entries rendered statically from data (active entries get
-// the gold treatment, the rest are headstones); the only island is the
-// cycling "next: ???" chip.
+// The hobby graveyard: static header, then the HobbyGraveyard island owns
+// the register rows, the manila record modal, the fireflies, the cat's paw
+// rounds, and leave-a-flower (localStorage). Data stays on getHobbies()/
+// getSuggestions() with the expanded Hobby shape; the raw characteristics
+// ("Fl W 3s" and friends) stay per the standing exemption in the identity doc.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import NextHobbyChip from '../components/islands/NextHobbyChip';
-import { getHobbies, getSuggestions } from '../lib/api';
+import HobbyGraveyard from '../components/islands/HobbyGraveyard';
+import { getHobbies, getSuggestions, getSiteCopy, getFigurehead } from '../lib/api';
 
 const hobbies = await getHobbies();
 const suggestions = await getSuggestions();
-
-// Alternating resting tilts, straightened on hover
-const tilts = [-0.3, 0.3, -0.25, 0.2, -0.2, 0.25];
+const copy = await getSiteCopy();
+const catDesigns = await getFigurehead();
 ---
 <BaseLayout title="The hobby graveyard · argsea.com" active="hobbies" quipKey="quipHobbies">
 	<section class="head">
-		<h1 class="head__title fade-up fade-up--1">The hobby graveyard</h1>
-		<p class="head__intro fade-up fade-up--2">I pick things up, learn them until they stop being mysterious, and wander off. Every hobby gets a headstone and a short eulogy. Nothing here is dead, just resting until the next season of me.</p>
+		<span class="head__kicker section-label fade-up fade-up--1">Hobbies · past and present</span>
+		<h1 class="head__title fade-up fade-up--2">The hobby graveyard</h1>
+		<p class="head__intro fade-up fade-up--3">Up the hill from the tower. Every hobby kept a small light here once; the station buries its keepers properly.</p>
+		<p class="head__subintro fade-up fade-up--4">In memory of the keepers of Flannan Isle, who actually vanished. Everyone below just wandered off.</p>
 	</section>
 
-	<section class="entries">
-		{hobbies.map((hobby, index) => (
-			<div
-				class:list={['entry', hobby.active ? 'entry--active' : 'entry--resting']}
-				style={`--tilt:${tilts[index % tilts.length]}deg`}
-			>
-				<div class="entry__side">
-					<span class:list={['entry__status', { 'entry__status--gold': hobby.active }]}>
-						{hobby.active ? '● currently learning' : hobby.epitaph}
-					</span>
-					<span class="entry__dates">{hobby.dates}</span>
-				</div>
-				<div class="entry__main">
-					<span class="entry__name">{hobby.name}</span>
-					<span class="entry__eulogy">{hobby.eulogy}</span>
-				</div>
-			</div>
-		))}
-
-		<div class="entries__foot">
-			<span class="mono-comment">// the graveyard only grows. that's fine.</span>
-			<NextHobbyChip client:load values={suggestions.map((s) => s.value)} />
-		</div>
-	</section>
+	<HobbyGraveyard
+		client:load
+		hobbies={hobbies}
+		suggestions={suggestions.map((s) => s.value)}
+		catEnabled={copy.eggs.cat}
+		catPages={copy.catPages}
+		catSpots={copy.catSpots}
+		catDesigns={catDesigns}
+	/>
 </BaseLayout>
 
 <style>
 	.head {
-		padding: clamp(40px, 7vw, 64px) var(--gutter) 24px;
+		padding: clamp(40px, 7vw, 64px) var(--gutter) 22px;
 		display: flex;
 		flex-direction: column;
-		gap: 18px;
+		align-items: center;
+		text-align: center;
+		gap: 10px;
+	}
+
+	.head__kicker {
+		margin-bottom: 8px;
+		font-size: 12px;
+		letter-spacing: .18em;
 	}
 
 	.head__title {
@@ -68,88 +64,12 @@ const tilts = [-0.3, 0.3, -0.25, 0.2, -0.2, 0.25];
 		line-height: 1.6;
 	}
 
-	.entries {
-		padding: 16px var(--gutter) clamp(36px, 6vw, 56px);
-		display: flex;
-		flex-direction: column;
-		gap: 18px;
-	}
-
-	.entry {
-		display: flex;
-		gap: 24px;
-		flex-wrap: wrap;
-		padding: 26px 28px;
-		border-radius: 12px;
-		transform: rotate(var(--tilt));
-		transition: transform .25s;
-	}
-
-	.entry:hover {
-		transform: rotate(0deg);
-	}
-
-	.entry--active {
-		background: rgba(240, 217, 168, .06);
-		border: 1.5px dashed rgba(240, 217, 168, .4);
-	}
-
-	.entry--resting {
-		background: var(--card-alt);
-		border: 1px solid rgba(150, 160, 220, .18);
-	}
-
-	.entry__side {
-		flex: none;
-		width: 190px;
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-	}
-
-	.entry__status {
-		font-family: var(--font-mono);
-		font-size: 11.5px;
-		letter-spacing: .12em;
-		text-transform: uppercase;
-		color: var(--periwinkle);
-	}
-
-	.entry__status--gold {
-		color: var(--gold);
-	}
-
-	.entry__dates {
-		font-family: var(--font-mono);
-		font-size: 12.5px;
-		color: var(--periwinkle-deep);
-	}
-
-	.entry__main {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-		min-width: 230px;
-		flex: 1;
-	}
-
-	.entry__name {
-		font-family: var(--font-display);
-		font-size: 24px;
-		color: var(--text-head);
-	}
-
-	.entry__eulogy {
-		font-size: 16px;
-		line-height: 1.6;
-		color: var(--text-body);
-	}
-
-	.entries__foot {
-		display: flex;
-		align-items: center;
-		gap: 16px;
-		flex-wrap: wrap;
-		margin-top: 6px;
+	.head__subintro {
+		margin: 0;
+		font-size: 14px;
+		font-style: italic;
+		color: var(--text-dim);
+		max-width: 540px;
+		line-height: 1.55;
 	}
 </style>
