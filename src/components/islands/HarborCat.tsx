@@ -32,9 +32,14 @@ const QUIPS: Record<CatContext, string[]> = {
 interface Props {
 	pose:        CatPose;
 	context:     CatContext;
-	bubbleSide?: 'left' | 'right';         // which way the quip opens; hosts near an edge open it inward
+	bubbleSide?: 'left' | 'right';         // forces which way the quip opens; absent → measured fresh on each poke
+	quips?:      string[];                 // a custom pool that fully replaces the context's default quips
 	designs?:    FigureheadDesign[];       // published figurehead designs; the pose's design replaces its built-in SVG
 }
+
+// A bubble opening within this many px of the right edge would run off
+// screen; poke() flips it left instead.
+const EDGE_THRESHOLD = 220;
 
 // The animation transform-origin a shape carries, as an inline style; it wins
 // over the pose classes' CSS origins, so a design can move the pivot.
@@ -84,16 +89,32 @@ function designShapes(shapes: FigureheadShape[]) {
 	});
 }
 
-export default function HarborCat({ pose, context, bubbleSide = 'right', designs }: Props) {
+export default function HarborCat({ pose, context, bubbleSide, quips, designs }: Props) {
 	const [say, setSay] = useState<string | null>(null);
+	// Before the first poke there's no bubble to see, so this only matters as
+	// the fallback renderVals() would also fall to: whatever bubbleSide asks
+	// for, or 'right'. The real answer is measured fresh on each poke below.
+	const [side, setSide] = useState<'left' | 'right'>(bubbleSide === 'left' ? 'left' : 'right');
 	const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+	const rootRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => () => clearTimeout(timer.current), []);
 
 	const poke = () => {
 		clearTimeout(timer.current);
-		const set = QUIPS[context] ?? QUIPS.header;
+		const set = quips && quips.length > 0 ? quips : (QUIPS[context] ?? QUIPS.header);
 		const pool = set.filter((quip) => quip !== say);
+
+		// bubbleSide, when it names a real side, forces it and skips measuring
+		// (the director already measured the anchor for a static perch); an
+		// overlay-mounted cat gets no such prop, so it measures its own spot.
+		let nextSide = bubbleSide;
+		if (nextSide !== 'left' && nextSide !== 'right') {
+			const rect = rootRef.current?.getBoundingClientRect();
+			nextSide = rect && (window.innerWidth - rect.right) < EDGE_THRESHOLD ? 'left' : 'right';
+		}
+
+		setSide(nextSide);
 		setSay(pool[Math.floor(Math.random() * pool.length)]);
 		timer.current = setTimeout(() => setSay(null), 2600);
 	};
@@ -110,7 +131,7 @@ export default function HarborCat({ pose, context, bubbleSide = 'right', designs
 	const design = designs?.find((candidate) => candidate.pose === pose && candidate.shapes.length > 0) ?? null;
 
 	return (
-		<div className={`harbor-cat harbor-cat--${pose} harbor-cat--${context}${bubbleSide === 'left' ? ' harbor-cat--bubble-left' : ''}`}>
+		<div ref={rootRef} className={`harbor-cat harbor-cat--${pose} harbor-cat--${context}${side === 'left' ? ' harbor-cat--bubble-left' : ''}`}>
 			{/* keyed by quip so a re-poke restarts the pop-in */}
 			{say && <div key={say} className="harbor-cat__bubble">{say}</div>}
 			{design ? (
