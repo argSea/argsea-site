@@ -107,7 +107,7 @@ function FlagshipCard({ project, notes, onOpen }: { project: Project; notes: Not
 						<span className="home-lights__flagship-pill">flagship</span>
 					</div>
 
-					<div className="home-lights__flagship-title">{project.title}</div>
+					<div className="home-lights__title home-lights__flagship-title">{project.title}</div>
 					<div className="home-lights__flagship-desc">{project.shortDesc}</div>
 
 					{facts.length > 0 && (

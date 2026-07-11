@@ -8,8 +8,8 @@ import { test, expect } from '@playwright/test';
 
 test('the coast lights one beacon per published project', async ({ page }) => {
 	await page.goto('/projects');
-	await expect(page.locator('.coast__pano .beacon')).toHaveCount(8);
-	await expect(page.locator('.register .register__row')).toHaveCount(8);
+	await expect(page.locator('.coast__pano .beacon')).toHaveCount(9);
+	await expect(page.locator('.register .register__row')).toHaveCount(9);
 });
 
 test('filtering narrows the register and dims the rest of the coast', async ({ page }) => {
@@ -18,18 +18,18 @@ test('filtering narrows the register and dims the rest of the coast', async ({ p
 	await page.locator('.filter-row .chip', { hasText: 'games' }).click();
 
 	// every row stays mounted; only what matches stays expanded
-	await expect(page.locator('.register .register__row')).toHaveCount(8);
+	await expect(page.locator('.register .register__row')).toHaveCount(9);
 	const rows = page.locator('.register .register__row:not(.register__row--collapsed)');
 	await expect(rows).toHaveCount(1);
 	await expect(rows.locator('.register__name')).toHaveText('Meo Wave Race');
 
-	// the coast never reflows: all eight beacons stay put, matching or not.
+	// the coast never reflows: all nine beacons stay put, matching or not.
 	// The opacity fade is a CSS transition, so poll rather than read it once
 	await expect(async () => {
 		const dimmed = await page.locator('.coast__pano .beacon').evaluateAll(
 			(elements) => elements.filter((element) => Number(getComputedStyle(element).opacity) < 0.5).length,
 		);
-		expect(dimmed).toBe(7);
+		expect(dimmed).toBe(8);
 	}).toPass();
 });
 

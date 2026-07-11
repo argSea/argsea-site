@@ -131,7 +131,11 @@
 	background: rgba(240, 217, 168, .08);
 }
 
-.home-lights__flagship-title {
+/* Compound selector, not just .home-lights__flagship-title: the flagship
+   title also carries the shared .home-lights__title class (so a single
+   locator can list all three card titles in DOM order), and this needs to
+   outrank that shared rule's own font-size regardless of source order. */
+.home-lights__title.home-lights__flagship-title {
 	font-family: var(--font-display);
 	font-size: clamp(25px, 4vw, 32px);
 	color: var(--text-strong);

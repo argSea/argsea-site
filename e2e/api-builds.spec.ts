@@ -6,13 +6,15 @@ import { test, expect } from '@playwright/test';
 const FEATURED_BUILD = 'http://127.0.0.1:4822';
 const FALLBACK_BUILD = 'http://127.0.0.1:4823';
 
-test('the mantel follows the featured flag, not list position', async ({ page }) => {
+test('the two small cards follow the featured flag, not list position', async ({ page }) => {
 	await page.goto(`${FEATURED_BUILD}/`);
+	// the flagship (order 1) always leads; the mock's featured flag (order
+	// 4-6) picks the other two, capped at two, never by title matching
 	await expect(page.locator('.home-lights .home-lights__title'))
-		.toHaveText(['Meo Wave Race', 'This website', 'The home lab']);
+		.toHaveText(['The Great Un-monolithing', 'Meo Wave Race', 'This website']);
 });
 
-test('with nothing featured the mantel falls back to the first three by order', async ({ page }) => {
+test('with nothing else featured the two small cards fall back to the next two by order', async ({ page }) => {
 	await page.goto(`${FALLBACK_BUILD}/`);
 	await expect(page.locator('.home-lights .home-lights__title'))
 		.toHaveText(['The Great Un-monolithing', 'Newsroom plumbing', '100k good mornings']);
