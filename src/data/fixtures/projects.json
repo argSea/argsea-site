@@ -82,7 +82,7 @@
       "extinguished": "",
       "letter": ""
     },
-    "images": ["station-photo"],
+    "images": ["station-photo", "station-photo-archive"],
     "firstLit": "2016",
     "order": 2,
     "wallPos": {

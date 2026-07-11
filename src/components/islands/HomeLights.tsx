@@ -5,7 +5,7 @@
 // `featured` without being the `flagship`). Falls back to the next two
 // projects by order when nothing else is featured, so the section never
 // shows just the flagship alone. Clicking any card opens the same Light List
-// entry the coast uses; hovering one holds its glow-frame blink steady bright.
+// entry the coast uses.
 import { useState } from 'react';
 import type { FigureheadDesign, Light, Note, Project } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, registryNo } from '../../lib/lightChar';
@@ -46,7 +46,7 @@ export default function HomeLights({ flagship, featured, notes, signoff, catEnab
 	const all = [flagship, ...featured].filter((project): project is Project => project !== null);
 	const open = openId === null ? null : all.find((project) => project.id === openId) ?? null;
 
-	const notesFor = (project: Project) => notes.filter((note) => project.noteIds.includes(note.id));
+	const notesFor = (project: Project) => notes.filter((note) => (project.noteIds ?? []).includes(note.id));
 
 	return (
 		<>
@@ -69,7 +69,7 @@ export default function HomeLights({ flagship, featured, notes, signoff, catEnab
 				)}
 			</div>
 
-			{open && <LightEntryOverlay project={open} notes={notes} signoff={signoff} catHere={catHere} catDesigns={catDesigns} onClose={close} />}
+			{open && <LightEntryOverlay project={open} notes={notes} signoff={signoff} catHere={catHere} catDesigns={catDesigns} coastLink onClose={close} />}
 		</>
 	);
 }
@@ -87,8 +87,9 @@ function FlagshipCard({ project, notes, onOpen }: { project: Project; notes: Not
 	// animation, same as the design's own coreAnim() does for those cases.
 	const dotRef = useLamp(light, dark ? 0.2 : 0.85);
 
-	// Render capped at 4 (2x2), even though the data model holds up to 6.
-	const facts = project.facts.slice(0, 4);
+	// Render capped at 4 (2x2), even though the data model holds up to 6;
+	// facts arrives null from the live API for a pre-contract document.
+	const facts = (project.facts ?? []).slice(0, 4);
 	const photo = project.images && project.images.length > 0 ? project.images[0] : project.image;
 
 	return (

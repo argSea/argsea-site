@@ -42,7 +42,7 @@ export default function JournalStripDirector({ notes, doodles, projects, signoff
 	const close = () => setOpenId(null);
 	const open = openId === null ? null : notes.find((note) => note.id === openId) ?? null;
 	const openDoodle = open ? doodles.find((doodle) => doodle.id === open.doodleId) ?? null : null;
-	const foundIn = open ? projects.filter((project) => project.noteIds.includes(open.id)) : [];
+	const foundIn = open ? projects.filter((project) => (project.noteIds ?? []).includes(open.id)) : [];
 
 	if (!open) {
 		return null;

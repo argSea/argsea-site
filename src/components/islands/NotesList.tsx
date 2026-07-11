@@ -36,7 +36,7 @@ export default function NotesList({ notes, doodles, projects, signoff, catEnable
 
 	const open = openId === null ? null : notes.find((note) => note.id === openId) ?? null;
 	const openDoodle = open ? doodleFor(open.doodleId) : null;
-	const foundIn = open ? projects.filter((project) => project.noteIds.includes(open.id)) : [];
+	const foundIn = open ? projects.filter((project) => (project.noteIds ?? []).includes(open.id)) : [];
 
 	return (
 		<>

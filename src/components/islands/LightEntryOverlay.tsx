@@ -6,8 +6,8 @@
 // spot (the caller decides and passes catHere).
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import type { FigureheadDesign, Light, Note, Project } from '../../lib/api';
-import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor, registryNo, timeline } from '../../lib/lightChar';
+import type { FigureheadDesign, Note, Project } from '../../lib/api';
+import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { mediaUrl } from '../../lib/media';
 import { useLamp } from './useLamp';
 import { useEscapeKey } from './useEscapeKey';
@@ -19,6 +19,10 @@ import './LightEntryOverlay.css';
 // lands exactly when the animation finishes, not before or after it.
 const CLOSE_MS = 220;
 
+// The decorative thumb strip's per-index rotation (ProjectOverlay.dc.html's
+// own `rots`), cycling for a gallery beyond five thumbs.
+const THUMB_ROTATIONS = ['-2deg', '1.5deg', '-1deg', '2deg', '-1.6deg'];
+
 function reducedMotion(): boolean {
 	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
@@ -29,10 +33,11 @@ interface Props {
 	notes?:      Note[]; // the full journal, so noteIds can resolve to real titles; [] if the caller has none loaded
 	catHere?:    boolean;
 	catDesigns?: FigureheadDesign[];
+	coastLink?:  boolean; // "the whole coast →": the home mount only (Hello.dc.html)
 	onClose:     () => void;
 }
 
-export default function LightEntryOverlay({ project, signoff, notes = [], catHere = false, catDesigns, onClose }: Props) {
+export default function LightEntryOverlay({ project, signoff, notes = [], catHere = false, catDesigns, coastLink = false, onClose }: Props) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
@@ -41,7 +46,6 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 	const coreRef = useLamp(light, dark ? 0.18 : 0.9);
 
 	const closeRef = useRef<HTMLButtonElement>(null);
-	const [photoIndex, setPhotoIndex] = useState(0);
 
 	// The overlay animates itself shut before telling the parent to unmount
 	// it: closing guards against a second trigger mid-animation, and reduced
@@ -72,8 +76,10 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 		return () => { document.body.style.overflow = previousOverflow; };
 	}, []);
 
-	// Up to 6 prints total: the main polaroid plus up to 5 thumbs; a project
-	// with fewer photos than that just shows fewer, never a placeholder.
+	// Up to 6 prints total: the main polaroid plus up to 5 decorative thumbs;
+	// a project with fewer photos than that just shows fewer, never a
+	// placeholder. The main print always leads (no click-to-swap: the thumb
+	// strip is decorative, per the mock's rotated-prints treatment).
 	const gallery = (project.images && project.images.length
 		? project.images
 		: project.image ? [project.image] : []
@@ -81,9 +87,12 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 	const thumbs = gallery.slice(1);
 
 	// Ties resolve by stable note id (ruling 6: sessions/repo/2026-07-11-bank-
-	// portfolio-evolution-mocks.md), never title matching.
-	const tiedNotes = notes.filter((note) => project.noteIds.includes(note.id));
+	// portfolio-evolution-mocks.md), never title matching. noteIds arrives
+	// null from the live API for a pre-contract document.
+	const noteIds = project.noteIds ?? [];
+	const tiedNotes = notes.filter((note) => noteIds.includes(note.id));
 	const showNudge = tiedNotes.length === 0 && !project.caseStudy;
+	const facts = project.facts ?? [];
 
 	// Portaled to document.body so the backdrop sits in the root stacking
 	// context, same as HarborCatDirector's cat-mount, instead of being
@@ -94,7 +103,7 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 				{catHere && <div className="cat-mount cat-mount--light-entry"><HarborCat pose="perched" context="postcard" designs={catDesigns} /></div>}
 				<div className="overlay-card light-entry">
 					<div className="overlay-head">
-						<span className="overlay-kicker">Light List · argsea district · No. {registryNo(project.order)}</span>
+						<span className="overlay-kicker">The Light List · No. {registryNo(project.order)}</span>
 						<button ref={closeRef} className="pill-close" onClick={requestClose}>close ✕</button>
 					</div>
 
@@ -118,30 +127,14 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 							<div className="light-entry__intro">
 								<span className="light-entry__title">{project.title}</span>
 								<div className="light-entry__status-row">
+									<span className="light-entry__meta-line">
+										<span className="light-entry__code">{codeFor(light)}</span> · est. <span className="light-entry__meta-value">{project.firstLit}</span> · district argsea
+									</span>
 									<span className={`status-pill ${dark ? 'status-pill--dark' : 'status-pill--lit'}`}>{dark ? `dark · ${light.extinguished}` : 'lit'}</span>
-									<span className="light-entry__code">{codeFor(light)}</span>
 								</div>
 								<span className="light-entry__decoded">{decodeFor(light)}</span>
-								<TimingDiagram light={light} glow={glow} />
 							</div>
 						</div>
-
-						<div className="light-entry__meta">
-							<span>established · <span className="light-entry__meta-value">{project.firstLit}</span></span>
-							<span>district · <span className="light-entry__meta-value">argsea</span></span>
-							<span>keeper · <span className="light-entry__meta-value">j. smith</span></span>
-						</div>
-
-						{project.facts.length > 0 && (
-							<div className="light-entry__facts">
-								{project.facts.map((fact) => (
-									<div key={fact.heading} className="light-entry__facts-row">
-										<span className="light-entry__facts-label">{fact.heading}</span>
-										<span className="light-entry__facts-value">{fact.fact}</span>
-									</div>
-								))}
-							</div>
-						)}
 
 						{tiedNotes.length > 0 && (
 							<div className="light-entry__notes">
@@ -156,81 +149,60 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 
 						{showNudge && <div className="light-entry__nudge">no notes here yet. the keeper has been meaning to.</div>}
 
+						{facts.length > 0 && (
+							<div className="light-entry__facts">
+								{facts.map((fact) => (
+									<div key={fact.heading} className="light-entry__facts-row">
+										<span className="light-entry__facts-label">{fact.heading}</span>
+										<span className="light-entry__facts-value">{fact.fact}</span>
+									</div>
+								))}
+							</div>
+						)}
+
 						<div className="light-entry__cols">
 							<div className="light-entry__left">
 								{/* body is sanitized HTML from the API; rendered as-is by contract */}
 								<div className="light-entry__text" dangerouslySetInnerHTML={{ __html: project.body }} />
+
+								{(project.caseStudy || coastLink) && (
+									<div className="light-entry__links">
+										{project.caseStudy && <a href={`/projects/${project.slug}`} className="light-entry__caselink-link">read the full log →</a>}
+										{coastLink && <a href="/projects" className="light-entry__coastlink-link">the whole coast →</a>}
+									</div>
+								)}
 							</div>
 
-							{gallery.length > 0 && (
-								<div className="light-entry__right">
-									<div className="photo-print">
-										<img src={mediaUrl(gallery[photoIndex])} alt={project.title} />
-									</div>
-									<span className="light-entry__photo-caption">from the station archive</span>
-									{thumbs.length > 0 && (
-										<div className="light-entry__thumbs">
-											{thumbs.map((name, thumbIndex) => {
-												const index = thumbIndex + 1;
-												return (
-													<button
-														key={name}
-														className={`light-entry__thumb${index === photoIndex ? ' light-entry__thumb--active' : ''}`}
-														onClick={() => setPhotoIndex(index)}
-													>
-														<img src={mediaUrl(name)} alt="" />
-													</button>
-												);
-											})}
+							<div className="light-entry__right">
+								{gallery.length > 0 && (
+									<>
+										<div className="photo-print">
+											<img src={mediaUrl(gallery[0])} alt={project.title} />
 										</div>
-									)}
-								</div>
-							)}
+										<span className="light-entry__photo-caption">from the station archive</span>
+										{thumbs.length > 0 && (
+											<div className="light-entry__thumbs">
+												{thumbs.map((name, index) => (
+													<div key={name} className="light-entry__thumb" style={{ transform: `rotate(${THUMB_ROTATIONS[index % THUMB_ROTATIONS.length]})` }}>
+														<img src={mediaUrl(name)} alt="" />
+													</div>
+												))}
+											</div>
+										)}
+									</>
+								)}
+								<span className="light-entry__tags">{(project.tags ?? []).join('  ·  ')}</span>
+							</div>
 						</div>
 
-						<div className="light-entry__moral">{project.moral}</div>
-
-						{project.caseStudy && (
-							<div className="light-entry__caselink">
-								<a href={`/projects/${project.slug}`} className="light-entry__caselink-link">read the full log →</a>
-							</div>
-						)}
-
-						<div className="light-entry__footer">
-							<span className="light-entry__tags">{(project.tags ?? []).join('  ·  ')}</span>
-							<span className="light-entry__signoff">{signoff}</span>
+						<div className="light-entry__final">
+							<span className="light-entry__moral">{project.moral}</span>
+							<span className="light-entry__signoff">{signoff}, the keeper</span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>,
 		document.body,
-	);
-}
-
-/**
- * A static one-period strip of the light's real lit/dark pattern, built off
- * the same timeline() the characteristic engine animates from: a flash reads
- * as one wide bar, morse as its dots and dashes. Fixed, extinguished, and
- * anything with no spans have nothing worth drawing, so they render nothing.
- */
-function TimingDiagram({ light, glow }: { light: Light; glow: string }) {
-	if (light.extinguished || light.kind === 'fixed') {
-		return null;
-	}
-	const { period, spans } = timeline(light);
-	if (!(period > 0) || spans.length === 0) {
-		return null;
-	}
-	return (
-		<div className="light-entry__timing" aria-hidden="true">
-			{spans.map(([start, end], index) => (
-				<span
-					key={index}
-					className="light-entry__timing-lit"
-					style={{ left: `${(start / period) * 100}%`, width: `${((end - start) / period) * 100}%`, background: `rgb(${glow})` }}
-				/>
-			))}
-		</div>
 	);
 }
