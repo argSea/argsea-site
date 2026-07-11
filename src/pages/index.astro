@@ -1,14 +1,17 @@
 ---
-// Hello: hero, wave-with-boat, lights preview, journal strip, the keeper's
-// stores, hobbies preview, contact band, and the dictionary entry. The
-// lights preview is the mantel: the featured projects, or the first three by
-// order so the section never empties. It opens the Light List entry in
-// place; hero copy and the dictionary come from the SiteCopy singleton; the
-// say-hi email is the keeper's; the keeper's stores is approved copy
-// hardcoded by design. The journal strip is the newest notes, static links
-// out to /notes, and disappears once there are none. The hobbies preview is
-// data-driven: active hobbies fill "currently learning", resting ones become
-// graveyard chips.
+// Hello: hero, wave-with-boat (and its coast-in-miniature beacons), the
+// flagship + featured cards, journal strip, the keeper's stores, hobbies
+// preview, contact band. The dictionary lives in the shared Footer now, read
+// from copy.dict (no dedicated dictionary block on this page anymore). The
+// flagship card is the `flagship` flag; the two small cards are the
+// `featured` flag in list order, never title matching, falling back to the
+// next two by order so the section never shows the flagship alone. It opens
+// the Light List entry in place; hero copy comes from the SiteCopy
+// singleton; the say-hi email is the keeper's; the keeper's stores is
+// approved copy hardcoded by design. The journal strip is the newest notes,
+// static links out to /notes, and disappears once there are none. The
+// hobbies preview is data-driven: still-burning hobbies fill "currently
+// learning", resting ones become graveyard chips.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LighthouseMark from '../components/LighthouseMark.astro';
 import WaveDivider from '../components/WaveDivider.astro';
@@ -19,13 +22,19 @@ import NextHobbyChip from '../components/islands/NextHobbyChip';
 import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead, getNotes, getDoodles, getSuggestions } from '../lib/api';
 
 const projects = await getProjects();
-// The list arrives order-sorted; the cap is defensive: the admin owns the
-// mantel-fits-three rule, the site just refuses to overflow it
-const featured = projects.filter((project) => project.featured);
-const preview = (featured.length > 0 ? featured : projects).slice(0, 3);
+const allNotes = await getNotes();
+
+// Flagship = the flagship flag; the two small cards = featured flag order,
+// never title matching. Falls back to the next two by order when nothing
+// else is featured, so the section never shows the flagship alone.
+const flagship = projects.find((project) => project.flagship) ?? null;
+const nonFlagship = projects.filter((project) => project.id !== flagship?.id);
+const featuredExplicit = nonFlagship.filter((project) => project.featured);
+const featuredTwo = (featuredExplicit.length > 0 ? featuredExplicit : nonFlagship).slice(0, 2);
+
 // getNotes() sorts newest-first; cap at three so a growing journal never
 // crowds the strip below the mantel
-const journalPreview = (await getNotes()).slice(0, 3);
+const journalPreview = allNotes.slice(0, 3);
 const journalDoodles = await getDoodles();
 const copy = await getSiteCopy();
 const keeper = await getKeeperProfile();
@@ -38,27 +47,22 @@ const suggestions = await getSuggestions();
 // overlay islands share one pick); the frontmatter just forwards the toggles.
 const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 
-// Dictionary presentation: the copy is one plain-text string; the numbered
-// sense markers ("1." …) get the periwinkle-deep treatment from the design.
-const dictSegments = copy.dict
-	.split(/(\d+\.)(?=\s)/)
-	.map((text) => ({ text, isMarker: /^\d+\.$/.test(text) }));
-
 const stores = [
 	{ label: 'languages',      items: 'java · python · node.js · go · php' },
 	{ label: 'data & queues',  items: 'mongodb · redis · rabbitmq · varnish' },
 	{ label: 'infrastructure', items: 'kubernetes · docker · nginx · linux' },
 ];
 
-// The list arrives order-sorted: active hobbies are the mantel, resting ones
-// the graveyard. Tilts alternate so the headstones don't all lean the same way.
+// The list arrives order-sorted: still-burning hobbies are the mantel,
+// resting ones the graveyard. Tilts alternate so the headstones don't all
+// lean the same way.
 const hobbies = await getHobbies();
-const learning = hobbies.filter((hobby) => hobby.active);
-const resting = hobbies.filter((hobby) => !hobby.active);
+const learning = hobbies.filter((hobby) => hobby.kind === 'alive');
+const resting = hobbies.filter((hobby) => hobby.kind !== 'alive');
 
 const tilts = [-2, 1.5, -1, 2.2, -1.5, 1.8];
 const graveyardChips = resting.map((hobby, index) => ({
-	text: `${hobby.name} ${hobby.epitaph}`.trim(),
+	text: `${hobby.name} · ${hobby.disposition}`,
 	tilt: tilts[index % tilts.length],
 }));
 ---
@@ -83,25 +87,30 @@ const graveyardChips = resting.map((hobby, index) => ({
 		</div>
 	</section>
 
-	<WaveDivider proverbs={proverbs} />
+	<WaveDivider projects={projects} proverbs={proverbs} />
 
-	<!-- lights I keep burning -->
+	<!-- selected work: the flagship card, then up to two featured cards -->
 	<section class="postcards">
 		<div class="row-head">
-			<span class="section-label">Lights I keep burning</span>
+			<span class="section-head-cluster">
+				<span class="section-label">Selected work</span>
+				<span class="section-aside">lights I keep burning</span>
+			</span>
 			<a href="/projects" class="mono-link">the whole coast →</a>
 		</div>
-		<HomeLights client:load projects={preview} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
+		<HomeLights client:load flagship={flagship} featured={featuredTwo} notes={allNotes} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
 	</section>
 
 	<JournalStrip notes={journalPreview} doodles={journalDoodles} />
-	<JournalStripDirector client:idle notes={journalPreview} doodles={journalDoodles} signoff={keeper.signoff} />
+	<JournalStripDirector client:idle notes={journalPreview} doodles={journalDoodles} projects={projects} signoff={keeper.signoff} />
 
-	<!-- the keeper's stores -->
+	<!-- the keeper's stores: no destination page, so the section head carries no link -->
 	<section class="stores">
-		<div class="stores__head">
-			<span class="section-label">The keeper's stores</span>
-			<span class="stores__aside">tools kept in the tower</span>
+		<div class="row-head">
+			<span class="section-head-cluster">
+				<span class="section-label">Tools</span>
+				<span class="section-aside">the keeper's stores, kept in the tower</span>
+			</span>
 		</div>
 		<div class="stores__grid">
 			{stores.map((column) => (
@@ -113,10 +122,13 @@ const graveyardChips = resting.map((hobby, index) => ({
 		</div>
 	</section>
 
-	<!-- hobbies preview: active hobbies fill the mantel, resting ones the graveyard -->
+	<!-- hobbies preview: still-burning hobbies fill the mantel, resting ones the graveyard -->
 	<section class="hobbies-preview">
 		<div class="row-head">
-			<span class="section-label">Hobbies, past & present</span>
+			<span class="section-head-cluster">
+				<span class="section-label">Hobbies</span>
+				<span class="section-aside">past and present, abridged</span>
+			</span>
 			<a href="/hobbies" class="mono-link">the full graveyard →</a>
 		</div>
 		<div class="hobbies-preview__grid">
@@ -162,19 +174,6 @@ const graveyardChips = resting.map((hobby, index) => ({
 		<div class="contact__actions">
 			<a href={`mailto:${keeper.email}`} class="btn btn--roomy btn--gold">say hi</a>
 			<a href="/resume.pdf" class="btn btn--roomy btn--outline">resume ↗</a>
-		</div>
-	</section>
-
-	<!-- the name, explained -->
-	<section class="dictionary">
-		<div class="dictionary__entry">
-			<div class="dictionary__head">
-				<span class="dictionary__word">argsea</span>
-				<span class="dictionary__pron">/ˈɑːrɡ·siː/ · noun</span>
-			</div>
-			<div class="dictionary__defs">
-				{dictSegments.map((segment) => segment.isMarker ? <span class="num">{segment.text}</span> : segment.text)}
-			</div>
 		</div>
 	</section>
 </BaseLayout>
@@ -273,19 +272,6 @@ const graveyardChips = resting.map((hobby, index) => ({
 		display: flex;
 		flex-direction: column;
 		gap: 16px;
-	}
-
-	.stores__head {
-		display: flex;
-		align-items: baseline;
-		gap: 14px;
-		flex-wrap: wrap;
-	}
-
-	.stores__aside {
-		font-size: 15px;
-		color: var(--periwinkle-deep);
-		font-style: italic;
 	}
 
 	.stores__grid {
@@ -571,50 +557,5 @@ const graveyardChips = resting.map((hobby, index) => ({
 		flex-wrap: wrap;
 		justify-content: center;
 		margin-top: 4px;
-	}
-
-	/* --- dictionary entry --- */
-	.dictionary {
-		display: flex;
-		justify-content: center;
-		padding: 0 var(--gutter) clamp(28px, 5vw, 44px);
-	}
-
-	.dictionary__entry {
-		max-width: 520px;
-		border-top: 1px solid rgba(150, 160, 220, .18);
-		padding-top: 24px;
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-
-	.dictionary__head {
-		display: flex;
-		align-items: baseline;
-		gap: 10px;
-		flex-wrap: wrap;
-	}
-
-	.dictionary__word {
-		font-family: var(--font-display);
-		font-size: 22px;
-		color: var(--text-strong);
-	}
-
-	.dictionary__pron {
-		font-family: var(--font-mono);
-		font-size: 12.5px;
-		color: var(--periwinkle-deep);
-	}
-
-	.dictionary__defs {
-		font-size: 15.5px;
-		line-height: 1.7;
-		color: var(--text-body);
-	}
-
-	.dictionary__defs .num {
-		color: var(--periwinkle-deep);
 	}
 </style>
