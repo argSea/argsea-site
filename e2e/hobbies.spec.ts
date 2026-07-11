@@ -65,3 +65,20 @@ test('the record modal closes on Escape', async ({ page }) => {
 	await page.keyboard.press('Escape');
 	await expect(page.locator('.record-modal')).toHaveCount(0);
 });
+
+test('the haunting moment golds the haunt hobby\'s dot and swaps its log line, then reverts', async ({ page }) => {
+	await page.clock.install();
+	await page.goto('/hobbies');
+
+	const piano = page.locator('.graveyard__row').nth(1); // Piano: the one haunt-kind hobby
+	await expect(piano.locator('.graveyard__log')).toHaveText('Light found cold. Bench tucked in. Metronome still ticking.');
+	await expect(piano.locator('.graveyard__lamp-dot--haunt')).toBeVisible();
+
+	await page.clock.fastForward('00:53');
+	await expect(piano.locator('.graveyard__log')).toHaveText('…is that the metronome?');
+	await expect(piano.locator('.graveyard__lamp-dot--haunting')).toBeVisible();
+
+	await page.clock.fastForward('00:03');
+	await expect(piano.locator('.graveyard__log')).toHaveText('Light found cold. Bench tucked in. Metronome still ticking.');
+	await expect(piano.locator('.graveyard__lamp-dot--haunt')).toBeVisible();
+});

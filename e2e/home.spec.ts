@@ -53,3 +53,31 @@ test('the flagship card carries the characteristic code and status', async ({ pa
 	const char = page.locator('.home-lights__flagship .home-lights__char');
 	await expect(char).toHaveText('Fl W 8s · lit');
 });
+
+test('the home mount\'s overlay carries the coast link; the projects mount does not', async ({ page }) => {
+	await page.goto('/');
+	await page.locator('.home-lights .card-wrap').first().click();
+
+	const overlay = page.locator('.overlay-card');
+	const coastLink = overlay.locator('.light-entry__coastlink-link');
+	await expect(coastLink).toHaveText('the whole coast →');
+	await expect(coastLink).toHaveAttribute('href', '/projects');
+});
+
+test('the footer dictionary drops trailing periods and mono-treats only "argc"', async ({ page }) => {
+	await page.goto('/');
+	const dict = page.locator('.site-footer__dict');
+	await expect(dict).toContainText("1. the Argo, but for one 2. argc, but forever 3. a sea of water, or of stars 4. what a method signature becomes if I'm not supervised");
+	await expect(dict.locator('.site-footer__argc')).toHaveText('argc');
+});
+
+test('the journal strip spells the entry count as a word', async ({ page }) => {
+	await page.goto('/');
+	await expect(page.locator('.journal-strip__vol')).toHaveText('log book · vol. 2026 · three entries of many');
+});
+
+test('the graveyard preview chips read lowercase name, dagger, disposition', async ({ page }) => {
+	await page.goto('/');
+	const chips = page.locator('.grave-chip');
+	await expect(chips.first()).toHaveText('piano † occasionally haunting');
+});

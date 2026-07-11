@@ -36,9 +36,17 @@ const MOCK_KEEPER = {
 // two tinkering lights (order 8-9) for the quick/morse timelines, and all
 // three must stay out of this mock's featured trio or the home specs'
 // hardcoded expectations break.
+//
+// Order 7 (The old publishing stack) also stands in for a pre-contract
+// document: the live API can hand back JSON null for facts/noteIds on a
+// project written before those fields existed, so this mock nulls them out
+// on the one project no other spec's assertions depend on, proving the
+// null-guards hold end to end rather than only against the checked-in
+// fixtures (which always carry real arrays).
 const projects = fixture('projects').map((project) => ({
 	...project,
 	featured: mode === 'featured' ? project.order >= 4 && project.order <= 6 : false,
+	...(project.order === 7 ? { facts: null, noteIds: null } : {}),
 }));
 
 const routes = {
