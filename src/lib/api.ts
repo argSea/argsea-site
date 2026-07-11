@@ -63,6 +63,13 @@ export interface Light {
 	letter:       string; // single A-Z, morse only; '' otherwise
 }
 
+// One fact-row on the flagship card (capped at 4, 2x2) and the entry overlay
+// (all of them, up to the 6-item cap the data model itself holds to).
+export interface ProjectFact {
+	heading: string;
+	fact:    string;
+}
+
 // Wire types mirror the argsea-site-api domain structs field-for-field.
 export interface Project {
 	id:           string;
@@ -84,23 +91,43 @@ export interface Project {
 	order:        number;        // the keeper's manual sort key; the API sends the list pre-sorted
 	wallPos:      WallPos | null; // pinned position on the projects page wall; null → not yet placed
 	featured:     boolean;       // on the mantel → homepage postcards preview
+	facts:        ProjectFact[]; // ≤6 heading/fact pairs; [] renders no facts grid anywhere
+	caseStudy:    string;        // markdown in the keeper's dialect; '' = no /projects/<slug> route
+	noteIds:      string[];      // journal entries tied to this light, resolved at build time
+	flagship:     boolean;       // the one Hello hero project; distinct from featured
 	status:       Status;
 	publishedAt:  string;
 	createdAt:    string;
 	updatedAt:    string;
 }
 
+// A resting/still-burning hobby's disposition, driving the graveyard's lamp-dot
+// and pill colors: alive stays lit, haunt occasionally flickers, dark is laid
+// to rest. Distinct from `disposition`, the freeform label a visitor reads.
+export type HobbyKind = 'alive' | 'haunt' | 'dark';
+
+// The graveyard headstone/marker a resting hobby gets; '' falls through to the
+// stone default, same as an absent marker.
+export type HobbyMarker = '' | 'stone' | 'sticks' | 'driftwood' | 'cairn' | 'buoy' | 'lamp';
+
 export interface Hobby {
-	id:        string;
-	name:      string;
-	dates:     string;  // freeform display string
-	active:    boolean;
-	epitaph:   string;
-	eulogy:    string;
-	tags:      string[];
-	order:     number;  // the keeper's manual sort key
-	createdAt: string;
-	updatedAt: string;
+	id:          string;
+	name:        string;
+	service:     string;      // freeform tenure, e.g. "2021 - present"
+	char:        string;      // a light-style characteristic string, e.g. "Fl W 3s"
+	kind:        HobbyKind;
+	marker:      HobbyMarker;
+	wear:        number;      // 0..1, weathering; a non-dated service string reads as fully worn
+	disposition: string;      // freeform label the register pill shows
+	log:         string;      // the register row's own line
+	lastLog:     string;      // the record's italic pull-quote
+	found:       string;      // "what was found"
+	cause:       string;      // "cause of vanishing"
+	return:      string;      // "re-appointment"
+	tags:        string[];
+	order:       number;      // the keeper's manual sort key
+	createdAt:   string;
+	updatedAt:   string;
 }
 
 export interface Note {
@@ -356,9 +383,10 @@ export async function getProjects(): Promise<Project[]> {
 	return (await source.getProjects()).sort((a, b) => a.order - b.order || a.createdAt.localeCompare(b.createdAt));
 }
 
-/** Hobbies active-first, then by their manual `order` key: the headstones are arranged by hand. */
+/** Hobbies still burning first, then by their manual `order` key: the headstones are arranged by hand. */
 export async function getHobbies(): Promise<Hobby[]> {
-	return (await source.getHobbies()).sort((a, b) => Number(b.active) - Number(a.active) || a.order - b.order);
+	const alive = (hobby: Hobby) => Number(hobby.kind === 'alive');
+	return (await source.getHobbies()).sort((a, b) => alive(b) - alive(a) || a.order - b.order);
 }
 
 /** Notes newest-first; RFC3339 strings compare chronologically. */

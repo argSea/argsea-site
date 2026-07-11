@@ -32,9 +32,10 @@ const MOCK_KEEPER = {
 };
 
 // The featured cutoff is pinned to the original six fixture projects (4-6):
-// the projects-atmosphere slice appended two more (order 7-8, both
-// tinkering) for the quick/morse timelines, and they must stay out of this
-// mock's featured trio or the home specs' hardcoded expectations break.
+// later slices appended the dark "old publishing stack" light (order 7) and
+// two tinkering lights (order 8-9) for the quick/morse timelines, and all
+// three must stay out of this mock's featured trio or the home specs'
+// hardcoded expectations break.
 const projects = fixture('projects').map((project) => ({
 	...project,
 	featured: mode === 'featured' ? project.order >= 4 && project.order <= 6 : false,

@@ -29,7 +29,7 @@
       "extinguished": "",
       "letter": ""
     },
-    "images": null,
+    "images": ["first-screenshot"],
     "firstLit": "2024",
     "order": 1,
     "wallPos": {
@@ -38,6 +38,15 @@
       "rotation": -2.2
     },
     "featured": true,
+    "facts": [
+      { "heading": "ownership", "fact": "design to operations, solo" },
+      { "heading": "scale", "fact": "29 services · ~2M visits a month" },
+      { "heading": "constraint", "fact": "the paper came out every day, mid-migration" },
+      { "heading": "result", "fact": "the old stack went dark in 2025" }
+    ],
+    "caseStudy": "## The starting point\n\nThe Post-Gazette's publishing stack had been accreting since roughly 2016. One enormous application that did everything and feared nothing, least of all my weekends. Deploys were [? how deploys worked, and how scary ?], and every change carried the whole system's risk.\n\nThe constraints were plain. One engineer. Bare metal on premises, no cloud autoscaling to hide behind. And a paper that publishes every single day, so there was no maintenance window big enough to swap the stack in one move.\n\n> Drew the boxes before the arrows. Always the boxes first.\n\n## The shape of it\n\nServices stay small, own their data, and talk through RabbitMQ instead of calling each other directly. Varnish absorbs read traffic at the edge, so a couple million visits a month never becomes a couple million origin hits. MetalLB hands out real IPs, because bare metal does not come with a load balancer.\n\n```mermaid\nflowchart TB\n  lb[metallb] --> ing[nginx ingress]\n  ing --> va[varnish cache]\n  va --> bus{{rabbitmq · the event bus}}\n  bus --> svc[python services · x29]\n  svc --> mdb[(mongodb)]\n  svc --> rds[(redis)]\n```\n\nThe rule that made 29 services survivable for one keeper: every service looks the same. Same repo layout, same base image, same health checks, same way onto and off the bus. The novelty budget goes to the problem, not the plumbing.\n\n## Migrating while the paper ships\n\nThe monolith came apart one capability at a time. Peel a function off, stand it up as a service on the bus, route traffic to it, watch it for a while, then delete the old code path. Repeat 29 times. The first peel was [? the first service extracted, and why it went first ?].\n\nOrder mattered more than speed. Low-risk, high-annoyance pieces went first, to prove the pattern. The scary ones went last, once the platform had earned trust.\n\n:::facts\ntimeline: [? months to production, months refining ?]\nfirst peel: [? service name ?]\nscariest peel: [? service name, and why it waited ?]\n:::\n\n## What went wrong\n\n> The lamp swap happened at night. Obviously.\n\nEvents everywhere is worth it for the decoupling, and you pay for it in debugging: tracing a story across queues is harder than reading a stack trace. [? how you trace across the bus today ?]\n\n![the first screenshot, from the station archive](first-screenshot)\n\nThe mistake worth admitting: [? the thing that actually broke once, and what it taught you ?]\n\n## What I'd change now\n\n- Fewer, fatter services from day one. The honest number is probably [? your honest number ?].\n- [? the second thing you'd do differently ?]\n- [? the opinion only someone who ran this would have ?]\n\n## Outcomes\n\n:::outcomes\n29 services | in production, uniform, one keeper\n~2M visits/mo | served through the platform\n0 missed papers | it published every day, the whole way through\nold stack: dark | decommissioned 2025 · see light no. 014\n:::",
+    "noteIds": ["fixture-note-1", "fixture-note-3"],
+    "flagship": true,
     "status": "published",
     "publishedAt": "2026-07-01T12:00:00Z",
     "createdAt": "2026-07-01T12:00:00Z",
@@ -73,7 +82,7 @@
       "extinguished": "",
       "letter": ""
     },
-    "images": null,
+    "images": ["station-photo"],
     "firstLit": "2016",
     "order": 2,
     "wallPos": {
@@ -82,6 +91,15 @@
       "rotation": 1.7
     },
     "featured": true,
+    "facts": [
+      { "heading": "role", "fact": "APIs, storage, caching · design and build" },
+      { "heading": "tenure", "fact": "core plumbing since 2016" },
+      { "heading": "constraint", "fact": "deadlines that do not move for anybody" },
+      { "heading": "result", "fact": "nobody knows it exists. that is the review." }
+    ],
+    "caseStudy": "",
+    "noteIds": [],
+    "flagship": false,
     "status": "published",
     "publishedAt": "2026-07-01T12:00:01Z",
     "createdAt": "2026-07-01T12:00:01Z",
@@ -126,6 +144,15 @@
       "rotation": -1.3
     },
     "featured": true,
+    "facts": [
+      { "heading": "audience", "fact": "100,000+ inboxes, every morning" },
+      { "heading": "schedule", "fact": "assembled and delivered before sunrise" },
+      { "heading": "design goal", "fact": "boring on purpose: retries, queues, monitoring" },
+      { "heading": "reliability", "fact": "better attendance than the keeper" }
+    ],
+    "caseStudy": "",
+    "noteIds": [],
+    "flagship": false,
     "status": "published",
     "publishedAt": "2026-07-01T12:00:02Z",
     "createdAt": "2026-07-01T12:00:02Z",
@@ -170,6 +197,15 @@
       "rotation": 2.3
     },
     "featured": false,
+    "facts": [
+      { "heading": "made for", "fact": "the CS50 final" },
+      { "heading": "scope", "fact": "modeling, shaders, physics · one person" },
+      { "heading": "review panel", "fact": "two children · 10/10" },
+      { "heading": "record", "fact": "retired undefeated" }
+    ],
+    "caseStudy": "",
+    "noteIds": [],
+    "flagship": false,
     "status": "published",
     "publishedAt": "2026-07-01T12:00:03Z",
     "createdAt": "2026-07-01T12:00:03Z",
@@ -213,6 +249,15 @@
       "rotation": -1.6
     },
     "featured": false,
+    "facts": [
+      { "heading": "version", "fact": "v2 of n, n unbounded" },
+      { "heading": "stack", "fact": "html, css, one lighthouse" },
+      { "heading": "uptime", "fact": "the light runs on a schedule. ish." },
+      { "heading": "risk", "fact": "total rebuild whenever the mood strikes" }
+    ],
+    "caseStudy": "",
+    "noteIds": [],
+    "flagship": false,
     "status": "published",
     "publishedAt": "2026-07-01T12:00:04Z",
     "createdAt": "2026-07-01T12:00:04Z",
@@ -257,10 +302,70 @@
       "rotation": 1.4
     },
     "featured": false,
+    "facts": [
+      { "heading": "fleet", "fact": "plex server, htpc, desktop, stragglers" },
+      { "heading": "status", "fact": "one tweak from perfect, forever" },
+      { "heading": "audience", "fact": "the family, mostly for the movies" },
+      { "heading": "budget", "fact": "do not ask" }
+    ],
+    "caseStudy": "",
+    "noteIds": [],
+    "flagship": false,
     "status": "published",
     "publishedAt": "2026-07-01T12:00:05Z",
     "createdAt": "2026-07-01T12:00:05Z",
     "updatedAt": "2026-07-01T12:00:05Z"
+  },
+  {
+    "id": "fixture-project-9",
+    "title": "The old publishing stack",
+    "category": "backend",
+    "tags": [
+      "monolith",
+      "legacy"
+    ],
+    "shortDesc": "A lot, that did very little. Put out by light no. 002, one piece at a time.",
+    "body": "<p>The monolith itself deserves an honest entry: it ran a real newspaper for the better part of a decade, and it never asked permission to page me. Every system on this coast exists because this one existed first.</p><p>It was decommissioned in 2025, capability by capability, until one night there was nothing left to turn off. No wake. The queue drained, the DNS flipped, and the coast got quieter.</p>",
+    "moral": "Moral: a good platform is measured by what it lets you turn off.",
+    "postcardTo": "whatever comes next",
+    "postcardFrom": "a system that finally got to rest",
+    "postmarked": "2016–2025",
+    "slug": "the-old-publishing-stack",
+    "image": null,
+    "stamp": {
+      "shape": "circle",
+      "motif": "anchor",
+      "ink": "#93a0e8"
+    },
+    "light": {
+      "kind": "fixed",
+      "color": "white",
+      "period": 0,
+      "extinguished": "2025",
+      "letter": ""
+    },
+    "images": null,
+    "firstLit": "2016",
+    "order": 7,
+    "wallPos": {
+      "x": 66,
+      "y": 40,
+      "rotation": -1.8
+    },
+    "featured": false,
+    "facts": [
+      { "heading": "era", "fact": "2016 to 2025" },
+      { "heading": "scope", "fact": "a lot, that did very little" },
+      { "heading": "fate", "fact": "decommissioned by no. 002, piece by piece" },
+      { "heading": "legacy", "fact": "every light on this coast" }
+    ],
+    "caseStudy": "",
+    "noteIds": [],
+    "flagship": false,
+    "status": "published",
+    "publishedAt": "2026-07-01T12:00:08Z",
+    "createdAt": "2026-07-01T12:00:08Z",
+    "updatedAt": "2026-07-01T12:00:08Z"
   },
   {
     "id": "fixture-project-7",
@@ -293,13 +398,22 @@
     },
     "images": null,
     "firstLit": "2023",
-    "order": 7,
+    "order": 8,
     "wallPos": {
       "x": 34,
       "y": 46,
       "rotation": -0.9
     },
     "featured": false,
+    "facts": [
+      { "heading": "made for", "fact": "a group chat tired of repeating itself" },
+      { "heading": "scope", "fact": "python, irc, one persistent grudge" },
+      { "heading": "personality", "fact": "funnier than intended, faster than me" },
+      { "heading": "status", "fact": "still running, out of respect" }
+    ],
+    "caseStudy": "",
+    "noteIds": [],
+    "flagship": false,
     "status": "published",
     "publishedAt": "2026-07-01T12:00:06Z",
     "createdAt": "2026-07-01T12:00:06Z",
@@ -337,13 +451,22 @@
     },
     "images": null,
     "firstLit": "2025",
-    "order": 8,
+    "order": 9,
     "wallPos": {
       "x": 50,
       "y": 68,
       "rotation": 1.1
     },
     "featured": false,
+    "facts": [
+      { "heading": "made for", "fact": "a weekend and an idle relay" },
+      { "heading": "stack", "fact": "arduino, morse, one desk lamp" },
+      { "heading": "trigger", "fact": "ci going green" },
+      { "heading": "uptime", "fact": "has not been turned off once" }
+    ],
+    "caseStudy": "",
+    "noteIds": [],
+    "flagship": false,
     "status": "published",
     "publishedAt": "2026-07-01T12:00:07Z",
     "createdAt": "2026-07-01T12:00:07Z",
