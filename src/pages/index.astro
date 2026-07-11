@@ -61,8 +61,12 @@ const learning = hobbies.filter((hobby) => hobby.kind === 'alive');
 const resting = hobbies.filter((hobby) => hobby.kind !== 'alive');
 
 const tilts = [-2, 1.5, -1, 2.2, -1.5, 1.8];
+// Lowercase name, dagger, disposition (Hello.dc.html's "piano † got good
+// enough" format): the mock's own bespoke phrases per chip are stale
+// siblings of this same data, so disposition is the single source, not a
+// second hand-written copy of it (integrator ruling, 2026-07-11).
 const graveyardChips = resting.map((hobby, index) => ({
-	text: `${hobby.name} · ${hobby.disposition}`,
+	text: `${hobby.name.toLowerCase()} † ${hobby.disposition}`,
 	tilt: tilts[index % tilts.length],
 }));
 ---

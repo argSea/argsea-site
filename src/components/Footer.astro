@@ -18,17 +18,18 @@ const copy = await getSiteCopy();
 // The profile stores socials as host paths ("github.com/argsea"); links need a scheme
 const withScheme = (link: string) => /^https?:\/\//.test(link) ? link : `https://${link}`;
 
-// Dictionary presentation: the copy is one plain-text string; the numbered
-// sense markers ("1." …) get the periwinkle-deep treatment from the design.
+// Dictionary presentation: the copy is one plain-text string; the mono
+// treatment lands on the word "argc" (sense 2's own joke), not the sense
+// numbers, per the mock.
 const dictSegments = copy.dict
-	.split(/(\d+\.)(?=\s)/)
-	.map((text) => ({ text, isMarker: /^\d+\.$/.test(text) }));
+	.split(/\b(argc)\b/)
+	.map((text) => ({ text, isArgc: text === 'argc' }));
 ---
 <footer class="site-footer">
 	<div class="site-footer__dict">
 		<span class="site-footer__word">argsea</span>
 		<span class="site-footer__pron">/ˈɑːrɡ·siː/ · noun</span>
-		{dictSegments.map((segment) => segment.isMarker ? <span class="site-footer__num">{segment.text}</span> : segment.text)}
+		{dictSegments.map((segment) => segment.isArgc ? <span class="site-footer__argc">{segment.text}</span> : segment.text)}
 	</div>
 	<div class="site-footer__right">
 		<div class="socials">
@@ -79,7 +80,7 @@ const dictSegments = copy.dict
 		color: var(--periwinkle-deep);
 	}
 
-	.site-footer__num {
+	.site-footer__argc {
 		font-family: var(--font-mono);
 		font-style: normal;
 		font-size: 11px;

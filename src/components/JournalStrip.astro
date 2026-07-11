@@ -55,6 +55,12 @@ const rows = notes.map((note, index) => ({
 	doodle: doodleFor(note.doodleId),
 	paw:    PAW_ROWS[index % PAW_ROWS.length],
 }));
+
+// The vol. line spells its count as a word (Hello.dc.html's own "three
+// entries of many"); falls back to digits past ten rather than inventing
+// words the mock never needed.
+const COUNT_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+const countWord = (count: number) => COUNT_WORDS[count] ?? String(count);
 ---
 {notes.length > 0 && (
 	<section class="journal-strip">
@@ -69,7 +75,7 @@ const rows = notes.map((note, index) => ({
 			<div class="journal-strip__ribbon" title="the keeper's bookmark"></div>
 			<div class="journal-strip__inner">
 				<div class="journal-strip__vol">
-					<span>log book · vol. 2026 · {notes.length} {notes.length === 1 ? 'entry' : 'entries'} of many</span>
+					<span>{`log book · vol. 2026 · ${countWord(notes.length)} ${notes.length === 1 ? 'entry' : 'entries'} of many`}</span>
 				</div>
 				<div class="journal-strip__rows">
 					{rows.map(({ note, doodle, paw }) => (

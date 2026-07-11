@@ -8,7 +8,7 @@
   "heroKicker": "Justin Smith · senior software engineer, Pittsburgh PA",
   "heroHeadline": "I help keep the lights on behind the news.",
   "heroBody": "Backend engineering at the Post-Gazette: a Kubernetes platform designed and built solo, 29 services, a couple million visits a month, a healthy amount of boxes-and-arrows. Dad the rest of the time. Serial picker-upper of hobbies.",
-  "dict": "1. the Argo, but for one. 2. argc, but forever. 3. a sea of water, or of stars. 4. what a method signature becomes if I'm not supervised.",
+  "dict": "1. the Argo, but for one 2. argc, but forever 3. a sea of water, or of stars 4. what a method signature becomes if I'm not supervised",
   "eggs": { "bottle": true, "cat": true, "lights": true },
   "catPages": { "hello": true, "projects": true, "hobbies": true, "notes": true, "p404": true },
   "catSpots": {
