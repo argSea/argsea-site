@@ -81,3 +81,13 @@ test('the graveyard preview chips read lowercase name, dagger, disposition', asy
 	const chips = page.locator('.grave-chip');
 	await expect(chips.first()).toHaveText('piano † occasionally haunting');
 });
+
+test('the flagship polaroid ships a real print, not a broken glyph', async ({ page }) => {
+	await page.goto('/');
+
+	const img = page.locator('.home-lights__polaroid img');
+	await expect(img).toHaveAttribute('src', '/media/images/first-screenshot.webp');
+	await expect
+		.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth))
+		.toBeGreaterThan(0);
+});
