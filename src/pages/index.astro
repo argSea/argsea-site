@@ -58,12 +58,13 @@ const stores = [
 	{ label: 'infrastructure', items: 'kubernetes · docker · nginx · linux' },
 ];
 
-// The list arrives order-sorted: still-burning hobbies are the mantel,
-// resting ones the graveyard. Tilts alternate so the headstones don't all
-// lean the same way.
+// The list arrives order-sorted, still-burning first. The split is on `active`,
+// not `kind === 'alive'`: a hobby that haunts while it's still being lived keeps
+// its place on the mantel, not the graveyard. Tilts alternate so the headstones
+// don't all lean the same way.
 const hobbies = await getHobbies();
-const learning = hobbies.filter((hobby) => hobby.kind === 'alive');
-const resting = hobbies.filter((hobby) => hobby.kind !== 'alive');
+const learning = hobbies.filter((hobby) => hobby.active);
+const resting = hobbies.filter((hobby) => !hobby.active);
 
 const tilts = [-2, 1.5, -1, 2.2, -1.5, 1.8];
 // Lowercase name, dagger, disposition (Hello.dc.html's "piano † got good

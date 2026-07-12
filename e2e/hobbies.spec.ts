@@ -22,9 +22,9 @@ test('a still-burning hobby wears the lamp marker and the gold pill', async ({ p
 
 test('a resting hobby with a sticks marker reads its disposition', async ({ page }) => {
 	await page.goto('/hobbies');
-	// Piano (row 1) has no explicit marker (falls to stone); Music theory
-	// (row 2) is the first with marker: 'sticks'
-	const row = page.locator('.graveyard__row').nth(2);
+	// The two active lamps lead (The home lab, Changing my OS), then Piano falls
+	// to the stone; Music theory (row 3) is the first with marker: 'sticks'
+	const row = page.locator('.graveyard__row').nth(3);
 	await expect(row.locator('.graveyard__name')).toHaveText('Music theory');
 	await expect(row.locator('.graveyard__sticks-plate')).toBeVisible();
 	await expect(row.locator('.graveyard__pill')).toHaveText('laid to rest');
@@ -33,11 +33,11 @@ test('a resting hobby with a sticks marker reads its disposition', async ({ page
 
 test('a row opens the keeper\'s record modal with the found/cause/return fields', async ({ page }) => {
 	await page.goto('/hobbies');
-	await page.locator('.graveyard__row').nth(1).click(); // Piano
+	await page.locator('.graveyard__row').nth(2).click(); // Piano
 
 	const modal = page.locator('.record-modal');
 	await expect(modal).toBeVisible();
-	await expect(modal.locator('.record-modal__kicker')).toContainText('plot 02');
+	await expect(modal.locator('.record-modal__kicker')).toContainText('plot 03');
 	await expect(modal.locator('.record-modal__name')).toHaveText('Piano');
 	const grid = modal.locator('.record-modal__grid');
 	await expect(grid).toContainText('one shaky recording the family still requests');
@@ -70,7 +70,9 @@ test('the haunting moment golds the haunt hobby\'s dot and swaps its log line, t
 	await page.clock.install();
 	await page.goto('/hobbies');
 
-	const piano = page.locator('.graveyard__row').nth(1); // Piano: the one haunt-kind hobby
+	// Piano is the resting haunt: its dot idles on the rare flicker (Changing my
+	// OS is the other haunt-kind row, but it's active, so its dot pulses gold).
+	const piano = page.locator('.graveyard__row', { has: page.getByText('Piano', { exact: true }) });
 	await expect(piano.locator('.graveyard__log')).toHaveText('Light found cold. Bench tucked in. Metronome still ticking.');
 	await expect(piano.locator('.graveyard__lamp-dot--haunt')).toBeVisible();
 
@@ -141,15 +143,18 @@ test('the old-fields record modal composes from present parts and hides empty li
 	await expect(modal.locator('.record-modal__disposition')).toHaveText('disposition · went quiet on all bands');
 });
 
-// Changing my OS is standing (active) yet its disposition haunts; haunt wins.
-test('a haunting disposition wins over standing', async ({ page }) => {
+// Changing my OS is active yet its disposition haunts: it keeps the lamp, and
+// the haunt rides on top as flavor (the HAUNTING pill, the flare in a moment).
+test('an active hobby that haunts keeps the lamp and the HAUNTING pill', async ({ page }) => {
 	await page.goto('/hobbies');
 	const row = page.locator('.graveyard__row', { has: page.getByText('Changing my OS', { exact: true }) });
 
+	// active wins the lamp; the haunt stays flavor on top of it
+	await expect(row.locator('.graveyard__lamp')).toBeVisible();
 	await expect(row.locator('.graveyard__pill--haunt')).toBeVisible();
-	// derived haunt, not alive: a headstone, never the still-burning lamp
-	await expect(row.locator('.graveyard__lamp')).toHaveCount(0);
-	await expect(row).toHaveClass(/graveyard__row--resting/);
+	// an active hobby is never a grave: no resting anchor, no mound
+	await expect(row).not.toHaveClass(/graveyard__row--resting/);
+	await expect(row.locator('.graveyard__mound')).toHaveCount(0);
 });
 
 test('every grave carries a dirt mound; the still-burning lamp does not', async ({ page }) => {
@@ -168,4 +173,28 @@ test('no grave stacks more than one dressing object (grass aside)', async ({ pag
 		const objects = await markers.nth(i).locator('.graveyard__dress-object').count();
 		expect(objects).toBeLessThanOrEqual(1);
 	}
+});
+
+test('plot plaques number by register position, and the foot stands one past the last', async ({ page }) => {
+	await page.goto('/hobbies');
+	// The two active lamps lead, then the graves, so the plaques read 01..07 down
+	// the register whatever the keeper's manual order key is; the foot is one past.
+	await expect(page.locator('.graveyard__row').nth(0).locator('.graveyard__lamp-plate')).toHaveText('01');
+	await expect(page.locator('.graveyard__row').nth(1).locator('.graveyard__lamp-plate')).toHaveText('02');
+	await expect(page.locator('.graveyard__row').nth(6).locator('.graveyard__stone-plot')).toHaveText('07');
+	await expect(page.locator('.graveyard__foot .mono-comment')).toHaveText('// plot 08 stands open.');
+});
+
+test('the dirt mound is brown and stacks in front of the marker body', async ({ page }) => {
+	await page.goto('/hobbies');
+	const grave = page.locator('.graveyard__row--resting').first();
+
+	// the mound layers above the marker body, so the dirt banks in front of the stone
+	const moundZ = await grave.locator('.graveyard__mound').evaluate((el) => Number(getComputedStyle(el).zIndex));
+	const bodyZ = await grave.locator('.graveyard__marker-body').evaluate((el) => Number(getComputedStyle(el).zIndex));
+	expect(moundZ).toBeGreaterThan(bodyZ);
+
+	// the cap is the mock's brown dirt (#4a3826 = rgb(74, 56, 38)), not the old navy
+	const cap = await grave.locator('.graveyard__mound-cap').evaluate((el) => getComputedStyle(el).backgroundImage);
+	expect(cap).toContain('74, 56, 38');
 });

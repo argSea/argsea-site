@@ -465,10 +465,14 @@ export async function getProjects(): Promise<Project[]> {
 	return (await source.getProjects()).sort((a, b) => a.order - b.order || a.createdAt.localeCompare(b.createdAt));
 }
 
-/** Hobbies still burning first, then by their manual `order` key: the headstones are arranged by hand. */
+/**
+ * Still-burning hobbies rank first, then the keeper's manual `order`. Grouping
+ * on `active`, not `kind === 'alive'`, keeps a haunting-but-active hobby up with
+ * the living: it earns the lamp, so it belongs among the lamps, not the graves.
+ */
 export async function getHobbies(): Promise<Hobby[]> {
-	const alive = (hobby: Hobby) => Number(hobby.kind === 'alive');
-	return (await source.getHobbies()).sort((a, b) => alive(b) - alive(a) || a.order - b.order);
+	const living = (hobby: Hobby) => Number(hobby.active);
+	return (await source.getHobbies()).sort((a, b) => living(b) - living(a) || a.order - b.order);
 }
 
 /** Notes newest-first; RFC3339 strings compare chronologically. */
