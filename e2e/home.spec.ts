@@ -86,7 +86,7 @@ test('the flagship polaroid ships a real print, not a broken glyph', async ({ pa
 	await page.goto('/');
 
 	const img = page.locator('.home-lights__polaroid img');
-	await expect(img).toHaveAttribute('src', '/media/images/first-screenshot.webp');
+	await expect(img).toHaveAttribute('src', '/media/images/first-screenshot.svg');
 	await expect
 		.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth))
 		.toBeGreaterThan(0);

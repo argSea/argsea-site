@@ -1,0 +1,7 @@
+<!-- Obviously fake: an e2e test print, never a real photo. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240">
+	<rect width="320" height="240" fill="#5f6ec4" />
+	<polygon points="160,40 220,150 100,150" fill="#f0d9a8" />
+	<text x="160" y="180" text-anchor="middle" font-family="monospace" font-size="20" fill="#12162a">TEST PRINT</text>
+	<text x="160" y="204" text-anchor="middle" font-family="monospace" font-size="12" fill="#12162a">queue-depth</text>
+</svg>
