@@ -20,12 +20,12 @@
 </style>
 </helmet>
 
-<div style="position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:flex-end;animation:catSettle .4s ease both;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))">
+<div ref="{{ rootRef }}" style="position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:flex-end;animation:catSettle .4s ease both;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))">
   <sc-if value="{{ say }}" hint-placeholder-val="{{ false }}">
     <div style="{{ bubbleStyle }}">{{ say }}</div>
   </sc-if>
 
-  <!-- ============ PERCHED — front paws on an edge, tail draped (cards, tags, chips, overlay tops, contact, hero, list rows) ============ -->
+  <!-- ============ PERCHED · front paws on an edge, tail draped (cards, tags, chips, overlay tops, contact, hero, list rows) ============ -->
   <sc-if value="{{ pose === 'perched' }}" hint-placeholder-val="{{ true }}">
   <svg onClick="{{ poke }}" width="100%" height="100%" viewBox="0 0 64 74" fill="none" style="overflow:visible;cursor:pointer">
     <!-- draped tail, swaying -->
@@ -51,7 +51,7 @@
   </svg>
   </sc-if>
 
-  <!-- ============ LYING — draped along a horizontal element (the current page's nav link) ============ -->
+  <!-- ============ LYING · draped along a horizontal element (the current page's nav link) ============ -->
   <sc-if value="{{ pose === 'lying' }}" hint-placeholder-val="{{ false }}">
   <svg onClick="{{ poke }}" width="100%" height="100%" viewBox="0 0 100 48" fill="none" style="overflow:visible;cursor:pointer">
     <!-- tail draping off the rump, gentle drape sway -->
@@ -107,15 +107,24 @@ class Component extends DCLogic {
   poke() {
     clearTimeout(this.t);
     const ctx = this.sets[this.props.context] ? this.props.context : 'header';
-    const pool = this.sets[ctx].filter((q) => q !== this.state.say);
-    this.setState({ say: pool[Math.floor(Math.random() * pool.length)] });
+    const custom = this.props.quips ? String(this.props.quips).split('|').map((s) => s.trim()).filter(Boolean) : null;
+    const pool = (custom || this.sets[ctx]).filter((q) => q !== this.state.say);
+    // pick the bubble side: honor the prop, else flip left when the cat sits near the right edge
+    let side = this.props.bubble;
+    if (side !== 'left' && side !== 'right') {
+      try {
+        const r = this.el ? this.el.getBoundingClientRect() : null;
+        side = r && (window.innerWidth - r.right) < 220 ? 'left' : 'right';
+      } catch (err) { side = 'right'; }
+    }
+    this.setState({ say: pool[Math.floor(Math.random() * pool.length)], side });
     this.t = setTimeout(() => this.setState({ say: null }), 2600);
   }
 
   componentWillUnmount() { clearTimeout(this.t); }
 
   renderVals() {
-    const left = this.props.bubble === 'left';
+    const left = (this.state.side || this.props.bubble) === 'left';
     const bubbleStyle = {
       position: 'absolute', top: '14px', whiteSpace: 'nowrap',
       [left ? 'right' : 'left']: 'calc(100% + 8px)',
@@ -125,7 +134,7 @@ class Component extends DCLogic {
       color: '#c3cbf2', boxShadow: '0 8px 20px rgba(0,0,0,.45)',
       animation: 'catBubbleIn .2s ease both', zIndex: 4,
     };
-    return { pose: this.props.pose || 'perched', say: this.state.say, poke: () => this.poke(), bubbleStyle };
+    return { pose: this.props.pose || 'perched', say: this.state.say, poke: () => this.poke(), bubbleStyle, rootRef: (el) => { this.el = el; } };
   }
 }
 </script>

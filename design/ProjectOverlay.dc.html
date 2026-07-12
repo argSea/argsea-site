@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&amp;family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="./site-data.js"></script>
+<style>
+image-slot{display:block;width:100%;height:100%}
+[data-ov-thumb]:has(image-slot:not([data-filled])){display:none}
+@keyframes backdropIn{from{opacity:0}to{opacity:1}}
+@keyframes backdropOut{from{opacity:1}to{opacity:0}}
+@keyframes entryUp{from{opacity:0;transform:translateY(24px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes entryDown{from{opacity:1;transform:none}to{opacity:0;transform:translateY(18px) scale(.985)}}
+@keyframes flashChar{0%,68%{opacity:.08}78%{opacity:1}88%{opacity:.08}100%{opacity:.08}}
+@keyframes occultChar{0%,70%{opacity:1}80%{opacity:.09}90%{opacity:1}100%{opacity:1}}
+@keyframes isoChar{0%,42%{opacity:1}54%,96%{opacity:.12}100%{opacity:.12}}
+@keyframes haloBreath{0%,100%{opacity:.55}50%{opacity:.85}}
+</style>
+</helmet>
+
+<sc-if value="{{ ov }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ close }}" style="{{ ov.backdropStyle }}">
+    <div onClick="{{ stopProp }}" style="{{ ov.wrapStyle }}">
+      <dc-import name="HarborCat" context="lightwatch" hint-size="64px,74px" style="position:absolute;top:-50px;left:34px;width:64px;height:74px;z-index:3"></dc-import>
+      <div style="max-height:86vh;overflow:auto;background:linear-gradient(180deg,#191d33,#12162a);border-radius:8px;border:1px solid rgba(150,160,220,.2);box-shadow:0 30px 80px rgba(0,0,0,.65),inset 0 0 0 1px rgba(240,217,168,.06)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(20px,4vw,32px) 12px;border-bottom:1px solid rgba(150,160,220,.14)">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#8a93c4;text-transform:uppercase">{{ ov.headLine }}</span>
+          <span onClick="{{ close }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#93a0e8;padding:6px 12px;border:1px solid rgba(150,160,220,.3);border-radius:999px;transition:all .2s" style-hover="color:#e8ebfa;border-color:rgba(240,217,168,.5)">close ✕</span>
+        </div>
+        <div style="padding:clamp(20px,4vw,32px);display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+            <div style="{{ ov.lampBox }}">
+              <div style="{{ ov.haloUnder }}"></div>
+              <div style="{{ ov.halo }}"></div>
+              <svg width="40" height="54" viewBox="0 0 26 34" fill="none" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-46%);opacity:.6"><path d="M13 3 L17 10 L9 10 Z" fill="rgba(150,160,220,.4)"></path><rect x="10" y="10" width="6" height="15" fill="none" stroke="rgba(150,160,220,.45)" stroke-width="1.3"></rect><path d="M10 14 h6 M10 19 h6" stroke="rgba(150,160,220,.34)" stroke-width="1.1"></path><path d="M5 30 q8 -4 16 0" stroke="rgba(150,160,220,.36)" stroke-width="1.3" fill="none"></path></svg>
+              <div style="{{ ov.core }}"></div>
+            </div>
+            <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:'Gloock',serif;font-size:clamp(26px,4.5vw,34px);color:#f2f4fd;line-height:1.1">{{ ov.title }}</span>
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#8a93c4;text-transform:uppercase">{{ ov.code }} · est. {{ ov.est }} · district argsea</span>
+                <span style="{{ ov.pillStyle }}">{{ ov.pillLabel }}</span>
+              </div>
+              <span style="font-size:15.5px;font-style:italic;color:#8f9be0;line-height:1.5">{{ ov.decoded }}</span>
+            </div>
+          </div>
+          <sc-if value="{{ ov.noteLinks }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-top:1px solid rgba(150,160,220,.14);padding-top:14px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase;flex:none">notes found here</span>
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <sc-for list="{{ ov.noteLinks }}" as="nl" hint-placeholder-count="2">
+                  <a href="Notes.dc.html" title="it's in the journal · the other book" style="font-size:15px;font-style:italic;color:#93a0e8;line-height:1.45;transition:color .2s" style-hover="color:#f0d9a8">✎ {{ nl.title }} →</a>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ ov.nudge }}" hint-placeholder-val="{{ false }}">
+            <div style="border-top:1px solid rgba(150,160,220,.14);padding-top:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;font-style:italic">no notes here yet. the keeper has been meaning to.</div>
+          </sc-if>
+          <sc-if value="{{ ov.factRows }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 26px;border-top:1px solid rgba(150,160,220,.14);padding:16px 0 4px">
+              <sc-for list="{{ ov.factRows }}" as="fx" hint-placeholder-count="4">
+                <div style="display:flex;flex-direction:column;gap:3px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase">{{ fx.k }}</span>
+                  <span style="font-size:15px;color:#c8cef0;line-height:1.45">{{ fx.v }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start;border-top:1px solid rgba(150,160,220,.14);padding-top:18px">
+            <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
+              <div style="font-size:16.5px;line-height:1.7;color:#c8cef0">{{ ov.details1 }}</div>
+              <div style="font-size:16.5px;line-height:1.7;color:#c8cef0">{{ ov.details2 }}</div>
+              <div style="display:flex;gap:20px;flex-wrap:wrap">
+                <sc-if value="{{ ov.caseHref }}" hint-placeholder-val="{{ false }}">
+                  <a href="{{ ov.caseHref }}" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">read the full log →</a>
+                </sc-if>
+                <sc-if value="{{ ov.coastLink }}" hint-placeholder-val="{{ false }}">
+                  <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#93a0e8">the whole coast →</a>
+                </sc-if>
+              </div>
+            </div>
+            <div style="flex:0 1 220px;min-width:180px;display:flex;flex-direction:column;gap:8px">
+              <div style="background:#fdfcf8;padding:6px 6px 20px;box-shadow:0 8px 22px rgba(0,0,0,.45);transform:rotate(-1.6deg)">
+                <div style="width:100%;height:130px;overflow:hidden;background:#e6e2d6">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ ov.slotId }}" shape="rect" placeholder="a photo from the station" style="display:block;width:100%;height:130px" hint-size="100%,130px"></x-import>
+                </div>
+              </div>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;text-align:center">from the station archive</span>
+              <sc-if value="{{ ov.thumbs }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;padding-top:2px">
+                  <sc-for list="{{ ov.thumbs }}" as="th" hint-placeholder-count="3">
+                    <div data-ov-thumb="true" style="background:#fdfcf8;padding:3px 3px 8px;box-shadow:0 4px 10px rgba(0,0,0,.4);transform:rotate({{ th.rot }})">
+                      <div style="width:56px;height:42px;overflow:hidden;background:#e6e2d6">
+                        <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ th.slotId }}" shape="rect" placeholder="·" style="display:block;width:100%;height:100%" hint-size="56px,42px"></x-import>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a6d3b;text-align:center">{{ ov.tagsText }}</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;border-top:1px solid rgba(150,160,220,.14);padding-top:14px">
+            <span style="font-size:15px;color:#8f9be0;font-style:italic">{{ ov.moral }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#5f6ec4;font-style:italic">- j, the keeper</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 960, &quot;height&quot;: 760}, &quot;light&quot;: {&quot;editor&quot;: null, &quot;default&quot;: null, &quot;tsType&quot;: &quot;object | null&quot;}, &quot;no&quot;: {&quot;editor&quot;: null, &quot;default&quot;: &quot;&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;closing&quot;: {&quot;editor&quot;: null, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;onClose&quot;: {&quot;editor&quot;: null, &quot;default&quot;: null, &quot;tsType&quot;: &quot;() =&gt; void&quot;}, &quot;coastLink&quot;: {&quot;editor&quot;: null, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}}">
+class Component extends DCLogic {
+  mono = "'IBM Plex Mono', monospace";
+  pal = { white: { glow: '246,236,207' }, red: { glow: '231,122,112' }, green: { glow: '111,202,151' }, dark: { glow: '120,132,170' } };
+
+  get light() {
+    if (this.props.light) return this.props.light;
+    // standalone preview fallback: show the flagship from site data
+    const L = (window.ARGSEA_DATA && window.ARGSEA_DATA.projects) || [];
+    return L.find((p) => p.flagship) || L[0] || null;
+  }
+
+  slug(t) { return String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
+  codeFor(p) {
+    const c = { white: 'W', red: 'R', green: 'G' }[p.color] || 'W';
+    if (p.kind === 'fixed') return 'F ' + c;
+    const pre = { flash: 'Fl', occult: 'Oc', iso: 'Iso' }[p.kind] || 'Fl';
+    return `${pre} ${c} ${p.period}s`;
+  }
+  decode(p) {
+    const cn = { white: 'white', red: 'red', green: 'green' }[p.color] || 'white';
+    if (p.status === 'dark') return `formerly ${this.plain(p, cn)}, extinguished ${p.disco || ''}`.trim();
+    return this.plain(p, cn);
+  }
+  plain(p, cn) {
+    if (p.kind === 'fixed') return `fixed ${cn}: a steady light that never blinks`;
+    return {
+      flash: `flashing ${cn}: dark, then a bright flash every ${p.period} seconds`,
+      occult: `occulting ${cn}: steady, with a brief eclipse every ${p.period} seconds`,
+      iso: `isophase ${cn}: equal parts light and dark, every ${p.period} seconds`,
+    }[p.kind] || `${cn} light`;
+  }
+  charAnim(p) {
+    if (p.status === 'dark') return 'none';
+    const dur = Math.min(6, Math.max(3, p.period || 4));
+    const n = { flash: 'flashChar', occult: 'occultChar', iso: 'isoChar', fixed: null }[p.kind];
+    return n ? `${n} ${dur}s ease-in-out infinite` : 'haloBreath 5s ease-in-out infinite';
+  }
+  coreAnim(p) {
+    if (p.status === 'dark' || p.kind === 'fixed') return 'none';
+    const dur = Math.min(6, Math.max(3, p.period || 4));
+    const n = { flash: 'flashChar', occult: 'occultChar', iso: 'isoChar' }[p.kind];
+    return `${n} ${dur}s ease-in-out infinite`;
+  }
+  pill(p) {
+    const base = { fontFamily: this.mono, fontSize: '10.5px', letterSpacing: '.14em', textTransform: 'uppercase', padding: '3px 10px', borderRadius: '999px', whiteSpace: 'nowrap', display: 'inline-block' };
+    if (p.status === 'dark') return { label: `dark · ${p.disco || ''}`.trim(), style: { ...base, color: '#8a93c4', border: '1px solid rgba(138,147,196,.4)', background: 'rgba(138,147,196,.08)' } };
+    return { label: 'lit', style: { ...base, color: '#f0d9a8', border: '1px solid rgba(240,217,168,.5)', background: 'rgba(240,217,168,.12)' } };
+  }
+  bigLamp(p) {
+    const dark = p.status === 'dark';
+    const c = this.pal[dark ? 'dark' : p.color] || this.pal.white;
+    return {
+      lampBox: { position: 'relative', width: '100px', height: '124px', flex: 'none' },
+      haloUnder: { position: 'absolute', left: '50%', top: '42%', width: '88px', height: '88px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${c.glow},${dark ? 0.05 : 0.16}) 0%, transparent 70%)`, pointerEvents: 'none' },
+      halo: { position: 'absolute', left: '50%', top: '42%', width: '124px', height: '124px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: `radial-gradient(circle, rgba(${c.glow},${dark ? 0.05 : 0.5}) 0%, transparent 62%)`, filter: 'blur(3px)', animation: this.charAnim(p), pointerEvents: 'none' },
+      core: { position: 'absolute', left: '50%', top: '42%', width: '13px', height: '13px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: dark ? '#59647f' : '#fff', boxShadow: `0 0 13px 4px rgba(${c.glow},${dark ? 0.18 : 0.9})`, animation: this.coreAnim(p), pointerEvents: 'none' },
+    };
+  }
+
+  componentDidMount() {
+    // standalone preview: data may arrive after first render
+    if (!this.props.light && !this.light) {
+      this._poll = setInterval(() => { if (this.light) { clearInterval(this._poll); this.forceUpdate(); } }, 80);
+      setTimeout(() => clearInterval(this._poll), 8000);
+    }
+  }
+  componentWillUnmount() { clearInterval(this._poll); }
+
+  renderVals() {
+    const p = this.light;
+    if (!p) return { ov: null, close: () => {}, stopProp: (e) => e.stopPropagation() };
+    const pl = this.pill(p);
+    const closing = this.props.closing ?? false;
+    let no = this.props.no;
+    if (!no) {
+      const L = (window.ARGSEA_DATA && window.ARGSEA_DATA.projects) || [];
+      const idx = L.indexOf(p);
+      no = idx >= 0 ? String((idx + 1) * 2).padStart(3, '0') : '';
+    }
+    const ov = {
+      title: p.title, est: p.est, details1: p.details1, details2: p.details2, moral: p.moral,
+      headLine: no ? `The Light List · No. ${no}` : 'The Light List · district argsea',
+      code: this.codeFor(p),
+      decoded: this.decode(p),
+      pillLabel: pl.label, pillStyle: pl.style,
+      tagsText: (p.tags || []).join('  ·  '),
+      noteLinks: (p.notes && p.notes.length) ? p.notes.map((t) => ({ title: t })) : null,
+      nudge: !(p.notes && p.notes.length) && !p.caseStudy,
+      factRows: (() => {
+        if (Array.isArray(p.facts)) { const r = p.facts.filter((f) => f && f.k); return r.length ? r : null; }
+        return p.facts ? Object.entries(p.facts).map(([k, v]) => ({ k, v })) : null;
+      })(),
+      caseHref: p.caseStudy ? 'CaseStudy.dc.html?light=' + this.slug(p.title) : null,
+      slotId: (p.images && p.images[0]) ? 'proj-' + this.slug(p.title) + '-img-' + (typeof p.images[0] === 'string' ? p.images[0] : p.images[0].key) : 'proj-' + this.slug(p.title),
+      thumbs: (() => {
+        const keys = (p.images || []).slice(1).map((k) => (typeof k === 'string' ? k : k.key)).filter(Boolean);
+        if (!keys.length) return null;
+        const rots = ['-2deg', '1.5deg', '-1deg', '2deg', '-1.6deg'];
+        return keys.map((k, i) => ({ slotId: 'proj-' + this.slug(p.title) + '-img-' + k, rot: rots[i % rots.length] }));
+      })(),
+      coastLink: this.props.coastLink ?? false,
+      ...this.bigLamp(p),
+      backdropStyle: { position: 'fixed', inset: 0, background: 'rgba(6,8,16,.78)', backdropFilter: 'blur(5px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(14px,4vw,40px)', animation: closing ? 'backdropOut .22s ease both' : 'backdropIn .25s ease both' },
+      wrapStyle: { position: 'relative', width: 'min(760px,100%)', animation: closing ? 'entryDown .22s ease both' : 'entryUp .45s cubic-bezier(.2,.8,.25,1) both' },
+    };
+    return {
+      ov,
+      close: this.props.onClose || (() => {}),
+      stopProp: (e) => e.stopPropagation(),
+    };
+  }
+}
+
+</script>
+</body>
+</html>
