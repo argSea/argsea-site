@@ -413,7 +413,7 @@ class ApiSource implements ContentSource {
 	 */
 	async getCarvings(): Promise<Carving[]> {
 		try {
-			const res = await fetch(`${this.baseUrl}/1/carving`);
+			const res = await fetch(`${this.baseUrl}/1/carving/carvings`);
 			return res.ok ? (await res.json() as Carving[] | null) ?? [] : [];
 		} catch {
 			return [];
