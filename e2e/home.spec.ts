@@ -91,3 +91,25 @@ test('the flagship polaroid ships a real print, not a broken glyph', async ({ pa
 		.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth))
 		.toBeGreaterThan(0);
 });
+
+test('the home journal overlay steps into the tower', async ({ page }) => {
+	await page.goto('/');
+
+	// JournalStripDirector hydrates on idle: before it attaches, a row click
+	// falls through to its /notes href. Retry (re-homing on a stray nav) until
+	// the click is caught and the entry opens in place.
+	await expect(async () => {
+		if (!page.url().endsWith('/')) {
+			await page.goto('/');
+		}
+		await page.locator('.journal-strip__row').first().click();
+		await expect(page.locator('.overlay-card.letter')).toBeVisible({ timeout: 500 });
+	}).toPass();
+
+	const towerLink = page.locator('.overlay-card.letter .letter__found-in-link');
+	await expect(towerLink).toHaveAttribute('title', 'step into the tower');
+	await towerLink.click();
+
+	await expect(page.locator('.overlay-card.letter')).toHaveCount(0);
+	await expect(page.locator('.overlay-card.light-entry .light-entry__title')).toHaveText('The Great Un-monolithing');
+});

@@ -77,3 +77,27 @@ test('reduced motion keeps the journal tilt', async ({ page }) => {
 	// The tilt is a base transform, so the kill-switch must not flatten it
 	expect(await journal.evaluate((element) => getComputedStyle(element).transform)).not.toBe('none');
 });
+
+test('the journal foot line spells the entry count', async ({ page }) => {
+	await page.goto('/notes');
+	// three fixtures: below the bar of five, and plural
+	await expect(page.locator('.journal__footer')).toHaveText('Three entries so far. The bar for "journal" is five. We\'ll see.');
+});
+
+test('stepping into the tower from an entry opens the light in place', async ({ page }) => {
+	await page.goto('/notes');
+	// row 0 ties to the flagship via noteIds
+	await page.locator('.note-row').first().click();
+
+	const letter = page.locator('.overlay-card.letter');
+	await expect(letter).toBeVisible();
+	const towerLink = letter.locator('.letter__found-in-link');
+	await expect(towerLink).toHaveAttribute('title', 'step into the tower');
+	await towerLink.click();
+
+	// the entry closes and the light's own overlay opens in its place
+	await expect(page.locator('.overlay-card.letter')).toHaveCount(0);
+	const light = page.locator('.overlay-card.light-entry');
+	await expect(light).toBeVisible();
+	await expect(light.locator('.light-entry__title')).toHaveText('The Great Un-monolithing');
+});

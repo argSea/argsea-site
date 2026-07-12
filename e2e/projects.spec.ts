@@ -207,3 +207,54 @@ test('the retranscribed overlay: head line, notes above facts, decorative thumbs
 	await thumbs.first().click({ force: true });
 	await expect(page.locator('.overlay-card .photo-print img')).toHaveAttribute('src', mainSrc!);
 });
+
+// --- pull the note out: a tied journal entry lifts out of the light's log in
+// place, credits the log, and tucks back. The flagship (fixture-project-1)
+// ties note-1 and note-3, so its entry carries the "notes found here" chips.
+test('a chip pulls its note out of the log, credits it, and tucks back', async ({ page }) => {
+	await page.goto('/projects');
+	await page.locator('#light-row-fixture-project-1').click();
+
+	const backdrop = page.locator('.overlay-backdrop');
+	const chip = backdrop.locator('.light-entry__notes-link').first();
+	await expect(chip).toHaveAttribute('title', 'pull it out and read it');
+	await chip.click();
+
+	const paper = backdrop.locator('.light-entry__note-paper');
+	await expect(paper).toBeVisible();
+	await expect(paper.locator('.light-entry__note-credit')).toHaveText('found tucked into the log of The Great Un-monolithing');
+	await expect(paper.locator('.light-entry__note-signature')).toHaveText('- j, keeper');
+	// the dark log is gone while the paper is out, never a second scroll layer
+	await expect(backdrop.locator('.overlay-card.light-entry')).toHaveCount(0);
+
+	await backdrop.locator('.light-entry__tuck-back').click();
+	await expect(backdrop.locator('.overlay-card.light-entry')).toBeVisible();
+	await expect(paper).toHaveCount(0);
+});
+
+test('Escape tucks the note first, a second Escape closes the light', async ({ page }) => {
+	await page.goto('/projects');
+	await page.locator('#light-row-fixture-project-1').click();
+	await page.locator('.light-entry__notes-link').first().click();
+	await expect(page.locator('.light-entry__note-paper')).toBeVisible();
+
+	// first Escape tucks the paper back, the log returns, the overlay stays open
+	await page.keyboard.press('Escape');
+	await expect(page.locator('.light-entry__note-paper')).toHaveCount(0);
+	await expect(page.locator('.overlay-card.light-entry')).toBeVisible();
+
+	// second Escape closes the whole overlay
+	await page.keyboard.press('Escape');
+	await expect(page.locator('.overlay-backdrop')).toHaveCount(0);
+});
+
+test('reduced motion stills the pulled-out paper', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/projects');
+	await page.locator('#light-row-fixture-project-1').click();
+	await page.locator('.light-entry__notes-link').first().click();
+
+	const paper = page.locator('.light-entry__note');
+	await expect(paper).toBeVisible();
+	expect(await paper.evaluate((element) => getComputedStyle(element).animationName)).toBe('none');
+});
