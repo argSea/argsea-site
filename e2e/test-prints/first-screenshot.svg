@@ -1,0 +1,7 @@
+<!-- Obviously fake: an e2e test print, never a real screenshot. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240">
+	<rect width="320" height="240" fill="#7d8fd6" />
+	<circle cx="160" cy="100" r="46" fill="#f0d9a8" />
+	<text x="160" y="180" text-anchor="middle" font-family="monospace" font-size="20" fill="#12162a">TEST PRINT</text>
+	<text x="160" y="204" text-anchor="middle" font-family="monospace" font-size="12" fill="#12162a">first-screenshot</text>
+</svg>

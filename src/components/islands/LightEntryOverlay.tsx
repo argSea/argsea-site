@@ -94,6 +94,16 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 	).slice(0, 6);
 	const thumbs = gallery.slice(1);
 
+	// A print not yet pinned: no image name at all, or a name whose fetch
+	// failed (the print can be struck from the darkroom after the project
+	// referenced it). Tracked by name so the main print and any thumb fail
+	// independently; the frame stays mounted either way, blank paper and
+	// caption, never a broken glyph.
+	const [failedPrints, setFailedPrints] = useState<Set<string>>(new Set());
+	const markFailed = (name: string) => setFailedPrints((prev) => (prev.has(name) ? prev : new Set(prev).add(name)));
+	const mainPrint = gallery[0];
+	const mainOk = Boolean(mainPrint) && !failedPrints.has(mainPrint);
+
 	// Ties resolve by stable note id (ruling 6: sessions/repo/2026-07-11-bank-
 	// portfolio-evolution-mocks.md), never title matching. noteIds arrives
 	// null from the live API for a pre-contract document.
@@ -182,22 +192,29 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 							</div>
 
 							<div className="light-entry__right">
-								{gallery.length > 0 && (
-									<>
-										<div className="photo-print">
-											<img src={mediaUrl(gallery[0])} alt={project.title} />
-										</div>
-										<span className="light-entry__photo-caption">from the station archive</span>
-										{thumbs.length > 0 && (
-											<div className="light-entry__thumbs">
-												{thumbs.map((name, index) => (
-													<div key={name} className="light-entry__thumb" style={{ transform: `rotate(${THUMB_ROTATIONS[index % THUMB_ROTATIONS.length]})` }}>
-														<img src={mediaUrl(name)} alt="" />
-													</div>
-												))}
-											</div>
-										)}
-									</>
+								<div className={`photo-print${mainOk ? '' : ' photo-print--empty'}`}>
+									{mainOk ? (
+										<img src={mediaUrl(mainPrint)} alt={project.title} onError={() => markFailed(mainPrint)} />
+									) : (
+										<div className="photo-print__paper" aria-hidden="true" />
+									)}
+								</div>
+								<span className="light-entry__photo-caption">from the station archive</span>
+								{thumbs.length > 0 && (
+									<div className="light-entry__thumbs">
+										{thumbs.map((name, index) => {
+											const thumbOk = !failedPrints.has(name);
+											return (
+												<div key={name} className={`light-entry__thumb${thumbOk ? '' : ' light-entry__thumb--empty'}`} style={{ transform: `rotate(${THUMB_ROTATIONS[index % THUMB_ROTATIONS.length]})` }}>
+													{thumbOk ? (
+														<img src={mediaUrl(name)} alt="" onError={() => markFailed(name)} />
+													) : (
+														<div className="light-entry__thumb-paper" aria-hidden="true" />
+													)}
+												</div>
+											);
+										})}
+									</div>
 								)}
 								<span className="light-entry__tags">{(project.tags ?? []).join('  ·  ')}</span>
 							</div>

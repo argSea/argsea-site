@@ -6,7 +6,7 @@
 // projects by order when nothing else is featured, so the section never
 // shows just the flagship alone. Clicking any card opens the same Light List
 // entry the coast uses.
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FigureheadDesign, Light, Note, Project } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, registryNo } from '../../lib/lightChar';
 import { pageCatPick } from '../../lib/catSpots';
@@ -93,6 +93,28 @@ function FlagshipCard({ project, notes, onOpen }: { project: Project; notes: Not
 	const facts = (project.facts ?? []).slice(0, 4);
 	const photo = project.images && project.images.length > 0 ? project.images[0] : project.image;
 
+	// A print not yet pinned: no image name at all, or a name whose fetch
+	// failed (the print can be struck from the darkroom after the project
+	// referenced it). Either way the polaroid stays mounted, blank paper and
+	// caption, never a broken glyph.
+	//
+	// This card is SSR'd and always on screen, unlike the overlay's prints
+	// (which React only ever creates post-hydration, once a card is
+	// clicked): the img starts fetching the moment the static HTML parses,
+	// which on a fast response can resolve before client:load finishes
+	// hydrating and attaches onError, losing the event. The mount check
+	// below (img already complete with no width) catches a failure that
+	// landed before hydration; onError still catches one that lands after.
+	const [printFailed, setPrintFailed] = useState(false);
+	const imgRef = useRef<HTMLImageElement>(null);
+	useEffect(() => {
+		const img = imgRef.current;
+		if (img && img.complete && img.naturalWidth === 0) {
+			setPrintFailed(true);
+		}
+	}, []);
+	const showPrint = Boolean(photo) && !printFailed;
+
 	return (
 		<div className="card-wrap home-lights__flagship-wrap" role="button" tabIndex={0} onClick={onOpen} onKeyDown={(event) => {
 			if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onOpen(); }
@@ -150,14 +172,16 @@ function FlagshipCard({ project, notes, onOpen }: { project: Project; notes: Not
 					</div>
 				</div>
 
-				{photo && (
-					<div className="home-lights__polaroid" onClick={(event) => event.stopPropagation()}>
-						<div className="polaroid-frame">
-							<img src={mediaUrl(photo)} alt={project.title} />
-						</div>
-						<span className="home-lights__polaroid-caption">from the station archive · no. {registryNo(project.order)}</span>
+				<div className="home-lights__polaroid" onClick={(event) => event.stopPropagation()}>
+					<div className={`polaroid-frame${showPrint ? '' : ' polaroid-frame--empty'}`}>
+						{showPrint ? (
+							<img ref={imgRef} src={mediaUrl(photo!)} alt={project.title} onError={() => setPrintFailed(true)} />
+						) : (
+							<div className="polaroid-frame__paper" aria-hidden="true" />
+						)}
 					</div>
-				)}
+					<span className="home-lights__polaroid-caption">from the station archive · no. {registryNo(project.order)}</span>
+				</div>
 			</div>
 		</div>
 	);
