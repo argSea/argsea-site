@@ -1,5 +1,5 @@
 // The beacon: first-party sighting pings to our own API and nothing else. A
-// page reports only the three kinds and four flat fields the wire contract
+// page reports only the five kinds and four flat fields the wire contract
 // carries; the API answers 204 and derives everything sensitive server-side.
 //
 // Every path here is fail-silent by contract: a keeper's page must look and
@@ -12,7 +12,7 @@
 // fixtures default) leaves the beacon disarmed, so nothing ever fires.
 const BASE = (import.meta.env.PUBLIC_ARGSEA_API_URL ?? '').replace(/\/+$/, '');
 
-type Kind = 'sail' | 'flip' | 'read';
+type Kind = 'sail' | 'flip' | 'read' | 'visit' | 'bottle';
 
 interface Sighting {
 	kind:    Kind;
@@ -61,6 +61,7 @@ function send(sighting: Sighting): void {
 let sailed = false;
 const flips = new Set<string>();
 const reads = new Set<string>();
+const visits = new Set<string>();
 
 /** The page loaded: fired once per load from the base layout, carrying where we are and where the visitor came from. */
 export function sightSail(): void {
@@ -87,4 +88,18 @@ export function sightRead(id: string): void {
 	}
 	reads.add(id);
 	send({ kind: 'read', path: location.pathname, subject: id, ref: '' });
+}
+
+/** A keeper's record opened: fired once per hobby per page view, when a grave's record modal opens in the graveyard. */
+export function sightVisit(id: string): void {
+	if (!id || visits.has(id)) {
+		return;
+	}
+	visits.add(id);
+	send({ kind: 'visit', path: location.pathname, subject: id, ref: '' });
+}
+
+/** A bottle dropped: fired on every boat poke and never deduped, since each poke serves a fresh proverb. */
+export function sightBottle(): void {
+	send({ kind: 'bottle', path: location.pathname, subject: '', ref: '' });
 }

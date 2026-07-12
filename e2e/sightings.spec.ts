@@ -11,7 +11,7 @@ const ARMED = 'http://127.0.0.1:4824';
 const DISARMED = 'http://127.0.0.1:4821';
 
 interface Sighting {
-	kind:    'sail' | 'flip' | 'read';
+	kind:    'sail' | 'flip' | 'read' | 'visit' | 'bottle';
 	path:    string;
 	subject: string;
 	ref:     string;
@@ -87,6 +87,45 @@ test('opening a note on the notes page emits one read with the note id', async (
 
 	await expect.poll(() => only(seen, 'read').length).toBe(1);
 	expect(only(seen, 'read')[0]).toMatchObject({ kind: 'read', path: '/notes', subject: 'fixture-note-1', ref: '' });
+});
+
+test('opening a hobby record emits one visit with the hobby id, and reopening it does not double-fire', async ({ page }) => {
+	const seen = await collect(page);
+	await page.goto(`${ARMED}/hobbies`);
+
+	await page.locator('.graveyard__row').first().click();
+	await expect(page.locator('.record-modal')).toBeVisible();
+
+	await expect.poll(() => only(seen, 'visit').length).toBe(1);
+	expect(only(seen, 'visit')[0]).toMatchObject({ kind: 'visit', path: '/hobbies', subject: 'fixture-hobby-1', ref: '' });
+
+	// close and reopen the same record: the once-per-hobby guard holds
+	await page.keyboard.press('Escape');
+	await expect(page.locator('.record-modal')).toHaveCount(0);
+	await page.locator('.graveyard__row').first().click();
+	await expect(page.locator('.record-modal')).toBeVisible();
+
+	await page.waitForTimeout(300);
+	expect(only(seen, 'visit')).toHaveLength(1);
+});
+
+test('poking the boat emits a bottle, and poking it again emits another with no dedupe', async ({ page }) => {
+	const seen = await collect(page);
+	await page.goto(`${ARMED}/`);
+
+	// the boat never stops sailing, so dispatch the click wherever it is now; it
+	// can fire before the island hydrates, so retry until a bottle actually drops
+	await expect(async () => {
+		await page.locator('.boat-track').dispatchEvent('click');
+		await expect(page.locator('.bottle-note')).toBeVisible({ timeout: 500 });
+	}).toPass();
+
+	await expect.poll(() => only(seen, 'bottle').length).toBe(1);
+	expect(only(seen, 'bottle')[0]).toMatchObject({ kind: 'bottle', path: '/', subject: '', ref: '' });
+
+	// every poke serves a fresh bottle, so a second poke counts again with no guard
+	await page.locator('.boat-track').dispatchEvent('click');
+	await expect.poll(() => only(seen, 'bottle').length).toBe(2);
 });
 
 test('doNotTrack silences the beacon entirely', async ({ page }) => {
