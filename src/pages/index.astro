@@ -111,7 +111,7 @@ const graveyardChips = resting.map((hobby, index) => ({
 	</section>
 
 	<JournalStrip notes={journalPreview} doodles={journalDoodles} />
-	<JournalStripDirector client:idle notes={journalPreview} allNotes={allNotes} doodles={journalDoodles} projects={projects} signoff={keeper.signoff} />
+	<JournalStripDirector client:idle notes={journalPreview} allNotes={allNotes} doodles={journalDoodles} projects={projects} signoff={keeper.signoff} towerSvg={towerSvg} />
 
 	<!-- the keeper's stores: no destination page, so the section head carries no link -->
 	<section class="stores">

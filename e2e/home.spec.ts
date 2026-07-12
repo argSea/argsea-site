@@ -111,5 +111,9 @@ test('the home journal overlay steps into the tower', async ({ page }) => {
 	await towerLink.click();
 
 	await expect(page.locator('.overlay-card.letter')).toHaveCount(0);
-	await expect(page.locator('.overlay-card.light-entry .light-entry__title')).toHaveText('The Great Un-monolithing');
+	const light = page.locator('.overlay-card.light-entry');
+	await expect(light.locator('.light-entry__title')).toHaveText('The Great Un-monolithing');
+
+	// the stepped-into light is the home mount's, so it carries the coast link too
+	await expect(light.locator('.light-entry__coastlink-link')).toHaveText('the whole coast →');
 });

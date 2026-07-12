@@ -17,9 +17,10 @@ interface Props {
 	catPages?:   Record<string, boolean>;
 	catSpots?:   Record<string, boolean>;
 	catDesigns?: FigureheadDesign[];
+	towerSvg?:   string | null; // tower-stub carving, resolved build-time by notes.astro; forwarded to the stepped-into light
 }
 
-export default function NotesList({ notes, doodles, projects, signoff, catEnabled, catPages, catSpots, catDesigns }: Props) {
+export default function NotesList({ notes, doodles, projects, signoff, catEnabled, catPages, catSpots, catDesigns, towerSvg }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 	const [lightId, setLightId] = useState<string | null>(null);
 
@@ -135,6 +136,7 @@ export default function NotesList({ notes, doodles, projects, signoff, catEnable
 					doodles={doodles}
 					signoff={signoff}
 					catDesigns={catDesigns}
+					towerSvg={towerSvg}
 					onClose={closeLight}
 				/>
 			)}

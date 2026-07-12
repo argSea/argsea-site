@@ -16,9 +16,10 @@ interface Props {
 	doodles:  Doodle[];
 	projects: Project[]; // resolves each note's "found in" ties via project.noteIds
 	signoff:  string;
+	towerSvg?: string | null; // tower-stub carving, resolved build-time by index.astro; forwarded to the stepped-into light
 }
 
-export default function JournalStripDirector({ notes, allNotes, doodles, projects, signoff }: Props) {
+export default function JournalStripDirector({ notes, allNotes, doodles, projects, signoff, towerSvg }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 	const [lightId, setLightId] = useState<string | null>(null);
 
@@ -62,7 +63,7 @@ export default function JournalStripDirector({ notes, allNotes, doodles, project
 	return (
 		<>
 			{open && <JournalEntryOverlay note={open} doodle={openDoodle} signoff={signoff} foundIn={foundIn} onStepInto={stepInto} onClose={close} />}
-			{openLight && <LightEntryOverlay project={openLight} notes={allNotes} doodles={doodles} signoff={signoff} onClose={closeLight} />}
+			{openLight && <LightEntryOverlay project={openLight} notes={allNotes} doodles={doodles} signoff={signoff} towerSvg={towerSvg} coastLink onClose={closeLight} />}
 		</>
 	);
 }
