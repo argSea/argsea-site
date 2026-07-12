@@ -6,7 +6,7 @@
 // spot (the caller decides and passes catHere).
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import type { FigureheadDesign, Note, Project } from '../../lib/api';
+import type { Doodle, FigureheadDesign, Note, Project } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { mediaUrl } from '../../lib/media';
 import { hasLampAnchor } from '../../lib/carvings';
@@ -14,12 +14,17 @@ import { useLamp } from './useLamp';
 import { useEscapeKey } from './useEscapeKey';
 import HarborCat from './HarborCat';
 import BoltedSvg from './BoltedSvg';
+import DoodleSvg from './DoodleSvg';
 import './LightEntryOverlay.css';
 
 // The close animation's own duration: the entryDown/backdropOut CSS
 // (LightEntryOverlay.css) is timed to the same 220ms so the real unmount
 // lands exactly when the animation finishes, not before or after it.
 const CLOSE_MS = 220;
+
+// The note-tuck teardown: noteTuckIn (LightEntryOverlay.css) runs .24s, so the
+// log swaps back in at 230ms, right as the paper finishes sliding away.
+const TUCK_MS = 230;
 
 // The decorative thumb strip's per-index rotation (ProjectOverlay.dc.html's
 // own `rots`), cycling for a gallery beyond five thumbs.
@@ -33,6 +38,7 @@ interface Props {
 	project:     Project;
 	signoff:     string;
 	notes?:      Note[]; // the full journal, so noteIds can resolve to real titles; [] if the caller has none loaded
+	doodles?:    Doodle[]; // the keeper's doodles, so a pulled-out note can draw its own by doodleId; [] if the caller has none loaded
 	catHere?:    boolean;
 	catDesigns?: FigureheadDesign[];
 	coastLink?:  boolean; // "the whole coast →": the home mount only (Hello.dc.html)
@@ -40,7 +46,7 @@ interface Props {
 	onClose:     () => void;
 }
 
-export default function LightEntryOverlay({ project, signoff, notes = [], catHere = false, catDesigns, coastLink = false, towerSvg = null, onClose }: Props) {
+export default function LightEntryOverlay({ project, signoff, notes = [], doodles = [], catHere = false, catDesigns, coastLink = false, towerSvg = null, onClose }: Props) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
@@ -76,6 +82,38 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 	useEscapeKey(true, requestClose);
 
 	useEffect(() => () => window.clearTimeout(closeTimer.current), []);
+
+	// Pull-the-note-out: a note tied to this light can be lifted out of the log
+	// in place. The one wrapper frame swaps the dark log for the cream paper;
+	// `closing` runs the tuck animation, `cameFrom` plays the log's brighten
+	// flourish on the way back. Escape tucks the paper before it closes the
+	// whole overlay (the capture listener below), a second Escape then closes.
+	const [pull, setPull] = useState<{ id: string | null; closing: boolean; cameFrom: boolean }>({ id: null, closing: false, cameFrom: false });
+	const tuckTimer = useRef<number | undefined>(undefined);
+
+	const pullOut = (id: string) => setPull({ id, closing: false, cameFrom: false });
+
+	const tuckBack = () => {
+		if (pull.closing) {
+			return;
+		}
+		if (reducedMotion()) {
+			setPull({ id: null, closing: false, cameFrom: true });
+			return;
+		}
+		setPull((current) => ({ ...current, closing: true }));
+		tuckTimer.current = window.setTimeout(() => setPull({ id: null, closing: false, cameFrom: true }), TUCK_MS);
+	};
+
+	// Capture phase, so a pulled-out note tucks back before the overlay's own
+	// (bubble-phase) Escape closes the whole thing: only active while a note is
+	// out, so once the log is back the next Escape falls through and closes.
+	useEscapeKey(pull.id !== null, tuckBack, true);
+
+	useEffect(() => () => window.clearTimeout(tuckTimer.current), []);
+
+	const pulledNote = pull.id !== null ? notes.find((note) => note.id === pull.id) ?? null : null;
+	const pulledDoodle = pulledNote?.doodleId ? doodles.find((doodle) => doodle.id === pulledNote.doodleId) ?? null : null;
 
 	useEffect(() => {
 		closeRef.current?.focus();
@@ -119,7 +157,36 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 		<div className={`overlay-backdrop${closing ? ' overlay-backdrop--closing' : ''}`} onClick={requestClose}>
 			<div className={`light-entry-wrap${closing ? ' light-entry-wrap--closing' : ''}`} onClick={(event) => event.stopPropagation()}>
 				{catHere && <div className="cat-mount cat-mount--light-entry"><HarborCat pose="perched" context="postcard" designs={catDesigns} /></div>}
-				<div className="overlay-card light-entry">
+				{pull.id !== null && pulledNote ? (
+				<div key="paper" className={`light-entry__note${pull.closing ? ' light-entry__note--tucking' : ''}`}>
+					<div className="light-entry__note-paper">
+						<div className="light-entry__note-head">
+							<button type="button" className="light-entry__tuck-back" onClick={tuckBack}>← tuck it back into no. {registryNo(project.order)}</button>
+							<button className="pill-close" onClick={requestClose}>close ✕</button>
+						</div>
+						<div className="light-entry__note-body">
+							<div className="light-entry__note-metarow">
+								<span className="light-entry__note-date">Journal entry · {pulledNote.date}</span>
+								{pulledNote.conditions && <span className="light-entry__note-wx">{pulledNote.conditions}</span>}
+							</div>
+							<div className="light-entry__note-title">{pulledNote.title}</div>
+							{/* body is sanitized HTML from the API; rendered as-is by contract */}
+							<div className="light-entry__note-prose" dangerouslySetInnerHTML={{ __html: pulledNote.body }} />
+							<div className="light-entry__note-signrow">
+								<div className="light-entry__note-signature">{signoff}, keeper</div>
+								{pulledDoodle && (
+									<div className="light-entry__note-marginalia">
+										<DoodleSvg doodle={pulledDoodle} className="light-entry__note-doodle" />
+										<span className="light-entry__note-doodle-caption">{pulledNote.doodleCaption}</span>
+									</div>
+								)}
+							</div>
+							<div className="light-entry__note-credit">found tucked into the log of {project.title}</div>
+						</div>
+					</div>
+				</div>
+				) : (
+				<div key="log" className={`overlay-card light-entry${pull.cameFrom ? ' light-entry--flourish' : ''}`}>
 					<div className="overlay-head">
 						<span className="overlay-kicker">The Light List · No. {registryNo(project.order)}</span>
 						<button ref={closeRef} className="pill-close" onClick={requestClose}>close ✕</button>
@@ -159,7 +226,7 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 								<span className="light-entry__notes-label">notes found here</span>
 								<div className="light-entry__notes-links">
 									{tiedNotes.map((note) => (
-										<a key={note.id} href="/notes" title="it's in the journal · the other book" className="light-entry__notes-link">✎ {note.title} →</a>
+										<button key={note.id} type="button" title="pull it out and read it" className="light-entry__notes-link" onClick={() => pullOut(note.id)}>✎ {note.title} →</button>
 									))}
 								</div>
 							</div>
@@ -226,6 +293,7 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 						</div>
 					</div>
 				</div>
+				)}
 			</div>
 		</div>,
 		document.body,

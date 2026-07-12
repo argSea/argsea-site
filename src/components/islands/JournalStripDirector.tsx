@@ -8,16 +8,20 @@
 import { useEffect, useState } from 'react';
 import type { Doodle, Note, Project } from '../../lib/api';
 import JournalEntryOverlay from './JournalEntryOverlay';
+import LightEntryOverlay from './LightEntryOverlay';
 
 interface Props {
-	notes:    Note[];
+	notes:    Note[]; // the preview rows (the newest few); resolves a clicked strip row
+	allNotes: Note[]; // the full journal, so a stepped-into light resolves its own "notes found here"
 	doodles:  Doodle[];
 	projects: Project[]; // resolves each note's "found in" ties via project.noteIds
 	signoff:  string;
+	towerSvg?: string | null; // tower-stub carving, resolved build-time by index.astro; forwarded to the stepped-into light
 }
 
-export default function JournalStripDirector({ notes, doodles, projects, signoff }: Props) {
+export default function JournalStripDirector({ notes, allNotes, doodles, projects, signoff, towerSvg }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
+	const [lightId, setLightId] = useState<string | null>(null);
 
 	useEffect(() => {
 		const container = document.querySelector('.journal-strip__rows');
@@ -40,12 +44,26 @@ export default function JournalStripDirector({ notes, doodles, projects, signoff
 	}, []);
 
 	const close = () => setOpenId(null);
+
+	// Step into the tower: close the entry, open its light in place. The home
+	// journal strip is its own island, so it mounts the light overlay here
+	// (HomeLights' one only knows the flagship + featured; a tie can point at
+	// any light, and this director already carries the full projects list).
+	const stepInto = (project: Project) => {
+		setOpenId(null);
+		setLightId(project.id);
+	};
+	const closeLight = () => setLightId(null);
+
 	const open = openId === null ? null : notes.find((note) => note.id === openId) ?? null;
 	const openDoodle = open ? doodles.find((doodle) => doodle.id === open.doodleId) ?? null : null;
 	const foundIn = open ? projects.filter((project) => (project.noteIds ?? []).includes(open.id)) : [];
+	const openLight = lightId === null ? null : projects.find((project) => project.id === lightId) ?? null;
 
-	if (!open) {
-		return null;
-	}
-	return <JournalEntryOverlay note={open} doodle={openDoodle} signoff={signoff} foundIn={foundIn} onClose={close} />;
+	return (
+		<>
+			{open && <JournalEntryOverlay note={open} doodle={openDoodle} signoff={signoff} foundIn={foundIn} onStepInto={stepInto} onClose={close} />}
+			{openLight && <LightEntryOverlay project={openLight} notes={allNotes} doodles={doodles} signoff={signoff} towerSvg={towerSvg} coastLink onClose={closeLight} />}
+		</>
+	);
 }

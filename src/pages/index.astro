@@ -113,11 +113,11 @@ const graveyardChips = resting.map((hobby, index) => {
 			</span>
 			<a href="/projects" class="mono-link">the whole coast →</a>
 		</div>
-		<HomeLights client:load flagship={flagship} featured={featuredTwo} notes={allNotes} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} towerSvg={towerSvg} />
+		<HomeLights client:load flagship={flagship} featured={featuredTwo} notes={allNotes} doodles={journalDoodles} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} towerSvg={towerSvg} />
 	</section>
 
 	<JournalStrip notes={journalPreview} doodles={journalDoodles} />
-	<JournalStripDirector client:idle notes={journalPreview} doodles={journalDoodles} projects={projects} signoff={keeper.signoff} />
+	<JournalStripDirector client:idle notes={journalPreview} allNotes={allNotes} doodles={journalDoodles} projects={projects} signoff={keeper.signoff} towerSvg={towerSvg} />
 
 	<!-- the keeper's stores: no destination page, so the section head carries no link -->
 	<section class="stores">

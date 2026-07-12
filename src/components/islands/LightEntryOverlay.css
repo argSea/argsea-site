@@ -33,6 +33,185 @@
 	to   { opacity: 0; transform: translateY(18px) scale(.985); }
 }
 
+/* --- pull the note out: a tied journal entry lifted out of the log, in place
+   (ProjectOverlay.dc.html). The one wrapper frame swaps the dark log for this
+   cream paper, which carries its own scroll envelope (max-height/overflow to
+   mirror the log's), never a second container nested inside the log. --- */
+
+@keyframes notePullOut {
+	0%   { opacity: 0; transform: translateY(46px) rotate(2.2deg) scale(.94); }
+	60%  { opacity: 1; transform: translateY(-5px) rotate(-.6deg) scale(1.004); }
+	100% { opacity: 1; transform: none; }
+}
+
+@keyframes noteTuckIn {
+	from { opacity: 1; transform: none; }
+	to   { opacity: 0; transform: translateY(40px) rotate(1.8deg) scale(.95); }
+}
+
+/* The log's return flourish, played once as the paper tucks away */
+@keyframes logBrighten {
+	from { opacity: 0; transform: scale(.975); }
+	to   { opacity: 1; transform: none; }
+}
+
+.light-entry--flourish {
+	animation: logBrighten .32s ease both;
+}
+
+.light-entry__note {
+	animation: notePullOut .5s cubic-bezier(.2, .8, .25, 1) both;
+}
+
+.light-entry__note--tucking {
+	animation: noteTuckIn .24s ease both;
+}
+
+.light-entry__note-paper {
+	max-height: 86vh;
+	overflow: auto;
+	background: linear-gradient(180deg, #f1ecdd, #eae3d1);
+	border-radius: 6px 12px 12px 6px;
+	box-shadow: 0 30px 80px rgba(0, 0, 0, .65);
+}
+
+.light-entry__note-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 16px clamp(20px, 4vw, 32px);
+	border-bottom: 1.5px dashed rgba(110, 100, 75, .35);
+}
+
+.light-entry__tuck-back {
+	cursor: pointer;
+	background: none;
+	border: none;
+	padding: 0;
+	text-align: left;
+	font-family: var(--font-mono);
+	font-size: 12px;
+	letter-spacing: .1em;
+	color: #8a7f63;
+	text-transform: uppercase;
+	transition: color .2s;
+}
+
+.light-entry__tuck-back:hover {
+	color: #262a45;
+}
+
+/* The paper's close pill wears the warm ink instead of the log's periwinkle */
+.light-entry__note-head .pill-close {
+	color: #7d7357;
+	border-color: rgba(110, 100, 75, .4);
+}
+
+.light-entry__note-head .pill-close:hover {
+	color: #262a45;
+	border-color: rgba(60, 55, 80, .6);
+}
+
+.light-entry__note-body {
+	padding: clamp(24px, 5vw, 36px);
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.light-entry__note-metarow {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin-bottom: -6px;
+}
+
+.light-entry__note-date {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	letter-spacing: .14em;
+	color: #8a7f63;
+	text-transform: uppercase;
+}
+
+.light-entry__note-wx {
+	font-size: 14.5px;
+	font-style: italic;
+	color: #9b8f6d;
+}
+
+.light-entry__note-title {
+	font-family: var(--font-display);
+	font-size: clamp(24px, 4vw, 30px);
+	color: #20233c;
+	line-height: 1.2;
+}
+
+.light-entry__note-prose {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.light-entry__note-prose p {
+	margin: 0;
+	font-size: 17px;
+	line-height: 1.7;
+	color: #3b3f5e;
+}
+
+.light-entry__note-signrow {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 24px;
+	flex-wrap: wrap;
+}
+
+.light-entry__note-signature {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: #8a7f63;
+	margin-top: 8px;
+}
+
+/* The doodle + its handwritten caption, tilted like something scrawled in the
+   margin after the fact (mirrors the journal letter's marginalia) */
+.light-entry__note-marginalia {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 2px;
+	margin-top: -4px;
+	padding-right: 6px;
+	transform: rotate(-2deg);
+}
+
+.light-entry__note-doodle {
+	flex: none;
+	width: 100px;
+	height: auto;
+	overflow: visible;
+}
+
+.light-entry__note-doodle-caption {
+	font-family: var(--font-body);
+	font-style: italic;
+	font-size: 13px;
+	color: #8a7f63;
+}
+
+.light-entry__note-credit {
+	border-top: 1.5px dashed rgba(110, 100, 75, .3);
+	padding-top: 12px;
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: #a39876;
+}
+
 .light-entry__body {
 	padding: clamp(20px, 4vw, 34px);
 	display: flex;
@@ -196,6 +375,14 @@
 }
 
 .light-entry__notes-link {
+	display: block;
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	text-align: left;
+	cursor: pointer;
+	font-family: inherit;
 	font-size: 15px;
 	font-style: italic;
 	color: var(--periwinkle);

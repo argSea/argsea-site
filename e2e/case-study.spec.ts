@@ -55,6 +55,20 @@ test('the register\'s full log link and the overlay both point at the case study
 	await expect(link).toHaveAttribute('href', SLUG);
 });
 
+test('the case study flattens the sky gradient to one deep field', async ({ page }) => {
+	await page.goto(SLUG);
+
+	// The is:global flatten (#131628) only beats global.css's body gradient on
+	// source order; pin the computed result so a bundler CSS reorder can't
+	// silently let the gradient back in.
+	const bg = await page.locator('body').evaluate((el) => {
+		const style = getComputedStyle(el);
+		return { color: style.backgroundColor, image: style.backgroundImage };
+	});
+	expect(bg.color).toBe('rgb(19, 22, 40)');
+	expect(bg.image).toBe('none');
+});
+
 test('the archive figure ships a real print, not a broken glyph', async ({ page }) => {
 	await page.goto(SLUG);
 
