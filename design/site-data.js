@@ -16,6 +16,28 @@
 //   :::outcomes ... :::   -> "big | caption" lines, rendered as outcome cards
 //   ```mermaid ... ```    -> diagram, themed to the site palette
 window.ARGSEA_DATA = {
+  // the keeper's journal · single source; Notes and Hello render it, the light
+  // overlay reads a note out of the tower's log (project.notes ties by title)
+  journal: [
+    { date: 'jun 2026', title: 'What re-architecting taught me about not architecting',
+      wx: 'light steady · no incidents', doodle: 'diagram', doodleCaption: 'the new system, not built',
+      teaser: 'Sometimes the best system design is the meeting where you talk everyone out of a new system.',
+      p1: 'The most valuable architecture work I did last year produced zero diagrams. It was a meeting where we decided not to build a new system, because the old one was fine and the problem was actually a missing index.',
+      p2: 'Nobody frames that. There is no conference talk called "We Kept The Thing." But keeping the thing, understanding it well enough to defend it, is harder than replacing it, and pays better.',
+      p3: 'So my current architecture checklist starts with one question: what if we did nothing? It is amazing how often "nothing" is a strong candidate.' },
+    { date: 'apr 2026', title: 'CachyOS, three months in', doodle: 'boat', doodleCaption: 'the next distro, on the horizon',
+      wx: 'fog inland · desktop suspiciously calm',
+      teaser: 'A review from someone who will absolutely distro-hop again and lie about it.',
+      p1: 'Three months on CachyOS and everything works, which is deeply unsettling. A Linux desktop is supposed to be a relationship with problems. This one just... boots.',
+      p2: 'I have compensated by inventing problems: kernel flavors, shader pre-caching, a systemd unit that exists purely because I wanted to write one.',
+      p3: 'Verdict: excellent. Will I still be here next year? History says no. History also says I will claim the next distro is "finally the one," so take this note as a hostage statement.' },
+    { date: 'feb 2026', title: 'The queue is the product',
+      wx: 'wind NW · queue quiet', doodle: 'queue', doodleCaption: 'the product.',
+      teaser: 'Notes on message queues after a decade of them quietly running the news.',
+      p1: 'A decade of publishing systems has convinced me the real product is not the website or the app. It is the queue: the quiet agreement about what happens next, in what order, and what happens when it fails.',
+      p2: 'Every incident postmortem I have ever written eventually finds a place where two systems disagreed about that. Every fix eventually looks like a queue wearing a disguise.',
+      p3: 'If you can only design one thing well, design the handoff. The rest is UI.' },
+  ],
   projects: [
     { title: 'The Great Un-monolithing', cat: 'backend', color: 'white', kind: 'flash', period: 8, est: '2024', status: 'lit', flagship: true,
       desc: 'One giant app became many small, well-behaved services. Readers never noticed. That was the point.',

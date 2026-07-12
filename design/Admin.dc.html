@@ -677,55 +677,107 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
               <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">The carving shop</span>
               <span style="font-size:15.5px;color:#a5aed4;font-style:italic">Every carving on the site, catalogued and on the bench. The cat supervises; it has approved none of it.</span>
             </div>
-            <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;animation:fadeUp .7s ease .15s both">
-              <div style="flex:0 1 300px;min-width:250px;background:#1c2036;border:1px solid rgba(150,160,220,.22);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:7px;max-height:600px;overflow-y:auto">
-                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding-bottom:4px">
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the catalog</span>
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ figCountLine }}</span>
-                </div>
-                <sc-for list="{{ figGroups }}" as="g" hint-placeholder-count="3">
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;color:#5f6ec4;text-transform:uppercase;padding-top:9px">{{ g.page }}</span>
-                  <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="2">
-                    <div onClick="{{ it.onOpen }}" style="{{ it.rowStyle }}" style-hover="background:rgba(147,160,232,.08)">
-                      <span style="width:44px;height:34px;flex:none;display:flex;align-items:center;justify-content:center;background:#131728;border:1px solid rgba(150,160,220,.18);border-radius:6px;overflow:hidden">{{ it.thumb }}</span>
-                      <span style="min-width:0;display:flex;flex-direction:column;gap:2px">
-                        <span style="font-family:'Gloock',serif;font-size:14px;color:#e8ebfa;line-height:1.2">{{ it.name }}</span>
-                        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;line-height:1.5">{{ it.where }}</span>
+            <div style="animation:fadeUp .7s ease .15s both;display:flex;flex-direction:column;gap:12px">
+
+              <!-- the bench: one wide canvas -->
+              <div style="{{ figBenchStyle }}">
+
+                <!-- top bar: catalog picker + fresh block -->
+                <div style="position:absolute;top:0;left:0;right:0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 14px;z-index:8;pointer-events:none">
+                  <div style="position:relative;pointer-events:auto">
+                    <div onClick="{{ figCatToggle }}" title="the catalog · every carving on the site" style="display:flex;align-items:center;gap:10px;background:rgba(19,23,40,.92);border:1px solid rgba(150,160,220,.3);border-radius:10px;padding:8px 14px 8px 10px;cursor:pointer;user-select:none;backdrop-filter:blur(6px);box-shadow:0 8px 24px rgba(0,0,0,.35);transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.55)">
+                      <span style="width:32px;height:26px;flex:none;display:flex;align-items:center;justify-content:center;background:#131728;border:1px solid rgba(150,160,220,.18);border-radius:5px;overflow:hidden">{{ figSelThumb }}</span>
+                      <span style="display:flex;flex-direction:column;min-width:0">
+                        <span style="font-family:'Gloock',serif;font-size:14.5px;color:#e8ebfa;line-height:1.15;white-space:nowrap">{{ figName }}</span>
+                        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;white-space:nowrap;max-width:300px;overflow:hidden;text-overflow:ellipsis">{{ figWhere }}</span>
                       </span>
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#93a0e8;margin-left:2px">{{ figCatChevron }}</span>
                     </div>
-                  </sc-for>
-                </sc-for>
-              </div>
-              <div style="flex:1 1 440px;min-width:320px;display:flex;flex-direction:column;gap:14px">
-                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                  <div style="display:flex;gap:4px;background:#171a2e;border:1px solid rgba(150,160,220,.3);border-radius:999px;padding:5px 8px">
-                    <span title="straightedge · for show" style="padding:4px 9px;color:#93a0e8;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:color .2s" style-hover="color:#f0d9a8">◇</span>
-                    <span title="carving knife · for show" style="padding:4px 9px;color:#93a0e8;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:color .2s" style-hover="color:#f0d9a8">✎</span>
-                    <span title="plank · for show" style="padding:4px 9px;color:#93a0e8;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:color .2s" style-hover="color:#f0d9a8">▭</span>
-                    <span title="ring · for show" style="padding:4px 9px;color:#93a0e8;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:color .2s" style-hover="color:#f0d9a8">○</span>
-                    <span title="wood grain · for show" style="padding:4px 9px;color:#93a0e8;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:color .2s" style-hover="color:#f0d9a8">≋</span>
+                    <sc-if value="{{ figCatOpen }}" hint-placeholder-val="{{ false }}">
+                      <div style="position:absolute;top:calc(100% + 8px);left:0;width:min(560px,76vw);max-height:400px;overflow-y:auto;background:rgba(19,23,40,.97);border:1px solid rgba(150,160,220,.3);border-radius:12px;padding:14px;z-index:9;box-shadow:0 24px 60px rgba(0,0,0,.55);backdrop-filter:blur(8px);display:flex;flex-direction:column;gap:10px">
+                        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+                          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the catalog</span>
+                          <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">{{ figCountLine }}</span>
+                        </div>
+                        <sc-for list="{{ figGroups }}" as="g" hint-placeholder-count="3">
+                          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;color:#5f6ec4;text-transform:uppercase;padding-top:4px">{{ g.page }}</span>
+                          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px">
+                            <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+                              <div onClick="{{ it.onOpen }}" title="{{ it.where }}" style="{{ it.tileStyle }}" style-hover="border-color:rgba(240,217,168,.55);background:rgba(147,160,232,.08)">
+                                <span style="height:44px;display:flex;align-items:center;justify-content:center;overflow:hidden">{{ it.thumb }}</span>
+                                <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a5aed4;line-height:1.35;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ it.name }}</span>
+                              </div>
+                            </sc-for>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </sc-if>
                   </div>
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// the chisels select. the markup below is what actually carves.</span>
-                  <span onClick="{{ figFresh }}" style="margin-left:auto;padding:7px 15px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transition:transform .2s" style-hover="transform:scale(1.04)">+ a fresh block</span>
+                  <span onClick="{{ figFresh }}" style="pointer-events:auto;padding:8px 16px;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;background:rgba(19,23,40,.8);backdrop-filter:blur(6px);transition:transform .2s" style-hover="transform:scale(1.04)">+ a fresh block</span>
                 </div>
-                <div style="position:relative;background:repeating-linear-gradient(90deg,#221d33 0 46px,#251f38 46px 92px),linear-gradient(180deg,#241e36,#1d1830);border:1px solid rgba(150,160,220,.22);border-radius:14px;min-height:560px;display:flex;align-items:center;justify-content:center;padding:44px;box-sizing:border-box">
-                  <span style="position:absolute;top:12px;left:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase">on the bench · {{ figName }}</span>
-                  <span style="transform:scale(3);display:inline-flex">{{ figBenchNode }}</span>
-                  <sc-if value="{{ figNote }}" hint-placeholder-val="{{ false }}">
-                    <span style="position:absolute;bottom:12px;left:16px;right:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a93c4;font-style:italic">{{ figNote }}</span>
+
+                <!-- floating tool palette: drag by the grip, collapse by the chevron -->
+                <div style="{{ figPalStyle }}">
+                  <div style="display:flex;align-items:center;gap:2px;padding:6px 8px">
+                    <span onPointerDown="{{ figPalDown }}" title="drag the tool tray" style="cursor:grab;font-size:13px;color:#5f6ec4;letter-spacing:1px;user-select:none;touch-action:none">⠿</span>
+                    <span onClick="{{ figPalToggle }}" title="tuck the tools away" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#93a0e8;padding:2px 6px;margin-left:auto;user-select:none">{{ figPalChevron }}</span>
+                  </div>
+                  <sc-if value="{{ figPalOpen }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:3px;padding:2px 7px 8px">
+                      <sc-for list="{{ figTools }}" as="t" hint-placeholder-count="5">
+                        <span onClick="{{ t.onPick }}" title="{{ t.title }}" style="{{ t.style }}" style-hover="color:#f0d9a8">{{ t.glyph }}</span>
+                      </sc-for>
+                    </div>
                   </sc-if>
                 </div>
-                <sc-if value="{{ figEditable }}" hint-placeholder-val="{{ true }}">
-                  <textarea value="{{ figSrc }}" onChange="{{ figEdit }}" rows="10" spellcheck="false" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:10px;padding:13px 14px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.65;outline:none;resize:vertical;white-space:pre-wrap" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+
+                <!-- the carving, at zoom -->
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:72px 48px 56px;box-sizing:border-box">
+                  <span style="{{ figPrevStyle }}">{{ figBenchNode }}</span>
+                </div>
+
+                <!-- zoom cluster + bench swap -->
+                <div style="position:absolute;bottom:12px;right:14px;display:flex;align-items:center;gap:2px;background:rgba(19,23,40,.92);border:1px solid rgba(150,160,220,.3);border-radius:999px;padding:4px 6px;z-index:7;backdrop-filter:blur(6px)">
+                  <span onClick="{{ figBenchSwap }}" title="swap the bench top · navy or white" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#93a0e8;padding:2px 9px;border-right:1px solid rgba(150,160,220,.25);user-select:none" style-hover="color:#f0d9a8">{{ figBenchLabel }}</span>
+                  <span onClick="{{ figZoomOut }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:14px;color:#93a0e8;padding:2px 9px;user-select:none" style-hover="color:#f0d9a8">−</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#c3cbf2;min-width:44px;text-align:center">{{ figZoomPct }}</span>
+                  <span onClick="{{ figZoomIn }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:14px;color:#93a0e8;padding:2px 9px;user-select:none" style-hover="color:#f0d9a8">+</span>
+                  <span onClick="{{ figZoomFit }}" title="fit the bench" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#93a0e8;padding:2px 9px;border-left:1px solid rgba(150,160,220,.25);user-select:none" style-hover="color:#f0d9a8">fit</span>
+                </div>
+
+                <sc-if value="{{ figNote }}" hint-placeholder-val="{{ false }}">
+                  <span style="position:absolute;bottom:14px;left:16px;right:190px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a93c4;font-style:italic;z-index:7">{{ figNote }}</span>
                 </sc-if>
-                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">bolt it to ·</span>
-                  <select value="{{ figAssign }}" onChange="{{ figSetAssign }}" style="flex:1 1 220px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+              </div>
+
+              <!-- the markup, tucked in a drawer -->
+              <div style="background:#171a2e;border:1px solid rgba(150,160,220,.22);border-radius:12px;overflow:hidden">
+                <div onClick="{{ figCodeToggle }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;cursor:pointer;user-select:none;transition:background .2s" style-hover="background:rgba(147,160,232,.05)">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">‹/› the markup</span>
+                  <span style="display:flex;align-items:center;gap:14px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">what the chisels carve, written down. hand-edit it and the tools step back.</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#93a0e8">{{ figCodeChevron }}</span></span>
+                </div>
+                <sc-if value="{{ figCodeOpen }}" hint-placeholder-val="{{ false }}">
+                  <sc-if value="{{ figEditable }}" hint-placeholder-val="{{ true }}">
+                    <div style="padding:0 14px 14px">
+                      <textarea value="{{ figSrc }}" onChange="{{ figEdit }}" rows="8" spellcheck="false" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:10px;padding:13px 14px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.65;outline:none;resize:vertical;white-space:pre-wrap" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ figLocked }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:0 14px 14px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8a93c4;font-style:italic">{{ figNote }}</span></div>
+                  </sc-if>
+                </sc-if>
+              </div>
+
+              <!-- bolting -->
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#f0d9a8">◐ bolted carvings ship with the next hoist</span>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">bolt to</span>
+                  <select value="{{ figAssign }}" onChange="{{ figSetAssign }}" style="box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:999px;padding:9px 14px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none;max-width:320px" style-focus="border-color:rgba(240,217,168,.6)">
                     <sc-for list="{{ figAssignOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.id }}">{{ o.label }}</option></sc-for>
                   </select>
-                  <span onClick="{{ figBolt }}" style="padding:10px 20px;background:#f0d9a8;color:#1b2033;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(147,160,232,.6);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(147,160,232,.6)">⚒ bolt it into place</span>
+                  <span onClick="{{ figBolt }}" style="{{ figBoltStyle }}" style-hover="transform:rotate(0deg) translateY(-2px)">{{ figBoltLabel }}</span>
                 </div>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">◐ mock · the bench edits and assigns; bolted carvings ship with the next hoist.</span>
               </div>
             </div>
           </div>
@@ -2105,13 +2157,22 @@ class Component extends DCLogic {
       delete item.revs;
       this.setState((s) => {
         const notes = [...s.notes];
+        let projects = s.projects;
         if (idx == null) { item.revs = []; notes.unshift(item); }
         else {
           const { revs, ...snap } = notes[idx];
           item.revs = [{ t: this.snapLabel(), data: snap }, ...(revs || [])].slice(0, 5);
+          // a renamed entry keeps its place in every light's log
+          const oldTitle = (snap.title || '').trim();
+          const newTitle = (item.title || '').trim();
+          if (oldTitle && newTitle && oldTitle !== newTitle) {
+            projects = s.projects.map((p) => (p.notes || []).includes(oldTitle)
+              ? { ...p, notes: p.notes.map((t) => (t === oldTitle ? newTitle : t)) }
+              : p);
+          }
           notes[idx] = item;
         }
-        return { notes, edit: null };
+        return { notes, projects, edit: null };
       });
       this.log(`entry "${draft.title || 'untitled'}" ${idx == null ? 'drafted' : 'edited'}`);
       this.showToast(restored ? `↺ earlier printing filed · it's now ${item.status === 'published' ? 'inked ●' : 'pencilled ○'}` : '✎ entered in the log book');
@@ -2578,43 +2639,125 @@ class Component extends DCLogic {
         const selId = this.state.figSel || 'lighthouse-logo';
         const sel = all.find((x) => x.id === selId) || all[0];
         const src = this.state.figSrcId === sel.id && this.state.figSrc != null ? this.state.figSrc : (sel.svg || '');
-        const safe = (s) => String(s || '').replace(/<\s*script/gi, '&lt;script');
+        const safe = (s2) => String(s2 || '').replace(/<\s*script/gi, '&lt;script');
         const mkNode = (markup, cap) => React.createElement('span', { style: { display: 'inline-flex', maxWidth: cap ? '40px' : 'none', maxHeight: cap ? '30px' : 'none', overflow: 'hidden' }, dangerouslySetInnerHTML: { __html: safe(markup) } });
+        const zoom = this.state.figZoom || 3;
         const groups = [];
         for (const it of all) {
-          const page = it.page || 'the bench';
+          const page = it.page || 'fresh off the bench';
           let g = groups.find((x) => x.page === page);
           if (!g) { g = { page, items: [] }; groups.push(g); }
           g.items.push({
-            name: it.name, where: it.where || 'fresh off the bench, unassigned',
+            name: it.name, where: it.where || 'unassigned',
             thumb: it.svg ? mkNode(it.svg, true) : React.createElement('span', { style: { fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: '#5f6ec4' } }, '△'),
-            rowStyle: { display: 'flex', gap: '10px', alignItems: 'center', padding: '7px 8px', borderRadius: '9px', cursor: 'pointer', background: sel.id === it.id ? 'rgba(240,217,168,.08)' : 'transparent', border: sel.id === it.id ? '1px solid rgba(240,217,168,.4)' : '1px solid transparent', transition: 'background .2s' },
-            onOpen: () => this.setState({ figSel: it.id, figSrc: it.svg || '', figSrcId: it.id, figAssign: it.id }),
+            tileStyle: { display: 'flex', flexDirection: 'column', gap: '5px', padding: '9px 8px 7px', borderRadius: '9px', cursor: 'pointer', boxSizing: 'border-box', background: sel.id === it.id ? 'rgba(240,217,168,.08)' : 'rgba(19,23,40,.5)', border: sel.id === it.id ? '1px solid rgba(240,217,168,.5)' : '1px solid rgba(150,160,220,.16)', transition: 'background .2s, border-color .2s' },
+            onOpen: () => this.setState({ figSel: it.id, figSrc: it.svg || '', figSrcId: it.id, figAssign: it.id, figCatOpen: false }),
           });
         }
+        const tools = [
+          { id: 'select', glyph: '⇱', title: 'select · move and shape the carving' },
+          { id: 'nodes', glyph: '◇', title: 'nodes · bend the lines at their joints' },
+          { id: 'pen', glyph: '✒', title: 'pen · lay a path point by point' },
+          { id: 'pencil', glyph: '✎', title: 'pencil · carve freehand' },
+        ];
+        const toolSel = this.state.figTool || 'select';
+        const palOpen = this.state.figPalOpen ?? true;
         return {
           figGroups: groups,
           figCountLine: `${this.svgCatalog.length} on the books · ${custom.length} fresh`,
           figName: sel.name,
+          figWhere: sel.where || 'unassigned',
+          figSelThumb: (sel.svg || src) ? mkNode(src || sel.svg, true) : React.createElement('span', { style: { fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: '#5f6ec4' } }, '△'),
           figSrc: src,
           figNote: sel.svg ? null : sel.note,
           figEditable: !!sel.svg || String(sel.id).startsWith('fresh-'),
-          figBenchNode: sel.svg || src ? mkNode(src || sel.svg, false) : React.createElement('span', { style: { fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: '#8a93c4' } }, '· not on this bench ·'),
+          figLocked: !sel.svg && !String(sel.id).startsWith('fresh-'),
+          figBenchNode: sel.svg || src ? mkNode(src || sel.svg, false) : React.createElement('span', { style: { fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: '#8a93c4' } }, '· not on this bench · see the note below ·'),
           figEdit: (ev) => this.setState({ figSrc: ev.target.value, figSrcId: sel.id }),
+          // catalog popover
+          figCatOpen: !!this.state.figCatOpen,
+          figCatToggle: () => this.setState({ figCatOpen: !this.state.figCatOpen }),
+          figCatChevron: this.state.figCatOpen ? '▴' : '▾',
+          // floating palette
+          figPalStyle: {
+            position: 'absolute', left: (this.state.figPalX ?? 14) + 'px', top: (this.state.figPalY ?? 64) + 'px',
+            zIndex: 7, display: 'flex', flexDirection: 'column',
+            background: 'rgba(19,23,40,.92)', border: '1px solid rgba(150,160,220,.3)', borderRadius: '12px',
+            boxShadow: '0 10px 30px rgba(0,0,0,.45)', backdropFilter: 'blur(6px)', userSelect: 'none',
+          },
+          figPalOpen: palOpen,
+          figPalToggle: () => this.setState({ figPalOpen: !palOpen }),
+          figPalChevron: palOpen ? '▴' : '▾',
+          figPalDown: (ev) => {
+            ev.preventDefault();
+            const sx = ev.clientX, sy = ev.clientY;
+            const ox = this.state.figPalX ?? 14, oy = this.state.figPalY ?? 64;
+            const move = (e2) => {
+              const nx = Math.max(4, Math.min(ox + e2.clientX - sx, window.innerWidth - 120));
+              const ny = Math.max(4, Math.min(oy + e2.clientY - sy, window.innerHeight - 80));
+              this.setState({ figPalX: nx, figPalY: ny });
+            };
+            const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); };
+            window.addEventListener('pointermove', move);
+            window.addEventListener('pointerup', up);
+          },
+          figTools: tools.map((t) => ({
+            glyph: t.glyph, title: t.title,
+            style: { cursor: 'pointer', fontFamily: "'IBM Plex Mono', monospace", fontSize: '14px', textAlign: 'center', padding: '7px 9px', borderRadius: '8px', userSelect: 'none', transition: 'color .2s, background .2s',
+              color: toolSel === t.id ? '#f0d9a8' : '#93a0e8',
+              background: toolSel === t.id ? 'rgba(240,217,168,.1)' : 'transparent',
+              border: toolSel === t.id ? '1px solid rgba(240,217,168,.4)' : '1px solid transparent' },
+            onPick: () => this.setState({ figTool: t.id }),
+          })),
+          // zoom
+          figZoomPct: Math.round(zoom * 100) + '%',
+          figZoomIn: () => this.setState({ figZoom: Math.min(8, zoom + 0.5) }),
+          figZoomOut: () => this.setState({ figZoom: Math.max(0.5, zoom - 0.5) }),
+          figZoomFit: () => this.setState({ figZoom: 3 }),
+          figPrevStyle: { transform: `scale(${zoom})`, display: 'inline-flex', transition: 'transform .18s ease', filter: (this.state.figBench === 'white') ? 'drop-shadow(0 10px 22px rgba(40,40,60,.25))' : 'drop-shadow(0 10px 22px rgba(0,0,0,.4))' },
+          // bench top
+          figBenchStyle: {
+            position: 'relative', border: '1px solid rgba(150,160,220,.22)', borderRadius: '16px',
+            minHeight: 'min(66vh,680px)', boxSizing: 'border-box', overflow: 'hidden',
+            background: (this.state.figBench === 'white') ? '#f4f2ec' : '#131628',
+            transition: 'background .25s ease',
+          },
+          figBenchLabel: (this.state.figBench === 'white') ? '● navy' : '○ white',
+          figBenchSwap: () => this.setState({ figBench: (this.state.figBench === 'white') ? 'navy' : 'white' }),
+          // markup drawer
+          figCodeOpen: !!this.state.figCodeOpen,
+          figCodeToggle: () => this.setState({ figCodeOpen: !this.state.figCodeOpen }),
+          figCodeChevron: this.state.figCodeOpen ? 'hide ▴' : 'show ▾',
           figFresh: () => {
             const n = custom.length + 1;
             const id = 'fresh-' + n;
             const starter = '<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="12" stroke="#93a0e8" stroke-width="1.5"></circle><path d="M20 8 V3" stroke="#f0d9a8" stroke-width="1.5"></path></svg>';
-            this.setState({ figCustom: [...custom, { id, name: 'fresh carving no. ' + n, page: 'the bench', where: 'unassigned', svg: starter }], figSel: id, figSrc: starter, figSrcId: id, figAssign: 'lighthouse-logo' });
+            this.setState({ figCustom: [...custom, { id, name: 'fresh carving no. ' + n, page: 'the bench', where: 'unassigned', svg: starter }], figSel: id, figSrc: starter, figSrcId: id, figAssign: 'lighthouse-logo', figCatOpen: false, figCodeOpen: true });
             this.log('a fresh block on the bench. blade is sharp.');
           },
           figAssign: this.state.figAssign || sel.id,
           figSetAssign: (ev) => this.setState({ figAssign: ev.target.value }),
           figAssignOptions: this.svgCatalog.map((c) => ({ id: c.id, label: c.name + ' · ' + c.page })),
+          figBoltLabel: this.state.figBolted ? '✓ bolted · ships with the next hoist' : '⚒ bolt it into place',
+          figBoltStyle: {
+            padding: '10px 20px', borderRadius: '999px', fontFamily: "'IBM Plex Mono', monospace", fontSize: '13px', cursor: 'pointer', userSelect: 'none', whiteSpace: 'nowrap',
+            transition: 'transform .2s, background .3s, color .3s', transform: 'rotate(-.5deg)',
+            background: this.state.figBolted ? 'rgba(111,202,151,.15)' : '#f0d9a8',
+            color: this.state.figBolted ? '#6fca97' : '#1b2033',
+            border: this.state.figBolted ? '1px solid rgba(111,202,151,.5)' : '1px solid transparent',
+            boxShadow: this.state.figBolted ? 'none' : '3px 3px 0 rgba(147,160,232,.6)',
+          },
           figBolt: () => {
+            if (this.state.figBolted) return;
             const loc = this.svgCatalog.find((c) => c.id === (this.state.figAssign || sel.id));
+            const where = loc ? loc.name + ' · ' + loc.page : 'its place';
+            const patch = { figBolted: true };
+            if (String(sel.id).startsWith('fresh-')) patch.figCustom = custom.map((c) => c.id === sel.id ? { ...c, where: 'bolted to ' + (loc ? loc.name.toLowerCase() : 'the site') } : c);
+            this.setState(patch);
+            clearTimeout(this._boltT);
+            this._boltT = setTimeout(() => this.setState({ figBolted: false }), 2600);
             this.showToast(`⚒ "${sel.name}" bolted to ${loc ? loc.name.toLowerCase() : 'its place'}. ships with the next hoist.`);
-            this.log(`carving "${sel.name}" assigned to ${loc ? loc.page : 'the site'} · ${loc ? loc.name : ''}`);
+            this.log(`carving "${sel.name}" assigned to ${where}`);
           },
         };
       })()),

@@ -414,7 +414,7 @@ class Component extends DCLogic {
           position: 'absolute', left: '26%', top: '52%', width: '124px', height: '124px',
           transform: 'translate(-50%,-50%)', borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(240,196,120,.3), transparent 64%)',
-          filter: 'blur(2px)', opacity: hovered ? 1 : hauntingNow ? 0.65 : 0, transition: 'opacity .35s ease .08s',
+          filter: 'blur(2px)', opacity: hovered ? 1 : hauntingNow ? 1 : 0, transition: 'opacity .35s ease .08s',
           pointerEvents: 'none', zIndex: 0,
         },
         lantern: {
@@ -463,7 +463,7 @@ class Component extends DCLogic {
         lampDot: {
           width: '6px', height: '6px', borderRadius: '50%', flex: 'none',
           background: alive || hauntingNow ? '#f0d9a8' : haunt ? '#8a93c4' : 'rgba(122,131,173,.3)',
-          boxShadow: alive || hauntingNow ? '0 0 7px 2px rgba(240,217,168,.55)' : 'none',
+          boxShadow: hauntingNow ? '0 0 11px 3px rgba(240,217,168,.85)' : alive ? '0 0 7px 2px rgba(240,217,168,.55)' : 'none',
           animation: alive ? 'lampPulse 4s ease-in-out infinite' : hauntingNow ? 'none' : haunt ? 'rareFlicker 11s linear infinite' : 'none',
           transition: 'background .4s ease, box-shadow .4s ease',
         },

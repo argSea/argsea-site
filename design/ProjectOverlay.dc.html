@@ -17,11 +17,16 @@ image-slot{display:block;width:100%;height:100%}
 @keyframes backdropIn{from{opacity:0}to{opacity:1}}
 @keyframes backdropOut{from{opacity:1}to{opacity:0}}
 @keyframes entryUp{from{opacity:0;transform:translateY(24px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes notePullOut{0%{opacity:0;transform:translateY(46px) rotate(2.2deg) scale(.94)}60%{opacity:1;transform:translateY(-5px) rotate(-.6deg) scale(1.004)}100%{opacity:1;transform:none}}
+@keyframes noteTuckIn{from{opacity:1;transform:none}to{opacity:0;transform:translateY(40px) rotate(1.8deg) scale(.95)}}
+@keyframes logDim{from{opacity:1;transform:none}to{opacity:0;transform:scale(.975)}}
+@keyframes logBrighten{from{opacity:0;transform:scale(.975)}to{opacity:1;transform:none}}
 @keyframes entryDown{from{opacity:1;transform:none}to{opacity:0;transform:translateY(18px) scale(.985)}}
 @keyframes flashChar{0%,68%{opacity:.08}78%{opacity:1}88%{opacity:.08}100%{opacity:.08}}
 @keyframes occultChar{0%,70%{opacity:1}80%{opacity:.09}90%{opacity:1}100%{opacity:1}}
 @keyframes isoChar{0%,42%{opacity:1}54%,96%{opacity:.12}100%{opacity:.12}}
 @keyframes haloBreath{0%,100%{opacity:.55}50%{opacity:.85}}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </helmet>
 
@@ -29,6 +34,49 @@ image-slot{display:block;width:100%;height:100%}
   <div onClick="{{ close }}" style="{{ ov.backdropStyle }}">
     <div onClick="{{ stopProp }}" style="{{ ov.wrapStyle }}">
       <dc-import name="HarborCat" context="lightwatch" hint-size="64px,74px" style="position:absolute;top:-50px;left:34px;width:64px;height:74px;z-index:3"></dc-import>
+
+      <!-- the note, pulled out of the log (in-place swap) -->
+      <sc-if value="{{ note }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ paperAnim }}">
+        <div style="max-height:86vh;overflow:auto;background:linear-gradient(180deg,#f1ecdd,#eae3d1);border-radius:6px 12px 12px 6px;box-shadow:0 30px 80px rgba(0,0,0,.65)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px clamp(20px,4vw,32px);border-bottom:1.5px dashed rgba(110,100,75,.35)">
+            <span onClick="{{ tuckBack }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#8a7f63;text-transform:uppercase;transition:color .2s" style-hover="color:#262a45">← tuck it back into no. {{ no }}</span>
+            <span onClick="{{ close }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#7d7357;padding:6px 12px;border:1px solid rgba(110,100,75,.4);border-radius:999px;transition:all .2s" style-hover="color:#262a45;border-color:rgba(60,55,80,.6)">close ✕</span>
+          </div>
+          <div style="padding:clamp(24px,5vw,36px);display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:-6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#8a7f63;text-transform:uppercase">Journal entry · {{ note.date }}</span>
+              <sc-if value="{{ note.wx }}" hint-placeholder-val="{{ false }}"><span style="font-size:14.5px;font-style:italic;color:#9b8f6d">{{ note.wx }}</span></sc-if>
+            </div>
+            <div style="font-family:'Gloock',serif;font-size:clamp(24px,4vw,30px);color:#20233c;line-height:1.2">{{ note.title }}</div>
+            <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ note.p1 }}</div>
+            <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ note.p2 }}</div>
+            <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ note.p3 }}</div>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#8a7f63;margin-top:8px">- j, keeper</div>
+              <sc-if value="{{ note.hasDoodle }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;margin-top:-4px;padding-right:6px;transform:rotate(-2deg)">
+                  <sc-if value="{{ note.doodleDiagram }}" hint-placeholder-val="{{ false }}">
+                    <svg width="96" height="58" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg>
+                  </sc-if>
+                  <sc-if value="{{ note.doodleBoat }}" hint-placeholder-val="{{ false }}">
+                    <svg width="100" height="62" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path></svg>
+                  </sc-if>
+                  <sc-if value="{{ note.doodleQueue }}" hint-placeholder-val="{{ false }}">
+                    <svg width="104" height="48" viewBox="0 0 110 50" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path></svg>
+                  </sc-if>
+                  <span style="font-size:13px;font-style:italic;color:#8a7f63">{{ note.doodleCaption }}</span>
+                </div>
+              </sc-if>
+            </div>
+            <div style="border-top:1.5px dashed rgba(110,100,75,.3);padding-top:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a39876">found tucked into the log of {{ ov.title }}</div>
+          </div>
+        </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ noteClosed }}" hint-placeholder-val="{{ true }}">
+      <div style="{{ logAnim }}">
       <div style="max-height:86vh;overflow:auto;background:linear-gradient(180deg,#191d33,#12162a);border-radius:8px;border:1px solid rgba(150,160,220,.2);box-shadow:0 30px 80px rgba(0,0,0,.65),inset 0 0 0 1px rgba(240,217,168,.06)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(20px,4vw,32px) 12px;border-bottom:1px solid rgba(150,160,220,.14)">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#8a93c4;text-transform:uppercase">{{ ov.headLine }}</span>
@@ -56,7 +104,7 @@ image-slot{display:block;width:100%;height:100%}
               <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase;flex:none">notes found here</span>
               <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
                 <sc-for list="{{ ov.noteLinks }}" as="nl" hint-placeholder-count="2">
-                  <a href="Notes.dc.html" title="it's in the journal · the other book" style="font-size:15px;font-style:italic;color:#93a0e8;line-height:1.45;transition:color .2s" style-hover="color:#f0d9a8">✎ {{ nl.title }} →</a>
+                  <span onClick="{{ nl.onOpen }}" title="pull it out and read it" style="font-size:15px;font-style:italic;color:#93a0e8;line-height:1.45;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">✎ {{ nl.title }} →</span>
                 </sc-for>
               </div>
             </div>
@@ -114,6 +162,8 @@ image-slot{display:block;width:100%;height:100%}
           </div>
         </div>
       </div>
+      </div>
+      </sc-if>
     </div>
   </div>
 </sc-if>
@@ -121,6 +171,13 @@ image-slot{display:block;width:100%;height:100%}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 960, &quot;height&quot;: 760}, &quot;light&quot;: {&quot;editor&quot;: null, &quot;default&quot;: null, &quot;tsType&quot;: &quot;object | null&quot;}, &quot;no&quot;: {&quot;editor&quot;: null, &quot;default&quot;: &quot;&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;closing&quot;: {&quot;editor&quot;: null, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;onClose&quot;: {&quot;editor&quot;: null, &quot;default&quot;: null, &quot;tsType&quot;: &quot;() =&gt; void&quot;}, &quot;coastLink&quot;: {&quot;editor&quot;: null, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}}">
 class Component extends DCLogic {
+  state = { noteTitle: null, noteClosing: false, cameFromNote: false };
+
+  tuckBack = () => {
+    if (this.state.noteClosing) return;
+    this.setState({ noteClosing: true });
+    this._tuck = setTimeout(() => this.setState({ noteTitle: null, noteClosing: false, cameFromNote: true }), 230);
+  };
   mono = "'IBM Plex Mono', monospace";
   pal = { white: { glow: '246,236,207' }, red: { glow: '231,122,112' }, green: { glow: '111,202,151' }, dark: { glow: '120,132,170' } };
 
@@ -185,8 +242,16 @@ class Component extends DCLogic {
       this._poll = setInterval(() => { if (this.light) { clearInterval(this._poll); this.forceUpdate(); } }, 80);
       setTimeout(() => clearInterval(this._poll), 8000);
     }
+    // capture phase so a pulled-out note tucks back on Esc before the host closes the overlay
+    this._esc = (e) => {
+      if (e.key === 'Escape' && this.state.noteTitle && !this.state.noteClosing) {
+        e.stopPropagation();
+        this.tuckBack();
+      }
+    };
+    window.addEventListener('keydown', this._esc, true);
   }
-  componentWillUnmount() { clearInterval(this._poll); }
+  componentWillUnmount() { clearInterval(this._poll); window.removeEventListener('keydown', this._esc, true); }
 
   renderVals() {
     const p = this.light;
@@ -206,7 +271,7 @@ class Component extends DCLogic {
       decoded: this.decode(p),
       pillLabel: pl.label, pillStyle: pl.style,
       tagsText: (p.tags || []).join('  ·  '),
-      noteLinks: (p.notes && p.notes.length) ? p.notes.map((t) => ({ title: t })) : null,
+      noteLinks: (p.notes && p.notes.length) ? p.notes.map((t) => ({ title: t, onOpen: () => this.setState({ noteTitle: t, noteClosing: false, cameFromNote: false }) })) : null,
       nudge: !(p.notes && p.notes.length) && !p.caseStudy,
       factRows: (() => {
         if (Array.isArray(p.facts)) { const r = p.facts.filter((f) => f && f.k); return r.length ? r : null; }
@@ -225,8 +290,17 @@ class Component extends DCLogic {
       backdropStyle: { position: 'fixed', inset: 0, background: 'rgba(6,8,16,.78)', backdropFilter: 'blur(5px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(14px,4vw,40px)', animation: closing ? 'backdropOut .22s ease both' : 'backdropIn .25s ease both' },
       wrapStyle: { position: 'relative', width: 'min(760px,100%)', animation: closing ? 'entryDown .22s ease both' : 'entryUp .45s cubic-bezier(.2,.8,.25,1) both' },
     };
+    const journal = (window.ARGSEA_DATA && window.ARGSEA_DATA.journal) || [];
+    const rawNote = this.state.noteTitle ? journal.find((n) => n.title === this.state.noteTitle) : null;
+    const note = rawNote ? { ...rawNote, hasDoodle: !!rawNote.doodle, doodleDiagram: rawNote.doodle === 'diagram', doodleBoat: rawNote.doodle === 'boat', doodleQueue: rawNote.doodle === 'queue' } : null;
     return {
       ov,
+      note,
+      noteClosed: !note,
+      no,
+      paperAnim: { animation: this.state.noteClosing ? 'noteTuckIn .24s ease both' : 'notePullOut .5s cubic-bezier(.2,.8,.25,1) both' },
+      logAnim: { animation: this.state.cameFromNote ? 'logBrighten .32s ease both' : 'none' },
+      tuckBack: this.tuckBack,
       close: this.props.onClose || (() => {}),
       stopProp: (e) => e.stopPropagation(),
     };

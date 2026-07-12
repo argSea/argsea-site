@@ -232,6 +232,16 @@ a:hover{color:#e8ebfa}
           <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ log.p1 }}</div>
           <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ log.p2 }}</div>
           <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ log.p3 }}</div>
+          <sc-if value="{{ log.lightLinks }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-top:1.5px dashed rgba(110,100,75,.3);padding-top:14px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#8a7f63;text-transform:uppercase;flex:none">found in</span>
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <sc-for list="{{ log.lightLinks }}" as="lk" hint-placeholder-count="1">
+                  <span onClick="{{ lk.onOpen }}" title="step into the tower" style="font-size:15px;font-style:italic;color:#6b6390;line-height:1.45;cursor:pointer;transition:color .2s" style-hover="color:#8a6d3b">✷ {{ lk.title }} →</span>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap">
             <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#8a7f63;margin-top:8px">- j, keeper</div>
             <sc-if value="{{ log.hasDoodle }}" hint-placeholder-val="{{ false }}">
@@ -411,26 +421,10 @@ a:hover{color:#e8ebfa}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { openIdx: null, bottle: null, nextIdx: 0, openLog: null, logClosing: false, hoverFeat: null, ovClosing: false };
+  state = { openIdx: null, bottle: null, nextIdx: 0, openLog: null, logClosing: false, hoverFeat: null, ovClosing: false, lightTitle: null };
 
-  // same entries as Notes.dc.html; keep in sync
-  logEntries = [
-    { date: 'jun 2026', title: 'What re-architecting taught me about not architecting',
-      wx: 'light steady · no incidents', doodle: 'diagram', doodleCaption: 'the new system, not built',
-      p1: 'The most valuable architecture work I did last year produced zero diagrams. It was a meeting where we decided not to build a new system, because the old one was fine and the problem was actually a missing index.',
-      p2: 'Nobody frames that. There is no conference talk called "We Kept The Thing." But keeping the thing, understanding it well enough to defend it, is harder than replacing it, and pays better.',
-      p3: 'So my current architecture checklist starts with one question: what if we did nothing? It is amazing how often "nothing" is a strong candidate.' },
-    { date: 'apr 2026', title: 'CachyOS, three months in', doodle: 'boat', doodleCaption: 'the next distro, on the horizon',
-      wx: 'fog inland · desktop suspiciously calm',
-      p1: 'Three months on CachyOS and everything works, which is deeply unsettling. A Linux desktop is supposed to be a relationship with problems. This one just... boots.',
-      p2: 'I have compensated by inventing problems: kernel flavors, shader pre-caching, a systemd unit that exists purely because I wanted to write one.',
-      p3: 'Verdict: excellent. Will I still be here next year? History says no. History also says I will claim the next distro is "finally the one," so take this note as a hostage statement.' },
-    { date: 'feb 2026', title: 'The queue is the product',
-      wx: 'wind NW · queue quiet', doodle: 'queue', doodleCaption: 'the product.',
-      p1: 'A decade of publishing systems has convinced me the real product is not the website or the app. It is the queue: the quiet agreement about what happens next, in what order, and what happens when it fails.',
-      p2: 'Every incident postmortem I have ever written eventually finds a place where two systems disagreed about that. Every fix eventually looks like a queue wearing a disguise.',
-      p3: 'If you can only design one thing well, design the handoff. The rest is UI.' },
-  ];
+  // the journal lives in site-data.js; teasers on the home page read the same book
+  get logEntries() { return (window.ARGSEA_DATA && window.ARGSEA_DATA.journal) || []; }
 
   closeLog = () => {
     if (this.state.logClosing || this.state.openLog == null) return;
@@ -439,9 +433,9 @@ class Component extends DCLogic {
   };
 
   closeOv = () => {
-    if (this.state.ovClosing || this.state.openIdx == null) return;
+    if (this.state.ovClosing || (this.state.openIdx == null && !this.state.lightTitle)) return;
     this.setState({ ovClosing: true });
-    setTimeout(() => this.setState({ openIdx: null, ovClosing: false }), 220);
+    setTimeout(() => this.setState({ openIdx: null, lightTitle: null, ovClosing: false }), 220);
   };
 
   suggestions = ['???', 'blacksmithing?', 'sourdough?', 'birdwatching?', '3d printing?', 'kayaking?', 'chess?', 'fermenting things?', 'ham radio?', 'no. surely not.'];
@@ -512,7 +506,7 @@ class Component extends DCLogic {
     this.onKey = (e) => {
       if (e.key !== 'Escape') return;
       if (this.state.openLog != null) this.closeLog();
-      else if (this.state.openIdx != null) this.closeOv();
+      else if (this.state.openIdx != null || this.state.lightTitle) this.closeOv();
       else this.setState({ bottle: null });
     };
     window.addEventListener('keydown', this.onKey);
@@ -540,7 +534,9 @@ class Component extends DCLogic {
     const L = this.lights;
     const flagP = L.find((p) => p.flagship) || null;
     const featuredAll = [flagP, ...this.featuredTitles.map((t) => L.find((p) => p.title === t))].filter(Boolean);
-    const openP = this.state.openIdx == null ? null : featuredAll[this.state.openIdx];
+    const openP = this.state.lightTitle
+      ? (L.find((p) => p.title === this.state.lightTitle) || null)
+      : (this.state.openIdx == null ? null : featuredAll[this.state.openIdx]);
     const open = openP || null;
     const openNo = openP ? String((L.indexOf(openP) + 1) * 2).padStart(3, '0') : '';
     const logClosing = this.state.logClosing;
@@ -548,7 +544,12 @@ class Component extends DCLogic {
       open, openNo, ovClosing: this.state.ovClosing,
       log: (() => {
         const n = this.state.openLog == null ? null : this.logEntries[this.state.openLog];
-        return n ? { ...n, hasDoodle: !!n.doodle, doodleDiagram: n.doodle === 'diagram', doodleBoat: n.doodle === 'boat', doodleQueue: n.doodle === 'queue' } : null;
+        if (!n) return null;
+        const lightLinks = L.filter((p) => (p.notes || []).includes(n.title)).map((p) => ({
+          title: p.title,
+          onOpen: () => this.setState({ openLog: null, logClosing: false, lightTitle: p.title, ovClosing: false }),
+        }));
+        return { ...n, hasDoodle: !!n.doodle, doodleDiagram: n.doodle === 'diagram', doodleBoat: n.doodle === 'boat', doodleQueue: n.doodle === 'queue', lightLinks: lightLinks.length ? lightLinks : null };
       })(),
       logBackdropStyle: { position: 'fixed', inset: 0, background: 'rgba(8,10,20,.72)', backdropFilter: 'blur(5px)', zIndex: 55, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(14px,4vw,40px)', animation: logClosing ? 'backdropOut .22s ease both' : 'backdropIn .25s ease both' },
       logCardStyle: { position: 'relative', width: 'min(680px,100%)', animation: logClosing ? 'cardOut .22s ease both' : 'cardInNote .35s ease both' },
