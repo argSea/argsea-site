@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { Doodle, FigureheadDesign, Note, Project } from '../../lib/api';
+import { sightRead } from '../../lib/sightings';
 import { useEscapeKey } from './useEscapeKey';
 import HarborCat from './HarborCat';
 import DoodleSvg from './DoodleSvg';
@@ -36,6 +37,12 @@ export default function JournalEntryOverlay({ note, doodle, signoff, foundIn = [
 	const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
 	useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+	// Report the note being read: covers both surfaces that open this overlay,
+	// the Notes page and the home journal strip. The beacon dedupes per note.
+	useEffect(() => {
+		sightRead(note.id);
+	}, [note.id]);
 
 	// The exit animation plays first and onClose (the caller's actual unmount)
 	// follows after it finishes; reduced motion skips straight to onClose.

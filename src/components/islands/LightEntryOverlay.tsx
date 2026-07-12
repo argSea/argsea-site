@@ -10,6 +10,7 @@ import type { Doodle, FigureheadDesign, Note, Project } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { mediaUrl } from '../../lib/media';
 import { hasLampAnchor } from '../../lib/carvings';
+import { sightFlip, sightRead } from '../../lib/sightings';
 import { useLamp } from './useLamp';
 import { useEscapeKey } from './useEscapeKey';
 import HarborCat from './HarborCat';
@@ -83,6 +84,13 @@ export default function LightEntryOverlay({ project, signoff, notes = [], doodle
 
 	useEffect(() => () => window.clearTimeout(closeTimer.current), []);
 
+	// Report the light opening, wherever this overlay was mounted from (the
+	// coast, the home mantel, a note's step-into-the-tower). The beacon dedupes
+	// per project, so a reopen within the same page view never double-counts.
+	useEffect(() => {
+		sightFlip(project.id);
+	}, [project.id]);
+
 	// Pull-the-note-out: a note tied to this light can be lifted out of the log
 	// in place. The one wrapper frame swaps the dark log for the cream paper;
 	// `closing` runs the tuck animation, `cameFrom` plays the log's brighten
@@ -91,7 +99,10 @@ export default function LightEntryOverlay({ project, signoff, notes = [], doodle
 	const [pull, setPull] = useState<{ id: string | null; closing: boolean; cameFrom: boolean }>({ id: null, closing: false, cameFrom: false });
 	const tuckTimer = useRef<number | undefined>(undefined);
 
-	const pullOut = (id: string) => setPull({ id, closing: false, cameFrom: false });
+	const pullOut = (id: string) => {
+		sightRead(id);
+		setPull({ id, closing: false, cameFrom: false });
+	};
 
 	const tuckBack = () => {
 		if (pull.closing) {
