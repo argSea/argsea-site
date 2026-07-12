@@ -69,11 +69,17 @@ const tilts = [-2, 1.5, -1, 2.2, -1.5, 1.8];
 // Lowercase name, dagger, disposition (Hello.dc.html's "piano † got good
 // enough" format): the mock's own bespoke phrases per chip are stale
 // siblings of this same data, so disposition is the single source, not a
-// second hand-written copy of it (integrator ruling, 2026-07-11).
-const graveyardChips = resting.map((hobby, index) => ({
-	text: `${hobby.name.toLowerCase()} † ${hobby.disposition}`,
-	tilt: tilts[index % tilts.length],
-}));
+// second hand-written copy of it (integrator ruling, 2026-07-11). An empty
+// disposition falls back to the epitaph with its leading dagger dropped; a
+// record with neither shows just the name, no dangling dagger (operator
+// ruling, 2026-07-11).
+const graveyardChips = resting.map((hobby, index) => {
+	const phrase = hobby.disposition || hobby.epitaph.replace(/^\s*†\s*/, '');
+	return {
+		text: phrase ? `${hobby.name.toLowerCase()} † ${phrase}` : hobby.name.toLowerCase(),
+		tilt: tilts[index % tilts.length],
+	};
+});
 ---
 <BaseLayout title="Justin Smith · argsea.com" active="hello" quipKey="quipHello">
 	<!-- hero -->

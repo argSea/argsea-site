@@ -82,6 +82,18 @@ test('the graveyard preview chips read lowercase name, dagger, disposition', asy
 	await expect(chips.first()).toHaveText('piano † occasionally haunting');
 });
 
+// The dagger only joins a name to a phrase; a record with no disposition and
+// no epitaph shows just the name, so no chip ever trails a lone dagger.
+test('a graveyard chip never dangles a dagger', async ({ page }) => {
+	await page.goto('/');
+	const chips = page.locator('.grave-chip');
+	const count = await chips.count();
+	for (let i = 0; i < count; i += 1) {
+		const text = (await chips.nth(i).textContent())?.trim() ?? '';
+		expect(text.endsWith('†')).toBe(false);
+	}
+});
+
 test('the flagship polaroid ships a real print, not a broken glyph', async ({ page }) => {
 	await page.goto('/');
 

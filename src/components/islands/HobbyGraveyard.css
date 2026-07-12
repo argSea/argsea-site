@@ -1,12 +1,22 @@
 /* The hobby graveyard register, per Hobbies.dc.html: rows with a
    per-disposition marker, the manila keeper's-record modal, fireflies, and
-   the cat's paw rounds. lampPulse isn't in global.css (Astro scopes keyframe
-   names inside .astro <style> blocks, so LighthouseMark's own copy never
-   leaks here); redeclared locally like fireflyRoam is shared instead. */
+   the cat's paw rounds. Astro scopes keyframe names inside .astro <style>
+   blocks, so nothing declared there (index.astro's fireflyRoam,
+   LighthouseMark's lampPulse) ever reaches this island; every keyframe the
+   island animates with must be declared right here. */
 
 @keyframes lampPulse {
 	0%, 100% { opacity: .55; }
 	50%      { opacity: 1; }
+}
+
+@keyframes fireflyRoam {
+	0%, 100% { translate: 0 0; }
+	18%      { translate: 34px -18px; }
+	38%      { translate: 9px -40px; }
+	55%      { translate: -28px -14px; }
+	72%      { translate: -44px 10px; }
+	86%      { translate: -12px 20px; }
 }
 
 /* A haunt-kind lamp-dot flickers rarely rather than pulsing steadily like a
@@ -139,10 +149,13 @@
 }
 
 /* The haunting moment (HobbyGraveyard.tsx): the haunt-kind dot golds like an
-   alive one but doesn't pulse, since the "on" state is the timer, not a loop. */
+   alive one but doesn't pulse, since the "on" state is the timer, not a loop.
+   The glow runs ~1.5x the mock's haunting dot (0 0 7px 2px .55): a brighter
+   flare for the moment itself (operator ruling 2026-07-11, ratified deviation).
+   The idle rare-flicker above is untouched. */
 .graveyard__lamp-dot--haunting {
 	background: var(--gold);
-	box-shadow: 0 0 7px 2px rgba(240, 217, 168, .55);
+	box-shadow: 0 0 11px 3px rgba(240, 217, 168, .82);
 	animation: none;
 }
 
@@ -209,6 +222,16 @@
 	width: 98px;
 	display: flex;
 	justify-content: center;
+	/* Own stacking context so the mound (0), body (1), sprigs (2) and dressing
+	   (3) layer among themselves, not against the row's other columns. */
+	isolation: isolate;
+}
+
+/* Only the marker body leans; the mound and dressing sit level on the ground
+   beside it. The lean, and the lit/haunting glow, ride this wrapper. */
+.graveyard__marker-body {
+	position: relative;
+	z-index: 1;
 	transition: filter .3s ease;
 }
 
@@ -583,6 +606,156 @@
 	border-radius: 5px 5px 0 0;
 }
 
+/* --- the dirt mound: one per grave, authored (not in Hobbies.dc.html), drawn
+   in the marker column's cool palette and softness per the operator's spec --- */
+
+.graveyard__mound {
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	transform: translateX(-50%);
+	width: 116px;
+	height: 22px;
+	z-index: 0;
+	pointer-events: none;
+}
+
+.graveyard__mound-shadow {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 12px;
+	border-radius: 50%;
+	background: radial-gradient(ellipse at 50% 60%, rgba(35, 40, 66, .9) 0%, rgba(26, 30, 51, 0) 72%);
+}
+
+.graveyard__mound-cap {
+	position: absolute;
+	left: 12px;
+	right: 12px;
+	bottom: 3px;
+	height: 15px;
+	border-radius: 46% 54% 40% 44% / 90% 92% 34% 36%;
+	background: linear-gradient(180deg, #2a3050 0%, #1e2340 55%, #161a30 100%);
+	box-shadow: inset 0 1.5px 1px -.5px rgba(200, 210, 255, .12), inset 0 -2px 4px rgba(0, 0, 0, .35);
+}
+
+.graveyard__mound-clod {
+	position: absolute;
+	border-radius: 50%;
+	background: #2f3556;
+}
+
+.graveyard__mound-clod--a {
+	left: 34px;
+	bottom: 8px;
+	width: 4px;
+	height: 3px;
+}
+
+.graveyard__mound-clod--b {
+	right: 30px;
+	bottom: 6px;
+	width: 3px;
+	height: 2.5px;
+	background: #38406a;
+}
+
+.graveyard__mound-clod--c {
+	left: 50%;
+	bottom: 10px;
+	width: 3px;
+	height: 2px;
+	background: #2a3050;
+}
+
+/* --- graveside dressing: a seeded pool over the mound. Grass tufts (which may
+   stack) plus at most one object; four of the eight are authored siblings of
+   the mock's tuft/pebbles/pinwheel/mushroom. --- */
+
+@keyframes pinwheelSpin {
+	to { transform: rotate(360deg); }
+}
+
+.graveyard__tuft {
+	position: absolute;
+	bottom: 3px;
+	z-index: 3;
+	opacity: .85;
+	transform-origin: 50% 100%;
+	pointer-events: none;
+}
+
+.graveyard__dress-object {
+	position: absolute;
+	bottom: 4px;
+	z-index: 3;
+	pointer-events: none;
+}
+
+.graveyard__dress-object--pebbles {
+	display: flex;
+	align-items: flex-end;
+	gap: 3px;
+}
+
+.graveyard__pebble {
+	width: 4px;
+	height: 3px;
+	border-radius: 50%;
+	background: #8a93c4;
+	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .45);
+}
+
+.graveyard__dress-object--pinwheel {
+	width: 20px;
+	height: 36px;
+}
+
+.graveyard__pinwheel-stem {
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	width: 1.5px;
+	height: 20px;
+	transform: translateX(-50%);
+	background: #8a93c4;
+}
+
+.graveyard__pinwheel-vanes {
+	position: absolute;
+	left: 0;
+	top: 0;
+	animation: pinwheelSpin 6.5s linear infinite;
+}
+
+.graveyard__dress-object--mushroom {
+	width: 8px;
+	height: 10px;
+}
+
+.graveyard__mushroom-stem {
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	transform: translateX(-50%);
+	width: 2px;
+	height: 6px;
+	background: #c9c2ab;
+}
+
+.graveyard__mushroom-cap {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 8px;
+	height: 5px;
+	border-radius: 5px 5px 2px 2px;
+	background: #93a0e8;
+	box-shadow: inset 0 1px 0 rgba(232, 235, 250, .4);
+}
+
 /* --- flower sprigs, up to 3 per grave --- */
 
 .graveyard__sprig {
@@ -609,6 +782,9 @@
 }
 
 .graveyard__firefly-dot {
+	/* the mock's dot is a div; a span's inline display would swallow the
+	   inline width/height and collapse the fly to nothing */
+	display: block;
 	position: relative;
 	border-radius: 50%;
 	background: var(--gold);

@@ -38,6 +38,102 @@ function plotLabel(order: number): string {
 	return String(order).padStart(2, '0');
 }
 
+// A migrated record may leave the new fields empty; the postcard-era value
+// stands in (operator ruling 2026-07-11): the service reads the old dates, the
+// pill/chip phrase the epitaph with its leading dagger dropped, the row line the
+// eulogy. Anything re-recorded in the admin already fills the new field and wins.
+function displayService(hobby: Hobby): string {
+	return hobby.service || hobby.dates;
+}
+
+function displayPhrase(hobby: Hobby): string {
+	return hobby.disposition || hobby.epitaph.replace(/^\s*†\s*/, '');
+}
+
+function displayLog(hobby: Hobby): string {
+	return hobby.log || hobby.eulogy;
+}
+
+// Graveside dressing is drawn from a small pool and placed deterministically per
+// hobby: the seed is a cheap hash of the id, so a hoist that re-fetches the same
+// graves never reshuffles their dressing. Grass may share a plot with one other
+// object; otherwise a plot holds at most one, and some hold nothing (which reads
+// as random too). The dirt mound and the four objects past the mock (seashell,
+// wildflower, tiny lantern, snail) are authored, not in Hobbies.dc.html.
+type DressKind = 'pebbles' | 'pinwheel' | 'mushroom' | 'seashell' | 'wildflower' | 'lantern' | 'snail';
+const DRESS_OBJECTS: DressKind[] = ['pebbles', 'pinwheel', 'mushroom', 'seashell', 'wildflower', 'lantern', 'snail'];
+
+interface TuftSpec {
+	side:  'left' | 'right';
+	offset: number;
+	scale:  number;
+	flip:   boolean;
+}
+
+interface ObjectSpec {
+	kind:   DressKind;
+	side:   'left' | 'right';
+	offset: number;
+}
+
+interface DressingPlan {
+	tufts:  TuftSpec[];
+	object: ObjectSpec | null;
+}
+
+function hashId(id: string): number {
+	let h = 2166136261;
+	for (let i = 0; i < id.length; i += 1) {
+		h ^= id.charCodeAt(i);
+		h = Math.imul(h, 16777619);
+	}
+	return h >>> 0;
+}
+
+/** A tiny deterministic PRNG (mulberry32): a seed in, a stable stream of [0,1) out. */
+function seededRandom(seed: number): () => number {
+	let state = seed;
+	return () => {
+		state = (state + 0x6d2b79f5) | 0;
+		let t = Math.imul(state ^ (state >>> 15), 1 | state);
+		t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+		return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+	};
+}
+
+function planDressing(id: string): DressingPlan {
+	const rand = seededRandom(hashId(id));
+	const grassRoll = rand();
+	const objectRoll = rand();
+	const sideRoll = rand();
+	const secondTuftRoll = rand();
+	const kindRoll = rand();
+	const jitterA = rand();
+	const jitterB = rand();
+
+	const grassSide: 'left' | 'right' = sideRoll < 0.5 ? 'left' : 'right';
+	const hasGrass = grassRoll < 0.58;
+	const hasObject = objectRoll < 0.52;
+
+	const tufts: TuftSpec[] = [];
+	if (hasGrass) {
+		tufts.push({ side: grassSide, offset: 6 + Math.round(jitterA * 6), scale: 0.82 + jitterA * 0.33, flip: grassSide === 'right' });
+		if (secondTuftRoll < 0.4) {
+			tufts.push({ side: grassSide, offset: 22 + Math.round(jitterB * 8), scale: 0.72 + jitterB * 0.2, flip: grassSide === 'left' });
+		}
+	}
+
+	let object: ObjectSpec | null = null;
+	if (hasObject) {
+		const kind = DRESS_OBJECTS[Math.floor(kindRoll * DRESS_OBJECTS.length)];
+		// grass claims one side and the object the other; with no grass it picks freely
+		const side: 'left' | 'right' = hasGrass ? (grassSide === 'left' ? 'right' : 'left') : (jitterB < 0.5 ? 'left' : 'right');
+		object = { kind, side, offset: 4 + Math.round(jitterA * 8) };
+	}
+
+	return { tufts, object };
+}
+
 interface Props {
 	hobbies:     Hobby[];
 	suggestions: string[];
@@ -180,6 +276,8 @@ function Row({ hobby, index, hovered, haunting, flowerCount, onOpen, onHover, on
 	// lampDot: alive pulses, hauntingNow just golds, idle haunt rareFlickers);
 	// it also swaps the log line to the metronome copy.
 	const dotModifier = alive ? ' graveyard__lamp-dot--alive' : haunting ? ' graveyard__lamp-dot--haunting' : haunt ? ' graveyard__lamp-dot--haunt' : '';
+	const service = displayService(hobby);
+	const logLine = haunting ? HAUNT_LOG_LINE : displayLog(hobby);
 
 	return (
 		<div
@@ -200,13 +298,15 @@ function Row({ hobby, index, hovered, haunting, flowerCount, onOpen, onHover, on
 			<div className="graveyard__record">
 				<div className="graveyard__record-head">
 					<span className="graveyard__name">{hobby.name}</span>
-					<span className="graveyard__service">{hobby.service}</span>
-					<span className="graveyard__char-row">
-						<span className={`graveyard__lamp-dot${dotModifier}`} />
-						{hobby.char}
-					</span>
+					{service && <span className="graveyard__service">{service}</span>}
+					{hobby.char && (
+						<span className="graveyard__char-row">
+							<span className={`graveyard__lamp-dot${dotModifier}`} />
+							{hobby.char}
+						</span>
+					)}
 				</div>
-				<span className="graveyard__log">{haunting ? HAUNT_LOG_LINE : hobby.log}</span>
+				<span className="graveyard__log">{logLine}</span>
 			</div>
 			<div className="graveyard__side">
 				<DispositionPill hobby={hobby} />
@@ -217,8 +317,12 @@ function Row({ hobby, index, hovered, haunting, flowerCount, onOpen, onHover, on
 }
 
 function DispositionPill({ hobby }: { hobby: Hobby }) {
+	const phrase = displayPhrase(hobby);
+	if (!phrase) {
+		return null;
+	}
 	const modifier = hobby.kind === 'alive' ? ' graveyard__pill--alive' : hobby.kind === 'haunt' ? ' graveyard__pill--haunt' : '';
-	return <span className={`graveyard__pill${modifier}`}>{hobby.disposition}</span>;
+	return <span className={`graveyard__pill${modifier}`}>{phrase}</span>;
 }
 
 function Marker({ hobby, index, hovered, haunting, flowerCount }: { hobby: Hobby; index: number; hovered: boolean; haunting: boolean; flowerCount: number }) {
@@ -227,9 +331,15 @@ function Marker({ hobby, index, hovered, haunting, flowerCount }: { hobby: Hobby
 	const tilt = TILTS[index % TILTS.length];
 	const lit = hovered || haunting;
 
-	const wrapStyle = {
+	// The haunting moment glows ~1.5x the mock's lit marker (operator ruling
+	// 2026-07-11, ratified deviation): only the moment is boosted, a plain hover
+	// stays at the mock's brightness.
+	const glow = haunting
+		? 'drop-shadow(0 0 14px rgba(240,196,120,.45)) brightness(1.15)'
+		: 'drop-shadow(0 0 9px rgba(240,196,120,.3)) brightness(1.15)';
+	const bodyStyle = {
 		transform: `rotate(${(tilt + w * 2).toFixed(2)}deg)`,
-		filter: lit ? 'drop-shadow(0 0 9px rgba(240,196,120,.3)) brightness(1.15)' : 'none',
+		filter: lit ? glow : 'none',
 	};
 
 	let body: ReactElement;
@@ -247,12 +357,148 @@ function Marker({ hobby, index, hovered, haunting, flowerCount }: { hobby: Hobby
 		body = <StoneMarker hobby={hobby} index={index} wear={w} lit={lit} />;
 	}
 
+	// The still-burning lamp is no grave: it gets neither mound nor graveside
+	// dressing. Everything resting is planted in a mound and may carry dressing,
+	// both sitting level while the marker itself leans.
 	return (
-		<div className="graveyard__marker" style={alive ? undefined : wrapStyle}>
-			{body}
+		<div className="graveyard__marker">
+			{!alive && <Mound />}
+			<div className="graveyard__marker-body" style={alive ? undefined : bodyStyle}>
+				{body}
+			</div>
+			{!alive && <Dressing id={hobby.id} />}
 			<Sprigs count={flowerCount} index={index} />
 		</div>
 	);
+}
+
+function Mound() {
+	return (
+		<div className="graveyard__mound" aria-hidden="true">
+			<span className="graveyard__mound-shadow" />
+			<span className="graveyard__mound-cap" />
+			<span className="graveyard__mound-clod graveyard__mound-clod--a" />
+			<span className="graveyard__mound-clod graveyard__mound-clod--b" />
+			<span className="graveyard__mound-clod graveyard__mound-clod--c" />
+		</div>
+	);
+}
+
+function Dressing({ id }: { id: string }) {
+	const plan = planDressing(id);
+	return (
+		<>
+			{plan.tufts.map((tuft, index) => <Tuft key={index} spec={tuft} />)}
+			{plan.object && <DressObject spec={plan.object} />}
+		</>
+	);
+}
+
+function Tuft({ spec }: { spec: TuftSpec }) {
+	const pos = spec.side === 'left' ? { left: `${spec.offset}px` } : { right: `${spec.offset}px` };
+	return (
+		<svg
+			width="17"
+			height="12"
+			viewBox="0 0 20 14"
+			fill="none"
+			stroke="#5f6ec4"
+			strokeWidth={1.3}
+			strokeLinecap="round"
+			className="graveyard__tuft"
+			style={{ ...pos, transform: `scale(${spec.scale.toFixed(2)})${spec.flip ? ' scaleX(-1)' : ''}` }}
+			aria-hidden="true"
+		>
+			<path d="M4 13 Q5 6 2 2 M8 13 Q9 7 12 3 M12 13 Q12 8 10 6 M16 13 Q17 8 19 5" />
+		</svg>
+	);
+}
+
+function DressObject({ spec }: { spec: ObjectSpec }) {
+	const pos = spec.side === 'left' ? { left: `${spec.offset}px` } : { right: `${spec.offset}px` };
+	return (
+		<div className={`graveyard__dress-object graveyard__dress-object--${spec.kind}`} style={pos} aria-hidden="true">
+			<DressArt kind={spec.kind} />
+		</div>
+	);
+}
+
+function DressArt({ kind }: { kind: DressKind }): ReactElement | null {
+	switch (kind) {
+		case 'pebbles':
+			return (
+				<>
+					<span className="graveyard__pebble" />
+					<span className="graveyard__pebble" />
+					<span className="graveyard__pebble" />
+				</>
+			);
+		case 'pinwheel':
+			return (
+				<>
+					<span className="graveyard__pinwheel-stem" />
+					<svg width="20" height="20" viewBox="0 0 20 20" className="graveyard__pinwheel-vanes">
+						<path d="M10 10 L10 1 A9 9 0 0 1 19 10 Z" fill="#93a0e8" />
+						<path d="M10 10 L19 10 A9 9 0 0 1 10 19 Z" fill="#f0d9a8" />
+						<path d="M10 10 L10 19 A9 9 0 0 1 1 10 Z" fill="#93a0e8" />
+						<path d="M10 10 L1 10 A9 9 0 0 1 10 1 Z" fill="#f0d9a8" />
+						<circle cx="10" cy="10" r="1.6" fill="#e8ebfa" />
+					</svg>
+				</>
+			);
+		case 'mushroom':
+			return (
+				<>
+					<span className="graveyard__mushroom-stem" />
+					<span className="graveyard__mushroom-cap" />
+				</>
+			);
+		case 'seashell':
+			return (
+				<svg width="15" height="13" viewBox="0 0 16 14" fill="none">
+					<path d="M8 13 C2.5 11.5 1 6 2 3 Q3 5.4 4 3 Q5 6 6 3.4 Q7 6 8 3 Q9 6 10 3.4 Q11 6 12 3 Q13 5.4 14 3 C15 6 13.5 11.5 8 13 Z" fill="#c9c2ab" stroke="#8a93c4" strokeWidth={0.8} />
+					<path d="M8 13 L4.6 5 M8 13 L8 4.2 M8 13 L11.4 5" stroke="#8a93c4" strokeWidth={0.7} />
+				</svg>
+			);
+		case 'wildflower':
+			return (
+				<svg width="12" height="16" viewBox="0 0 12 16" fill="none">
+					<path d="M6 15 V6" stroke="#5f6ec4" strokeWidth={1.1} />
+					<path d="M6 10 Q3 9 2.5 11" stroke="#5f6ec4" strokeWidth={1} />
+					<g fill="#c3cbf2">
+						<ellipse cx="6" cy="2.4" rx="1" ry="2.1" />
+						<ellipse cx="6" cy="7.6" rx="1" ry="2.1" />
+						<ellipse cx="3.4" cy="5" rx="2.1" ry="1" />
+						<ellipse cx="8.6" cy="5" rx="2.1" ry="1" />
+					</g>
+					<circle cx="6" cy="5" r="1.5" fill="#f0d9a8" />
+				</svg>
+			);
+		case 'lantern':
+			return (
+				<svg width="12" height="16" viewBox="0 0 12 16" fill="none">
+					<circle cx="6" cy="9" r="5.2" fill="rgba(240,196,120,.18)" />
+					<path d="M2.5 15 H9.5" stroke="#3a2c1e" strokeWidth={1.2} strokeLinecap="round" />
+					<path d="M6 15 V13" stroke="#2a2f52" strokeWidth={1} />
+					<rect x="3.4" y="5.4" width="5.2" height="7.6" rx="1" fill="#141225" stroke="rgba(240,217,168,.6)" strokeWidth={1} />
+					<rect x="4.4" y="7" width="3.2" height="4.6" rx="0.6" fill="#f0d9a8" />
+					<path d="M4 5.4 L5 3.4 H7 L8 5.4 Z" fill="#2a2f52" />
+				</svg>
+			);
+		case 'snail':
+			return (
+				<svg width="17" height="12" viewBox="0 0 18 12" fill="none">
+					<path d="M3 10.5 H12" stroke="#8a93c4" strokeWidth={2.4} strokeLinecap="round" />
+					<path d="M3 10.5 Q1.6 8 3.6 6.6" stroke="#8a93c4" strokeWidth={1.6} strokeLinecap="round" />
+					<path d="M3.2 7 L2.2 5 M4.6 6.9 L4.6 4.8" stroke="#8a93c4" strokeWidth={1} strokeLinecap="round" />
+					<circle cx="12" cy="6.6" r="4.4" fill="#93a0e8" />
+					<circle cx="12" cy="6.6" r="2.5" fill="none" stroke="#c3cbf2" strokeWidth={0.9} />
+					<circle cx="12.5" cy="6.9" r="1" fill="#c3cbf2" />
+				</svg>
+			);
+		default:
+			return null;
+	}
 }
 
 function StoneMarker({ hobby, index, wear, lit }: { hobby: Hobby; index: number; wear: number; lit: boolean }) {
@@ -447,6 +693,13 @@ interface RecordModalProps {
 
 function RecordModal({ hobby, plot, closing, flowerCount, onLeaveFlower, onClose, catHere, catDesigns }: RecordModalProps) {
 	const flowerLine = flowerCount === 0 ? 'no flowers yet' : flowerCount === 1 ? '1 left so far' : `${flowerCount} left so far`;
+	// "kept {char} · {service}" composed from whichever parts survive, so an
+	// empty char never dangles a lone separator; the rest of the record hides
+	// its own empty lines rather than printing blank rows (operator ruling
+	// 2026-07-11). The service falls back to the old dates, the disposition to
+	// the epitaph, same as the register row.
+	const kept = [hobby.char, displayService(hobby)].filter(Boolean).join(' · ');
+	const phrase = displayPhrase(hobby);
 
 	return (
 		<div className={`overlay-backdrop${closing ? ' overlay-backdrop--closing' : ''}`} onClick={onClose}>
@@ -460,16 +713,18 @@ function RecordModal({ hobby, plot, closing, flowerCount, onLeaveFlower, onClose
 					<div className="record-modal__body">
 						<div className="record-modal__name-row">
 							<span className="record-modal__name">{hobby.name}</span>
-							<span className="record-modal__subtitle">kept {hobby.char} · {hobby.service}</span>
+							{kept && <span className="record-modal__subtitle">kept {kept}</span>}
 						</div>
 
-						<div className="record-modal__lastlog">{hobby.lastLog}</div>
+						{hobby.lastLog && <div className="record-modal__lastlog">{hobby.lastLog}</div>}
 
-						<div className="record-modal__grid">
-							<span className="record-modal__grid-label">what was found</span><span>{hobby.found}</span>
-							<span className="record-modal__grid-label">cause of vanishing</span><span>{hobby.cause}</span>
-							<span className="record-modal__grid-label">re-appointment</span><span>{hobby.return}</span>
-						</div>
+						{(hobby.found || hobby.cause || hobby.return) && (
+							<div className="record-modal__grid">
+								{hobby.found && <><span className="record-modal__grid-label">what was found</span><span>{hobby.found}</span></>}
+								{hobby.cause && <><span className="record-modal__grid-label">cause of vanishing</span><span>{hobby.cause}</span></>}
+								{hobby.return && <><span className="record-modal__grid-label">re-appointment</span><span>{hobby.return}</span></>}
+							</div>
+						)}
 
 						<div className="record-modal__flower-row">
 							<button className="record-modal__flower-btn" onClick={onLeaveFlower}>
@@ -488,7 +743,7 @@ function RecordModal({ hobby, plot, closing, flowerCount, onLeaveFlower, onClose
 						</div>
 
 						<div className="record-modal__foot">
-							<span className="record-modal__disposition">disposition · {hobby.disposition}</span>
+							{phrase && <span className="record-modal__disposition">disposition · {phrase}</span>}
 							<span className="record-modal__signature">- the keeper who stayed</span>
 						</div>
 					</div>

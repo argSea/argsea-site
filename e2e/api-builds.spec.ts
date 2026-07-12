@@ -37,7 +37,7 @@ test('contact band, socials, and sign-off come from the fetched profile', async 
 test('a wire hobby with only `active` (no `kind`) derives correctly through the mock API', async ({ page }) => {
 	await page.goto(`${FEATURED_BUILD}/hobbies`);
 	const rows = page.locator('.graveyard__row');
-	await expect(rows).toHaveCount(5);
+	await expect(rows).toHaveCount(7);
 
 	// The home lab: active: true → derived alive → the lamp marker, not a stone
 	await expect(rows.first().locator('.graveyard__lamp')).toBeVisible();
@@ -45,6 +45,12 @@ test('a wire hobby with only `active` (no `kind`) derives correctly through the 
 	// Piano: active: false, disposition "occasionally haunting" → derived haunt
 	const piano = rows.nth(1);
 	await expect(piano.locator('.graveyard__lamp-dot--haunt')).toBeVisible();
+
+	// Changing my OS: active: true but a haunting disposition → haunt wins over
+	// standing, so it derives haunt (a headstone) rather than alive (the lamp)
+	const standingHaunt = page.locator('.graveyard__row', { has: page.getByText('Changing my OS', { exact: true }) });
+	await expect(standingHaunt.locator('.graveyard__pill--haunt')).toBeVisible();
+	await expect(standingHaunt.locator('.graveyard__lamp')).toHaveCount(0);
 });
 
 // Order 7 (The old publishing stack) is nulled to facts:null/noteIds:null in
