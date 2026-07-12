@@ -9,6 +9,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useEscapeKey } from './useEscapeKey';
 import { svgBackground } from '../../lib/carvings';
+import { sightBottle } from '../../lib/sightings';
 import BoltedSvg from './BoltedSvg';
 import './BottleBoat.css';
 
@@ -47,6 +48,7 @@ export default function BottleBoat({ proverbs, boatSvg = null, bottleSvg = null,
 		let x = boat.getBoundingClientRect().left - strip.getBoundingClientRect().left + 4;
 		x = Math.max(120, Math.min(x, strip.clientWidth - 120));
 		const pool = proverbs.length > 1 ? proverbs.filter((proverb) => proverb !== bottle?.proverb) : proverbs;
+		sightBottle();
 		clearTimeout(timer.current);
 		setBottle({ x, proverb: pool[Math.floor(Math.random() * pool.length)], key: Date.now() });
 		timer.current = setTimeout(() => setBottle(null), 9000);

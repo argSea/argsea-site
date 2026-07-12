@@ -51,3 +51,12 @@ const catPage: CatPage = active === 'none' ? 'p404' : active;
 		{copy.eggs.cat && <HarborCatDirector client:idle page={catPage} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />}
 	</body>
 </html>
+
+<script>
+	// The sail: every page reports its own load once. Astro ships page <script>
+	// as a module that runs once per load, so there's no repeat-fire to guard
+	// beyond the beacon's own once-per-load latch. Disarmed and silent unless a
+	// public API base is configured.
+	import { sightSail } from '../lib/sightings';
+	sightSail();
+</script>

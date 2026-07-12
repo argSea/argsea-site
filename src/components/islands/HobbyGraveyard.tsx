@@ -10,6 +10,7 @@
 import { useEffect, useRef, useState, type ReactElement } from 'react';
 import type { FigureheadDesign, Hobby } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
+import { sightVisit } from '../../lib/sightings';
 import { useEscapeKey } from './useEscapeKey';
 import HarborCat from './HarborCat';
 import NextHobbyChip from './NextHobbyChip';
@@ -226,7 +227,7 @@ export default function HobbyGraveyard({ hobbies, suggestions, catEnabled, catPa
 						hovered={hoverIndex === index}
 						haunting={haunting && hobby.kind === 'haunt'}
 						flowerCount={flowers[hobby.id] ?? 0}
-						onOpen={() => setOpenIndex(index)}
+						onOpen={() => { sightVisit(hobby.id); setOpenIndex(index); }}
 						onHover={() => setHoverIndex(index)}
 						onUnhover={() => setHoverIndex((current) => (current === index ? null : current))}
 					/>
