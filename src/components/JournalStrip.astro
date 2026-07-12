@@ -3,7 +3,11 @@
 // intercepts a plain click to open the shared journal-entry overlay in place;
 // no JS or a modified click just navigates there instead). Renders nothing
 // once the keeper has zero published notes. Paw prints and the hover doodle
-// are pure CSS decoration, no JS needed to show them.
+// are pure CSS decoration, no JS needed to show them. A bolted paw carving
+// swaps the print's drawing everywhere it walks; each paw keeps its own
+// per-instance transform/delay either way.
+import { getCarvings } from '../lib/api';
+import { boltedSvg, innerMarkup } from '../lib/carvings';
 import type { Doodle, Note } from '../lib/api';
 
 interface Props {
@@ -12,6 +16,7 @@ interface Props {
 }
 
 const { notes, doodles } = Astro.props;
+const pawSvg = boltedSvg('paw', await getCarvings());
 
 const doodleFor = (doodleId: string | null): Doodle | null =>
 	doodleId ? doodles.find((doodle) => doodle.id === doodleId) ?? null : null;
@@ -88,12 +93,18 @@ const countWord = (count: number) => COUNT_WORDS[count] ?? String(count);
 					<span class="journal-strip__conditions">{note.conditions}</span>
 					<span class="journal-strip__paws" aria-hidden="true" title="the cat read this one" style={`${paw.style};transform:rotate(${paw.rotate}deg)`}>
 						{paw.paws.map((p) => (
-							<svg width="13" height="12" viewBox="0 0 15 14" class="journal-strip__paw" style={`transform:${p.transform};animation-delay:${p.delay}s`}>
-								<ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9" />
-								<ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9" />
-								<ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9" />
-								<ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9" />
-								<ellipse cx="12.6" cy="6" rx="1.4" ry="1.8" />
+							<svg width="13" height="12" viewBox="0 0 15 14" class="journal-strip__paw" style={`transform:${p.transform};animation-delay:${p.delay}s`} data-bolted={pawSvg ? 'paw' : undefined}>
+								{pawSvg ? (
+									<Fragment set:html={innerMarkup(pawSvg)} />
+								) : (
+									<>
+										<ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9" />
+										<ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9" />
+										<ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9" />
+										<ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9" />
+										<ellipse cx="12.6" cy="6" rx="1.4" ry="1.8" />
+									</>
+								)}
 							</svg>
 						))}
 					</span>

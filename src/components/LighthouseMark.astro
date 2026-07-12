@@ -1,7 +1,13 @@
 ---
 // The lighthouse mark from the design handoff: gold lamp, window lines, wave.
 // Used in the nav and the contact band. (Postcard stamps render their own
-// motifs via the islands' Stamp component.)
+// motifs via the islands' Stamp component.) A bolted lighthouse-logo carving
+// swaps the drawing; the lamp keeps pulsing only if the carving tags its
+// flame with data-carving-anchor="lamp" (global.css's rule picks it up on its
+// own), otherwise it settles as static art.
+import { getCarvings } from '../lib/api';
+import { boltedSvg, innerMarkup } from '../lib/carvings';
+
 interface Props {
 	width:  number;
 	height: number;
@@ -9,12 +15,20 @@ interface Props {
 }
 
 const { width, height, tilt = false } = Astro.props;
+
+const bolted = boltedSvg('lighthouse-logo', await getCarvings());
 ---
-<svg width={width} height={height} viewBox="0 0 26 30" fill="none" style={tilt ? 'transform:rotate(-4deg)' : undefined}>
-	<path class="lamp" d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" />
-	<rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4" />
-	<path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4" />
-	<path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none" />
+<svg width={width} height={height} viewBox="0 0 26 30" fill="none" style={tilt ? 'transform:rotate(-4deg)' : undefined} data-bolted={bolted ? 'lighthouse-logo' : undefined}>
+	{bolted ? (
+		<Fragment set:html={innerMarkup(bolted)} />
+	) : (
+		<>
+			<path class="lamp" d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" />
+			<rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4" />
+			<path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4" />
+			<path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none" />
+		</>
+	)}
 </svg>
 
 <style>

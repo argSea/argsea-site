@@ -381,6 +381,22 @@ a {
 	to   { opacity: 0; }
 }
 
+/* Carving anchor: a bolted lighthouse-logo carving that tags its lamp shape
+   with data-carving-anchor="lamp" keeps pulsing through this global,
+   unscoped rule (Astro's own scoped .lamp style in LighthouseMark.astro can
+   never reach into set:html'd raw markup). Missing the tag just leaves the
+   carving as static art, never a crash. The characteristic engine's own
+   tower-stub mounts read the same anchor via src/lib/carvings.ts instead,
+   since that one's WAAPI-driven, not CSS. */
+[data-carving-anchor="lamp"] {
+	animation: lampPulse 5s ease-in-out infinite;
+}
+
+@keyframes lampPulse {
+	0%, 100% { opacity: .55; }
+	50%      { opacity: 1; }
+}
+
 /* The one sailing idiom every drifting-across-the-sky/sea object shares
    (cirrus, the boat, the squall): left, not transform, so a wrapper's own
    top/width/height stay simple inline numbers instead of fighting a second

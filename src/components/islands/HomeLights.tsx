@@ -33,9 +33,10 @@ interface Props {
 	catPages?:   Record<string, boolean>;
 	catSpots?:   Record<string, boolean>;
 	catDesigns?: FigureheadDesign[];
+	towerSvg?:   string | null; // tower-stub carving, resolved build-time by index.astro; forwarded to the shared entry overlay
 }
 
-export default function HomeLights({ flagship, featured, notes, signoff, catEnabled, catPages, catSpots, catDesigns }: Props) {
+export default function HomeLights({ flagship, featured, notes, signoff, catEnabled, catPages, catSpots, catDesigns, towerSvg = null }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 
 	// The cat rides the opened entry only when the page's one-cat pick is this spot
@@ -69,7 +70,7 @@ export default function HomeLights({ flagship, featured, notes, signoff, catEnab
 				)}
 			</div>
 
-			{open && <LightEntryOverlay project={open} notes={notes} signoff={signoff} catHere={catHere} catDesigns={catDesigns} coastLink onClose={close} />}
+			{open && <LightEntryOverlay project={open} notes={notes} signoff={signoff} catHere={catHere} catDesigns={catDesigns} towerSvg={towerSvg} coastLink onClose={close} />}
 		</>
 	);
 }

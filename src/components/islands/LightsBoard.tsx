@@ -7,8 +7,10 @@ import { useState } from 'react';
 import type { FigureheadDesign, Note, Project, WallPos } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { pageCatPick } from '../../lib/catSpots';
+import { hasLampAnchor } from '../../lib/carvings';
 import { useLamp } from './useLamp';
 import LightEntryOverlay from './LightEntryOverlay';
+import BoltedSvg from './BoltedSvg';
 import './LightsBoard.css';
 
 const FILTERS = ['all', 'backend', 'games', 'this website', 'tinkering'] as const;
@@ -76,9 +78,11 @@ interface Props {
 	catPages?:   Record<string, boolean>;
 	catSpots?:   Record<string, boolean>;
 	catDesigns?: FigureheadDesign[];
+	boatSvg?:    string | null; // boat/tower-stub carvings, resolved build-time by projects.astro (this is an island)
+	towerSvg?:   string | null;
 }
 
-export default function LightsBoard({ projects, notes, signoff, catEnabled, catPages, catSpots, catDesigns }: Props) {
+export default function LightsBoard({ projects, notes, signoff, catEnabled, catPages, catSpots, catDesigns, boatSvg = null, towerSvg = null }: Props) {
 	const [filter, setFilter] = useState<Filter>('all');
 	const [openId, setOpenId] = useState<string | null>(null);
 
@@ -126,11 +130,11 @@ export default function LightsBoard({ projects, notes, signoff, catEnabled, catP
 						{/* The Hello boat art, re-tuned for the coast: same hull/mast/sail
 						    path data as the hero's own boat (Hello.dc.html), drifting the
 						    panorama's width instead of bobbing in place. */}
-						<svg className="coast__boat-hull" width="26" height="21" viewBox="0 0 30 24" fill="none">
+						<BoltedSvg svg={boatSvg} spot="boat" className="coast__boat-hull" width={26} height={21} viewBox="0 0 30 24">
 							<path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8" />
 							<path d="M15 15 V3" stroke="#5f6ec4" strokeWidth="1.5" />
 							<path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8" />
-						</svg>
+						</BoltedSvg>
 					</div>
 					{/* A private little squall, way out: the same sailBy idiom as
 					    the boat, just up in the sky band above the horizon. */}
@@ -149,6 +153,7 @@ export default function LightsBoard({ projects, notes, signoff, catEnabled, catP
 							matches={matching.has(project.id)}
 							isHere={project.id === hereId}
 							hovered={hoverId === project.id}
+							towerSvg={towerSvg}
 							onActivate={setOpenId}
 							onHover={() => setHoverId(project.id)}
 							onUnhover={() => setHoverId((current) => (current === project.id ? null : current))}
@@ -184,7 +189,7 @@ export default function LightsBoard({ projects, notes, signoff, catEnabled, catP
 				</div>
 			</div>
 
-			{open && <LightEntryOverlay project={open} notes={notes} signoff={signoff} catHere={catHere} catDesigns={catDesigns} onClose={close} />}
+			{open && <LightEntryOverlay project={open} notes={notes} signoff={signoff} catHere={catHere} catDesigns={catDesigns} towerSvg={towerSvg} onClose={close} />}
 		</>
 	);
 }
@@ -195,15 +200,22 @@ interface BeaconProps {
 	matches:    boolean;
 	isHere:     boolean;
 	hovered:    boolean;
+	towerSvg:   string | null;
 	onActivate: (id: string) => void;
 	onHover:    () => void;
 	onUnhover:  () => void;
 }
 
-function Beacon({ project, index, matches, isHere, hovered, onActivate, onHover, onUnhover }: BeaconProps) {
+function Beacon({ project, index, matches, isHere, hovered, towerSvg, onActivate, onHover, onUnhover }: BeaconProps) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
+
+	// A bolted tower-stub carving without the lamp anchor holds every beacon's
+	// glow layer steady instead of igniting it: graceful degradation, never a
+	// crash over a shape the carving doesn't define. Nothing bolted (the
+	// ordinary case) never touches this.
+	const towerHeld = towerSvg != null && !hasLampAnchor(towerSvg);
 
 	// A fixed, burning light breathes its halo instead of sitting fully
 	// static (ruling 5); the core stays steady either way.
@@ -234,17 +246,17 @@ function Beacon({ project, index, matches, isHere, hovered, onActivate, onHover,
 	// same one an actually-fixed light already uses), so no new timing is
 	// needed and the real characteristic just resumes once the hover ends.
 	const effectiveLight = hovered ? { ...light, kind: 'fixed' as const } : light;
-	const haloRef = useLamp(effectiveLight, dark ? 0.1 : 0.55);
-	const coreRef = useLamp(effectiveLight, dark ? 0.2 : 0.85);
+	const haloRef = useLamp(effectiveLight, dark ? 0.1 : 0.55, 0, towerHeld);
+	const coreRef = useLamp(effectiveLight, dark ? 0.2 : 0.85, 0, towerHeld);
 	// A dark phase dims the reflection rather than vanishing it: same floor
 	// pattern as the you-are-here ring, so the water never goes fully blank.
-	const reflectRef = useLamp(effectiveLight, 0.4, 0.1);
+	const reflectRef = useLamp(effectiveLight, 0.4, 0.1, towerHeld);
 	// The you-are-here ring rides the same phase-locked clock as the lamp for a
 	// blinking characteristic, dimming to a quarter opacity in the dark phase
 	// rather than vanishing, so it keeps wayfinding through long dark spans. A
 	// fixed light keeps its old independent idle breath (CSS, untouched below).
 	const blinkingRing = light.kind !== 'fixed';
-	const ringRef = useLamp(effectiveLight, dark ? 0.25 : 1, 0.25);
+	const ringRef = useLamp(effectiveLight, dark ? 0.25 : 1, 0.25, towerHeld);
 
 	const code = codeFor(light);
 	const tip = isHere
@@ -293,12 +305,12 @@ function Beacon({ project, index, matches, isHere, hovered, onActivate, onHover,
 			)}
 			{/* Every light, here or far, is this same lighthouse-stub SVG,
 			    scaled per .beacon--here below: open water, no headlands. */}
-			<svg className="beacon__stub" width="12" height="16" viewBox="0 0 26 34" fill="none">
+			<BoltedSvg svg={towerSvg} spot="tower-stub" className="beacon__stub" width={12} height={16} viewBox="0 0 26 34">
 				<path d="M13 3 L17 10 L9 10 Z" fill="rgba(150,160,220,.4)" />
 				<rect x="10" y="10" width="6" height="15" fill="none" stroke="rgba(150,160,220,.45)" strokeWidth="1.3" />
 				<path d="M10 14 h6 M10 19 h6" stroke="rgba(150,160,220,.34)" strokeWidth="1.1" />
 				<path d="M5 30 q8 -4 16 0" stroke="rgba(150,160,220,.36)" strokeWidth="1.3" fill="none" />
-			</svg>
+			</BoltedSvg>
 			<div
 				ref={haloRef}
 				className={`beacon__halo${fixedBreath ? ' beacon__halo--breathe' : ''}`}
