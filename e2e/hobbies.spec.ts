@@ -82,3 +82,13 @@ test('the haunting moment golds the haunt hobby\'s dot and swaps its log line, t
 	await expect(piano.locator('.graveyard__log')).toHaveText('Light found cold. Bench tucked in. Metronome still ticking.');
 	await expect(piano.locator('.graveyard__lamp-dot--haunt')).toBeVisible();
 });
+
+test('the fireflies actually roam: the keyframes live where the island can reach them', async ({ page }) => {
+	await page.goto('/hobbies');
+
+	const firefly = page.locator('.graveyard__firefly').first();
+	await expect(firefly).toBeVisible();
+	await expect
+		.poll(() => firefly.evaluate((el) => el.getAnimations().some((a) => 'animationName' in a && (a as CSSAnimation).animationName === 'fireflyRoam' && a.playState === 'running')))
+		.toBe(true);
+});
