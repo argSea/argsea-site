@@ -25,6 +25,7 @@ import keeperProfileFixture from '../data/fixtures/keeperProfile.json';
 import figureheadFixture from '../data/fixtures/figurehead.json';
 import suggestionsFixture from '../data/fixtures/suggestions.json';
 import doodlesFixture from '../data/fixtures/doodles.json';
+import carvingsFixture from '../data/fixtures/carvings.json';
 
 export type Category = 'backend' | 'games' | 'this website' | 'tinkering';
 export type Status = 'draft' | 'published' | 'archived';
@@ -283,6 +284,23 @@ export interface Suggestion {
 	order: number;
 }
 
+// A carving from the carving shop: any site svg (minus doodles) the keeper
+// can bolt onto its spot. svg is a full, standalone markup string, unlike
+// the figurehead/doodle contracts' structured shapes; the site never stores
+// markup itself, only borrows a bolted carving's at build time (src/lib/
+// carvings.ts). boltedTo is the spot id list it's mounted to, e.g.
+// ['bottle']; null/absent means it isn't bolted anywhere, same guard
+// precedent as images/facts/noteIds on a pre-contract document.
+export interface Carving {
+	id:        string;
+	name:      string;
+	svg:       string;
+	builtin:   boolean;
+	boltedTo:  string[] | null;
+	createdAt: string;
+	updatedAt: string;
+}
+
 export interface ContentSource {
 	getProjects(): Promise<Project[]>;
 	getHobbies(): Promise<Hobby[]>;
@@ -292,6 +310,7 @@ export interface ContentSource {
 	getFigurehead(): Promise<FigureheadDesign[]>;
 	getSuggestions(): Promise<Suggestion[]>;
 	getDoodles(): Promise<Doodle[]>;
+	getCarvings(): Promise<Carving[]>;
 }
 
 // kind is derived, never stored (2026-07-11 integrator ruling: the wire
@@ -385,6 +404,21 @@ class ApiSource implements ContentSource {
 			return [];
 		}
 	}
+
+	/**
+	 * The carving catalog: public, no ?published flag. Never fails the build,
+	 * same precedent as getFigurehead: absent/empty/unreachable, or an API that
+	 * predates the contract outright, all just mean every spot renders its
+	 * built-in. `?? []` guards a 200 that hands back a bare `null` body too.
+	 */
+	async getCarvings(): Promise<Carving[]> {
+		try {
+			const res = await fetch(`${this.baseUrl}/1/carving/carvings`);
+			return res.ok ? (await res.json() as Carving[] | null) ?? [] : [];
+		} catch {
+			return [];
+		}
+	}
 }
 
 class FixtureSource implements ContentSource {
@@ -396,6 +430,7 @@ class FixtureSource implements ContentSource {
 	getFigurehead(): Promise<FigureheadDesign[]> { return Promise.resolve(figureheadFixture as FigureheadDesign[]); }
 	getSuggestions(): Promise<Suggestion[]> { return Promise.resolve(suggestionsFixture as Suggestion[]); }
 	getDoodles(): Promise<Doodle[]> { return Promise.resolve(doodlesFixture as Doodle[]); }
+	getCarvings(): Promise<Carving[]> { return Promise.resolve(carvingsFixture as Carving[]); }
 }
 
 // ARGSEA_API_URL set → build against the live API; unset → checked-in fixtures.
@@ -458,6 +493,16 @@ export async function getSuggestions(): Promise<Suggestion[]> {
 /** The keeper's doodles, joined onto notes by `doodleId`; [] = no doodle renders anywhere. */
 export function getDoodles(): Promise<Doodle[]> {
 	return source.getDoodles();
+}
+
+// Memoized like SiteCopy/getFigurehead: every mount across every page asks
+// for the same list to resolve its own spot.
+let carvingsPromise: Promise<Carving[]> | undefined;
+
+/** The carving catalog; src/lib/carvings.ts resolves it per spot. [] = every mount renders its built-in. */
+export function getCarvings(): Promise<Carving[]> {
+	carvingsPromise ??= source.getCarvings();
+	return carvingsPromise;
 }
 
 /** Fill empty/missing SiteCopy fields from the approved design copy. */

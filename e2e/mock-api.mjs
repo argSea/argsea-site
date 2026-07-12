@@ -49,6 +49,21 @@ const projects = fixture('projects').map((project) => ({
 	...(project.order === 7 ? { facts: null, noteIds: null } : {}),
 }));
 
+// The fallback build also bolts a tower-stub carving that carries no lamp
+// anchor, on top of the base fixture's bottle bolt: the one scenario the
+// checked-in fixtures build can't exercise (it never bolts tower-stub at
+// all), proving the characteristic engine degrades to steady art instead of
+// crashing when a carving doesn't tag the element it attaches to.
+const carvings = fixture('carvings').concat(mode === 'fallback' ? [{
+	id:        'mock-carving-tower-no-anchor',
+	name:      'Mock tower (no anchor)',
+	svg:       '<svg width="26" height="34" viewBox="0 0 26 34" fill="none"><rect x="8" y="6" width="10" height="22" fill="#7a83ad"></rect></svg>',
+	builtin:   false,
+	boltedTo:  ['tower-stub'],
+	createdAt: '2026-07-11T00:00:00Z',
+	updatedAt: '2026-07-11T00:00:00Z',
+}] : []);
+
 const routes = {
 	'/1/project':                    projects,
 	'/1/hobby':                      fixture('hobbies'),
@@ -60,6 +75,7 @@ const routes = {
 	'/1/figurehead/published':       fixture('figurehead.empty'),
 	'/1/suggestion':                 fixture('suggestions'),
 	'/1/doodle':                     fixture('doodles'),
+	'/1/carving/carvings':           carvings,
 };
 
 createServer((req, res) => {

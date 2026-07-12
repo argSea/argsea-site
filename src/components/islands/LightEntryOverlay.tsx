@@ -9,9 +9,11 @@ import { createPortal } from 'react-dom';
 import type { FigureheadDesign, Note, Project } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { mediaUrl } from '../../lib/media';
+import { hasLampAnchor } from '../../lib/carvings';
 import { useLamp } from './useLamp';
 import { useEscapeKey } from './useEscapeKey';
 import HarborCat from './HarborCat';
+import BoltedSvg from './BoltedSvg';
 import './LightEntryOverlay.css';
 
 // The close animation's own duration: the entryDown/backdropOut CSS
@@ -34,16 +36,22 @@ interface Props {
 	catHere?:    boolean;
 	catDesigns?: FigureheadDesign[];
 	coastLink?:  boolean; // "the whole coast →": the home mount only (Hello.dc.html)
+	towerSvg?:   string | null; // tower-stub carving, resolved build-time by the caller (this is an island)
 	onClose:     () => void;
 }
 
-export default function LightEntryOverlay({ project, signoff, notes = [], catHere = false, catDesigns, coastLink = false, onClose }: Props) {
+export default function LightEntryOverlay({ project, signoff, notes = [], catHere = false, catDesigns, coastLink = false, towerSvg = null, onClose }: Props) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
 
-	const haloRef = useLamp(light, dark ? 0.05 : 0.5);
-	const coreRef = useLamp(light, dark ? 0.18 : 0.9);
+	// A bolted tower-stub carving without the lamp anchor holds the halo/core
+	// steady instead of igniting them: graceful degradation, never a crash
+	// over a shape that isn't there. Nothing bolted (the ordinary case) never
+	// touches this, so the lamp's behavior stays exactly what it was before.
+	const towerHeld = towerSvg != null && !hasLampAnchor(towerSvg);
+	const haloRef = useLamp(light, dark ? 0.05 : 0.5, 0, towerHeld);
+	const coreRef = useLamp(light, dark ? 0.18 : 0.9, 0, towerHeld);
 
 	const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -112,12 +120,12 @@ export default function LightEntryOverlay({ project, signoff, notes = [], catHer
 							<div className="lamp lamp--big">
 								<div className="lamp__halo-under" style={{ background: `radial-gradient(circle, rgba(${glow},${dark ? 0.05 : 0.16}) 0%, transparent 70%)` }} />
 								<div ref={haloRef} className="lamp__halo" style={{ background: `radial-gradient(circle, rgba(${glow},1) 0%, transparent 62%)` }} />
-								<svg className="lamp__ghost" width="40" height="54" viewBox="0 0 26 34" fill="none">
+								<BoltedSvg svg={towerSvg} spot="tower-stub" className="lamp__ghost" width={40} height={54} viewBox="0 0 26 34">
 									<path d="M13 3 L17 10 L9 10 Z" fill="rgba(150,160,220,.4)" />
 									<rect x="10" y="10" width="6" height="15" fill="none" stroke="rgba(150,160,220,.45)" strokeWidth="1.3" />
 									<path d="M10 14 h6 M10 19 h6" stroke="rgba(150,160,220,.34)" strokeWidth="1.1" />
 									<path d="M5 30 q8 -4 16 0" stroke="rgba(150,160,220,.36)" strokeWidth="1.3" fill="none" />
-								</svg>
+								</BoltedSvg>
 								<div
 									ref={coreRef}
 									className="lamp__core"

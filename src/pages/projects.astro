@@ -1,15 +1,22 @@
 ---
 // Projects, now the lights: static header, then the LightsBoard island owns
 // the filter pills, count line, the night coast, and the light-list register.
+// boat/tower-stub are carving spots inside that island; it can't reach
+// src/lib/api.ts itself, so their bolted markup is resolved here and passed
+// down as props.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LightsBoard from '../components/islands/LightsBoard';
-import { getProjects, getNotes, getSiteCopy, getFigurehead, getKeeperProfile } from '../lib/api';
+import { getProjects, getNotes, getSiteCopy, getFigurehead, getKeeperProfile, getCarvings } from '../lib/api';
+import { boltedSvg } from '../lib/carvings';
 
 const projects = await getProjects();
 const notes = await getNotes();
 const copy = await getSiteCopy();
 const catDesigns = await getFigurehead();
 const keeper = await getKeeperProfile();
+const carvings = await getCarvings();
+const boatSvg = boltedSvg('boat', carvings);
+const towerSvg = boltedSvg('tower-stub', carvings);
 ---
 <BaseLayout title="The lights · argsea.com" active="projects" quipKey="quipProjects">
 	<!-- Real furniture, not backdrop: each piece carries data-plx so the
@@ -49,7 +56,7 @@ const keeper = await getKeeperProfile();
 		<h1 class="head__title fade-up fade-up--1">The lights</h1>
 		<p class="head__intro fade-up fade-up--2">The view from the lamp room. Every system I keep burning is out there on the coast, logged by its <em>characteristic</em>: the blink that tells you which light you're looking at. Click one to read its entry.</p>
 	</section>
-	<LightsBoard client:load projects={projects} notes={notes} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
+	<LightsBoard client:load projects={projects} notes={notes} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} boatSvg={boatSvg} towerSvg={towerSvg} />
 </BaseLayout>
 
 <script>

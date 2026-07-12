@@ -19,7 +19,8 @@ import HomeLights from '../components/islands/HomeLights';
 import JournalStrip from '../components/JournalStrip.astro';
 import JournalStripDirector from '../components/islands/JournalStripDirector';
 import NextHobbyChip from '../components/islands/NextHobbyChip';
-import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead, getNotes, getDoodles, getSuggestions } from '../lib/api';
+import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead, getNotes, getDoodles, getSuggestions, getCarvings } from '../lib/api';
+import { boltedSvg } from '../lib/carvings';
 
 const projects = await getProjects();
 const allNotes = await getNotes();
@@ -40,6 +41,10 @@ const copy = await getSiteCopy();
 const keeper = await getKeeperProfile();
 const catDesigns = await getFigurehead();
 const suggestions = await getSuggestions();
+
+// tower-stub is a carving spot inside LightEntryOverlay, reached here via
+// HomeLights; that island can't reach src/lib/api.ts itself.
+const towerSvg = boltedSvg('tower-stub', await getCarvings());
 
 // The smuggler's cove: the copy singleton's egg toggles gate what gets wired.
 // Bottle off (or an emptied proverb list) leaves the boat sailing, unpokeable.
@@ -102,7 +107,7 @@ const graveyardChips = resting.map((hobby, index) => ({
 			</span>
 			<a href="/projects" class="mono-link">the whole coast →</a>
 		</div>
-		<HomeLights client:load flagship={flagship} featured={featuredTwo} notes={allNotes} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
+		<HomeLights client:load flagship={flagship} featured={featuredTwo} notes={allNotes} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} towerSvg={towerSvg} />
 	</section>
 
 	<JournalStrip notes={journalPreview} doodles={journalDoodles} />

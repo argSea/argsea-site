@@ -2,9 +2,14 @@
 // drops a bottle that bobs on the wave where the boat was, and a proverb note
 // rises from it: tap to release, Escape, or a 9s tide takes it back. With no
 // proverbs (egg off) the boat just sails and isn't clickable; the homepage
-// then renders this without a client directive, so no JS ships.
+// then renders this without a client directive, so no JS ships. boat/bottle/
+// wakeSvg are carving markup resolved build-time by WaveDivider.astro (this
+// is an island, so it can't reach src/lib/api.ts itself); null renders the
+// built-in exactly as before.
 import { useEffect, useRef, useState } from 'react';
 import { useEscapeKey } from './useEscapeKey';
+import { svgBackground } from '../../lib/carvings';
+import BoltedSvg from './BoltedSvg';
 import './BottleBoat.css';
 
 interface Bottle {
@@ -15,9 +20,12 @@ interface Bottle {
 
 interface Props {
 	proverbs: string[];
+	boatSvg?:   string | null;
+	bottleSvg?: string | null;
+	wakeSvg?:   string | null;
 }
 
-export default function BottleBoat({ proverbs }: Props) {
+export default function BottleBoat({ proverbs, boatSvg = null, bottleSvg = null, wakeSvg = null }: Props) {
 	const [bottle, setBottle] = useState<Bottle | null>(null);
 	const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -63,12 +71,16 @@ export default function BottleBoat({ proverbs }: Props) {
 					},
 				})}
 			>
-				<div className="boat-wake" />
-				<svg className="boat" width="30" height="24" viewBox="0 0 30 24" fill="none">
+				<div
+					className="boat-wake"
+					data-bolted={wakeSvg ? 'boat-wake' : undefined}
+					style={wakeSvg ? { background: `${svgBackground(wakeSvg)} repeat-x` } : undefined}
+				/>
+				<BoltedSvg svg={boatSvg} spot="boat" className="boat" width={30} height={24} viewBox="0 0 30 24">
 					<path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8" />
 					<path d="M15 15 V3" stroke="#5f6ec4" strokeWidth="1.5" />
 					<path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8" />
-				</svg>
+				</BoltedSvg>
 			</div>
 
 			{bottle && (
@@ -97,11 +109,11 @@ export default function BottleBoat({ proverbs }: Props) {
 							<div className="bottle-note__nib" />
 						</div>
 					</div>
-					<svg className="bottle" width="32" height="20" viewBox="0 0 40 24" fill="none">
+					<BoltedSvg svg={bottleSvg} spot="bottle" className="bottle" width={32} height={20} viewBox="0 0 40 24">
 						<rect x="6" y="7" width="28" height="11" rx="5.5" fill="rgba(147,160,232,.22)" stroke="#93a0e8" strokeWidth="1.3" />
 						<rect x="33" y="9.5" width="5" height="6" rx="1.2" fill="#f0d9a8" />
 						<path d="M12 10 h14 M12 12.5 h11 M12 15 h13" stroke="#f0d9a8" strokeWidth="1" strokeLinecap="round" opacity=".85" />
-					</svg>
+					</BoltedSvg>
 				</div>
 			)}
 		</>

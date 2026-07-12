@@ -7,9 +7,14 @@
 // and its message-in-a-bottle egg live in the BottleBoat island, positioned
 // against this strip via [data-wave]. With no proverbs the egg is off: the
 // boat renders build-time only (no client directive, no JS) and just sails.
+// wave-line/boat/bottle/boat-wake are all carving spots here; BottleBoat is
+// an island, so its bolted markup is resolved here (build-time only) and
+// passed down as props rather than fetched inside it.
 import BottleBoat from './islands/BottleBoat';
+import { getCarvings } from '../lib/api';
 import type { Project } from '../lib/api';
 import { DEFAULT_LIGHT } from '../lib/lightChar';
+import { boltedSvg, svgBackground } from '../lib/carvings';
 
 interface Props {
 	projects?: Project[];
@@ -17,6 +22,12 @@ interface Props {
 }
 
 const { projects = [], proverbs = [] } = Astro.props;
+
+const carvings = await getCarvings();
+const waveLineSvg = boltedSvg('wave-line', carvings);
+const boatSvg = boltedSvg('boat', carvings);
+const bottleSvg = boltedSvg('bottle', carvings);
+const wakeSvg = boltedSvg('boat-wake', carvings);
 
 // Beacon glow per color, dark once extinguished regardless of the light's own
 // color, same palette the coast/register/overlay all share (src/lib/
@@ -59,7 +70,7 @@ const beacons: Beacon[] = projects.map((project, index) => {
 	return { left, dark, glow, haloAnim: anim, coreAnim: anim };
 });
 ---
-<div class="wave" data-wave>
+<div class="wave" data-wave style={waveLineSvg ? `background:${svgBackground(waveLineSvg)} repeat-x` : undefined} data-bolted={waveLineSvg ? 'wave-line' : undefined}>
 	{beacons.map((beacon) => (
 		<div class="wave-beacon" style={`left:${beacon.left}`} aria-hidden="true">
 			<div class="wave-beacon__halo" style={`background:radial-gradient(circle, rgba(${beacon.glow},${beacon.dark ? .08 : .5}) 0%, transparent 64%);animation:${beacon.haloAnim}`}></div>
@@ -67,8 +78,8 @@ const beacons: Beacon[] = projects.map((project, index) => {
 		</div>
 	))}
 	{proverbs.length > 0
-		? <BottleBoat client:load proverbs={proverbs} />
-		: <BottleBoat proverbs={[]} />}
+		? <BottleBoat client:load proverbs={proverbs} boatSvg={boatSvg} bottleSvg={bottleSvg} wakeSvg={wakeSvg} />
+		: <BottleBoat proverbs={[]} boatSvg={boatSvg} bottleSvg={bottleSvg} wakeSvg={wakeSvg} />}
 </div>
 
 <style>
