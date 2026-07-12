@@ -9,7 +9,12 @@
 // One browser instance is shared across every diagram in a build; call
 // closeMermaidBrowser() once the caller is done rendering (see getStaticPaths
 // in src/pages/projects/[slug].astro) so `astro build` can actually exit.
-import { chromium, type Browser } from '@playwright/test';
+//
+// The browser is a build-host prerequisite (`npx playwright install chromium`),
+// not a given: the lantern's hoist build must survive a host without it, so
+// the package loads lazily and a failed launch downgrades every diagram to
+// the raw-notation fallback instead of sinking the whole build.
+import type { Browser } from '@playwright/test';
 import { join } from 'node:path';
 import type { CaseStudyBlock } from './caseStudy';
 
@@ -41,10 +46,25 @@ const THEME_VARIABLES = {
 };
 
 let browserPromise: Promise<Browser> | undefined;
+let browserUnavailable = false;
 
-function getBrowser(): Promise<Browser> {
-	browserPromise ??= chromium.launch({ headless: true });
-	return browserPromise;
+async function getBrowser(): Promise<Browser> {
+	if (browserUnavailable) {
+		throw new Error('mermaid browser unavailable');
+	}
+	try {
+		browserPromise ??= import('@playwright/test').then(({ chromium }) => chromium.launch({ headless: true }));
+		return await browserPromise;
+	} catch (err) {
+		browserUnavailable = true;
+		browserPromise = undefined;
+		console.warn(
+			'[mermaid] no browser to draw with; case-study diagrams fall back to raw notation.',
+			'run `npx playwright install chromium` on this host to light them back up.',
+			err instanceof Error ? err.message.split('\n')[0] : err,
+		);
+		throw err;
+	}
 }
 
 /** Renders one mermaid source string to an inline SVG string via a headless page. */
@@ -90,7 +110,14 @@ export async function closeMermaidBrowser(): Promise<void> {
 	if (!browserPromise) {
 		return;
 	}
-	const browser = await browserPromise;
-	browserPromise = undefined;
-	await browser.close();
+	// A launch that failed already surfaced through every diagram's fallback;
+	// re-awaiting it here must not sink the build a second time.
+	try {
+		const browser = await browserPromise;
+		await browser.close();
+	} catch {
+		// nothing launched, nothing to close
+	} finally {
+		browserPromise = undefined;
+	}
 }
