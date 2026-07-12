@@ -133,6 +133,14 @@
 }
 
 .letter__found-in-link {
+	display: block;
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	text-align: left;
+	cursor: pointer;
+	font-family: inherit;
 	font-size: 15px;
 	font-style: italic;
 	color: #6b6390;

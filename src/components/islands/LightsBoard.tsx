@@ -4,7 +4,7 @@
 // shared entry overlay. Content arrives as build-time props; this island
 // only holds `filter`, `open`, and the beacon/row hover pairing.
 import { useState } from 'react';
-import type { FigureheadDesign, Note, Project, WallPos } from '../../lib/api';
+import type { Doodle, FigureheadDesign, Note, Project, WallPos } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { pageCatPick } from '../../lib/catSpots';
 import { hasLampAnchor } from '../../lib/carvings';
@@ -73,6 +73,7 @@ function matchesFilter(project: Project, target: Filter): boolean {
 interface Props {
 	projects:    Project[];
 	notes:       Note[];
+	doodles:     Doodle[]; // the keeper's doodles, so a pulled-out note in the entry overlay can draw its own
 	signoff:     string;
 	catEnabled:  boolean;
 	catPages?:   Record<string, boolean>;
@@ -82,7 +83,7 @@ interface Props {
 	towerSvg?:   string | null;
 }
 
-export default function LightsBoard({ projects, notes, signoff, catEnabled, catPages, catSpots, catDesigns, boatSvg = null, towerSvg = null }: Props) {
+export default function LightsBoard({ projects, notes, doodles, signoff, catEnabled, catPages, catSpots, catDesigns, boatSvg = null, towerSvg = null }: Props) {
 	const [filter, setFilter] = useState<Filter>('all');
 	const [openId, setOpenId] = useState<string | null>(null);
 
@@ -189,7 +190,7 @@ export default function LightsBoard({ projects, notes, signoff, catEnabled, catP
 				</div>
 			</div>
 
-			{open && <LightEntryOverlay project={open} notes={notes} signoff={signoff} catHere={catHere} catDesigns={catDesigns} towerSvg={towerSvg} onClose={close} />}
+			{open && <LightEntryOverlay project={open} notes={notes} doodles={doodles} signoff={signoff} catHere={catHere} catDesigns={catDesigns} towerSvg={towerSvg} onClose={close} />}
 		</>
 	);
 }

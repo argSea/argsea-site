@@ -6,9 +6,10 @@
 // caller's own one-cat pick landed on this overlay spot.
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import type { Doodle, FigureheadDesign, FigureheadShape, Note, Project } from '../../lib/api';
+import type { Doodle, FigureheadDesign, Note, Project } from '../../lib/api';
 import { useEscapeKey } from './useEscapeKey';
 import HarborCat from './HarborCat';
+import DoodleSvg from './DoodleSvg';
 import './JournalEntryOverlay.css';
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 	doodle:      Doodle | null;
 	signoff:     string;
 	foundIn?:    Project[]; // the lights that tie this note via their own noteIds; [] or absent hides the block entirely
+	onStepInto?: (project: Project) => void; // step into the tower: close this entry, open the light in place. Absent falls back to the plain /projects link
 	catHere?:    boolean;
 	catDesigns?: FigureheadDesign[];
 	onClose:     () => void;
@@ -29,42 +31,7 @@ function reducedMotion(): boolean {
 	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-// The animation transform-origin a shape carries, as an inline style (mirrors
-// HarborCat.tsx; doodles carry no roles/origins today, but the shape type is
-// shared, so this keeps the helper drop-in compatible).
-const originStyle = (origin?: [number, number]) =>
-	origin ? { transformOrigin: `${origin[0]}px ${origin[1]}px` } : undefined;
-
-// One stored shape → its SVG element. Only the fields present on the shape are
-// written; there is no stored markup to render, ever; shapes only, per the
-// figurehead/doodle contract. Copied from HarborCat.tsx (:47-64).
-function shapeElement(shape: FigureheadShape) {
-	const presentation = {
-		style:           originStyle(shape.origin),
-		fill:            shape.fill,
-		stroke:          shape.stroke,
-		strokeWidth:     shape.strokeWidth,
-		opacity:         shape.opacity,
-		strokeLinecap:   shape.linecap as React.SVGAttributes<SVGElement>['strokeLinecap'],
-		strokeLinejoin:  shape.linejoin as React.SVGAttributes<SVGElement>['strokeLinejoin'],
-	};
-	switch (shape.type) {
-		case 'path':    return <path key={shape.id} d={shape.d} {...presentation} />;
-		case 'ellipse': return <ellipse key={shape.id} cx={shape.cx} cy={shape.cy} rx={shape.rx} ry={shape.ry} {...presentation} />;
-		case 'rect':    return <rect key={shape.id} x={shape.x} y={shape.y} width={shape.w} height={shape.h} {...presentation} />;
-		case 'line':    return <line key={shape.id} x1={shape.x1} y1={shape.y1} x2={shape.x2} y2={shape.y2} {...presentation} />;
-	}
-}
-
-function DoodleSvg({ doodle, className }: { doodle: Doodle; className: string }) {
-	return (
-		<svg className={className} viewBox={doodle.viewBox} aria-hidden="true">
-			{doodle.shapes.map((shape) => shapeElement(shape))}
-		</svg>
-	);
-}
-
-export default function JournalEntryOverlay({ note, doodle, signoff, foundIn = [], catHere = false, catDesigns, onClose }: Props) {
+export default function JournalEntryOverlay({ note, doodle, signoff, foundIn = [], onStepInto, catHere = false, catDesigns, onClose }: Props) {
 	const [closing, setClosing] = useState(false);
 	const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -108,7 +75,9 @@ export default function JournalEntryOverlay({ note, doodle, signoff, foundIn = [
 								<span className="letter__found-in-label">found in</span>
 								<div className="letter__found-in-links">
 									{foundIn.map((project) => (
-										<a key={project.id} href="/projects" title="a light on the coast · the full list" className="letter__found-in-link">✷ {project.title} →</a>
+										onStepInto
+											? <button key={project.id} type="button" title="step into the tower" className="letter__found-in-link" onClick={() => onStepInto(project)}>✷ {project.title} →</button>
+											: <a key={project.id} href="/projects" title="a light on the coast · the full list" className="letter__found-in-link">✷ {project.title} →</a>
 									))}
 								</div>
 							</div>

@@ -7,7 +7,7 @@
 // shows just the flagship alone. Clicking any card opens the same Light List
 // entry the coast uses.
 import { useEffect, useRef, useState } from 'react';
-import type { FigureheadDesign, Light, Note, Project } from '../../lib/api';
+import type { Doodle, FigureheadDesign, Light, Note, Project } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, registryNo } from '../../lib/lightChar';
 import { pageCatPick } from '../../lib/catSpots';
 import { mediaUrl } from '../../lib/media';
@@ -28,6 +28,7 @@ interface Props {
 	flagship:    Project | null;
 	featured:    Project[]; // up to 2, already resolved by the caller (featured flag order, falling back to order)
 	notes:       Note[];
+	doodles:     Doodle[]; // the keeper's doodles, so a pulled-out note in the entry overlay can draw its own
 	signoff:     string;
 	catEnabled:  boolean;
 	catPages?:   Record<string, boolean>;
@@ -36,7 +37,7 @@ interface Props {
 	towerSvg?:   string | null; // tower-stub carving, resolved build-time by index.astro; forwarded to the shared entry overlay
 }
 
-export default function HomeLights({ flagship, featured, notes, signoff, catEnabled, catPages, catSpots, catDesigns, towerSvg = null }: Props) {
+export default function HomeLights({ flagship, featured, notes, doodles, signoff, catEnabled, catPages, catSpots, catDesigns, towerSvg = null }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 
 	// The cat rides the opened entry only when the page's one-cat pick is this spot
@@ -70,7 +71,7 @@ export default function HomeLights({ flagship, featured, notes, signoff, catEnab
 				)}
 			</div>
 
-			{open && <LightEntryOverlay project={open} notes={notes} signoff={signoff} catHere={catHere} catDesigns={catDesigns} towerSvg={towerSvg} coastLink onClose={close} />}
+			{open && <LightEntryOverlay project={open} notes={notes} doodles={doodles} signoff={signoff} catHere={catHere} catDesigns={catDesigns} towerSvg={towerSvg} coastLink onClose={close} />}
 		</>
 	);
 }
