@@ -8,8 +8,8 @@ import { test, expect } from '@playwright/test';
 
 test('the coast lights one beacon per published project', async ({ page }) => {
 	await page.goto('/projects');
-	await expect(page.locator('.coast__pano .beacon')).toHaveCount(8);
-	await expect(page.locator('.register .register__row')).toHaveCount(8);
+	await expect(page.locator('.coast__pano .beacon')).toHaveCount(9);
+	await expect(page.locator('.register .register__row')).toHaveCount(9);
 });
 
 test('filtering narrows the register and dims the rest of the coast', async ({ page }) => {
@@ -18,18 +18,18 @@ test('filtering narrows the register and dims the rest of the coast', async ({ p
 	await page.locator('.filter-row .chip', { hasText: 'games' }).click();
 
 	// every row stays mounted; only what matches stays expanded
-	await expect(page.locator('.register .register__row')).toHaveCount(8);
+	await expect(page.locator('.register .register__row')).toHaveCount(9);
 	const rows = page.locator('.register .register__row:not(.register__row--collapsed)');
 	await expect(rows).toHaveCount(1);
 	await expect(rows.locator('.register__name')).toHaveText('Meo Wave Race');
 
-	// the coast never reflows: all eight beacons stay put, matching or not.
+	// the coast never reflows: all nine beacons stay put, matching or not.
 	// The opacity fade is a CSS transition, so poll rather than read it once
 	await expect(async () => {
 		const dimmed = await page.locator('.coast__pano .beacon').evaluateAll(
 			(elements) => elements.filter((element) => Number(getComputedStyle(element).opacity) < 0.5).length,
 		);
-		expect(dimmed).toBe(7);
+		expect(dimmed).toBe(8);
 	}).toPass();
 });
 
@@ -98,7 +98,7 @@ test('a quick light codes as Q with no period and reads plainly', async ({ page 
 	await expect(overlay.locator('.light-entry__decoded')).toContainText('flashing about once a second');
 });
 
-test('a morse light codes its letter and draws a dot-dash timing diagram', async ({ page }) => {
+test('a morse light codes its letter and reads plainly', async ({ page }) => {
 	await page.goto('/projects');
 	const row = page.locator('#light-row-fixture-project-8');
 	await expect(row.locator('.register__code')).toHaveText('Mo(A) W 8s');
@@ -107,8 +107,6 @@ test('a morse light codes its letter and draws a dot-dash timing diagram', async
 	const overlay = page.locator('.overlay-card');
 	await expect(overlay.locator('.light-entry__code')).toHaveText('Mo(A) W 8s');
 	await expect(overlay.locator('.light-entry__decoded')).toContainText('tapping the letter A in Morse code');
-	// A is dot-dash: exactly two lit bars in the diagram
-	await expect(overlay.locator('.light-entry__timing-lit')).toHaveCount(2);
 });
 
 // emulateMedia, not test.use({ reducedMotion }): the context option does not
@@ -121,4 +119,84 @@ test('reduced motion holds every lamp static, no Web Animations running', async 
 	await expect(core).toBeVisible();
 	expect(await core.evaluate((element) => element.getAnimations().length)).toBe(0);
 	expect(Number(await core.evaluate((element) => getComputedStyle(element).opacity))).toBeGreaterThan(0);
+});
+
+// Regression cover for the dead-halo-breathe bug: ignite() used to cancel
+// every animation on the element, including the CSS haloBreath running
+// alongside it, on first mount. Newsroom plumbing (order 2) is fixed and
+// burning, so both its register row and coast beacon should breathe; The old
+// publishing stack (order 7) is fixed but dark, so neither should.
+test('a fixed, burning light\'s halo actually breathes; a fixed, dark one never does', async ({ page }) => {
+	await page.goto('/projects');
+
+	const litHalo = page.locator('#light-row-fixture-project-2 .register__halo');
+	await expect(litHalo).toHaveClass(/register__halo--breathe/);
+	await expect(async () => {
+		const playStates = await litHalo.evaluate((element) => element.getAnimations().map((animation) => animation.playState));
+		expect(playStates).toEqual(['running']);
+	}).toPass();
+
+	// the halo's own computed opacity actually moves over time, not just a
+	// running-but-frozen Animation object
+	await expect(async () => {
+		const samples: number[] = [];
+		for (let i = 0; i < 4; i++) {
+			samples.push(Number(await litHalo.evaluate((element) => getComputedStyle(element).opacity)));
+			await page.waitForTimeout(300);
+		}
+		expect(new Set(samples.map((value) => value.toFixed(3))).size).toBeGreaterThan(1);
+	}).toPass();
+
+	const beaconHalo = page.locator('.beacon[title*="Newsroom plumbing"] .beacon__halo');
+	await expect(beaconHalo).toHaveClass(/beacon__halo--breathe/);
+	expect(await beaconHalo.evaluate((element) => element.getAnimations().length)).toBeGreaterThan(0);
+
+	const darkHalo = page.locator('#light-row-fixture-project-9 .register__halo');
+	await expect(darkHalo).not.toHaveClass(/register__halo--breathe/);
+	expect(await darkHalo.evaluate((element) => element.getAnimations().length)).toBe(0);
+});
+
+test('the retranscribed overlay: head line, notes above facts, decorative thumbs, one final row', async ({ page }) => {
+	await page.goto('/projects');
+	await page.locator('#light-row-fixture-project-2').click(); // Newsroom plumbing: two images, no notes, no case study
+
+	const overlay = page.locator('.overlay-card');
+	await expect(overlay).toBeVisible();
+	await expect(overlay.locator('.overlay-kicker')).toHaveText('The Light List · No. 004');
+
+	// the old established/district/keeper meta row is gone; the masthead
+	// carries est. and district inline instead
+	await expect(overlay.locator('.light-entry__meta')).toHaveCount(0);
+	await expect(overlay.locator('.light-entry__meta-line')).toContainText('est. 2016 · district argsea');
+
+	// no notes and no case study here: the nudge shows, not a facts-before-notes ordering bug
+	const body = overlay.locator('.light-entry__body');
+	const nudgeThenFacts = await body.evaluate((element) => {
+		const nudge = element.querySelector('.light-entry__nudge');
+		const facts = element.querySelector('.light-entry__facts');
+		if (!nudge || !facts) {
+			return false;
+		}
+		return !!(nudge.compareDocumentPosition(facts) & Node.DOCUMENT_POSITION_FOLLOWING);
+	});
+	expect(nudgeThenFacts).toBe(true);
+
+	// the thumb strip is decorative prints, not a click-to-swap gallery
+	const thumbs = overlay.locator('.light-entry__thumb');
+	await expect(thumbs).toHaveCount(1);
+	expect(await thumbs.first().evaluate((element) => element.tagName)).toBe('DIV');
+	const mainSrc = await overlay.locator('.photo-print img').getAttribute('src');
+	await thumbs.first().click({ force: true });
+	await expect(overlay.locator('.photo-print img')).toHaveAttribute('src', mainSrc!);
+
+	// tags sit at the bottom of the photo column, not in the final row
+	await expect(overlay.locator('.light-entry__right .light-entry__tags')).toBeVisible();
+
+	// the final row is moral (left) + signoff (right), one bordered row
+	const final = overlay.locator('.light-entry__final');
+	await expect(final.locator('.light-entry__moral')).toBeVisible();
+	await expect(final.locator('.light-entry__signoff')).toHaveText('- j, the keeper');
+
+	// on the projects page (not the home mount) there's no coast link
+	await expect(overlay.locator('.light-entry__coastlink-link')).toHaveCount(0);
 });

@@ -8,6 +8,20 @@ import type { Light, LightColor } from './api';
 
 export const DEFAULT_LIGHT: Light = { kind: 'fixed', color: 'white', period: 0, extinguished: '', letter: '' };
 
+// Tags every WAAPI animation this engine creates, so ignite()/useLamp() only
+// ever cancel their own handiwork. A lamp element also carries a CSS-driven
+// haloBreath animation for the halo's steady breathe (ruling 5); a blind
+// el.getAnimations().forEach(cancel) would kill that one too, since
+// getAnimations() returns CSS animations alongside WAAPI ones.
+export const ENGINE_ANIMATION_ID = 'lightchar-engine';
+
+/** Cancels only the animations this engine created on `el`, leaving any CSS animation (e.g. haloBreath) running. */
+function cancelEngineAnimations(el: HTMLElement): void {
+	el.getAnimations()
+		.filter((animation) => animation.id === ENGINE_ANIMATION_ID)
+		.forEach((animation) => animation.cancel());
+}
+
 // Glow RGB per color, fed into rgba(...) at render time; dark is the
 // extinguished tint, never a color a burning light carries.
 export const GLOW: Record<LightColor | 'dark', string> = {
@@ -186,7 +200,7 @@ function buildKeyframes(period: number, spans: [number, number][], peak: number,
  * cleanup.
  */
 export function ignite(el: HTMLElement, light: Light, peak: number, floor = 0): Animation | null {
-	el.getAnimations().forEach((animation) => animation.cancel());
+	cancelEngineAnimations(el);
 
 	if (light.extinguished) {
 		el.style.opacity = String(peak);
@@ -210,6 +224,7 @@ export function ignite(el: HTMLElement, light: Light, peak: number, floor = 0): 
 	el.style.opacity = '';
 	const keyframes = buildKeyframes(period, spans, peak, floor);
 	const animation = el.animate(keyframes, { duration: period * 1000, iterations: Infinity });
+	animation.id = ENGINE_ANIMATION_ID;
 	animation.startTime = 0;
 	return animation;
 }

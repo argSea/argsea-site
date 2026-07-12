@@ -4,7 +4,7 @@
 // shared entry overlay. Content arrives as build-time props; this island
 // only holds `filter`, `open`, and the beacon/row hover pairing.
 import { useState } from 'react';
-import type { FigureheadDesign, Project, WallPos } from '../../lib/api';
+import type { FigureheadDesign, Note, Project, WallPos } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { pageCatPick } from '../../lib/catSpots';
 import { useLamp } from './useLamp';
@@ -70,6 +70,7 @@ function matchesFilter(project: Project, target: Filter): boolean {
 
 interface Props {
 	projects:    Project[];
+	notes:       Note[];
 	signoff:     string;
 	catEnabled:  boolean;
 	catPages?:   Record<string, boolean>;
@@ -77,7 +78,7 @@ interface Props {
 	catDesigns?: FigureheadDesign[];
 }
 
-export default function LightsBoard({ projects, signoff, catEnabled, catPages, catSpots, catDesigns }: Props) {
+export default function LightsBoard({ projects, notes, signoff, catEnabled, catPages, catSpots, catDesigns }: Props) {
 	const [filter, setFilter] = useState<Filter>('all');
 	const [openId, setOpenId] = useState<string | null>(null);
 
@@ -122,12 +123,13 @@ export default function LightsBoard({ projects, signoff, catEnabled, catPages, c
 					<div className="coast__swell coast__swell--d" />
 					<div className="coast__glitter" />
 					<div className="coast__boat">
-						<svg className="coast__boat-hull" width="34" height="24" viewBox="0 0 66 46" fill="none">
-							<path d="M31 3 V32" stroke="#7c88c9" strokeWidth="1.3" />
-							<path d="M33 6 L46 29 L33 29 Z" fill="#c9c2ab" />
-							<path d="M29 8 L18 29 L29 29 Z" fill="#a89f85" />
-							<path d="M31 2 L39 5 L31 8 Z" fill="#f0d9a8" />
-							<path d="M12 32 L52 32 L46 40 L18 40 Z" fill="#1e2547" stroke="#7c88c9" strokeWidth="1.1" strokeLinejoin="round" />
+						{/* The Hello boat art, re-tuned for the coast: same hull/mast/sail
+						    path data as the hero's own boat (Hello.dc.html), drifting the
+						    panorama's width instead of bobbing in place. */}
+						<svg className="coast__boat-hull" width="26" height="21" viewBox="0 0 30 24" fill="none">
+							<path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8" />
+							<path d="M15 15 V3" stroke="#5f6ec4" strokeWidth="1.5" />
+							<path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8" />
 						</svg>
 					</div>
 					{/* A private little squall, way out: the same sailBy idiom as
@@ -182,7 +184,7 @@ export default function LightsBoard({ projects, signoff, catEnabled, catPages, c
 				</div>
 			</div>
 
-			{open && <LightEntryOverlay project={open} signoff={signoff} catHere={catHere} catDesigns={catDesigns} onClose={close} />}
+			{open && <LightEntryOverlay project={open} notes={notes} signoff={signoff} catHere={catHere} catDesigns={catDesigns} onClose={close} />}
 		</>
 	);
 }
@@ -202,6 +204,10 @@ function Beacon({ project, index, matches, isHere, hovered, onActivate, onHover,
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
+
+	// A fixed, burning light breathes its halo instead of sitting fully
+	// static (ruling 5); the core stays steady either way.
+	const fixedBreath = light.kind === 'fixed' && !dark;
 
 	const depth: 0 | 1 = isHere ? 1 : 0;
 	const scale = isHere ? HERE_SCALE : FAR_SCALE;
@@ -295,7 +301,7 @@ function Beacon({ project, index, matches, isHere, hovered, onActivate, onHover,
 			</svg>
 			<div
 				ref={haloRef}
-				className="beacon__halo"
+				className={`beacon__halo${fixedBreath ? ' beacon__halo--breathe' : ''}`}
 				style={{ width: haloSize, height: haloSize, background: `radial-gradient(circle, rgba(${glow},1) 0%, transparent 64%)` }}
 			/>
 			<div
@@ -340,6 +346,7 @@ function RegisterRow({ project, index, matches, hovered, onOpen, onHover, onUnho
 	const glow = glowFor(light);
 	const code = codeFor(light);
 	const no = registryNo(project.order);
+	const fixedBreath = light.kind === 'fixed' && !dark;
 
 	const haloRef = useLamp(light, dark ? 0.08 : 0.45);
 	const coreRef = useLamp(light, dark ? 0.2 : 0.8);
@@ -374,7 +381,7 @@ function RegisterRow({ project, index, matches, hovered, onOpen, onHover, onUnho
 		>
 			<span className="register__no">{no}</span>
 			<div className="register__lamp">
-				<div ref={haloRef} className="register__halo" style={{ background: `radial-gradient(circle, rgba(${glow},1) 0%, transparent 64%)` }} />
+				<div ref={haloRef} className={`register__halo${fixedBreath ? ' register__halo--breathe' : ''}`} style={{ background: `radial-gradient(circle, rgba(${glow},1) 0%, transparent 64%)` }} />
 				<div ref={coreRef} className="register__core" style={{ background: dark ? '#4d5670' : '#fff', boxShadow: `0 0 7px 2px rgba(${glow},1)` }} />
 			</div>
 			<div className="register__info">
@@ -388,7 +395,7 @@ function RegisterRow({ project, index, matches, hovered, onOpen, onHover, onUnho
 			<span className="register__code" style={{ color: dark ? '#7a83ad' : `rgb(${glow})` }}>{code}</span>
 			<span className="register__first-lit">{project.firstLit}</span>
 			<span className="register__status"><StatusPill dark={dark} year={light.extinguished} /></span>
-			<span className="register__read">read →</span>
+			<span className={`register__read${project.caseStudy ? ' register__read--full' : ''}`}>{project.caseStudy ? 'full log →' : 'read →'}</span>
 		</div>
 	);
 }

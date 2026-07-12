@@ -1,0 +1,880 @@
+/* The hobby graveyard register, per Hobbies.dc.html: rows with a
+   per-disposition marker, the manila keeper's-record modal, fireflies, and
+   the cat's paw rounds. lampPulse isn't in global.css (Astro scopes keyframe
+   names inside .astro <style> blocks, so LighthouseMark's own copy never
+   leaks here); redeclared locally like fireflyRoam is shared instead. */
+
+@keyframes lampPulse {
+	0%, 100% { opacity: .55; }
+	50%      { opacity: 1; }
+}
+
+/* A haunt-kind lamp-dot flickers rarely rather than pulsing steadily like a
+   still-burning one: mostly dim, one brief rise well apart in the cycle. */
+@keyframes rareFlicker {
+	0%, 82%, 100% { opacity: .35; }
+	88%           { opacity: .9; }
+}
+
+.graveyard {
+	padding: 0 var(--gutter) clamp(36px, 6vw, 56px);
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.graveyard__head {
+	max-width: 920px;
+	margin: 0 auto;
+	width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 14px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid rgba(150, 160, 220, .18);
+	animation: fadeUp .7s ease .28s both;
+}
+
+.graveyard__head-label {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	letter-spacing: .2em;
+	color: #8a93c4;
+	text-transform: uppercase;
+}
+
+.graveyard__head-district {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	letter-spacing: .14em;
+	color: var(--periwinkle-deep);
+	text-transform: uppercase;
+}
+
+.graveyard__register {
+	position: relative;
+	max-width: 920px;
+	margin: 0 auto;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* --- register rows --- */
+
+.graveyard__row {
+	position: relative;
+	display: flex;
+	gap: 22px;
+	align-items: center;
+	padding: 20px 10px;
+	border-top: 1px solid rgba(150, 160, 220, .14);
+	cursor: pointer;
+	transition: background .2s;
+	animation: fadeUp .5s ease backwards;
+}
+
+.graveyard__row:hover,
+.graveyard__row:focus-visible {
+	background: rgba(147, 160, 232, .05);
+	outline: none;
+}
+
+.graveyard__record {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+	flex: 1;
+}
+
+.graveyard__record-head {
+	display: flex;
+	align-items: baseline;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.graveyard__name {
+	font-family: var(--font-display);
+	font-size: clamp(19px, 2.8vw, 22px);
+	color: var(--text-head);
+	line-height: 1.2;
+}
+
+.graveyard__service {
+	font-family: var(--font-mono);
+	font-size: 11.5px;
+	color: var(--periwinkle-deep);
+}
+
+.graveyard__char-row {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: #8a93c4;
+}
+
+.graveyard__lamp-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	flex: none;
+	background: rgba(122, 131, 173, .3);
+	transition: background .4s ease, box-shadow .4s ease;
+}
+
+.graveyard__lamp-dot--alive {
+	background: var(--gold);
+	box-shadow: 0 0 7px 2px rgba(240, 217, 168, .55);
+	animation: lampPulse 4s ease-in-out infinite;
+}
+
+.graveyard__lamp-dot--haunt {
+	background: #8a93c4;
+	animation: rareFlicker 11s linear infinite;
+}
+
+/* The haunting moment (HobbyGraveyard.tsx): the haunt-kind dot golds like an
+   alive one but doesn't pulse, since the "on" state is the timer, not a loop. */
+.graveyard__lamp-dot--haunting {
+	background: var(--gold);
+	box-shadow: 0 0 7px 2px rgba(240, 217, 168, .55);
+	animation: none;
+}
+
+.graveyard__log {
+	font-size: 15px;
+	font-style: italic;
+	color: var(--text-body);
+	line-height: 1.5;
+	text-wrap: pretty;
+}
+
+.graveyard__side {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 8px;
+	flex: none;
+}
+
+.graveyard__pill {
+	font-family: var(--font-mono);
+	font-size: 10px;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+	padding: 3px 10px;
+	border-radius: 999px;
+	white-space: nowrap;
+	color: #8a93c4;
+	border: 1px solid rgba(138, 147, 196, .3);
+	background: transparent;
+}
+
+.graveyard__pill--alive {
+	color: var(--gold);
+	border: 1px dashed rgba(240, 217, 168, .5);
+	background: rgba(240, 217, 168, .08);
+}
+
+.graveyard__pill--haunt {
+	color: var(--text-soft);
+	border: 1px solid rgba(147, 160, 232, .4);
+	background: rgba(147, 160, 232, .07);
+}
+
+.graveyard__record-link {
+	font-family: var(--font-mono);
+	font-size: 11.5px;
+	color: var(--periwinkle-deep);
+	opacity: .8;
+}
+
+@media (max-width: 640px) {
+	.graveyard__char-row,
+	.graveyard__record-link {
+		display: none;
+	}
+}
+
+/* --- the marker column: 98px wide, one of six shapes --- */
+
+.graveyard__marker {
+	position: relative;
+	flex: none;
+	width: 98px;
+	display: flex;
+	justify-content: center;
+	transition: filter .3s ease;
+}
+
+.graveyard__lamp,
+.graveyard__sticks,
+.graveyard__driftwood,
+.graveyard__cairn,
+.graveyard__buoy,
+.graveyard__stone {
+	position: relative;
+	z-index: 1;
+	width: 80px;
+	height: 88px;
+	box-sizing: border-box;
+}
+
+/* --- stone: the default marker --- */
+
+.graveyard__stone {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	background-image: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22120%22%20height=%22120%22%3E%3Cfilter%20id=%22n%22%3E%3CfeTurbulence%20type=%22fractalNoise%22%20baseFrequency=%22.9%22%20numOctaves=%222%22/%3E%3CfeColorMatrix%20type=%22saturate%22%20values=%220%22/%3E%3C/filter%3E%3Crect%20width=%22120%22%20height=%22120%22%20filter=%22url(%23n)%22%20opacity=%22.16%22/%3E%3C/svg%3E');
+	background-blend-mode: normal;
+	border: 1px solid rgba(150, 160, 220, .26);
+	box-shadow: inset 0 1px 0 rgba(200, 210, 255, .1), 0 7px 16px rgba(0, 0, 0, .4);
+	transition: background .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+
+.graveyard__stone-alive-dot {
+	font-size: 14px;
+	color: var(--gold);
+	animation: lampPulse 3.5s ease-in-out infinite;
+}
+
+.graveyard__stone-dead-mark {
+	font-size: 16px;
+	color: var(--gold);
+	opacity: .55;
+}
+
+.graveyard__stone-plot {
+	font-family: var(--font-mono);
+	font-size: 10px;
+	letter-spacing: .1em;
+	color: #7a83ad;
+}
+
+.graveyard__stone-wear {
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+}
+
+.graveyard__stone-crack {
+	position: absolute;
+	top: 3px;
+	left: 28%;
+}
+
+/* --- lamp: kind === 'alive' --- */
+
+.graveyard__lamp-post {
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	width: 5px;
+	height: 62px;
+	transform: translateX(-50%);
+	background: linear-gradient(90deg, #2a2f52, #171226);
+	border-radius: 2px;
+}
+
+.graveyard__lamp-box {
+	position: absolute;
+	left: 50%;
+	bottom: 58px;
+	transform: translateX(-50%);
+	width: 22px;
+	height: 24px;
+	background: #141225;
+	border: 1.5px solid rgba(240, 217, 168, .6);
+	border-radius: 4px 4px 2px 2px;
+}
+
+.graveyard__lamp-cap {
+	position: absolute;
+	left: 50%;
+	bottom: 84px;
+	transform: translateX(-50%);
+	width: 9px;
+	height: 4px;
+	background: #2a2f52;
+	border-radius: 2px 2px 0 0;
+}
+
+.graveyard__lamp-bulb {
+	position: absolute;
+	left: 50%;
+	bottom: 62px;
+	transform: translateX(-50%);
+	width: 12px;
+	height: 15px;
+	background: var(--gold);
+	box-shadow: 0 0 14px 4px rgba(240, 217, 168, .55);
+	animation: lampPulse 4s ease-in-out infinite;
+}
+
+.graveyard__lamp-glow {
+	position: absolute;
+	left: 50%;
+	bottom: 28px;
+	transform: translateX(-50%);
+	width: 110px;
+	height: 92px;
+	background: radial-gradient(circle, rgba(240, 196, 120, .16), transparent 62%);
+	filter: blur(2px);
+	animation: lampPulse 4s ease-in-out infinite;
+	pointer-events: none;
+}
+
+.graveyard__lamp-plate {
+	position: absolute;
+	left: 50%;
+	bottom: 6px;
+	transform: translateX(-50%) rotate(-2deg);
+	padding: 2px 7px;
+	background: linear-gradient(180deg, #1c1732, #141126);
+	border: 1px solid rgba(240, 217, 168, .4);
+	border-radius: 2px;
+}
+
+.graveyard__lamp-plate span {
+	font-family: var(--font-mono);
+	font-size: 8.5px;
+	letter-spacing: .1em;
+	color: #d9c48f;
+}
+
+/* --- sticks: marker === 'sticks' --- */
+
+.graveyard__sticks-post {
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	width: 7px;
+	height: 76px;
+	transform: translateX(-50%) rotate(1.5deg);
+	background: linear-gradient(90deg, #4a3a28, #2e2318);
+	border-radius: 3px 4px 1px 1px;
+	box-shadow: inset 1px 0 0 rgba(240, 217, 168, .12);
+}
+
+.graveyard__sticks-crossbar {
+	position: absolute;
+	left: 50%;
+	top: 20px;
+	width: 54px;
+	height: 6px;
+	transform: translateX(-50%) rotate(-3deg);
+	background: linear-gradient(180deg, #4a3a28, #2e2318);
+	border-radius: 3px;
+	box-shadow: inset 0 1px 0 rgba(240, 217, 168, .12);
+}
+
+.graveyard__sticks-patch {
+	position: absolute;
+	left: 50%;
+	top: 16px;
+	width: 14px;
+	height: 13px;
+	transform: translateX(-50%);
+	background: repeating-linear-gradient(-35deg, #8a7142 0 1.5px, transparent 1.5px 3.5px);
+	border-radius: 2px;
+}
+
+.graveyard__sticks-string {
+	position: absolute;
+	left: calc(50% + 12px);
+	top: 25px;
+	width: 1.5px;
+	height: 7px;
+	background: #8a7142;
+	transform: rotate(12deg);
+}
+
+.graveyard__sticks-plate {
+	position: absolute;
+	left: calc(50% + 6px);
+	top: 31px;
+	width: 32px;
+	height: 16px;
+	transform: rotate(6deg);
+	background: linear-gradient(180deg, #3a2c20, #241a12);
+	border: 1px solid rgba(240, 217, 168, .25);
+	border-radius: 2px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.graveyard__sticks-plate span {
+	font-family: var(--font-mono);
+	font-size: 8.5px;
+	letter-spacing: .08em;
+	color: #a08b5a;
+}
+
+/* --- driftwood: marker === 'driftwood' --- */
+
+.graveyard__driftwood-plank {
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	transform: translateX(-50%) rotate(-2deg);
+	width: 27px;
+	height: 72px;
+	background: linear-gradient(90deg, #4a3a28 0%, #3a2c1e 55%, #2e2318 100%);
+	border-radius: 13px 9px 2px 2px;
+	box-shadow: inset 1.5px 0 0 rgba(240, 217, 168, .14);
+}
+
+.graveyard__driftwood-grain--a {
+	position: absolute;
+	left: 5px;
+	top: 9px;
+	width: 1.5px;
+	height: 46px;
+	background: rgba(20, 14, 8, .5);
+	border-radius: 1px;
+}
+
+.graveyard__driftwood-grain--b {
+	position: absolute;
+	right: 6px;
+	top: 16px;
+	width: 1.5px;
+	height: 34px;
+	background: rgba(20, 14, 8, .4);
+}
+
+.graveyard__driftwood-knot {
+	position: absolute;
+	left: 3px;
+	top: 46px;
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	background: #241a10;
+}
+
+.graveyard__driftwood-plot {
+	position: absolute;
+	left: 50%;
+	top: 12px;
+	transform: translateX(-50%);
+	font-family: var(--font-mono);
+	font-size: 8.5px;
+	letter-spacing: .14em;
+	color: #a08b5a;
+	writing-mode: vertical-rl;
+}
+
+/* --- cairn: marker === 'cairn' --- */
+
+.graveyard__cairn {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+}
+
+.graveyard__cairn-stone {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	box-shadow: inset 0 1px 0 rgba(200, 210, 255, .1);
+}
+
+.graveyard__cairn-stone--base {
+	bottom: 0;
+	width: 58px;
+	height: 23px;
+	border-radius: 48% 52% 40% 44%;
+	background: linear-gradient(165deg, #262c4a, #161a30);
+}
+
+.graveyard__cairn-stone--mid {
+	bottom: 19px;
+	width: 43px;
+	height: 20px;
+	border-radius: 52% 48% 42% 46%;
+	background: linear-gradient(165deg, #232946, #141830);
+}
+
+.graveyard__cairn-stone--top {
+	bottom: 36px;
+	width: 28px;
+	height: 16px;
+	border-radius: 50% 50% 44% 44%;
+	background: linear-gradient(165deg, #2a3050, #181c33);
+	box-shadow: inset 0 1px 0 rgba(200, 210, 255, .12);
+}
+
+.graveyard__cairn-plot {
+	position: absolute;
+	left: 50%;
+	bottom: 6px;
+	transform: translateX(-50%);
+	font-family: var(--font-mono);
+	font-size: 8.5px;
+	letter-spacing: .1em;
+	color: #7a83ad;
+}
+
+/* --- buoy: marker === 'buoy' --- */
+
+.graveyard__buoy-post {
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	width: 5px;
+	height: 26px;
+	transform: translateX(-50%);
+	background: linear-gradient(90deg, #3a2c1e, #241a10);
+}
+
+.graveyard__buoy-body {
+	position: absolute;
+	left: 50%;
+	bottom: 22px;
+	transform: translateX(-50%) rotate(1.5deg);
+	width: 40px;
+	height: 44px;
+	border-radius: 50% 50% 46% 46%;
+	background: linear-gradient(165deg, #2e3452 0%, #20263f 100%);
+	border: 1px solid rgba(150, 160, 220, .3);
+	overflow: hidden;
+}
+
+.graveyard__buoy-band {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 16px;
+	height: 12px;
+	background: #c9c2ab;
+	opacity: .85;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.graveyard__buoy-band span {
+	font-family: var(--font-mono);
+	font-size: 8px;
+	letter-spacing: .1em;
+	color: #33251a;
+}
+
+.graveyard__buoy-handle {
+	position: absolute;
+	left: 50%;
+	bottom: 63px;
+	transform: translateX(-50%);
+	width: 10px;
+	height: 8px;
+	border: 2px solid #2a2f52;
+	border-bottom: none;
+	border-radius: 5px 5px 0 0;
+}
+
+/* --- flower sprigs, up to 3 per grave --- */
+
+.graveyard__sprig {
+	position: absolute;
+	bottom: 2px;
+	z-index: 2;
+}
+
+/* --- fireflies --- */
+
+.graveyard__firefly {
+	position: absolute;
+	pointer-events: none;
+	z-index: 3;
+}
+
+.graveyard__firefly-glow {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	filter: blur(2px);
+}
+
+.graveyard__firefly-dot {
+	position: relative;
+	border-radius: 50%;
+	background: var(--gold);
+	box-shadow: 0 0 6px 2px rgba(240, 217, 168, .55);
+}
+
+/* --- the cat's paw rounds --- */
+
+.graveyard__paw-rounds {
+	position: absolute;
+	left: -14px;
+	top: 0;
+	bottom: 0;
+	width: 28px;
+	pointer-events: none;
+	z-index: 3;
+}
+
+.graveyard__paw {
+	position: absolute;
+	opacity: 0;
+	animation: pawRound 44s linear infinite both;
+}
+
+@keyframes pawRound {
+	0%, 1%   { opacity: 0; }
+	3%       { opacity: .55; }
+	11%      { opacity: .55; }
+	15%, 100% { opacity: 0; }
+}
+
+/* --- register foot: the open plot, the next-hobby chip, the paw caption --- */
+
+.graveyard__foot {
+	max-width: 920px;
+	margin: 0 auto;
+	width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 16px;
+	padding-top: 8px;
+}
+
+.graveyard__foot-right {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	flex-wrap: wrap;
+}
+
+.graveyard__paw-caption {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 5px;
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: var(--periwinkle-deep);
+}
+
+.graveyard__paw-caption-dots {
+	display: flex;
+	gap: 9px;
+	transform: rotate(-14deg);
+}
+
+.graveyard__paw-caption-dots span {
+	width: 9px;
+	height: 8px;
+	background: rgba(147, 160, 232, .35);
+	border-radius: 50% 50% 45% 45%;
+}
+
+.graveyard__paw-caption-dots span:nth-child(2) {
+	transform: translateY(7px);
+	background: rgba(147, 160, 232, .3);
+}
+
+.graveyard__paw-caption-dots span:nth-child(3) {
+	background: rgba(147, 160, 232, .25);
+}
+
+/* --- the manila keeper's-record modal --- */
+
+.record-modal {
+	position: relative;
+	width: min(620px, 100%);
+	animation: cardIn .35s ease both;
+}
+
+.record-modal--closing {
+	animation: cardOut .22s ease both;
+}
+
+@keyframes cardIn {
+	from { opacity: 0; transform: rotate(1.5deg) translateY(34px) scale(.97); }
+	to   { opacity: 1; transform: none; }
+}
+
+@keyframes cardOut {
+	from { opacity: 1; transform: none; }
+	to   { opacity: 0; transform: rotate(-1deg) translateY(24px) scale(.98); }
+}
+
+.record-modal__card {
+	background: linear-gradient(180deg, #f1ecdd, #eae3d1);
+	border-radius: 6px 12px 12px 6px;
+	box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+	max-height: 86vh;
+	overflow: auto;
+}
+
+.record-modal__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 16px clamp(20px, 4vw, 30px);
+	border-bottom: 1.5px dashed rgba(110, 100, 75, .35);
+}
+
+.record-modal__kicker {
+	font-family: var(--font-mono);
+	font-size: 11.5px;
+	letter-spacing: .14em;
+	color: #8a7f63;
+	text-transform: uppercase;
+}
+
+.record-modal__close {
+	cursor: pointer;
+	font-family: var(--font-mono);
+	font-size: 12.5px;
+	color: #7d7357;
+	padding: 5px 11px;
+	border: 1px solid rgba(110, 100, 75, .4);
+	border-radius: 999px;
+	background: none;
+	transition: all .2s;
+}
+
+.record-modal__close:hover {
+	color: #262a45;
+	border-color: rgba(60, 55, 80, .6);
+}
+
+.record-modal__body {
+	padding: clamp(22px, 4vw, 32px);
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.record-modal__name-row {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.record-modal__name {
+	font-family: var(--font-display);
+	font-size: clamp(23px, 3.8vw, 28px);
+	color: #20233c;
+}
+
+.record-modal__subtitle {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: #a39876;
+}
+
+.record-modal__lastlog {
+	font-size: 16px;
+	font-style: italic;
+	line-height: 1.65;
+	color: #3b3f5e;
+	border-left: 2px solid rgba(110, 100, 75, .3);
+	padding-left: 14px;
+}
+
+.record-modal__grid {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	gap: 9px 16px;
+	font-size: 15px;
+	line-height: 1.55;
+	color: #3b3f5e;
+	align-items: baseline;
+}
+
+.record-modal__grid-label {
+	font-family: var(--font-mono);
+	font-size: 10px;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+	color: #8a7f63;
+}
+
+.record-modal__flower-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	flex-wrap: wrap;
+	border-top: 1.5px dashed rgba(110, 100, 75, .3);
+	padding-top: 12px;
+}
+
+.record-modal__flower-btn {
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: #7d7357;
+	padding: 6px 14px;
+	border: 1.5px dashed rgba(110, 100, 75, .5);
+	border-radius: 999px;
+	background: none;
+	user-select: none;
+	transition: all .2s;
+}
+
+.record-modal__flower-btn:hover {
+	color: #262a45;
+	border-color: rgba(60, 55, 80, .7);
+}
+
+.record-modal__flower-btn:active {
+	transform: scale(.95);
+}
+
+.record-modal__flower-count {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: #a39876;
+}
+
+.record-modal__foot {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.record-modal__disposition {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: #a39876;
+}
+
+.record-modal__signature {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: #8a6d3b;
+}
+
+/* The cat perches on the record's top-left edge when the pick lands on this overlay */
+.cat-mount--record {
+	top: -50px;
+	left: 34px;
+	width: 64px;
+	height: 74px;
+	z-index: 3;
+}

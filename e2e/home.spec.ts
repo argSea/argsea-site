@@ -1,14 +1,16 @@
-// Homepage (fixtures build): the mantel shows exactly the featured trio as
-// lamp cards, a card opens the shared Light List entry, and the contact
-// surfaces render the keeper fixture.
+// Homepage (fixtures build): the mantel is the flagship card plus the
+// featured trio's other two, a card opens the shared Light List entry, and
+// the contact surfaces render the keeper fixture.
 import { test, expect } from '@playwright/test';
 
-// The fixture mantel: the three projects flagged featured, in order
-const FEATURED_TRIO = ['The Great Un-monolithing', 'Newsroom plumbing', '100k good mornings'];
+// The fixture mantel: the flagship first, then the two other projects
+// flagged featured, in order
+const MANTEL_TITLES = ['The Great Un-monolithing', 'Newsroom plumbing', '100k good mornings'];
 
-test('the mantel shows exactly the featured trio', async ({ page }) => {
+test('the mantel shows the flagship card plus the featured trio’s other two', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.locator('.home-lights .home-lights__title')).toHaveText(FEATURED_TRIO);
+	await expect(page.locator('.home-lights .home-lights__title')).toHaveText(MANTEL_TITLES);
+	await expect(page.locator('.home-lights__flagship-pill')).toHaveText('flagship');
 });
 
 test('the homepage lamp card opens the Light List entry', async ({ page }) => {
@@ -39,8 +41,43 @@ test('the journal strip shows the newest notes and links out to /notes', async (
 	await expect(rows.first()).toHaveAttribute('href', '/notes');
 });
 
-test('a lamp card carries the decoded characteristic under its blurb', async ({ page }) => {
+test('the flagship card carries its facts, capped at four in a 2x2 grid', async ({ page }) => {
 	await page.goto('/');
-	const decoded = page.locator('.home-lights .home-lights__decoded').first();
-	await expect(decoded).toHaveText('flashing white, dark with a bright flash every 8 seconds');
+	const facts = page.locator('.home-lights__facts .home-lights__facts-row');
+	await expect(facts).toHaveCount(4);
+	await expect(facts.first().locator('.home-lights__facts-label')).toHaveText('ownership');
+});
+
+test('the flagship card carries the characteristic code and status', async ({ page }) => {
+	await page.goto('/');
+	const char = page.locator('.home-lights__flagship .home-lights__char');
+	await expect(char).toHaveText('Fl W 8s · lit');
+});
+
+test('the home mount\'s overlay carries the coast link; the projects mount does not', async ({ page }) => {
+	await page.goto('/');
+	await page.locator('.home-lights .card-wrap').first().click();
+
+	const overlay = page.locator('.overlay-card');
+	const coastLink = overlay.locator('.light-entry__coastlink-link');
+	await expect(coastLink).toHaveText('the whole coast →');
+	await expect(coastLink).toHaveAttribute('href', '/projects');
+});
+
+test('the footer dictionary drops trailing periods and mono-treats only "argc"', async ({ page }) => {
+	await page.goto('/');
+	const dict = page.locator('.site-footer__dict');
+	await expect(dict).toContainText("1. the Argo, but for one 2. argc, but forever 3. a sea of water, or of stars 4. what a method signature becomes if I'm not supervised");
+	await expect(dict.locator('.site-footer__argc')).toHaveText('argc');
+});
+
+test('the journal strip spells the entry count as a word', async ({ page }) => {
+	await page.goto('/');
+	await expect(page.locator('.journal-strip__vol')).toHaveText('log book · vol. 2026 · three entries of many');
+});
+
+test('the graveyard preview chips read lowercase name, dagger, disposition', async ({ page }) => {
+	await page.goto('/');
+	const chips = page.locator('.grave-chip');
+	await expect(chips.first()).toHaveText('piano † occasionally haunting');
 });

@@ -109,12 +109,31 @@ a {
 	gap: 8px;
 }
 
+/* The section-head pattern's label cluster: a mono kicker plus its italic
+   lore aside, sitting together at the left of a .row-head (the "see more"
+   link, when there is one, takes the row's own right side). */
+.section-head-cluster {
+	display: flex;
+	align-items: baseline;
+	gap: 14px;
+	flex-wrap: wrap;
+}
+
 .section-label {
 	font-family: var(--font-mono);
 	font-size: 13px;
 	letter-spacing: .14em;
 	color: var(--periwinkle);
 	text-transform: uppercase;
+}
+
+/* The kicker's italic lore aside, the second half of the shared section-head
+   pattern (mono label + italic aside + an optional "see more" link), used
+   across the Hello sections and echoed on other pages' own headers. */
+.section-aside {
+	font-size: 15px;
+	color: var(--periwinkle-deep);
+	font-style: italic;
 }
 
 .mono-link {
@@ -207,6 +226,31 @@ a {
 	border: 1.5px dashed rgba(240, 217, 168, .7);
 	background: rgba(240, 217, 168, .07);
 	color: var(--gold);
+}
+
+/* --- Status pills (register rows, the entry overlay, the case-study kicker) --- */
+
+.status-pill {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	padding: 3px 10px;
+	border-radius: 999px;
+	white-space: nowrap;
+	display: inline-block;
+}
+
+.status-pill--lit {
+	color: var(--gold);
+	border: 1px solid rgba(240, 217, 168, .5);
+	background: rgba(240, 217, 168, .12);
+}
+
+.status-pill--dark {
+	color: #8a93c4;
+	border: 1px solid rgba(138, 147, 196, .4);
+	background: rgba(138, 147, 196, .08);
 }
 
 /* --- Clickable card wrapper (home lights preview): lift on hover, bob lives on the inner card --- */
@@ -319,6 +363,17 @@ a {
 @keyframes backdropIn {
 	from { opacity: 0; }
 	to   { opacity: 1; }
+}
+
+/* A fixed light's halo breathes instead of sitting fully static (ruling 5,
+   sessions/repo/2026-07-11-bank-portfolio-evolution-mocks.md): steady core,
+   gently pulsing halo, on the home mantel and the projects coast/register
+   alike. The core stays on whatever the characteristic engine already gives
+   a fixed light (a flat, unanimated peak opacity); this only ever touches
+   the halo. */
+@keyframes haloBreath {
+	0%, 100% { opacity: .5; }
+	50%      { opacity: .8; }
 }
 
 @keyframes backdropOut {

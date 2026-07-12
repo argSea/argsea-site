@@ -55,16 +55,31 @@ const rows = notes.map((note, index) => ({
 	doodle: doodleFor(note.doodleId),
 	paw:    PAW_ROWS[index % PAW_ROWS.length],
 }));
+
+// The vol. line spells its count as a word (Hello.dc.html's own "three
+// entries of many"); falls back to digits past ten rather than inventing
+// words the mock never needed.
+const COUNT_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+const countWord = (count: number) => COUNT_WORDS[count] ?? String(count);
 ---
 {notes.length > 0 && (
 	<section class="journal-strip">
 		<div class="row-head">
-			<span class="section-label">From the keeper's journal</span>
+			<span class="section-head-cluster">
+				<span class="section-label">Writing</span>
+				<span class="section-aside">from the keeper's journal</span>
+			</span>
 			<a href="/notes" class="mono-link">the full journal →</a>
 		</div>
-		<div class="journal-strip__block">
-			{rows.map(({ note, doodle, paw }) => (
-				<a href="/notes" class="journal-strip__row" data-journal-row={note.id}>
+		<div class="journal-strip__panel">
+			<div class="journal-strip__ribbon" title="the keeper's bookmark"></div>
+			<div class="journal-strip__inner">
+				<div class="journal-strip__vol">
+					<span>{`log book · vol. 2026 · ${countWord(notes.length)} ${notes.length === 1 ? 'entry' : 'entries'} of many`}</span>
+				</div>
+				<div class="journal-strip__rows">
+					{rows.map(({ note, doodle, paw }) => (
+						<a href="/notes" class="journal-strip__row" data-journal-row={note.id}>
 					<span class="journal-strip__date">{note.date}</span>
 					<span class="journal-strip__middle">
 						<span class="journal-strip__title">{note.title}</span>
@@ -100,7 +115,9 @@ const rows = notes.map((note, index) => ({
 						</span>
 					)}
 				</a>
-			))}
+					))}
+				</div>
+			</div>
 		</div>
 	</section>
 )}
@@ -113,13 +130,54 @@ const rows = notes.map((note, index) => ({
 		gap: 18px;
 	}
 
-	/* Night-vocabulary rows, bare like the stores columns below it on this
-	   same page: no paper card, just dividers. The one wink at the journal's
-	   own stitched binding (see design/Notes.dc.html) is this dashed
-	   periwinkle spine down the left edge. */
-	.journal-strip__block {
-		padding-left: clamp(18px, 3.5vw, 28px);
-		border-left: 1.5px dashed rgba(147, 160, 232, .4);
+	/* The log book: a dark gradient panel (not the journal page's warm paper,
+	   see design/Notes.dc.html for that one) with its own dashed inner border
+	   and a bookmark ribbon poking up from the top edge. */
+	.journal-strip__panel {
+		position: relative;
+		background: linear-gradient(160deg, #1b1f38, #141830);
+		border: 1px solid var(--border-card);
+		border-radius: 14px;
+		box-shadow: 0 14px 34px rgba(0, 0, 0, .4);
+		padding: 7px;
+	}
+
+	.journal-strip__ribbon {
+		position: absolute;
+		top: -3px;
+		right: 54px;
+		width: 9px;
+		height: 38px;
+		background: linear-gradient(180deg, var(--gold), #c9a96a);
+		clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
+		z-index: 2;
+	}
+
+	.journal-strip__inner {
+		border: 1.5px dashed rgba(150, 160, 220, .22);
+		border-radius: 9px;
+		padding: 6px clamp(16px, 3vw, 26px) 12px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.journal-strip__vol {
+		display: flex;
+		justify-content: flex-end;
+		padding: 10px 60px 4px 2px;
+	}
+
+	.journal-strip__vol span {
+		font-family: var(--font-mono);
+		font-size: 10px;
+		letter-spacing: .16em;
+		color: var(--periwinkle-deep);
+		text-transform: uppercase;
+	}
+
+	.journal-strip__rows {
+		display: flex;
+		flex-direction: column;
 	}
 
 	.journal-strip__row {
@@ -128,8 +186,8 @@ const rows = notes.map((note, index) => ({
 		gap: 8px 20px;
 		align-items: baseline;
 		flex-wrap: wrap;
-		border-top: 1px solid var(--border-card);
-		padding: 18px 0;
+		border-top: 1.5px dashed rgba(150, 160, 220, .18);
+		padding: 15px 0;
 		transition: transform .2s;
 	}
 
@@ -144,7 +202,7 @@ const rows = notes.map((note, index) => ({
 	.journal-strip__date {
 		font-family: var(--font-mono);
 		font-size: 12px;
-		color: var(--text-dim);
+		color: var(--periwinkle-deep);
 		flex: none;
 		width: 72px;
 	}
@@ -158,9 +216,10 @@ const rows = notes.map((note, index) => ({
 	}
 
 	.journal-strip__title {
-		font-family: var(--font-display);
+		font-family: var(--font-body);
+		font-weight: 500;
 		font-size: 18.5px;
-		color: var(--text-head);
+		color: var(--text-nav);
 		line-height: 1.3;
 		transition: color .2s;
 	}

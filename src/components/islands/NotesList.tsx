@@ -2,7 +2,7 @@
 // journal-entry overlay itself is JournalEntryOverlay, shared with the home
 // journal strip (design: The Keeper's Journal).
 import { useState } from 'react';
-import type { Doodle, FigureheadDesign, Note } from '../../lib/api';
+import type { Doodle, FigureheadDesign, Note, Project } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
 import JournalEntryOverlay from './JournalEntryOverlay';
 import './NotesList.css';
@@ -10,6 +10,7 @@ import './NotesList.css';
 interface Props {
 	notes:       Note[];
 	doodles:     Doodle[];
+	projects:    Project[]; // resolves each note's "found in" ties via project.noteIds
 	signoff:     string;
 	catEnabled:  boolean;
 	catPages?:   Record<string, boolean>;
@@ -17,7 +18,7 @@ interface Props {
 	catDesigns?: FigureheadDesign[];
 }
 
-export default function NotesList({ notes, doodles, signoff, catEnabled, catPages, catSpots, catDesigns }: Props) {
+export default function NotesList({ notes, doodles, projects, signoff, catEnabled, catPages, catSpots, catDesigns }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 
 	// The cat rides the letter only when the page's one-cat pick is this overlay
@@ -35,6 +36,7 @@ export default function NotesList({ notes, doodles, signoff, catEnabled, catPage
 
 	const open = openId === null ? null : notes.find((note) => note.id === openId) ?? null;
 	const openDoodle = open ? doodleFor(open.doodleId) : null;
+	const foundIn = open ? projects.filter((project) => (project.noteIds ?? []).includes(open.id)) : [];
 
 	return (
 		<>
@@ -78,7 +80,7 @@ export default function NotesList({ notes, doodles, signoff, catEnabled, catPage
 				</div>
 
 				<div className="journal__foot">
-					<div className="journal__footer">{notes.length} inked so far. The bar for "blog" is five. We'll see.</div>
+					<div className="journal__footer">{notes.length} entries so far. The bar for "journal" is five. We'll see.</div>
 					{catEnabled && (
 						<div className="journal__pawprints">
 							<span className="journal__paw-dots">
@@ -97,6 +99,7 @@ export default function NotesList({ notes, doodles, signoff, catEnabled, catPage
 					note={open}
 					doodle={openDoodle}
 					signoff={signoff}
+					foundIn={foundIn}
 					catHere={catHere}
 					catDesigns={catDesigns}
 					onClose={close}

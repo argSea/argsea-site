@@ -63,6 +63,13 @@ export interface Light {
 	letter:       string; // single A-Z, morse only; '' otherwise
 }
 
+// One fact-row on the flagship card (capped at 4, 2x2) and the entry overlay
+// (all of them, up to the 6-item cap the data model itself holds to).
+export interface ProjectFact {
+	heading: string;
+	fact:    string;
+}
+
 // Wire types mirror the argsea-site-api domain structs field-for-field.
 export interface Project {
 	id:           string;
@@ -84,23 +91,54 @@ export interface Project {
 	order:        number;        // the keeper's manual sort key; the API sends the list pre-sorted
 	wallPos:      WallPos | null; // pinned position on the projects page wall; null → not yet placed
 	featured:     boolean;       // on the mantel → homepage postcards preview
+	facts:        ProjectFact[] | null; // ≤6 heading/fact pairs; null on a pre-contract document, like images; guard accordingly
+	caseStudy:    string;        // markdown in the keeper's dialect; '' = no /projects/<slug> route
+	noteIds:      string[] | null; // journal entries tied to this light, resolved at build time; null on a pre-contract document, guard accordingly
+	flagship:     boolean;       // the one Hello hero project; distinct from featured
 	status:       Status;
 	publishedAt:  string;
 	createdAt:    string;
 	updatedAt:    string;
 }
 
-export interface Hobby {
-	id:        string;
-	name:      string;
-	dates:     string;  // freeform display string
-	active:    boolean;
-	epitaph:   string;
-	eulogy:    string;
-	tags:      string[];
-	order:     number;  // the keeper's manual sort key
-	createdAt: string;
-	updatedAt: string;
+// A resting/still-burning hobby's disposition, driving the graveyard's lamp-dot
+// and pill colors: alive stays lit, haunt occasionally flickers, dark is laid
+// to rest. Distinct from `disposition`, the freeform label a visitor reads.
+export type HobbyKind = 'alive' | 'haunt' | 'dark';
+
+// The graveyard headstone/marker a resting hobby gets; '' falls through to the
+// stone default, same as an absent marker.
+export type HobbyMarker = '' | 'stone' | 'sticks' | 'driftwood' | 'cairn' | 'buoy' | 'lamp';
+
+// The wire shape, field-for-field with the domain's Hobby struct (dormant
+// dates/epitaph/eulogy omitted, same precedent as Project's dormant fields):
+// `active` is the one stored bool, not `kind`. Never exported: everything
+// downstream of FixtureSource/ApiSource sees the derived Hobby below instead.
+interface HobbyDoc {
+	id:          string;
+	name:        string;
+	active:      boolean;     // currently-learning vs resting; the wire's only lifecycle field
+	service:     string;      // freeform tenure, e.g. "2021 - present"
+	char:        string;      // a light-style characteristic string, e.g. "Fl W 3s"
+	marker:      HobbyMarker;
+	wear:        number;      // 0..1, weathering; a non-dated service string reads as fully worn
+	disposition: string;      // freeform label the register pill shows
+	log:         string;      // the register row's own line
+	lastLog:     string;      // the record's italic pull-quote
+	found:       string;      // "what was found"
+	cause:       string;      // "cause of vanishing"
+	return:      string;      // "re-appointment"
+	tags:        string[];
+	order:       number;      // the keeper's manual sort key
+	createdAt:   string;
+	updatedAt:   string;
+}
+
+// The domain shape islands actually consume: HobbyDoc plus `kind`, derived by
+// toHobby() below rather than carried on the wire. Keeping `kind` here (not
+// `active`) means the graveyard's rendering never had to change shape.
+export interface Hobby extends HobbyDoc {
+	kind: HobbyKind;
 }
 
 export interface Note {
@@ -256,6 +294,23 @@ export interface ContentSource {
 	getDoodles(): Promise<Doodle[]>;
 }
 
+// kind is derived, never stored (2026-07-11 integrator ruling: the wire
+// carries `active`, not `kind`; deriving it here, once, means a future wire
+// `kind` field replaces exactly this one spot, in both sources at once).
+// active wins outright; among resting hobbies, a haunt-flavored disposition
+// (the copy the keeper already writes, e.g. "occasionally haunting") reads as
+// haunt, everything else as plain dark.
+function deriveHobbyKind(active: boolean, disposition: string): HobbyKind {
+	if (active) {
+		return 'alive';
+	}
+	return /haunt/i.test(disposition) ? 'haunt' : 'dark';
+}
+
+function toHobby(doc: HobbyDoc): Hobby {
+	return { ...doc, kind: deriveHobbyKind(doc.active, doc.disposition) };
+}
+
 class ApiSource implements ContentSource {
 	constructor(private readonly baseUrl: string, private readonly keeperId: string) {}
 
@@ -270,7 +325,7 @@ class ApiSource implements ContentSource {
 	}
 
 	getProjects(): Promise<Project[]> { return this.list<Project>('/1/project'); }
-	getHobbies(): Promise<Hobby[]> { return this.list<Hobby>('/1/hobby'); }
+	async getHobbies(): Promise<Hobby[]> { return (await this.list<HobbyDoc>('/1/hobby')).map(toHobby); }
 	getNotes(): Promise<Note[]> { return this.list<Note>('/1/note'); }
 
 	/** The copy singleton is public and not lifecycle-gated, so no ?published flag. */
@@ -334,7 +389,7 @@ class ApiSource implements ContentSource {
 
 class FixtureSource implements ContentSource {
 	getProjects(): Promise<Project[]> { return Promise.resolve(projectsFixture as Project[]); }
-	getHobbies(): Promise<Hobby[]> { return Promise.resolve(hobbiesFixture as Hobby[]); }
+	getHobbies(): Promise<Hobby[]> { return Promise.resolve((hobbiesFixture as HobbyDoc[]).map(toHobby)); }
 	getNotes(): Promise<Note[]> { return Promise.resolve(notesFixture as Note[]); }
 	getSiteCopy(): Promise<SiteCopy> { return Promise.resolve(siteCopyFixture as SiteCopy); }
 	getKeeperProfile(): Promise<KeeperProfile> { return Promise.resolve(keeperProfileFixture as KeeperProfile); }
@@ -356,9 +411,10 @@ export async function getProjects(): Promise<Project[]> {
 	return (await source.getProjects()).sort((a, b) => a.order - b.order || a.createdAt.localeCompare(b.createdAt));
 }
 
-/** Hobbies active-first, then by their manual `order` key: the headstones are arranged by hand. */
+/** Hobbies still burning first, then by their manual `order` key: the headstones are arranged by hand. */
 export async function getHobbies(): Promise<Hobby[]> {
-	return (await source.getHobbies()).sort((a, b) => Number(b.active) - Number(a.active) || a.order - b.order);
+	const alive = (hobby: Hobby) => Number(hobby.kind === 'alive');
+	return (await source.getHobbies()).sort((a, b) => alive(b) - alive(a) || a.order - b.order);
 }
 
 /** Notes newest-first; RFC3339 strings compare chronologically. */

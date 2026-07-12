@@ -6,20 +6,21 @@
 // the strip's container, so the rows themselves stay server-rendered HTML
 // rather than hydrating one island per row.
 import { useEffect, useState } from 'react';
-import type { Doodle, Note } from '../../lib/api';
+import type { Doodle, Note, Project } from '../../lib/api';
 import JournalEntryOverlay from './JournalEntryOverlay';
 
 interface Props {
-	notes:   Note[];
-	doodles: Doodle[];
-	signoff: string;
+	notes:    Note[];
+	doodles:  Doodle[];
+	projects: Project[]; // resolves each note's "found in" ties via project.noteIds
+	signoff:  string;
 }
 
-export default function JournalStripDirector({ notes, doodles, signoff }: Props) {
+export default function JournalStripDirector({ notes, doodles, projects, signoff }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 
 	useEffect(() => {
-		const container = document.querySelector('.journal-strip__block');
+		const container = document.querySelector('.journal-strip__rows');
 		if (!container) {
 			return;
 		}
@@ -41,9 +42,10 @@ export default function JournalStripDirector({ notes, doodles, signoff }: Props)
 	const close = () => setOpenId(null);
 	const open = openId === null ? null : notes.find((note) => note.id === openId) ?? null;
 	const openDoodle = open ? doodles.find((doodle) => doodle.id === open.doodleId) ?? null : null;
+	const foundIn = open ? projects.filter((project) => (project.noteIds ?? []).includes(open.id)) : [];
 
 	if (!open) {
 		return null;
 	}
-	return <JournalEntryOverlay note={open} doodle={openDoodle} signoff={signoff} onClose={close} />;
+	return <JournalEntryOverlay note={open} doodle={openDoodle} signoff={signoff} foundIn={foundIn} onClose={close} />;
 }

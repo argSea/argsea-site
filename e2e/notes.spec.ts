@@ -48,6 +48,27 @@ test('the entry signs off with the keeper fixture', async ({ page }) => {
 	await expect(page.locator('.letter__signature')).toHaveText('- j');
 });
 
+test('an entry tied to a light shows "found in", linking back to it', async ({ page }) => {
+	await page.goto('/notes');
+	// row 0, "What re-architecting taught me...", is tied to the flagship via noteIds
+	await page.locator('.note-row').first().click();
+
+	const letter = page.locator('.overlay-card.letter');
+	await expect(letter.locator('.letter__found-in-label')).toHaveText('found in');
+	const link = letter.locator('.letter__found-in-link');
+	await expect(link).toHaveText('✷ The Great Un-monolithing →');
+});
+
+test('an untied entry gets no "found in" block', async ({ page }) => {
+	await page.goto('/notes');
+	// row 1, "CachyOS, three months in", ties to no project
+	await page.locator('.note-row').nth(DOODLED_ROW).click();
+
+	const letter = page.locator('.overlay-card.letter');
+	await expect(letter).toBeVisible();
+	await expect(letter.locator('.letter__found-in')).toHaveCount(0);
+});
+
 test('reduced motion keeps the journal tilt', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/notes');

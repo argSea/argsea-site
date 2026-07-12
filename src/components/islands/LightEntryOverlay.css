@@ -121,13 +121,6 @@
 	flex-wrap: wrap;
 }
 
-.light-entry__code {
-	font-family: var(--font-mono);
-	font-size: 13px;
-	letter-spacing: .1em;
-	color: var(--text-soft);
-}
-
 .light-entry__decoded {
 	font-size: 15.5px;
 	font-style: italic;
@@ -135,38 +128,112 @@
 	line-height: 1.5;
 }
 
-/* The timing diagram: one period of the real characteristic, lit spans as
-   solid bars in the light's own color, everything else dark track. */
-.light-entry__timing {
-	position: relative;
-	height: 6px;
-	margin-top: 2px;
-	border-radius: 3px;
-	background: rgba(150, 160, 220, .12);
-	overflow: hidden;
-}
-
-.light-entry__timing-lit {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	opacity: .75;
-}
-
-.light-entry__meta {
-	display: flex;
-	gap: 22px;
-	flex-wrap: wrap;
+/* --- the masthead's meta line: code · est. · district, plus the pill ---
+   One uniform-colored line in the mock; .light-entry__code and
+   .light-entry__meta-value exist only so callers/specs can isolate the
+   fragments, and inherit this rule rather than restyling. */
+.light-entry__meta-line {
 	font-family: var(--font-mono);
-	font-size: 12.5px;
-	color: var(--periwinkle);
-	padding: 14px 0;
-	border-top: 1px solid rgba(150, 160, 220, .14);
-	border-bottom: 1px solid rgba(150, 160, 220, .14);
+	font-size: 12px;
+	letter-spacing: .1em;
+	color: #8a93c4;
+	text-transform: uppercase;
 }
 
-.light-entry__meta-value {
-	color: var(--text-soft);
+/* --- facts grid: up to 6 heading/fact pairs --- */
+.light-entry__facts {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+	gap: 12px 26px;
+	border-top: 1px solid rgba(150, 160, 220, .14);
+	padding: 16px 0 4px;
+}
+
+.light-entry__facts-row {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.light-entry__facts-label {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	letter-spacing: .14em;
+	color: var(--periwinkle-deep);
+	text-transform: uppercase;
+}
+
+.light-entry__facts-value {
+	font-size: 15px;
+	color: #c8cef0;
+	line-height: 1.45;
+}
+
+/* --- notes found here: the journal ties, resolved from project.noteIds --- */
+.light-entry__notes {
+	display: flex;
+	align-items: baseline;
+	gap: 12px;
+	flex-wrap: wrap;
+	border-top: 1px solid rgba(150, 160, 220, .14);
+	padding-top: 14px;
+}
+
+.light-entry__notes-label {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	letter-spacing: .14em;
+	color: var(--periwinkle-deep);
+	text-transform: uppercase;
+	flex: none;
+}
+
+.light-entry__notes-links {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 0;
+}
+
+.light-entry__notes-link {
+	font-size: 15px;
+	font-style: italic;
+	color: var(--periwinkle);
+	line-height: 1.45;
+	transition: color .2s;
+}
+
+.light-entry__notes-link:hover {
+	color: var(--gold);
+}
+
+/* --- no notes, no log: the nudge shown only when there's neither --- */
+.light-entry__nudge {
+	border-top: 1px solid rgba(150, 160, 220, .14);
+	padding-top: 14px;
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: var(--periwinkle-deep);
+	font-style: italic;
+}
+
+/* --- the details column's link row: full log (caseStudy) + coast (home only) --- */
+.light-entry__links {
+	display: flex;
+	gap: 20px;
+	flex-wrap: wrap;
+}
+
+.light-entry__caselink-link {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--gold);
+}
+
+.light-entry__coastlink-link {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--periwinkle);
 }
 
 .light-entry__cols {
@@ -174,11 +241,16 @@
 	gap: 26px;
 	flex-wrap: wrap;
 	align-items: flex-start;
+	border-top: 1px solid rgba(150, 160, 220, .14);
+	padding-top: 18px;
 }
 
 .light-entry__left {
 	flex: 1 1 320px;
 	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
 }
 
 .light-entry__text {
@@ -225,53 +297,53 @@
 	text-align: center;
 }
 
+/* Decorative rotated prints, not a click-to-swap gallery (an unratified
+   deviation the mock never had): each thumb is a plain, unclickable print. */
 .light-entry__thumbs {
 	display: flex;
-	gap: 6px;
+	gap: 7px;
 	flex-wrap: wrap;
 	justify-content: center;
+	padding-top: 2px;
 }
 
 .light-entry__thumb {
-	padding: 0;
-	border: 1.5px solid transparent;
-	border-radius: 2px;
-	background: none;
-	cursor: pointer;
-	width: 34px;
-	height: 34px;
-	overflow: hidden;
+	flex: none;
+	background: #fdfcf8;
+	padding: 3px 3px 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, .4);
 }
 
 .light-entry__thumb img {
 	display: block;
-	width: 100%;
-	height: 100%;
+	width: 56px;
+	height: 42px;
 	object-fit: cover;
+	background: #e6e2d6;
 }
 
-.light-entry__thumb--active {
-	border-color: var(--gold);
+.light-entry__tags {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: #8a6d3b;
+	text-align: center;
+}
+
+/* --- the final row: moral (left) + signoff (right), one bordered line --- */
+.light-entry__final {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 14px;
+	flex-wrap: wrap;
+	border-top: 1px solid rgba(150, 160, 220, .14);
+	padding-top: 14px;
 }
 
 .light-entry__moral {
 	font-size: 15px;
 	color: var(--text-quip);
 	font-style: italic;
-}
-
-.light-entry__footer {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 14px;
-	flex-wrap: wrap;
-}
-
-.light-entry__tags {
-	font-family: var(--font-mono);
-	font-size: 12px;
-	color: #8a6d3b;
 }
 
 .light-entry__signoff {

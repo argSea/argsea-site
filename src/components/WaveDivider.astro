@@ -1,18 +1,71 @@
 ---
-// The wave divider with the crossing sailboat (homepage only). The wave line
-// itself is static; the boat and its message-in-a-bottle egg live in the
-// BottleBoat island, positioned against this strip via [data-wave]. With no
-// proverbs the egg is off: the boat renders build-time only (no client
-// directive, no JS) and just sails.
+// The wave divider with the crossing sailboat and the coast-in-miniature: a
+// beacon dot per project, blinking that light's real characteristic at a
+// glance, dark and unclickable for an extinguished light (Hello.dc.html's
+// waveBeacons; every beacon there carries pointerEvents:'none', lit or dark,
+// so none of them open anything). The wave line itself is static; the boat
+// and its message-in-a-bottle egg live in the BottleBoat island, positioned
+// against this strip via [data-wave]. With no proverbs the egg is off: the
+// boat renders build-time only (no client directive, no JS) and just sails.
 import BottleBoat from './islands/BottleBoat';
+import type { Project } from '../lib/api';
+import { DEFAULT_LIGHT } from '../lib/lightChar';
 
 interface Props {
+	projects?: Project[];
 	proverbs?: string[];
 }
 
-const { proverbs = [] } = Astro.props;
+const { projects = [], proverbs = [] } = Astro.props;
+
+// Beacon glow per color, dark once extinguished regardless of the light's own
+// color, same palette the coast/register/overlay all share (src/lib/
+// lightChar.ts's GLOW), just inlined here since these dots are plain CSS
+// decoration rather than characteristic-engine lamps.
+const GLOW: Record<string, string> = { white: '246,236,207', red: '231,122,112', green: '111,202,151', dark: '120,132,170' };
+
+// The mock's own per-kind CSS keyframe (not the phase-locked WAAPI engine the
+// real lamps run on): a decorative background strip doesn't need to
+// phase-lock with anything else on the page.
+const CHAR_ANIM: Record<string, string> = { flash: 'flashChar', occult: 'occultChar', iso: 'isoChar', quick: 'flashChar', veryquick: 'flashChar', morse: 'flashChar' };
+
+interface Beacon {
+	left:      string;
+	dark:      boolean;
+	glow:      string;
+	haloAnim:  string;
+	coreAnim:  string;
+}
+
+function clampPeriod(period: number): number {
+	return Math.min(6, Math.max(3, period || 4));
+}
+
+const beacons: Beacon[] = projects.map((project, index) => {
+	const light = project.light ?? DEFAULT_LIGHT;
+	const dark = Boolean(light.extinguished);
+	const glow = dark ? GLOW.dark : (GLOW[light.color] ?? GLOW.white);
+	const left = `${6 + ((index * 0.618034) % 1) * 90}%`;
+	const dur = clampPeriod(light.period);
+	const charAnim = CHAR_ANIM[light.kind];
+
+	if (dark) {
+		return { left, dark, glow, haloAnim: 'none', coreAnim: 'none' };
+	}
+	if (light.kind === 'fixed') {
+		return { left, dark, glow, haloAnim: 'haloBreath 5s ease-in-out infinite', coreAnim: 'none' };
+	}
+	const anim = `${charAnim ?? 'flashChar'} ${dur}s ease-in-out infinite`;
+	return { left, dark, glow, haloAnim: anim, coreAnim: anim };
+});
 ---
 <div class="wave" data-wave>
+	{beacons.map((beacon) => (
+		<div class="wave-beacon" style={`left:${beacon.left}`} aria-hidden="true">
+			<div class="wave-beacon__halo" style={`background:radial-gradient(circle, rgba(${beacon.glow},${beacon.dark ? .08 : .5}) 0%, transparent 64%);animation:${beacon.haloAnim}`}></div>
+			<div class="wave-beacon__core" style={`background:${beacon.dark ? '#4d5670' : '#fff'};box-shadow:0 0 5px 1.5px rgba(${beacon.glow},${beacon.dark ? .15 : .75});animation:${beacon.coreAnim}`}></div>
+		</div>
+	))}
 	{proverbs.length > 0
 		? <BottleBoat client:load proverbs={proverbs} />
 		: <BottleBoat proverbs={[]} />}
@@ -23,5 +76,56 @@ const { proverbs = [] } = Astro.props;
 		position: relative;
 		height: 18px;
 		background: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;
+	}
+
+	/* A tiny coast-in-miniature: one dot per project, unclickable (a
+	   preview, not an entry point; /projects is where you click through). */
+	.wave-beacon {
+		position: absolute;
+		top: 9px;
+		width: 14px;
+		height: 14px;
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	.wave-beacon__halo {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 14px;
+		height: 14px;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		filter: blur(1px);
+	}
+
+	.wave-beacon__core {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 3px;
+		height: 3px;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+	}
+
+	@keyframes flashChar {
+		0%, 68%  { opacity: .08; }
+		78%      { opacity: 1; }
+		88%, 100% { opacity: .08; }
+	}
+
+	@keyframes occultChar {
+		0%, 70%  { opacity: 1; }
+		80%      { opacity: .09; }
+		90%, 100% { opacity: 1; }
+	}
+
+	@keyframes isoChar {
+		0%, 42%   { opacity: 1; }
+		54%, 96%  { opacity: .12; }
+		100%      { opacity: .12; }
 	}
 </style>
