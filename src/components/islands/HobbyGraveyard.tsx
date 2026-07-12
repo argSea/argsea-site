@@ -34,8 +34,8 @@ function effectiveWear(hobby: Hobby): number {
 	return /^\d/.test(hobby.service) ? hobby.wear : 1;
 }
 
-function plotLabel(order: number): string {
-	return String(order).padStart(2, '0');
+function plotLabel(position: number): string {
+	return String(position).padStart(2, '0');
 }
 
 // A migrated record may leave the new fields empty; the postcard-era value
@@ -58,8 +58,8 @@ function displayLog(hobby: Hobby): string {
 // hobby: the seed is a cheap hash of the id, so a hoist that re-fetches the same
 // graves never reshuffles their dressing. Grass may share a plot with one other
 // object; otherwise a plot holds at most one, and some hold nothing (which reads
-// as random too). The dirt mound and the four objects past the mock (seashell,
-// wildflower, tiny lantern, snail) are authored, not in Hobbies.dc.html.
+// as random too). The four objects past the mock (seashell, wildflower, tiny
+// lantern, snail) are authored, not in Hobbies.dc.html; the mound itself is.
 type DressKind = 'pebbles' | 'pinwheel' | 'mushroom' | 'seashell' | 'wildflower' | 'lantern' | 'snail';
 const DRESS_OBJECTS: DressKind[] = ['pebbles', 'pinwheel', 'mushroom', 'seashell', 'wildflower', 'lantern', 'snail'];
 
@@ -204,7 +204,9 @@ export default function HobbyGraveyard({ hobbies, suggestions, catEnabled, catPa
 	};
 
 	const open = openIndex === null ? null : hobbies[openIndex];
-	const lastOrder = hobbies.length > 0 ? hobbies[hobbies.length - 1].order : 0;
+	// The plaque number is display truth, not the hobby's data key: it's the
+	// row's 1-based slot in the sorted register, so the open record reads 0N.
+	const openPlot = openIndex === null ? '' : plotLabel(openIndex + 1);
 
 	return (
 		<section className="graveyard">
@@ -232,7 +234,7 @@ export default function HobbyGraveyard({ hobbies, suggestions, catEnabled, catPa
 			</div>
 
 			<div className="graveyard__foot">
-				<span className="mono-comment">// plot {plotLabel(lastOrder + 1)} stands open.</span>
+				<span className="mono-comment">// plot {plotLabel(hobbies.length + 1)} stands open.</span>
 				<div className="graveyard__foot-right">
 					<NextHobbyChip values={suggestions} />
 					<span className="graveyard__paw-caption">
@@ -245,7 +247,7 @@ export default function HobbyGraveyard({ hobbies, suggestions, catEnabled, catPa
 			{open && (
 				<RecordModal
 					hobby={open}
-					plot={plotLabel(open.order)}
+					plot={openPlot}
 					closing={closing}
 					flowerCount={flowers[open.id] ?? 0}
 					onLeaveFlower={leaveFlower}
@@ -270,18 +272,18 @@ interface RowProps {
 }
 
 function Row({ hobby, index, hovered, haunting, flowerCount, onOpen, onHover, onUnhover }: RowProps) {
-	const alive = hobby.kind === 'alive';
 	const haunt = hobby.kind === 'haunt';
-	// hauntingNow golds the dot without the alive pulse (Hobbies.dc.html's
-	// lampDot: alive pulses, hauntingNow just golds, idle haunt rareFlickers);
-	// it also swaps the log line to the metronome copy.
-	const dotModifier = alive ? ' graveyard__lamp-dot--alive' : haunting ? ' graveyard__lamp-dot--haunting' : haunt ? ' graveyard__lamp-dot--haunt' : '';
+	// The dot follows the marker: an active hobby (lamp) pulses gold, a resting
+	// haunt idles on the rare flicker. The haunt moment overrides either with the
+	// gold flare (Hobbies.dc.html's lampDot) and swaps the log to the metronome
+	// copy, so an active hobby keeps its lamp yet still flares while it haunts.
+	const dotModifier = haunting ? ' graveyard__lamp-dot--haunting' : hobby.active ? ' graveyard__lamp-dot--alive' : haunt ? ' graveyard__lamp-dot--haunt' : '';
 	const service = displayService(hobby);
 	const logLine = haunting ? HAUNT_LOG_LINE : displayLog(hobby);
 
 	return (
 		<div
-			className={`graveyard__row${alive ? '' : ' graveyard__row--resting'}`}
+			className={`graveyard__row${hobby.active ? '' : ' graveyard__row--resting'}`}
 			style={{ animationDelay: `${(0.25 + index * 0.08).toFixed(2)}s` }}
 			role="button"
 			tabIndex={0}
@@ -326,10 +328,11 @@ function DispositionPill({ hobby }: { hobby: Hobby }) {
 }
 
 function Marker({ hobby, index, hovered, haunting, flowerCount }: { hobby: Hobby; index: number; hovered: boolean; haunting: boolean; flowerCount: number }) {
-	const alive = hobby.kind === 'alive';
+	const active = hobby.active;
 	const w = effectiveWear(hobby);
 	const tilt = TILTS[index % TILTS.length];
 	const lit = hovered || haunting;
+	const plot = plotLabel(index + 1);
 
 	// The haunting moment glows ~1.5x the mock's lit marker (operator ruling
 	// 2026-07-11, ratified deviation): only the moment is boosted, a plain hover
@@ -343,30 +346,30 @@ function Marker({ hobby, index, hovered, haunting, flowerCount }: { hobby: Hobby
 	};
 
 	let body: ReactElement;
-	if (alive) {
-		body = <LampMarker plot={plotLabel(hobby.order)} />;
+	if (active) {
+		body = <LampMarker plot={plot} />;
 	} else if (hobby.marker === 'sticks') {
-		body = <SticksMarker plot={plotLabel(hobby.order)} />;
+		body = <SticksMarker plot={plot} />;
 	} else if (hobby.marker === 'driftwood') {
-		body = <DriftwoodMarker plot={plotLabel(hobby.order)} />;
+		body = <DriftwoodMarker plot={plot} />;
 	} else if (hobby.marker === 'cairn') {
-		body = <CairnMarker plot={plotLabel(hobby.order)} />;
+		body = <CairnMarker plot={plot} />;
 	} else if (hobby.marker === 'buoy') {
-		body = <BuoyMarker plot={plotLabel(hobby.order)} />;
+		body = <BuoyMarker plot={plot} />;
 	} else {
-		body = <StoneMarker hobby={hobby} index={index} wear={w} lit={lit} />;
+		body = <StoneMarker hobby={hobby} index={index} wear={w} lit={lit} plot={plot} />;
 	}
 
-	// The still-burning lamp is no grave: it gets neither mound nor graveside
-	// dressing. Everything resting is planted in a mound and may carry dressing,
-	// both sitting level while the marker itself leans.
+	// An active hobby keeps its lamp even while it haunts, and a lamp is no grave:
+	// it gets neither mound nor graveside dressing. Everything resting is planted
+	// in a mound and may carry dressing, both sitting level while the marker leans.
 	return (
 		<div className="graveyard__marker">
-			{!alive && <Mound />}
-			<div className="graveyard__marker-body" style={alive ? undefined : bodyStyle}>
+			{!active && <Mound />}
+			<div className="graveyard__marker-body" style={active ? undefined : bodyStyle}>
 				{body}
 			</div>
-			{!alive && <Dressing id={hobby.id} />}
+			{!active && <Dressing id={hobby.id} />}
 			<Sprigs count={flowerCount} index={index} />
 		</div>
 	);
@@ -380,6 +383,7 @@ function Mound() {
 			<span className="graveyard__mound-clod graveyard__mound-clod--a" />
 			<span className="graveyard__mound-clod graveyard__mound-clod--b" />
 			<span className="graveyard__mound-clod graveyard__mound-clod--c" />
+			<span className="graveyard__mound-clod graveyard__mound-clod--d" />
 		</div>
 	);
 }
@@ -501,7 +505,7 @@ function DressArt({ kind }: { kind: DressKind }): ReactElement | null {
 	}
 }
 
-function StoneMarker({ hobby, index, wear, lit }: { hobby: Hobby; index: number; wear: number; lit: boolean }) {
+function StoneMarker({ hobby, index, wear, lit, plot }: { hobby: Hobby; index: number; wear: number; lit: boolean; plot: string }) {
 	const alive = hobby.kind === 'alive';
 	const radii = ['38px 36px 5px 4px', '12px 15px 4px 5px', '28px 33px 5px 4px', '33px 38px 4px 5px'];
 	const hasCrack = wear >= 0.8;
@@ -517,7 +521,7 @@ function StoneMarker({ hobby, index, wear, lit }: { hobby: Hobby; index: number;
 			{alive
 				? <span className="graveyard__stone-alive-dot">●</span>
 				: <span className="graveyard__stone-dead-mark">❦</span>}
-			<span className="graveyard__stone-plot">{plotLabel(hobby.order)}</span>
+			<span className="graveyard__stone-plot">{plot}</span>
 			<div
 				className="graveyard__stone-wear"
 				style={{

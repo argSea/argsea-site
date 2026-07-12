@@ -222,8 +222,10 @@
 	width: 98px;
 	display: flex;
 	justify-content: center;
-	/* Own stacking context so the mound (0), body (1), sprigs (2) and dressing
-	   (3) layer among themselves, not against the row's other columns. */
+	/* Own stacking context so the body (1), the mound and sprigs (2), and the
+	   dressing (3) layer among themselves, not against the row's other columns.
+	   The mound sits in front of the body, banking against the stone's base per
+	   Hobbies.dc.html's isDead block. */
 	isolation: isolate;
 }
 
@@ -606,68 +608,79 @@
 	border-radius: 5px 5px 0 0;
 }
 
-/* --- the dirt mound: one per grave, authored (not in Hobbies.dc.html), drawn
-   in the marker column's cool palette and softness per the operator's spec --- */
+/* --- the dirt mound: one per resting grave, transcribed from Hobbies.dc.html's
+   isDead block. Brown dirt in front of the marker body (z-index above it) so it
+   banks against the stone's base, and its clods sit on the cap, exactly as the
+   mock stacks them. --- */
 
 .graveyard__mound {
 	position: absolute;
 	left: 50%;
 	bottom: 0;
 	transform: translateX(-50%);
-	width: 116px;
-	height: 22px;
-	z-index: 0;
+	width: 122px;
+	height: 20px;
+	z-index: 2;
 	pointer-events: none;
 }
 
 .graveyard__mound-shadow {
 	position: absolute;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	height: 12px;
+	left: -5px;
+	right: -5px;
+	bottom: -1px;
+	height: 9px;
 	border-radius: 50%;
-	background: radial-gradient(ellipse at 50% 60%, rgba(35, 40, 66, .9) 0%, rgba(26, 30, 51, 0) 72%);
+	background: radial-gradient(ellipse at 50% 45%, #232842 0%, rgba(26, 30, 51, 0) 74%);
 }
 
 .graveyard__mound-cap {
 	position: absolute;
-	left: 12px;
-	right: 12px;
-	bottom: 3px;
-	height: 15px;
-	border-radius: 46% 54% 40% 44% / 90% 92% 34% 36%;
-	background: linear-gradient(180deg, #2a3050 0%, #1e2340 55%, #161a30 100%);
-	box-shadow: inset 0 1.5px 1px -.5px rgba(200, 210, 255, .12), inset 0 -2px 4px rgba(0, 0, 0, .35);
+	left: 5px;
+	right: 6px;
+	bottom: 1px;
+	height: 17px;
+	z-index: 2;
+	border-radius: 56% 66% 22% 26% / 100% 100% 30% 34%;
+	background: linear-gradient(180deg, #4a3826 0%, #33251a 55%, #241a10 100%);
+	box-shadow: inset 0 1.5px 1px -.5px rgba(240, 217, 168, .16), inset 0 -2px 3px rgba(0, 0, 0, .35);
 }
 
 .graveyard__mound-clod {
 	position: absolute;
+	z-index: 2;
 	border-radius: 50%;
-	background: #2f3556;
+	background: #54402b;
 }
 
 .graveyard__mound-clod--a {
-	left: 34px;
-	bottom: 8px;
-	width: 4px;
-	height: 3px;
+	left: 15px;
+	top: 4px;
+	width: 3.5px;
+	height: 2.5px;
 }
 
 .graveyard__mound-clod--b {
-	right: 30px;
-	bottom: 6px;
+	right: 19px;
+	top: 7px;
 	width: 3px;
-	height: 2.5px;
-	background: #38406a;
+	height: 2px;
+	background: #4a3826;
 }
 
 .graveyard__mound-clod--c {
-	left: 50%;
-	bottom: 10px;
+	left: 40px;
+	bottom: 4px;
 	width: 3px;
 	height: 2px;
-	background: #2a3050;
+}
+
+.graveyard__mound-clod--d {
+	right: 34px;
+	top: 3px;
+	width: 2.5px;
+	height: 2px;
+	background: #5e4930;
 }
 
 /* --- graveside dressing: a seeded pool over the mound. Grass tufts (which may

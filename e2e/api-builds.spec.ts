@@ -42,15 +42,16 @@ test('a wire hobby with only `active` (no `kind`) derives correctly through the 
 	// The home lab: active: true → derived alive → the lamp marker, not a stone
 	await expect(rows.first().locator('.graveyard__lamp')).toBeVisible();
 
-	// Piano: active: false, disposition "occasionally haunting" → derived haunt
-	const piano = rows.nth(1);
+	// Piano: active: false, disposition "occasionally haunting" → derived haunt,
+	// resting, so a stone whose dot idles on the rare flicker
+	const piano = page.locator('.graveyard__row', { has: page.getByText('Piano', { exact: true }) });
 	await expect(piano.locator('.graveyard__lamp-dot--haunt')).toBeVisible();
 
-	// Changing my OS: active: true but a haunting disposition → haunt wins over
-	// standing, so it derives haunt (a headstone) rather than alive (the lamp)
+	// Changing my OS: active: true with a haunting disposition. Active keeps the
+	// lamp; the haunt rides on top as the HAUNTING pill, not a grave
 	const standingHaunt = page.locator('.graveyard__row', { has: page.getByText('Changing my OS', { exact: true }) });
 	await expect(standingHaunt.locator('.graveyard__pill--haunt')).toBeVisible();
-	await expect(standingHaunt.locator('.graveyard__lamp')).toHaveCount(0);
+	await expect(standingHaunt.locator('.graveyard__lamp')).toBeVisible();
 });
 
 // Order 7 (The old publishing stack) is nulled to facts:null/noteIds:null in
