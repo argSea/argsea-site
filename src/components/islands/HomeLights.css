@@ -266,6 +266,16 @@
 	background: #e6e2d6;
 }
 
+/* --- empty paper frame: no image name, or the print failed to load. The
+   frame's own cream background already reads as blank paper; the paper slot
+   below just holds the img's box so nothing collapses or shifts. --- */
+.polaroid-frame__paper {
+	flex: 1;
+	min-height: 240px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
 .home-lights__polaroid-caption {
 	font-family: var(--font-mono);
 	font-size: 11px;

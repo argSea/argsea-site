@@ -145,9 +145,22 @@ const dark = Boolean(light.extinguished);
 							case 'mermaid':
 								return <div class="cs-mermaid" set:html={block.svg} />;
 							case 'figure':
+								// A print not yet pinned: the print can be struck from the
+								// darkroom after the case study cites it. No React island on
+								// this SSG'd page, so the fallback is the smallest thing that
+								// works: the native onerror attribute swaps the frame to the
+								// empty paper state and drops the broken image, no framework
+								// runtime required.
 								return (
 									<figure class="cs-figure">
-										<div class="cs-figure__frame"><img src={mediaUrl(block.key)} alt={block.caption} loading="lazy" /></div>
+										<div class="cs-figure__frame">
+											<img
+												src={mediaUrl(block.key)}
+												alt={block.caption}
+												loading="lazy"
+												onerror="this.closest('.cs-figure__frame').classList.add('cs-figure__frame--empty');this.remove();"
+											/>
+										</div>
 										{block.caption && <figcaption class="cs-figure__caption">{block.caption}</figcaption>}
 									</figure>
 								);
@@ -498,6 +511,14 @@ const dark = Boolean(light.extinguished);
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
+	}
+
+	/* --- empty paper frame: the print failed to load. Cream, like the other
+	   print frames' blank paper (polaroid-frame, photo-print); the border
+	   drops since a print never has one. --- */
+	.cs-figure__frame--empty {
+		background: #fdfcf8;
+		border-color: transparent;
 	}
 
 	.cs-figure__caption {
