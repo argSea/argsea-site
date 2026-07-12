@@ -111,10 +111,12 @@ export type HobbyKind = 'alive' | 'haunt' | 'dark';
 // stone default, same as an absent marker.
 export type HobbyMarker = '' | 'stone' | 'sticks' | 'driftwood' | 'cairn' | 'buoy' | 'lamp';
 
-// The wire shape, field-for-field with the domain's Hobby struct (dormant
-// dates/epitaph/eulogy omitted, same precedent as Project's dormant fields):
-// `active` is the one stored bool, not `kind`. Never exported: everything
-// downstream of FixtureSource/ApiSource sees the derived Hobby below instead.
+// The wire shape, field-for-field with the domain's Hobby struct. `active` is
+// the one stored lifecycle bool, not `kind`. The postcard-era dates/epitaph/
+// eulogy ride along as optional dormant fields (declared below) so the register
+// can fall back to them; a migrated document fills the new fields and may leave
+// these empty. Never exported: everything downstream of FixtureSource/ApiSource
+// sees the derived Hobby below instead.
 interface HobbyDoc {
 	id:          string;
 	name:        string;
