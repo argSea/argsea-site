@@ -129,6 +129,13 @@ interface HobbyDoc {
 	found:       string;      // "what was found"
 	cause:       string;      // "cause of vanishing"
 	return:      string;      // "re-appointment"
+	// The postcard-era record, dormant on the wire; the register falls back
+	// to these when the new fields sit empty (operator ruling 2026-07-11:
+	// dates stand in for service, the epitaph for the pill, the eulogy for
+	// the log). Fixtures may omit them; toHobby() normalizes.
+	dates?:      string;
+	epitaph?:    string;
+	eulogy?:     string;
 	tags:        string[];
 	order:       number;      // the keeper's manual sort key
 	createdAt:   string;
@@ -139,7 +146,10 @@ interface HobbyDoc {
 // toHobby() below rather than carried on the wire. Keeping `kind` here (not
 // `active`) means the graveyard's rendering never had to change shape.
 export interface Hobby extends HobbyDoc {
-	kind: HobbyKind;
+	kind:    HobbyKind;
+	dates:   string;
+	epitaph: string;
+	eulogy:  string;
 }
 
 export interface Note {
@@ -316,18 +326,25 @@ export interface ContentSource {
 // kind is derived, never stored (2026-07-11 integrator ruling: the wire
 // carries `active`, not `kind`; deriving it here, once, means a future wire
 // `kind` field replaces exactly this one spot, in both sources at once).
-// active wins outright; among resting hobbies, a haunt-flavored disposition
-// (the copy the keeper already writes, e.g. "occasionally haunting") reads as
-// haunt, everything else as plain dark.
+// A haunt-flavored disposition wins outright, standing or not (operator
+// ruling 2026-07-11: the keeper's word is the explicit signal; a hobby can
+// haunt you while you live it). Otherwise standing burns alive, resting
+// goes dark.
 function deriveHobbyKind(active: boolean, disposition: string): HobbyKind {
-	if (active) {
-		return 'alive';
+	if (/haunt/i.test(disposition)) {
+		return 'haunt';
 	}
-	return /haunt/i.test(disposition) ? 'haunt' : 'dark';
+	return active ? 'alive' : 'dark';
 }
 
 function toHobby(doc: HobbyDoc): Hobby {
-	return { ...doc, kind: deriveHobbyKind(doc.active, doc.disposition) };
+	return {
+		...doc,
+		dates:   doc.dates ?? '',
+		epitaph: doc.epitaph ?? '',
+		eulogy:  doc.eulogy ?? '',
+		kind:    deriveHobbyKind(doc.active, doc.disposition),
+	};
 }
 
 class ApiSource implements ContentSource {
