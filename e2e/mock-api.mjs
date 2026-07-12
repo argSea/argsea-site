@@ -75,7 +75,7 @@ const routes = {
 	'/1/figurehead/published':       fixture('figurehead.empty'),
 	'/1/suggestion':                 fixture('suggestions'),
 	'/1/doodle':                     fixture('doodles'),
-	'/1/carving/carvings':                    carvings,
+	'/1/carving/carvings':           carvings,
 };
 
 createServer((req, res) => {

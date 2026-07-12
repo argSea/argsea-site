@@ -29,10 +29,8 @@ const LAMP_ANCHOR = 'data-carving-anchor="lamp"';
  * The markup bolted to `spot`, or null when nothing is. The bolt operation
  * writes two carvings (bolt the new holder, strip the old); a crash between
  * those writes can transiently leave a spot claimed by two carvings in the
- * GET list, so ties break on newest updatedAt, the same newest-wins
- * precedent the figurehead published-design resolution uses, rather than
- * either wire order or an error over content that's momentarily ambiguous,
- * never broken.
+ * GET list, so ties break on newest updatedAt, rather than either wire order
+ * or an error over content that's momentarily ambiguous, never broken.
  */
 export function boltedSvg(spot: CarvingSpot, carvings: Carving[]): string | null {
 	const claimants = carvings.filter((carving) => (carving.boltedTo ?? []).includes(spot));
@@ -61,5 +59,5 @@ export function hasLampAnchor(svg: string | null): boolean {
 
 /** A raw svg string as a CSS `url('data:image/svg+xml,...')` value, for the two mounts (wave-line, boat-wake) that tile as a background rather than render inline. Full percent-encoding, unlike the built-ins' own hand-trimmed literals, since a bolted carving's content isn't ours to assume is URL-safe. */
 export function svgBackground(svg: string): string {
-	return `url('data:image/svg+xml,${encodeURIComponent(svg)}')`;
+	return `url('data:image/svg+xml,${encodeURIComponent(svg).replace(/'/g, '%27')}')`;
 }

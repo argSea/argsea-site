@@ -13,11 +13,14 @@ test('the bolted bottle renders the carved shape, the unbolted boat stays built-
 	await page.goto('/');
 	// The boat never stops sailing, so a real click would wait forever for it
 	// to hold still; dispatch the click at wherever it is right now (same
-	// idiom as e2e/delights.spec.ts's own bottle-drop spec).
-	await page.locator('.boat-track').dispatchEvent('click');
-
+	// idiom as e2e/delights.spec.ts's own bottle-drop spec). The dispatch can
+	// also fire before the island hydrates, so no bottle drops; retry until
+	// it does (same idiom as e2e/delights.spec.ts:26).
 	const bottle = page.locator('.bottle');
-	await expect(bottle).toBeVisible();
+	await expect(async () => {
+		await page.locator('.boat-track').dispatchEvent('click');
+		await expect(bottle).toBeVisible({ timeout: 500 });
+	}).toPass();
 	await expect(bottle).toHaveAttribute('data-bolted', 'bottle');
 	// The fixture's test carving is a jar (rect + circle); the built-in is two
 	// rects and a path, never a circle.

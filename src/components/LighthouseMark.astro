@@ -18,7 +18,7 @@ const { width, height, tilt = false } = Astro.props;
 
 const bolted = boltedSvg('lighthouse-logo', await getCarvings());
 ---
-<svg width={width} height={height} viewBox="0 0 26 30" fill="none" style={tilt ? 'transform:rotate(-4deg)' : undefined} data-bolted={bolted ? 'lighthouse-logo' : undefined}>
+<svg class="lighthouse-mark" width={width} height={height} viewBox="0 0 26 30" fill="none" style={tilt ? 'transform:rotate(-4deg)' : undefined} data-bolted={bolted ? 'lighthouse-logo' : undefined}>
 	{bolted ? (
 		<Fragment set:html={innerMarkup(bolted)} />
 	) : (

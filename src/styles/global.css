@@ -384,15 +384,17 @@ a {
 /* Carving anchor: a bolted lighthouse-logo carving that tags its lamp shape
    with data-carving-anchor="lamp" keeps pulsing through this global,
    unscoped rule (Astro's own scoped .lamp style in LighthouseMark.astro can
-   never reach into set:html'd raw markup). Missing the tag just leaves the
-   carving as static art, never a crash. The characteristic engine's own
-   tower-stub mounts read the same anchor via src/lib/carvings.ts instead,
-   since that one's WAAPI-driven, not CSS. */
-[data-carving-anchor="lamp"] {
-	animation: lampPulse 5s ease-in-out infinite;
+   never reach into set:html'd raw markup). Scoped to the LighthouseMark
+   mount so an anchored carving bolted to a different spot never picks up
+   this pulse. Missing the tag just leaves the carving as static art, never
+   a crash. The characteristic engine's own tower-stub mounts read the same
+   anchor via src/lib/carvings.ts instead, since that one's WAAPI-driven,
+   not CSS. */
+.lighthouse-mark [data-carving-anchor="lamp"] {
+	animation: carvingLampPulse 5s ease-in-out infinite;
 }
 
-@keyframes lampPulse {
+@keyframes carvingLampPulse {
 	0%, 100% { opacity: .55; }
 	50%      { opacity: 1; }
 }
