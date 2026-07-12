@@ -181,13 +181,8 @@ test('the retranscribed overlay: head line, notes above facts, decorative thumbs
 	});
 	expect(nudgeThenFacts).toBe(true);
 
-	// the thumb strip is decorative prints, not a click-to-swap gallery
-	const thumbs = overlay.locator('.light-entry__thumb');
-	await expect(thumbs).toHaveCount(1);
-	expect(await thumbs.first().evaluate((element) => element.tagName)).toBe('DIV');
-	const mainSrc = await overlay.locator('.photo-print img').getAttribute('src');
-	await thumbs.first().click({ force: true });
-	await expect(overlay.locator('.photo-print img')).toHaveAttribute('src', mainSrc!);
+	// a single-image project shows the print alone, no thumb strip
+	await expect(overlay.locator('.light-entry__thumb')).toHaveCount(0);
 
 	// tags sit at the bottom of the photo column, not in the final row
 	await expect(overlay.locator('.light-entry__right .light-entry__tags')).toBeVisible();
@@ -199,4 +194,16 @@ test('the retranscribed overlay: head line, notes above facts, decorative thumbs
 
 	// on the projects page (not the home mount) there's no coast link
 	await expect(overlay.locator('.light-entry__coastlink-link')).toHaveCount(0);
+
+	// a multi-image project gets the decorative thumb strip: rotated prints,
+	// not a click-to-swap gallery
+	await page.keyboard.press('Escape');
+	await expect(overlay).toHaveCount(0);
+	await page.locator('#light-row-fixture-project-1').click();
+	const thumbs = page.locator('.overlay-card .light-entry__thumb');
+	await expect(thumbs).toHaveCount(2);
+	expect(await thumbs.first().evaluate((element) => element.tagName)).toBe('DIV');
+	const mainSrc = await page.locator('.overlay-card .photo-print img').getAttribute('src');
+	await thumbs.first().click({ force: true });
+	await expect(page.locator('.overlay-card .photo-print img')).toHaveAttribute('src', mainSrc!);
 });

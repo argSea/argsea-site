@@ -54,3 +54,13 @@ test('the register\'s full log link and the overlay both point at the case study
 	await expect(link).toHaveText('read the full log →');
 	await expect(link).toHaveAttribute('href', SLUG);
 });
+
+test('the archive figure ships a real print, not a broken glyph', async ({ page }) => {
+	await page.goto(SLUG);
+
+	const img = page.locator('.cs-figure__frame img');
+	await expect(img).toHaveAttribute('src', '/media/images/first-screenshot.webp');
+	await expect
+		.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth))
+		.toBeGreaterThan(0);
+});
