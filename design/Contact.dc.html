@@ -20,10 +20,18 @@ image-slot{display:block;width:100%;height:100%}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 @keyframes lampPulse{0%,100%{opacity:.55}50%{opacity:1}}
 @keyframes wiggle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
+/* phone line · 600 (the site's nav breakpoint). the wide-register tier is 880. no third line. */
+@media(max-width:600px){
+  [data-hide-mobile]{display:none !important}
+  [data-desk-nav]{display:none !important}
+  [data-mob-resume]{display:inline-flex !important}
+  [data-mob-tabs]{display:flex !important}
+  [data-page]{padding-bottom:74px !important}
+}
 </style>
 </helmet>
 
-<div style="min-height:100vh;color:#dde1f0;font-family:'Newsreader',serif;display:flex;flex-direction:column;overflow-x:hidden">
+<div data-page style="min-height:100vh;color:#dde1f0;font-family:'Newsreader',serif;display:flex;flex-direction:column;overflow-x:hidden">
 
   <!-- nav -->
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:clamp(18px,3vw,30px) clamp(20px,5vw,52px) 10px">
@@ -33,7 +41,7 @@ image-slot{display:block;width:100%;height:100%}
       </span>
       <span style="font-family:'Gloock',serif;font-size:19px;color:#e8ebfa">Justin Smith</span>
     </a>
-    <div style="display:flex;flex-wrap:wrap;gap:clamp(14px,3vw,32px);font-family:'IBM Plex Mono',monospace;font-size:13px">
+    <div data-desk-nav style="display:flex;flex-wrap:wrap;gap:clamp(14px,3vw,32px);font-family:'IBM Plex Mono',monospace;font-size:13px">
       <a href="Hello.dc.html" style="color:#93a0e8">hello</a>
       <a href="Projects.dc.html" style="color:#93a0e8">projects</a>
       <a href="Hobbies.dc.html" style="color:#93a0e8">hobbies</a>
@@ -41,6 +49,7 @@ image-slot{display:block;width:100%;height:100%}
       <a href="Contact.dc.html" style="color:#e8ebfa;border-bottom:2px solid #f0d9a8;padding-bottom:2px">contact</a>
       <a href="#" style="color:#93a0e8">resume ↗</a>
     </div>
+    <a data-mob-resume href="#" style="display:none;align-items:center;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:13px">resume ↗</a>
   </div>
 
   <!-- header -->
@@ -116,6 +125,25 @@ image-slot{display:block;width:100%;height:100%}
     </div>
   </div>
 </div>
+  <!-- mobile bottom tab bar · shown ≤600 (ratified 1b nav) · hidden on desktop -->
+  <div data-mob-tabs style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(15,18,32,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(150,160,220,.16);padding:7px 4px calc(4px + env(safe-area-inset-bottom));font-family:'IBM Plex Mono',monospace">
+    <a href="Hello.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
+      <svg width="19" height="22" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="currentColor"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="currentColor" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="currentColor" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="currentColor" stroke-width="1.4" fill="none"></path></svg>
+      <span style="font-size:9.5px">hello</span>
+    </a>
+    <a href="Projects.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
+      <span style="position:relative;width:19px;height:22px;display:flex;align-items:center;justify-content:center"><span style="position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,currentColor,transparent 62%);opacity:.4"></span><span style="width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 6px 1.5px currentColor"></span></span>
+      <span style="font-size:9.5px">projects</span>
+    </a>
+    <a href="Hobbies.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
+      <svg width="19" height="22" viewBox="0 0 20 22" fill="none"><path d="M4 21 V9 a6 6 0 0 1 12 0 V21 Z" fill="none" stroke="currentColor" stroke-width="1.5"></path><path d="M10 12 v5 M7.5 14.5 h5" stroke="currentColor" stroke-width="1.3"></path></svg>
+      <span style="font-size:9.5px">hobbies</span>
+    </a>
+    <a href="Notes.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
+      <svg width="19" height="22" viewBox="0 0 20 22" fill="none"><rect x="4" y="3" width="12" height="16" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect><path d="M7 7 h6 M7 10 h6 M7 13 h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg>
+      <span style="font-size:9.5px">notes</span>
+    </a>
+  </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
