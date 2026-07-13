@@ -161,7 +161,7 @@ function FlagshipCard({ project, notes, onOpen }: { project: Project; notes: Not
 
 					<div className="home-lights__flagship-foot">
 						<span className="home-lights__moral">{project.moral}</span>
-						{project.caseStudy && (
+						{project.hasLog && (
 							<a
 								href={`/projects/${project.slug}`}
 								className="home-lights__caselink"

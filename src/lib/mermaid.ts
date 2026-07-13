@@ -16,7 +16,7 @@
 // the raw-notation fallback instead of sinking the whole build.
 import type { Browser } from '@playwright/test';
 import { join } from 'node:path';
-import type { CaseStudyBlock } from './caseStudy';
+import type { CaseLogBlock } from './caseStudy';
 
 // Resolved from the working directory, not import.meta.url: Astro bundles
 // this module into dist/ for the build, where a source-relative path would
@@ -91,15 +91,15 @@ export async function renderMermaid(source: string): Promise<string> {
 }
 
 /** Renders every mermaid block in place (mutating `svg`); a source that fails to render falls back to the mock's own raw-notation message. */
-export async function renderMermaidBlocks(blocks: CaseStudyBlock[]): Promise<void> {
+export async function renderMermaidBlocks(blocks: CaseLogBlock[]): Promise<void> {
 	for (const block of blocks) {
-		if (block.type !== 'mermaid') {
+		if (block.kind !== 'mermaid') {
 			continue;
 		}
 		try {
-			block.svg = await renderMermaid(block.source);
+			block.svg = await renderMermaid(block.code);
 		} catch {
-			const escaped = block.source.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+			const escaped = block.code.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 			block.svg = `<pre class="cs-mermaid__error">the chart would not draw. raw notation:\n${escaped}</pre>`;
 		}
 	}

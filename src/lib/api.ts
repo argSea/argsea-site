@@ -18,6 +18,7 @@
 //   - timestamps are fixed-width RFC3339 strings, so string sort == chronological
 
 import projectsFixture from '../data/fixtures/projects.json';
+import caselogsFixture from '../data/fixtures/caselogs.json';
 import hobbiesFixture from '../data/fixtures/hobbies.json';
 import notesFixture from '../data/fixtures/notes.json';
 import siteCopyFixture from '../data/fixtures/siteCopy.json';
@@ -26,6 +27,7 @@ import figureheadFixture from '../data/fixtures/figurehead.json';
 import suggestionsFixture from '../data/fixtures/suggestions.json';
 import doodlesFixture from '../data/fixtures/doodles.json';
 import carvingsFixture from '../data/fixtures/carvings.json';
+import type { CaseLogBlock } from './caseStudy';
 
 export type Category = 'backend' | 'games' | 'this website' | 'tinkering';
 export type Status = 'draft' | 'published' | 'archived';
@@ -93,13 +95,25 @@ export interface Project {
 	wallPos:      WallPos | null; // pinned position on the projects page wall; null → not yet placed
 	featured:     boolean;       // on the mantel → homepage postcards preview
 	facts:        ProjectFact[] | null; // ≤6 heading/fact pairs; null on a pre-contract document, like images; guard accordingly
-	caseStudy:    string;        // markdown in the keeper's dialect; '' = no /projects/<slug> route
 	noteIds:      string[] | null; // journal entries tied to this light, resolved at build time; null on a pre-contract document, guard accordingly
 	flagship:     boolean;       // the one Hello hero project; distinct from featured
 	status:       Status;
 	publishedAt:  string;
 	createdAt:    string;
 	updatedAt:    string;
+	hasLog?:      boolean;       // derived, not on the wire: a published case log points here, so /projects/<slug> exists (getProjects fills it)
+}
+
+// A published case study: the long-form log for a project, authored as typed
+// blocks in the admin (the block union lives on src/lib/caseStudy.ts). The
+// site's only read is GET /1/caselog?published=true at build time; the case-
+// study route joins these to published projects on projectId.
+export interface CaseLog {
+	id:        string;
+	projectId: string;
+	status:    Status;
+	title:     string;         // display title for lists
+	blocks:    CaseLogBlock[];
 }
 
 // A hobby's disposition on the wandering chart: none of them sank, they just
@@ -298,6 +312,7 @@ export interface Carving {
 
 export interface ContentSource {
 	getProjects(): Promise<Project[]>;
+	getCaseLogs(): Promise<CaseLog[]>;
 	getHobbies(): Promise<Hobby[]>;
 	getNotes(): Promise<Note[]>;
 	getSiteCopy(): Promise<SiteCopy>;
@@ -322,6 +337,7 @@ class ApiSource implements ContentSource {
 	}
 
 	getProjects(): Promise<Project[]> { return this.list<Project>('/1/project'); }
+	getCaseLogs(): Promise<CaseLog[]> { return this.list<CaseLog>('/1/caselog'); }
 	getHobbies(): Promise<Hobby[]> { return this.list<Hobby>('/1/hobby'); }
 	getNotes(): Promise<Note[]> { return this.list<Note>('/1/note'); }
 
@@ -401,6 +417,7 @@ class ApiSource implements ContentSource {
 
 class FixtureSource implements ContentSource {
 	getProjects(): Promise<Project[]> { return Promise.resolve(projectsFixture as Project[]); }
+	getCaseLogs(): Promise<CaseLog[]> { return Promise.resolve(caselogsFixture as CaseLog[]); }
 	getHobbies(): Promise<Hobby[]> { return Promise.resolve(hobbiesFixture as Hobby[]); }
 	getNotes(): Promise<Note[]> { return Promise.resolve(notesFixture as Note[]); }
 	getSiteCopy(): Promise<SiteCopy> { return Promise.resolve(siteCopyFixture as SiteCopy); }
@@ -419,9 +436,23 @@ const KEEPER_ID = (import.meta.env.ARGSEA_KEEPER_ID ?? process.env.ARGSEA_KEEPER
 
 const source: ContentSource = API_URL ? new ApiSource(API_URL, KEEPER_ID) : new FixtureSource();
 
-/** Projects by the keeper's manual `order` key (ties: createdAt); the API pre-sorts, this just holds fixtures to the same rule. */
+/** Projects by the keeper's manual `order` key (ties: createdAt), each flagged `hasLog` when a published case log points at it; the API pre-sorts, this just holds fixtures to the same rule. */
 export async function getProjects(): Promise<Project[]> {
-	return (await source.getProjects()).sort((a, b) => a.order - b.order || a.createdAt.localeCompare(b.createdAt));
+	const [projects, caseLogs] = await Promise.all([source.getProjects(), getCaseLogs()]);
+	const logged = new Set(caseLogs.map((log) => log.projectId));
+	return projects
+		.map((project) => ({ ...project, hasLog: logged.has(project.id) }))
+		.sort((a, b) => a.order - b.order || a.createdAt.localeCompare(b.createdAt));
+}
+
+// Memoized: getProjects asks for the hasLog join and the case-study route asks
+// to render, both per build, and the published set can't change mid-build.
+let caseLogsPromise: Promise<CaseLog[]> | undefined;
+
+/** The published case logs; the case-study route joins them to published projects on projectId. */
+export function getCaseLogs(): Promise<CaseLog[]> {
+	caseLogsPromise ??= source.getCaseLogs();
+	return caseLogsPromise;
 }
 
 /** Hobbies by the keeper's manual `order` key; the API pre-sorts, this holds the fixtures to the same rule. */

@@ -1,7 +1,7 @@
-// The case-study route (fixtures build): SSG'd only for the one project with
-// a non-empty caseStudy (the flagship), the keeper's-dialect markdown renders
-// its numbered sections, facts/outcomes blocks, an amber placeholder chip,
-// and mermaid draws as a pre-rendered static SVG, never a runtime script.
+// The case-study route (fixtures build): SSG'd for each project joined to a
+// published case log (only the flagship carries one). The log renders from
+// typed blocks: header, numbered sections, facts/outcomes, an amber placeholder
+// chip, and mermaid draws as a pre-rendered static SVG, never a runtime script.
 import { test, expect } from '@playwright/test';
 
 const SLUG = '/projects/the-great-un-monolithing';

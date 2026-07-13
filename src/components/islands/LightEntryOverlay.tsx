@@ -158,7 +158,7 @@ export default function LightEntryOverlay({ project, signoff, notes = [], doodle
 	// null from the live API for a pre-contract document.
 	const noteIds = project.noteIds ?? [];
 	const tiedNotes = notes.filter((note) => noteIds.includes(note.id));
-	const showNudge = tiedNotes.length === 0 && !project.caseStudy;
+	const showNudge = tiedNotes.length === 0 && !project.hasLog;
 	const facts = project.facts ?? [];
 
 	// Portaled to document.body so the backdrop sits in the root stacking
@@ -261,9 +261,9 @@ export default function LightEntryOverlay({ project, signoff, notes = [], doodle
 								{/* body is sanitized HTML from the API; rendered as-is by contract */}
 								<div className="light-entry__text" dangerouslySetInnerHTML={{ __html: project.body }} />
 
-								{(project.caseStudy || coastLink) && (
+								{(project.hasLog || coastLink) && (
 									<div className="light-entry__links">
-										{project.caseStudy && <a href={`/projects/${project.slug}`} className="light-entry__caselink-link">read the full log →</a>}
+										{project.hasLog && <a href={`/projects/${project.slug}`} className="light-entry__caselink-link">read the full log →</a>}
 										{coastLink && <a href="/projects" className="light-entry__coastlink-link">the whole coast →</a>}
 									</div>
 								)}
