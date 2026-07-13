@@ -11,26 +11,48 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Gloock&amp;family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
-html{background:#131628}
-body{margin:0;background:linear-gradient(180deg,#11131f 0%,#131628 100%)}
+html{background:#0b0f20}
+body{margin:0;background:linear-gradient(180deg,#0b0f20 0%,#0e1328 100%)}
 a{text-decoration:none}
 a:hover{color:#e8ebfa}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes lampPulse{0%,100%{opacity:.55}50%{opacity:1}}
-@keyframes rareFlicker{0%,86%{opacity:.06}88%{opacity:.7}90%{opacity:.1}92%{opacity:.55}94%,100%{opacity:.06}}
-@keyframes fireflyRoam{0%,100%{translate:0 0}18%{translate:34px -18px}38%{translate:9px -40px}55%{translate:-28px -14px}72%{translate:-44px 10px}86%{translate:-12px 20px}}
-@keyframes pawRound{0%,1%{opacity:0}3%{opacity:.55}11%{opacity:.55}15%,100%{opacity:0}}
-@keyframes pinwheelSpin{to{transform:rotate(360deg)}}
+@keyframes haloBreath{0%,100%{opacity:.55}50%{opacity:.9}}
+@keyframes flashChar{0%,68%{opacity:.1}78%{opacity:1}88%{opacity:.1}100%{opacity:.1}}
+@keyframes isoChar{0%,42%{opacity:1}54%,96%{opacity:.14}100%{opacity:.14}}
+@keyframes boatDrift{0%,100%{transform:translate(0,0) rotate(-3deg)}50%{transform:translate(5px,-4px) rotate(3deg)}}
+@keyframes wakePulse{0%,100%{opacity:.3}50%{opacity:.7}}
+@keyframes palmSway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(4deg)}}
+@keyframes pennantWave{0%,100%{transform:scaleX(1) skewX(0deg)}50%{transform:scaleX(.86) skewX(-8deg)}}
+@keyframes inkPulse{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.03)}}
+@keyframes qmarkPulse{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes compassPulse{0%,100%{opacity:.35;transform:translate(-50%,-50%) scale(1)}50%{opacity:.7;transform:translate(-50%,-50%) scale(1.05)}}
+@keyframes buoyBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-3px) rotate(3deg)}}
+@keyframes serpent{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
 @keyframes backdropIn{from{opacity:0}to{opacity:1}}
 @keyframes backdropOut{from{opacity:1}to{opacity:0}}
-@keyframes cardIn{from{opacity:0;transform:rotate(1.5deg) translateY(34px) scale(.97)}to{opacity:1;transform:none}}
-@keyframes cardOut{from{opacity:1;transform:none}to{opacity:0;transform:rotate(-1deg) translateY(24px) scale(.98)}}
+@keyframes cardIn{from{opacity:0;transform:rotate(1deg) translateY(30px) scale(.97)}to{opacity:1;transform:rotate(0deg) translateY(0) scale(1)}}
+@keyframes cardOut{from{opacity:1;transform:none}to{opacity:0;transform:rotate(-1deg) translateY(22px) scale(.98)}}
+@keyframes flareUp{0%{opacity:0;transform:translateY(6px) scale(.6)}30%{opacity:1}100%{opacity:0;transform:translateY(-26px) scale(1.1)}}
+@keyframes flareRise{0%{opacity:0;transform:translateY(0) scaleY(.5)}12%{opacity:1}54%{opacity:1;transform:translateY(-220px) scaleY(1)}66%,100%{opacity:0;transform:translateY(-236px)}}
+@keyframes flareBloom{0%,44%{opacity:0;transform:translateX(-50%) scale(.2)}56%{opacity:1;transform:translateX(-50%) scale(1)}78%{opacity:.95;transform:translateX(-50%) translateY(10px) scale(1.08)}100%{opacity:0;transform:translateX(-50%) translateY(46px) scale(.9)}}
+@keyframes flareGlowPulse{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes flannanFl2{0%,1.7%{opacity:1}2.2%,6.7%{opacity:.1}7.2%,8.9%{opacity:1}9.4%,100%{opacity:.1}}
+/* phone line · 600 (the site's nav breakpoint). two tiers, no third. */
+@media(max-width:600px){
+  [data-hide-mobile]{display:none !important}
+  [data-desk-nav]{display:none !important}
+  [data-mob-resume]{display:inline-flex !important}
+  [data-mob-tabs]{display:flex !important}
+  [data-page]{padding-bottom:74px !important}
+  [data-chart]{height:600px !important}
+  [data-mark]{transform:translate(-50%,-50%) scale(.82) !important}
+}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
-@media(max-width:820px){[data-hide-mobile]{display:none !important}}
 </style>
 </helmet>
 
-<div data-screen-label="the hobby graveyard" style="min-height:100vh;color:#dde1f0;font-family:'Newsreader',serif;display:flex;flex-direction:column;overflow-x:hidden">
+<div data-page data-screen-label="Hobbies · off course" style="min-height:100vh;color:#dde1f0;font-family:'Newsreader',serif;display:flex;flex-direction:column;overflow-x:hidden">
 
   <!-- nav -->
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:clamp(18px,3vw,30px) clamp(20px,5vw,52px) 10px">
@@ -38,7 +60,7 @@ a:hover{color:#e8ebfa}
       <svg width="24" height="28" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
       <span style="font-family:'Gloock',serif;font-size:19px;color:#e8ebfa">Justin Smith</span>
     </a>
-    <div style="display:flex;flex-wrap:wrap;gap:clamp(14px,3vw,32px);font-family:'IBM Plex Mono',monospace;font-size:13px">
+    <div data-desk-nav style="display:flex;flex-wrap:wrap;gap:clamp(14px,3vw,32px);font-family:'IBM Plex Mono',monospace;font-size:13px">
       <a href="Hello.dc.html" style="color:#93a0e8">hello</a>
       <a href="Projects.dc.html" style="color:#93a0e8">projects</a>
       <a href="Hobbies.dc.html" style="color:#e8ebfa;border-bottom:2px solid #f0d9a8;padding-bottom:2px">hobbies</a>
@@ -46,237 +68,296 @@ a:hover{color:#e8ebfa}
       <a href="Contact.dc.html" style="color:#93a0e8">contact</a>
       <a href="#" style="color:#93a0e8">resume ↗</a>
     </div>
+    <a data-mob-resume href="#" style="display:none;align-items:center;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:13px">resume ↗</a>
   </div>
 
   <!-- header -->
-  <div style="padding:clamp(40px,7vw,64px) clamp(20px,5vw,52px) 22px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center">
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.18em;color:#93a0e8;text-transform:uppercase;animation:fadeUp .7s ease both">Hobbies · past and present</div>
-    <div style="font-family:'Gloock',serif;font-size:clamp(32px,5.5vw,46px);color:#f0f2fc;animation:fadeUp .7s ease .05s both">The hobby graveyard</div>
-    <div style="font-size:clamp(16px,2.3vw,18px);color:#a5aed4;max-width:600px;line-height:1.6;animation:fadeUp .7s ease .15s both">Up the hill from the tower. Every hobby kept a small light here once; the station buries its keepers properly.</div>
-    <div style="font-size:14px;font-style:italic;color:#7a83ad;max-width:540px;line-height:1.55;animation:fadeUp .7s ease .22s both">In memory of the keepers of Flannan Isle, who actually vanished. Everyone below just wandered off.</div>
+  <div style="padding:clamp(40px,7vw,64px) clamp(20px,5vw,52px) 20px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center">
+    <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;justify-content:center;animation:fadeUp .7s ease both">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.18em;color:#93a0e8;text-transform:uppercase">Hobbies · past and adrift</span>
+    </div>
+    <div style="font-family:'Gloock',serif;font-size:clamp(34px,5.8vw,50px);color:#f0f2fc;line-height:1.08;animation:fadeUp .7s ease .05s both">Off course, not overboard</div>
+    <div style="font-size:clamp(16px,2.3vw,18px);color:#a5aed4;max-width:620px;line-height:1.6;animation:fadeUp .7s ease .15s both">Every hobby I ever picked up is still out there somewhere. None of them sank. The chart just needs updating, and the keeper is slow with the ink.</div>
+    <div style="font-size:14px;font-style:italic;color:#7a83ad;max-width:560px;line-height:1.55;animation:fadeUp .7s ease .22s both">Filed with the harbor watch, who logs every overdue ship as "expected on the next fair wind," never "lost."</div>
   </div>
 
-  <!-- the register -->
-  <div style="padding:6px clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column;max-width:920px;box-sizing:border-box;width:100%;margin:0 auto">
-    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:0 10px 10px;border-bottom:1px solid rgba(150,160,220,.18);animation:fadeUp .7s ease .28s both">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#8a93c4;text-transform:uppercase">Register of keepers · station burial ground</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase">argsea district</span>
-    </div>
+  <!-- THE CHART -->
+  <div style="padding:6px clamp(16px,4vw,52px) clamp(20px,4vw,32px);display:flex;justify-content:center">
+    <div style="position:relative;width:100%;max-width:1120px;animation:fadeUp .8s ease .28s both">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:0 6px 10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#8a93c4;text-transform:uppercase">The wandering chart · argsea district</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">{{ plottedLine }}</span>
+      </div>
 
-    <div style="position:relative;display:flex;flex-direction:column">
-      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
-        <div onClick="{{ r.onClick }}" onMouseEnter="{{ r.onEnter }}" onMouseLeave="{{ r.onLeave }}" style="{{ r.rowStyle }}" style-hover="background:rgba(147,160,232,.05)">
-          <!-- the stone -->
-          <div style="{{ r.stoneWrap }}">
-            <div style="{{ r.lanternGlow }}"></div>
-            <div style="{{ r.lantern }}">
-              <div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:2.5px;height:24px;background:#2a2f52"></div>
-              <div style="position:absolute;left:50%;bottom:22px;transform:translateX(-50%);width:10px;height:11px;background:#141225;border:1px solid rgba(240,217,168,.55);border-radius:2px"></div>
-              <div style="position:absolute;left:50%;bottom:24.5px;transform:translateX(-50%);width:5px;height:5.5px;background:#f0d9a8;box-shadow:0 0 9px 2.5px rgba(240,217,168,.65);animation:lampPulse 5s ease-in-out infinite"></div>
-            </div>
-            <sc-if value="{{ r.isStone }}" hint-placeholder-val="{{ true }}">
-            <div style="{{ r.stone }}">
-              <sc-if value="{{ r.isAlive }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:#f0d9a8;animation:lampPulse 3.5s ease-in-out infinite">●</span></sc-if>
-              <sc-if value="{{ r.isDead }}" hint-placeholder-val="{{ true }}"><span style="font-size:16px;color:#f0d9a8;opacity:.55">❦</span></sc-if>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;color:#7a83ad">{{ r.plot }}</span>
-              <div style="{{ r.wearStyle }}"></div>
-              <sc-if value="{{ r.hasCrack }}" hint-placeholder-val="{{ false }}">
-                <svg width="13" height="54" viewBox="0 0 10 42" fill="none" stroke="rgba(10,12,26,.55)" stroke-width="1" stroke-linecap="round" style="position:absolute;top:3px;left:28%"><path d="M5 0 L3 11 L6 21 L2 31 L4 42"></path></svg>
-              </sc-if>
-            </div>
-            </sc-if>
-            <sc-if value="{{ r.isLamp }}" hint-placeholder-val="{{ false }}">
-            <div style="{{ r.sticks }}" title="still burning">
-              <div style="position:absolute;left:50%;bottom:0;width:5px;height:62px;transform:translateX(-50%);background:linear-gradient(90deg,#2a2f52,#171226);border-radius:2px"></div>
-              <div style="position:absolute;left:50%;bottom:58px;transform:translateX(-50%);width:22px;height:24px;background:#141225;border:1.5px solid rgba(240,217,168,.6);border-radius:4px 4px 2px 2px"></div>
-              <div style="position:absolute;left:50%;bottom:84px;transform:translateX(-50%);width:9px;height:4px;background:#2a2f52;border-radius:2px 2px 0 0"></div>
-              <div style="position:absolute;left:50%;bottom:62px;transform:translateX(-50%);width:12px;height:15px;background:#f0d9a8;box-shadow:0 0 14px 4px rgba(240,217,168,.55);animation:lampPulse 4s ease-in-out infinite"></div>
-              <div style="position:absolute;left:50%;bottom:28px;transform:translateX(-50%);width:110px;height:92px;background:radial-gradient(circle,rgba(240,196,120,.16),transparent 62%);filter:blur(2px);animation:lampPulse 4s ease-in-out infinite;pointer-events:none"></div>
-              <div style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%) rotate(-2deg);padding:2px 7px;background:linear-gradient(180deg,#1c1732,#141126);border:1px solid rgba(240,217,168,.4);border-radius:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.1em;color:#d9c48f">{{ r.plot }}</span></div>
-            </div>
-            </sc-if>
-            <sc-if value="{{ r.isDriftwood }}" hint-placeholder-val="{{ false }}">
-            <div style="{{ r.sticks }}">
-              <div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%) rotate(-2deg);width:27px;height:72px;background:linear-gradient(90deg,#4a3a28 0%,#3a2c1e 55%,#2e2318 100%);border-radius:13px 9px 2px 2px;box-shadow:inset 1.5px 0 0 rgba(240,217,168,.14)">
-                <div style="position:absolute;left:5px;top:9px;width:1.5px;height:46px;background:rgba(20,14,8,.5);border-radius:1px"></div>
-                <div style="position:absolute;right:6px;top:16px;width:1.5px;height:34px;background:rgba(20,14,8,.4)"></div>
-                <div style="position:absolute;left:3px;top:46px;width:5px;height:5px;border-radius:50%;background:#241a10"></div>
-                <span style="position:absolute;left:50%;top:12px;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.14em;color:#a08b5a;writing-mode:vertical-rl">{{ r.plot }}</span>
-              </div>
-            </div>
-            </sc-if>
-            <sc-if value="{{ r.isCairn }}" hint-placeholder-val="{{ false }}">
-            <div style="{{ r.sticks }}">
-              <div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:62px;height:58px">
-                <div style="position:absolute;left:2px;bottom:0;width:58px;height:23px;border-radius:48% 52% 40% 44%;background:linear-gradient(165deg,#262c4a,#161a30);box-shadow:inset 0 1px 0 rgba(200,210,255,.1)"></div>
-                <div style="position:absolute;left:10px;bottom:19px;width:43px;height:20px;border-radius:52% 48% 42% 46%;background:linear-gradient(165deg,#232946,#141830);box-shadow:inset 0 1px 0 rgba(200,210,255,.1)"></div>
-                <div style="position:absolute;left:18px;bottom:36px;width:28px;height:16px;border-radius:50% 50% 44% 44%;background:linear-gradient(165deg,#2a3050,#181c33);box-shadow:inset 0 1px 0 rgba(200,210,255,.12)"></div>
-                <span style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.1em;color:#7a83ad">{{ r.plot }}</span>
-              </div>
-            </div>
-            </sc-if>
-            <sc-if value="{{ r.isBuoy }}" hint-placeholder-val="{{ false }}">
-            <div style="{{ r.sticks }}">
-              <div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%) rotate(1.5deg);width:44px;height:76px">
-                <div style="position:absolute;left:50%;bottom:0;width:5px;height:26px;transform:translateX(-50%);background:linear-gradient(90deg,#3a2c1e,#241a10)"></div>
-                <div style="position:absolute;left:50%;bottom:22px;transform:translateX(-50%);width:40px;height:44px;border-radius:50% 50% 46% 46%;background:linear-gradient(165deg,#2e3452 0%,#20263f 100%);border:1px solid rgba(150,160,220,.3);overflow:hidden">
-                  <div style="position:absolute;left:0;right:0;top:16px;height:12px;background:#c9c2ab;opacity:.85;display:flex;align-items:center;justify-content:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.1em;color:#33251a">{{ r.plot }}</span></div>
-                </div>
-                <div style="position:absolute;left:50%;bottom:63px;transform:translateX(-50%);width:10px;height:8px;border:2px solid #2a2f52;border-bottom:none;border-radius:5px 5px 0 0"></div>
-              </div>
-            </div>
-            </sc-if>
-            <sc-if value="{{ r.isSticks }}" hint-placeholder-val="{{ false }}">
-            <div style="{{ r.sticks }}">
-              <div style="position:absolute;left:50%;bottom:0;width:7px;height:76px;transform:translateX(-50%) rotate(1.5deg);background:linear-gradient(90deg,#4a3a28,#2e2318);border-radius:3px 4px 1px 1px;box-shadow:inset 1px 0 0 rgba(240,217,168,.12)"></div>
-              <div style="position:absolute;left:50%;top:20px;width:54px;height:6px;transform:translateX(-50%) rotate(-3deg);background:linear-gradient(180deg,#4a3a28,#2e2318);border-radius:3px;box-shadow:inset 0 1px 0 rgba(240,217,168,.12)"></div>
-              <div style="position:absolute;left:50%;top:16px;width:14px;height:13px;transform:translateX(-50%);background:repeating-linear-gradient(-35deg,#8a7142 0 1.5px,transparent 1.5px 3.5px);border-radius:2px"></div>
-              <div style="position:absolute;left:calc(50% + 12px);top:25px;width:1.5px;height:7px;background:#8a7142;transform:rotate(12deg)"></div>
-              <div style="position:absolute;left:calc(50% + 6px);top:31px;width:32px;height:16px;transform:rotate(6deg);background:linear-gradient(180deg,#3a2c20,#241a12);border:1px solid rgba(240,217,168,.25);border-radius:2px;display:flex;align-items:center;justify-content:center">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.08em;color:#a08b5a">{{ r.plot }}</span>
-              </div>
-            </div>
-            </sc-if>
-            <sc-if value="{{ r.isAlive }}" hint-placeholder-val="{{ false }}">
-            <div style="position:relative;width:98px;height:12px;margin-top:-4px">
-              <div style="position:absolute;left:6px;right:6px;top:2px;bottom:0;border-radius:50%;background:radial-gradient(ellipse at 50% 40%,#232842 0%,rgba(26,30,51,0) 74%)"></div>
-            </div>
-            </sc-if>
-            <sc-if value="{{ r.isDead }}" hint-placeholder-val="{{ true }}">
-            <div style="position:relative;width:122px;height:20px;margin-top:-13px">
-              <div style="position:absolute;left:-5px;right:-5px;bottom:-1px;height:9px;border-radius:50%;background:radial-gradient(ellipse at 50% 45%,#232842 0%,rgba(26,30,51,0) 74%)"></div>
-              <div style="position:absolute;left:5px;right:6px;bottom:1px;height:17px;z-index:2;border-radius:56% 66% 22% 26% / 100% 100% 30% 34%;background:linear-gradient(180deg,#4a3826 0%,#33251a 55%,#241a10 100%);box-shadow:inset 0 1.5px 1px -.5px rgba(240,217,168,.16),inset 0 -2px 3px rgba(0,0,0,.35)"></div>
-              <div style="position:absolute;left:15px;top:4px;width:3.5px;height:2.5px;border-radius:50%;background:#54402b;z-index:2"></div>
-              <div style="position:absolute;right:19px;top:7px;width:3px;height:2px;border-radius:50%;background:#4a3826;z-index:2"></div>
-              <div style="position:absolute;left:40px;bottom:4px;width:3px;height:2px;border-radius:50%;background:#54402b;z-index:2"></div>
-              <div style="position:absolute;right:34px;top:3px;width:2.5px;height:2px;border-radius:50%;background:#5e4930;z-index:2"></div>
-            </div>
-            </sc-if>
-            <!-- graveside dressing -->
-            <sc-for list="{{ r.tufts }}" as="g" hint-placeholder-count="0">
-              <svg width="17" height="12" viewBox="0 0 20 14" fill="none" stroke="#5f6ec4" stroke-width="1.3" stroke-linecap="round" style="{{ g }}"><path d="M4 13 Q5 6 2 2 M8 13 Q9 7 12 3 M12 13 Q12 8 10 6 M16 13 Q17 8 19 5"></path></svg>
-            </sc-for>
-            <sc-for list="{{ r.pebbles }}" as="pb" hint-placeholder-count="0"><span style="{{ pb }}"></span></sc-for>
-            <sc-if value="{{ r.hasPinwheel }}" hint-placeholder-val="{{ false }}">
-              <div style="position:absolute;right:1px;bottom:5px;width:20px;height:36px;z-index:3;pointer-events:none">
-                <div style="position:absolute;left:50%;bottom:0;width:1.5px;height:20px;background:#8a93c4;transform:translateX(-50%)"></div>
-                <svg width="20" height="20" viewBox="0 0 20 20" style="position:absolute;left:0;top:0;animation:pinwheelSpin 6.5s linear infinite">
-                  <path d="M10 10 L10 1 A9 9 0 0 1 19 10 Z" fill="#93a0e8"></path>
-                  <path d="M10 10 L19 10 A9 9 0 0 1 10 19 Z" fill="#f0d9a8"></path>
-                  <path d="M10 10 L10 19 A9 9 0 0 1 1 10 Z" fill="#93a0e8"></path>
-                  <path d="M10 10 L1 10 A9 9 0 0 1 10 1 Z" fill="#f0d9a8"></path>
-                  <circle cx="10" cy="10" r="1.6" fill="#e8ebfa"></circle>
-                </svg>
-              </div>
-            </sc-if>
-            <sc-if value="{{ r.hasMushroom }}" hint-placeholder-val="{{ false }}">
-              <div style="position:absolute;left:7px;bottom:4px;width:8px;height:10px;z-index:3;pointer-events:none">
-                <div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:2px;height:6px;background:#c9c2ab"></div>
-                <div style="position:absolute;left:0;top:0;width:8px;height:5px;border-radius:5px 5px 2px 2px;background:#93a0e8;box-shadow:inset 0 1px 0 rgba(232,235,250,.4)"></div>
-              </div>
-            </sc-if>
-            <sc-for list="{{ r.sprigs }}" as="fl" hint-placeholder-count="0">
-              <svg width="10" height="14" viewBox="0 0 11 15" fill="none" style="{{ fl }}"><path d="M5.5 14 V6" stroke="#5f6ec4" stroke-width="1.2"></path><circle cx="3" cy="3" r="1.9" fill="#93a0e8"></circle><circle cx="8" cy="3" r="1.9" fill="#93a0e8"></circle><circle cx="4" cy="5.8" r="1.9" fill="#93a0e8"></circle><circle cx="7" cy="5.8" r="1.9" fill="#93a0e8"></circle><circle cx="5.5" cy="1.8" r="1.9" fill="#93a0e8"></circle><circle cx="5.5" cy="4" r="1.6" fill="#f0d9a8"></circle></svg>
-            </sc-for>
+      <div data-chart="true" style="position:relative;height:clamp(430px,52vw,580px);border-radius:16px;overflow:hidden;border:1px solid rgba(150,160,220,.22);box-shadow:0 18px 44px rgba(0,0,0,.45),inset 0 0 60px rgba(6,9,22,.6);background:repeating-linear-gradient(0deg,rgba(147,160,232,.05) 0 1px,transparent 1px 74px),repeating-linear-gradient(90deg,rgba(147,160,232,.05) 0 1px,transparent 1px 74px),radial-gradient(120% 96% at 50% -6%,#17224c 0%,#0f1533 52%,#0a0e22 100%)">
+
+        <!-- aged paper grain -->
+        <div style="position:absolute;inset:0;pointer-events:none;opacity:.5;mix-blend-mode:overlay;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22140%22%20height=%22140%22%3E%3Cfilter%20id=%22n%22%3E%3CfeTurbulence%20type=%22fractalNoise%22%20baseFrequency=%22.85%22%20numOctaves=%222%22/%3E%3CfeColorMatrix%20type=%22saturate%22%20values=%220%22/%3E%3C/filter%3E%3Crect%20width=%22140%22%20height=%22140%22%20filter=%22url(%23n)%22%20opacity=%22.5%22/%3E%3C/svg%3E')"></div>
+
+        <!-- rhumb line network (portolan) -->
+        <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.5">
+          <g stroke="rgba(147,160,232,.28)" stroke-width=".15" stroke-dasharray="1.1 1.1">
+            <path d="M12 11 L92 4 M12 11 L98 30 M12 11 L88 58 M12 11 L44 60 M12 11 L-4 44"></path>
+            <path d="M78 30 L14 2 M78 30 L100 2 M78 30 L96 58 M78 30 L30 60 M78 30 L2 20"></path>
+          </g>
+          <circle cx="12" cy="11" r=".7" fill="rgba(240,217,168,.5)"></circle>
+          <circle cx="78" cy="30" r=".7" fill="rgba(147,160,232,.5)"></circle>
+        </svg>
+
+        <!-- wake trails · each wandering hobby's drift, from where it slipped moorings to where it went quiet -->
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2">
+          <sc-for list="{{ wakes }}" as="wk" hint-placeholder-count="4">
+            <path d="{{ wk.d }}" fill="none" stroke="{{ wk.stroke }}" stroke-width="0.3" stroke-dasharray="0.8 1.8" stroke-linecap="round"></path>
+            <circle cx="{{ wk.ox }}" cy="{{ wk.oy }}" r="0.6" fill="{{ wk.stroke }}"></circle>
+          </sc-for>
+        </svg>
+
+        <!-- compass rose -->
+        <div style="position:absolute;left:calc(12% - 52px);top:calc(18.3% - 52px);width:104px;height:104px" data-hide-mobile>
+          <div style="position:absolute;left:50%;top:50%;width:104px;height:104px;border:1px dashed rgba(240,217,168,.4);border-radius:50%;animation:compassPulse 6s ease-in-out infinite"></div>
+          <svg width="104" height="104" viewBox="0 0 104 104" fill="none" style="position:absolute;inset:0">
+            <circle cx="52" cy="52" r="34" stroke="rgba(147,160,232,.35)" stroke-width="1"></circle>
+            <g opacity=".9">
+              <path d="M52 8 L58 52 L52 46 L46 52 Z" fill="#f0d9a8"></path>
+              <path d="M52 96 L46 52 L52 58 L58 52 Z" fill="#5f6ec4"></path>
+              <path d="M8 52 L52 46 L46 52 L52 58 Z" fill="#5f6ec4"></path>
+              <path d="M96 52 L52 58 L58 52 L52 46 Z" fill="#5f6ec4"></path>
+            </g>
+            <g opacity=".55">
+              <path d="M52 52 L74 30 L58 50 Z" fill="#93a0e8"></path>
+              <path d="M52 52 L74 74 L54 58 Z" fill="#6a76c8"></path>
+              <path d="M52 52 L30 74 L46 54 Z" fill="#93a0e8"></path>
+              <path d="M52 52 L30 30 L50 46 Z" fill="#6a76c8"></path>
+            </g>
+            <circle cx="52" cy="52" r="3.4" fill="#f0d9a8"></circle>
+          </svg>
+          <span style="position:absolute;left:50%;top:-3px;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:9px;color:#f0d9a8;letter-spacing:.1em">N</span>
+        </div>
+
+        <!-- graticule label (soundings now ride each mark, keyed to seasons spent) -->
+        <span data-hide-mobile style="position:absolute;right:10px;top:8px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;color:rgba(147,160,232,.4)">58°N · 7°W</span>
+
+        <!-- here be dragons -->
+        <div data-hide-mobile style="position:absolute;right:3%;bottom:12%;display:flex;flex-direction:column;align-items:flex-end;gap:5px;opacity:.55;pointer-events:none">
+          <svg width="72" height="26" viewBox="0 0 72 26" fill="none" style="animation:serpent 7s ease-in-out infinite"><path d="M2 16 q7 -12 14 0 t14 0 t14 0 t14 0" stroke="#6a76c8" stroke-width="1.6" fill="none" stroke-linecap="round"></path><circle cx="66" cy="9" r="2.4" fill="#6a76c8"></circle><path d="M69 8 l4 -3 M69 10 l4 2" stroke="#6a76c8" stroke-width="1.2" stroke-linecap="round"></path></svg>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:rgba(147,160,232,.5);font-style:italic">here be dragons · &amp; unfinished hobbies</span>
+        </div>
+
+        <!-- scale bar -->
+        <div data-hide-mobile style="position:absolute;left:4%;bottom:8%;display:flex;flex-direction:column;gap:4px;pointer-events:none">
+          <div style="display:flex;align-items:flex-end;height:9px"><span style="width:22px;height:6px;background:rgba(147,160,232,.4)"></span><span style="width:22px;height:6px;background:transparent;border:1px solid rgba(147,160,232,.4);border-left:none"></span><span style="width:22px;height:6px;background:rgba(147,160,232,.4)"></span></div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.1em;color:rgba(147,160,232,.45)">nautical miles, roughly</span>
+        </div>
+
+        <!-- Cat's Holm · the rock the harbor cat keeps watch from -->
+        <div data-hide-mobile title="the cat keeps this rock" style="position:absolute;right:9%;top:15%;display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none;z-index:3">
+          <div style="position:relative;width:34px;height:15px">
+            <div style="position:absolute;left:0;bottom:0;width:34px;height:11px;border-radius:50% 50% 42% 42%;background:linear-gradient(180deg,#3a3f66,#20263f)"></div>
+            <div style="position:absolute;left:9px;bottom:8px;width:2px;height:7px;background:#5f6ec4"></div>
+            <div style="position:absolute;left:7px;bottom:12px;width:6px;height:4px;background:#f0d9a8;clip-path:polygon(0 0,100% 0,72% 50%,100% 100%,0 100%);animation:pennantWave 3.5s ease-in-out infinite;transform-origin:left"></div>
           </div>
-          <!-- the record line -->
-          <div style="display:flex;flex-direction:column;gap:4px;min-width:0;flex:1">
-            <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
-              <span style="font-family:'Gloock',serif;font-size:clamp(19px,2.8vw,22px);color:#eef0fb;line-height:1.2">{{ r.name }}</span>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4">{{ r.service }}</span>
-              <span data-hide-mobile style="display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a93c4"><span style="{{ r.lampDot }}"></span>{{ r.char }}</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:rgba(147,160,232,.62);font-style:italic;white-space:nowrap">Cat's Holm</span>
+        </div>
+
+        <!-- the cartouche · a chart's title box is the period-authentic place for a dedication -->
+        <div onClick="{{ openMemorial }}" data-hide-mobile title="in memory of the keepers of Flannan Isle" style="position:absolute;left:3.5%;top:56%;width:210px;cursor:pointer;z-index:3">
+          <div style="position:relative;border:1px solid rgba(240,217,168,.34);border-radius:3px;background:linear-gradient(180deg,rgba(20,26,48,.92),rgba(15,20,38,.92));padding:12px 15px 11px;box-shadow:0 8px 22px rgba(0,0,0,.42)">
+            <span style="position:absolute;left:4px;top:4px;width:8px;height:8px;border-left:1px solid rgba(240,217,168,.5);border-top:1px solid rgba(240,217,168,.5)"></span>
+            <span style="position:absolute;right:4px;top:4px;width:8px;height:8px;border-right:1px solid rgba(240,217,168,.5);border-top:1px solid rgba(240,217,168,.5)"></span>
+            <span style="position:absolute;left:4px;bottom:4px;width:8px;height:8px;border-left:1px solid rgba(240,217,168,.5);border-bottom:1px solid rgba(240,217,168,.5)"></span>
+            <span style="position:absolute;right:4px;bottom:4px;width:8px;height:8px;border-right:1px solid rgba(240,217,168,.5);border-bottom:1px solid rgba(240,217,168,.5)"></span>
+            <div style="display:flex;align-items:center;gap:7px;justify-content:center">
+              <span style="width:24px;height:1px;background:linear-gradient(90deg,transparent,rgba(240,217,168,.6))"></span>
+              <svg width="12" height="15" viewBox="0 0 20 30" fill="none"><path d="M10 2 L13 8 L7 8 Z" fill="#f0d9a8"></path><rect x="7.5" y="8" width="5" height="13" fill="none" stroke="rgba(240,217,168,.7)" stroke-width="1.2"></rect></svg>
+              <span style="width:24px;height:1px;background:linear-gradient(270deg,transparent,rgba(240,217,168,.6))"></span>
             </div>
-            <span style="font-size:15px;font-style:italic;color:#a5aed4;line-height:1.5;text-wrap:pretty">{{ r.log }}</span>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none">
-            <span style="{{ r.dispStyle }}">{{ r.disposition }}</span>
-            <span data-hide-mobile style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;opacity:.8">record →</span>
+            <div style="font-family:'Newsreader',serif;font-style:italic;font-size:12.5px;line-height:1.45;color:#d6dcf4;text-align:center;margin-top:8px">for the three keepers of Eilean Mòr, still on watch</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;color:rgba(147,160,232,.55);text-transform:uppercase;text-align:center;margin-top:8px">Eilean Mòr · December 1900 · tap to read</div>
           </div>
         </div>
-      </sc-for>
 
-      <!-- fireflies among the stones -->
-      <div style="position:absolute;left:34px;top:9%;animation:fireflyRoam 12s ease-in-out infinite;pointer-events:none;z-index:3">
-        <div style="position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.24),transparent 65%);filter:blur(2px);animation:lampPulse 3.3s ease-in-out infinite"></div>
-        <div style="width:3px;height:3px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 6px 2px rgba(240,217,168,.55);animation:lampPulse 3.3s ease-in-out infinite"></div>
-      </div>
-      <div style="position:absolute;left:80px;top:31%;animation:fireflyRoam 15s ease-in-out -6s infinite reverse;pointer-events:none;z-index:3">
-        <div style="position:absolute;left:50%;top:50%;width:36px;height:36px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.2),transparent 65%);filter:blur(2px);animation:lampPulse 4.2s ease-in-out .7s infinite"></div>
-        <div style="width:2.5px;height:2.5px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 5px 2px rgba(240,217,168,.5);animation:lampPulse 4.2s ease-in-out .7s infinite"></div>
-      </div>
-      <div style="position:absolute;left:22px;top:52%;animation:fireflyRoam 10s ease-in-out -3s infinite;pointer-events:none;z-index:3">
-        <div style="position:absolute;left:50%;top:50%;width:38px;height:38px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.21),transparent 65%);filter:blur(2px);animation:lampPulse 2.9s ease-in-out .3s infinite"></div>
-        <div style="width:2.5px;height:2.5px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 5px 2px rgba(240,217,168,.5);animation:lampPulse 2.9s ease-in-out .3s infinite"></div>
-      </div>
-      <div style="position:absolute;left:72px;top:72%;animation:fireflyRoam 13s ease-in-out -9s infinite reverse;pointer-events:none;z-index:3">
-        <div style="position:absolute;left:50%;top:50%;width:40px;height:40px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.22),transparent 65%);filter:blur(2px);animation:lampPulse 3.8s ease-in-out 1.1s infinite"></div>
-        <div style="width:3px;height:3px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 6px 2px rgba(240,217,168,.5);animation:lampPulse 3.8s ease-in-out 1.1s infinite"></div>
-      </div>
-      <div style="position:absolute;left:40px;top:88%;animation:fireflyRoam 11s ease-in-out -5s infinite;pointer-events:none;z-index:3">
-        <div style="position:absolute;left:50%;top:50%;width:32px;height:32px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.18),transparent 65%);filter:blur(2px);animation:lampPulse 4.6s ease-in-out .5s infinite"></div>
-        <div style="width:2px;height:2px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 5px 1.5px rgba(240,217,168,.45);animation:lampPulse 4.6s ease-in-out .5s infinite"></div>
-      </div>
+        <!-- the plotted hobbies -->
+        <sc-for list="{{ markers }}" as="h" hint-placeholder-count="5">
+          <div data-mark onClick="{{ h.onOpen }}" onMouseEnter="{{ h.onEnter }}" onMouseLeave="{{ h.onLeave }}" title="{{ h.bearing }}" style="{{ h.wrap }}" style-hover="filter:brightness(1.18)">
+            <div style="position:relative;width:64px;height:56px;display:flex;align-items:flex-end;justify-content:center">
 
-      <!-- the cat's rounds, on schedule -->
-      <div title="the cat, on its rounds" style="position:absolute;left:-14px;top:0;bottom:0;width:28px;pointer-events:none;z-index:3">
-        <svg width="12" height="11" viewBox="0 0 15 14" fill="#93a0e8" style="position:absolute;top:6%;left:2px;opacity:0;transform:rotate(168deg);animation:pawRound 44s linear 0s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
-        <svg width="12" height="11" viewBox="0 0 15 14" fill="#93a0e8" style="position:absolute;top:22%;left:13px;opacity:0;transform:rotate(176deg);animation:pawRound 44s linear .7s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
-        <svg width="12" height="11" viewBox="0 0 15 14" fill="#93a0e8" style="position:absolute;top:38%;left:3px;opacity:0;transform:rotate(163deg);animation:pawRound 44s linear 1.4s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
-        <svg width="12" height="11" viewBox="0 0 15 14" fill="#93a0e8" style="position:absolute;top:54%;left:14px;opacity:0;transform:rotate(172deg);animation:pawRound 44s linear 2.1s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
-        <svg width="12" height="11" viewBox="0 0 15 14" fill="#93a0e8" style="position:absolute;top:70%;left:4px;opacity:0;transform:rotate(166deg);animation:pawRound 44s linear 2.8s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
-        <svg width="12" height="11" viewBox="0 0 15 14" fill="#93a0e8" style="position:absolute;top:86%;left:13px;opacity:0;transform:rotate(174deg);animation:pawRound 44s linear 3.5s infinite both"><ellipse cx="7.5" cy="9.5" rx="3.4" ry="2.9"></ellipse><ellipse cx="2.6" cy="5.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="6.2" cy="3.4" rx="1.5" ry="1.9"></ellipse><ellipse cx="9.8" cy="3.6" rx="1.5" ry="1.9"></ellipse><ellipse cx="12.6" cy="6" rx="1.4" ry="1.8"></ellipse></svg>
+              <sc-if value="{{ h.sounding }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:-1px;top:-3px;font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.04em;color:rgba(147,160,232,.5);pointer-events:none;z-index:1">{{ h.sounding }}</span></sc-if>
+
+              <sc-if value="{{ h.isMoored }}" hint-placeholder-val="{{ false }}">
+                <div style="position:relative;display:flex;flex-direction:column;align-items:center">
+                  <svg width="30" height="34" viewBox="0 0 26 30" fill="none" style="position:relative;z-index:2"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 4s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path></svg>
+                  <div style="width:44px;height:9px;margin-top:-2px;border-radius:60% 70% 0 0 / 100% 100% 0 0;background:linear-gradient(180deg,#2a3358,#141a34)"></div>
+                  <div style="position:absolute;right:-6px;bottom:2px;width:9px;height:11px;background:#c05a4a;border-radius:50% 50% 45% 45%;animation:buoyBob 3s ease-in-out infinite"></div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ h.isAdrift }}" hint-placeholder-val="{{ false }}">
+                <div style="position:relative">
+                  <svg width="52" height="16" viewBox="0 0 60 16" fill="none" style="position:absolute;right:22px;top:12px;animation:wakePulse 3s ease-in-out infinite"><path d="M2 8 q7 -6 14 0 t14 0 t14 0 t14 0" stroke="rgba(240,217,168,.5)" stroke-width="1.4" fill="none" stroke-dasharray="1 5" stroke-linecap="round"></path></svg>
+                  <svg width="34" height="28" viewBox="0 0 30 24" fill="none" style="position:relative;z-index:2;animation:boatDrift 5s ease-in-out infinite"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ h.isMarooned }}" hint-placeholder-val="{{ false }}">
+                <div style="position:relative;display:flex;flex-direction:column;align-items:center">
+                  <svg width="30" height="30" viewBox="0 0 30 30" fill="none" style="position:absolute;left:6px;bottom:8px;transform-origin:14px 26px;animation:palmSway 6s ease-in-out infinite"><path d="M14 28 q-2 -12 1 -20" stroke="#8a7142" stroke-width="2" fill="none" stroke-linecap="round"></path><path d="M15 8 q-8 -3 -13 1 M15 8 q8 -3 13 1 M15 8 q-5 -6 -12 -6 M15 8 q5 -6 12 -6" stroke="#5f8a5f" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
+                  <div style="width:52px;height:12px;border-radius:50% 50% 40% 40%;background:linear-gradient(180deg,#6a5a38,#3a3020)"></div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ h.isPort }}" hint-placeholder-val="{{ false }}">
+                <div style="position:relative;display:flex;flex-direction:column;align-items:center">
+                  <div style="position:absolute;left:14px;bottom:20px;width:1.5px;height:20px;background:#8a93c4"></div>
+                  <div style="position:absolute;left:15px;top:-2px;width:16px;height:8px;background:#6fca97;clip-path:polygon(0 0,100% 0,80% 50%,100% 100%,0 100%);animation:pennantWave 3.5s ease-in-out infinite;transform-origin:left"></div>
+                  <div style="position:absolute;left:15px;top:8px;width:12px;height:6px;background:#f0d9a8;clip-path:polygon(0 0,100% 0,75% 50%,100% 100%,0 100%);animation:pennantWave 3.5s ease-in-out .4s infinite;transform-origin:left"></div>
+                  <svg width="26" height="30" viewBox="0 0 26 30" fill="none" style="position:relative;z-index:2"><circle cx="13" cy="5" r="3" stroke="#93a0e8" stroke-width="1.6"></circle><path d="M13 8 V26" stroke="#93a0e8" stroke-width="1.6"></path><path d="M6 15 H20" stroke="#93a0e8" stroke-width="1.6"></path><path d="M5 22 q8 7 16 0" stroke="#93a0e8" stroke-width="1.6" fill="none" stroke-linecap="round"></path></svg>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ h.isInkspill }}" hint-placeholder-val="{{ false }}">
+                <div style="position:relative;width:52px;height:40px;animation:inkPulse 5s ease-in-out infinite">
+                  <div style="position:absolute;left:8px;top:6px;width:34px;height:26px;border-radius:56% 44% 62% 38% / 54% 60% 40% 46%;background:radial-gradient(circle at 40% 38%,#2a3160,#141833)"></div>
+                  <div style="position:absolute;left:2px;top:16px;width:16px;height:13px;border-radius:60% 40% 50% 50%;background:#182046"></div>
+                  <div style="position:absolute;right:3px;top:2px;width:12px;height:11px;border-radius:50%;background:#1c2450"></div>
+                  <div style="position:absolute;right:-2px;bottom:2px;width:5px;height:5px;border-radius:50%;background:#182046"></div>
+                  <span style="position:absolute;left:18px;top:14px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(147,160,232,.5)">✕</span>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ h.hasFlares }}" hint-placeholder-val="{{ false }}"><div style="{{ h.flareGlow }}"></div></sc-if>
+              <div style="{{ h.plot }}"></div>
+            </div>
+            <div style="{{ h.chip }}">{{ h.name }}</div>
+          </div>
+        </sc-for>
+
+        <!-- in memoriam · the Flannan Isle keepers · a real light, a real loss -->
+        <div data-mark onClick="{{ openMemorial }}" title="Eilean Mòr · the keepers’ light still burns · tap to read" style="{{ memorialWrap }}">
+          <div style="position:relative;width:46px;height:44px;display:flex;align-items:flex-end;justify-content:center">
+            <div style="position:absolute;left:50%;top:38%;width:48px;height:48px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,217,168,.38),transparent 66%);filter:blur(2px);animation:flannanFl2 30s linear infinite;pointer-events:none"></div>
+            <svg width="20" height="30" viewBox="0 0 20 30" fill="none" style="position:relative;z-index:2"><path d="M10 2 L13 8 L7 8 Z" fill="#f0d9a8" style="animation:flannanFl2 30s linear infinite"></path><rect x="7.5" y="8" width="5" height="13" fill="none" stroke="rgba(240,217,168,.7)" stroke-width="1.2"></rect><path d="M4 26 q6 -3 12 0" stroke="rgba(240,217,168,.55)" stroke-width="1.2" fill="none"></path></svg>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:rgba(147,160,232,.62);font-style:italic;white-space:nowrap">Eilean Mòr</div>
+        </div>
+
+        <!-- the uncharted slot -->
+        <div data-mark onClick="{{ cycleNext }}" title="uncharted waters · plot the next hobby" style="{{ unchartedWrap }}" style-hover="filter:brightness(1.25)">
+          <div style="position:relative;width:60px;height:52px;display:flex;align-items:center;justify-content:center">
+            <div style="width:44px;height:44px;border:1.5px dashed rgba(240,217,168,.55);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:qmarkPulse 3.4s ease-in-out infinite"><span style="font-family:'Gloock',serif;font-size:22px;color:#f0d9a8">?</span></div>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#f0d9a8;background:rgba(240,217,168,.08);border:1px dashed rgba(240,217,168,.45);border-radius:7px;padding:3px 10px;white-space:nowrap">next: {{ nextHobby }}</div>
+        </div>
+
       </div>
+      <!-- the cat, on lookout · outside the overflow:hidden chart so it is never clipped -->
+      <dc-import name="HarborCat" context="chart" bubble="left" quips="a sail, off the north point. maybe.|i keep watch for the ones that drift back.|none of them sank. i checked.|the boat always comes back. eventually.|one sail is overdue. i am counting." hint-size="54px,62px" style="position:absolute;top:36px;right:38px;width:54px;height:62px;z-index:6"></dc-import>
+      <span style="display:block;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;padding-top:12px">tap any mark to read its last known bearing · soundings mark seasons kept at it, not fathoms · the chart is not to scale, and neither is the keeper</span>
+    </div>
+  </div>
+
+  <!-- THE SHIP'S LOG -->
+  <div style="padding:12px clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column;max-width:960px;box-sizing:border-box;width:100%;margin:0 auto">
+    <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:0 6px 12px;border-bottom:1px solid rgba(150,160,220,.18)">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">The ship's log</span>
+      <span style="font-size:15px;color:#5f6ec4;font-style:italic">last known bearings</span>
     </div>
 
-    <!-- foot: open plot + cat marginalia -->
+    <sc-for list="{{ logRows }}" as="r" hint-placeholder-count="5">
+      <div onClick="{{ r.onOpen }}" onMouseEnter="{{ r.onEnter }}" onMouseLeave="{{ r.onLeave }}" style="{{ r.rowStyle }}" style-hover="background:rgba(147,160,232,.05)">
+        <span style="{{ r.statePill }}">{{ r.stateLabel }}</span>
+        <span style="display:flex;flex-direction:column;gap:4px;flex:1 1 300px;min-width:0">
+          <span style="display:flex;align-items:baseline;gap:11px;flex-wrap:wrap">
+            <span style="font-family:'Gloock',serif;font-size:clamp(19px,2.6vw,22px);color:#eef0fb;line-height:1.2">{{ r.name }}</span>
+            <span data-hide-mobile style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a93c4">◈ {{ r.coord }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ r.service }}</span>
+          </span>
+          <span style="font-size:15px;font-style:italic;color:#a5aed4;line-height:1.5;text-wrap:pretty">{{ r.bearing }}</span>
+        </span>
+        <span style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase">odds of return</span>
+          <span style="{{ r.oddsStyle }}">{{ r.odds }}</span>
+        </span>
+      </div>
+    </sc-for>
+
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px;border-top:1px solid rgba(150,160,220,.14);padding-top:16px">
-      <span style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// plot 06 stands open.</span>
-        <span onClick="{{ cycleNext }}" title="pre-dug, awaiting the next hobby" style="padding:6px 14px;border:1.5px dashed rgba(240,217,168,.55);border-radius:10px 10px 2px 2px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transform:rotate(1deg);transform-origin:50% 100%;transition:transform .15s" style-hover="transform:rotate(0deg) scale(1.04)" style-active="transform:scale(.96)">next: {{ nextHobby }}</span>
-      </span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// no hobby struck from the register. some are just overdue.</span>
       <span style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
         <span style="display:flex;gap:9px;transform:rotate(-14deg)">
           <span style="width:9px;height:8px;background:rgba(147,160,232,.35);border-radius:50% 50% 45% 45%"></span>
           <span style="width:9px;height:8px;background:rgba(147,160,232,.3);border-radius:50% 50% 45% 45%;transform:translateY(7px)"></span>
           <span style="width:9px;height:8px;background:rgba(147,160,232,.25);border-radius:50% 50% 45% 45%"></span>
         </span>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">the cat visits on rounds</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">the cat watches the horizon</span>
       </span>
     </div>
   </div>
 
-  <!-- record overlay -->
+  <!-- bearing overlay -->
   <sc-if value="{{ rec }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ closeRec }}" style="{{ recBackdrop }}">
       <div onClick="{{ stopProp }}" style="{{ recCard }}">
-        <dc-import name="HarborCat" context="note" hint-size="64px,74px" style="position:absolute;top:-50px;left:34px;width:64px;height:74px;z-index:3"></dc-import>
+        <dc-import name="HarborCat" context="chart" quips="i read the log. twice.|it will drift back. probably.|mark a search. i will supervise.|the sea keeps what it likes." hint-size="60px,68px" style="position:absolute;top:-46px;left:30px;width:60px;height:68px;z-index:3"></dc-import>
         <div style="max-height:86vh;overflow:auto;background:linear-gradient(180deg,#f1ecdd,#eae3d1);border-radius:6px 12px 12px 6px;box-shadow:0 30px 80px rgba(0,0,0,.6)">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px clamp(20px,4vw,30px);border-bottom:1.5px dashed rgba(110,100,75,.35)">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#8a7f63;text-transform:uppercase">keeper's record · plot {{ rec.plot }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#8a7f63;text-transform:uppercase">Last known bearing</span>
             <span onClick="{{ closeRec }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#7d7357;padding:5px 11px;border:1px solid rgba(110,100,75,.4);border-radius:999px;transition:all .2s" style-hover="color:#262a45;border-color:rgba(60,55,80,.6)">close ✕</span>
           </div>
           <div style="padding:clamp(22px,4vw,32px);display:flex;flex-direction:column;gap:14px">
             <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap">
               <span style="font-family:'Gloock',serif;font-size:clamp(23px,3.8vw,28px);color:#20233c">{{ rec.name }}</span>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a39876">kept {{ rec.char }} · {{ rec.service }}</span>
+              <span style="{{ rec.pillStyle }}">{{ rec.stateLabel }}</span>
             </div>
             <div style="font-size:16px;font-style:italic;line-height:1.65;color:#3b3f5e;border-left:2px solid rgba(110,100,75,.3);padding-left:14px">{{ rec.lastLog }}</div>
-            <div style="display:grid;grid-template-columns:max-content 1fr;gap:9px 16px;font-size:15px;line-height:1.55;color:#3b3f5e;align-items:baseline">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8a7f63;text-transform:uppercase">what was found</span><span>{{ rec.found }}</span>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8a7f63;text-transform:uppercase">cause of vanishing</span><span>{{ rec.cause }}</span>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8a7f63;text-transform:uppercase">re-appointment</span><span>{{ rec.return }}</span>
+            <div style="display:grid;grid-template-columns:max-content 1fr;gap:10px 16px;font-size:15px;line-height:1.55;color:#3b3f5e;align-items:baseline">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8a7f63;text-transform:uppercase">how it went off course</span><span>{{ rec.offCourse }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8a7f63;text-transform:uppercase">what still floats</span><span>{{ rec.floats }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8a7f63;text-transform:uppercase">odds of return</span><span style="color:#6a5a2a">{{ rec.odds }}</span>
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1.5px dashed rgba(110,100,75,.3);padding-top:12px">
-              <span onClick="{{ leaveFlower }}" style="cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#7d7357;padding:6px 14px;border:1.5px dashed rgba(110,100,75,.5);border-radius:999px;user-select:none;transition:all .2s" style-hover="color:#262a45;border-color:rgba(60,55,80,.7)" style-active="transform:scale(.95)">
-                <svg width="12" height="15" viewBox="0 0 11 15" fill="none"><path d="M5.5 14 V6" stroke="#5f7a5a" stroke-width="1.2"></path><circle cx="3" cy="3" r="1.9" fill="#8f9be0"></circle><circle cx="8" cy="3" r="1.9" fill="#8f9be0"></circle><circle cx="4" cy="5.8" r="1.9" fill="#8f9be0"></circle><circle cx="7" cy="5.8" r="1.9" fill="#8f9be0"></circle><circle cx="5.5" cy="1.8" r="1.9" fill="#8f9be0"></circle><circle cx="5.5" cy="4" r="1.6" fill="#d9b56a"></circle></svg>
-                leave a flower
+              <span onClick="{{ sendFlare }}" style="position:relative;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#7d7357;padding:7px 15px;border:1.5px dashed rgba(110,100,75,.5);border-radius:999px;user-select:none;transition:all .2s" style-hover="color:#262a45;border-color:rgba(60,55,80,.7)" style-active="transform:scale(.95)">
+                <svg width="13" height="15" viewBox="0 0 13 15" fill="none"><path d="M6.5 14 V6" stroke="#8a6d3b" stroke-width="1.3" stroke-linecap="round"></path><path d="M6.5 1 L8 4.5 L6.5 3.5 L5 4.5 Z" fill="#d64535"></path><circle cx="6.5" cy="2" r="1.4" fill="#ff6a52"></circle></svg>
+                send up a flare
               </span>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a39876">{{ flowerLine }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a39876">{{ flareLine }}</span>
             </div>
             <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a39876">disposition · {{ rec.disposition }}</span>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a6d3b">- the keeper who stayed</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a39876">position · {{ rec.coord }} · logged {{ rec.service }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a6d3b">- the keeper, still hoping</span>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- a signal flare, fired from the bearing card -->
+  <sc-if value="{{ flareFiring }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:9%;transform:translateX(-50%);width:0;height:0;z-index:80;pointer-events:none">
+      <div style="position:absolute;left:-1.5px;bottom:0;width:3px;height:42px;border-radius:2px;background:linear-gradient(180deg,#ff6a52,rgba(255,106,82,0));box-shadow:0 0 12px 3px rgba(255,106,82,.75);animation:flareRise 2.4s ease-out both"></div>
+      <div style="position:absolute;bottom:220px;left:0;transform:translateX(-50%);animation:flareBloom 2.4s ease-out both">
+        <div style="position:absolute;left:50%;top:50%;width:130px;height:130px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,106,82,.6),rgba(255,72,52,.16) 45%,transparent 70%);filter:blur(2px)"></div>
+        <svg width="32" height="32" viewBox="0 0 30 30" fill="none" style="position:relative"><path d="M15 0 L17 13 L15 11 L13 13 Z M15 30 L13 17 L15 19 L17 17 Z M0 15 L13 13 L11 15 L13 17 Z M30 15 L17 17 L19 15 L17 13 Z" fill="#ff6a52"></path><circle cx="15" cy="15" r="3" fill="#fff"></circle></svg>
+        <svg width="24" height="15" viewBox="0 0 22 14" style="position:absolute;left:50%;top:-15px;transform:translateX(-50%);opacity:.85"><path d="M2 12 Q11 -6 20 12" fill="none" stroke="rgba(255,106,82,.75)" stroke-width="1.4"></path><path d="M11 1 V12 M2 12 l9 -3 M20 12 l-9 -3" stroke="rgba(255,106,82,.5)" stroke-width="1"></path></svg>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- in memoriam overlay -->
+  <sc-if value="{{ memorial }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeMemorial }}" style="{{ memBackdrop }}">
+      <div onClick="{{ stopProp }}" style="{{ memCard }}">
+        <div style="background:linear-gradient(180deg,#141a30,#0f1426);border:1px solid rgba(240,217,168,.22);border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.7);overflow:hidden">
+          <div style="height:3px;background:linear-gradient(90deg,transparent,rgba(240,217,168,.6),transparent)"></div>
+          <div style="padding:clamp(26px,5vw,40px);display:flex;flex-direction:column;gap:15px;align-items:center;text-align:center">
+            <svg width="34" height="40" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="rgba(240,217,168,.7)" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="rgba(240,217,168,.6)" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="rgba(147,160,232,.5)" stroke-width="1.4" fill="none"></path></svg>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#f0d9a8;text-transform:uppercase">In memoriam</span>
+            <span style="font-family:'Gloock',serif;font-size:clamp(24px,4vw,28px);color:#f0f2fc;line-height:1.15">The keepers of Flannan Isle</span>
+            <span style="font-size:16px;font-style:italic;color:#c8cef0;line-height:1.5">James Ducat · Thomas Marshall · Donald MacArthur</span>
+            <span style="font-size:15px;color:#a5aed4;line-height:1.7;max-width:420px">Eilean Mòr, December 1900. Three keepers of the light, lost to the sea in a storm that left no answer behind it. The lamp was found trimmed, clean, and ready to be lit.</span>
+            <div style="width:60px;height:1px;background:rgba(150,160,220,.3);margin:2px 0"></div>
+            <span style="font-size:14.5px;font-style:italic;color:#8f9be0;line-height:1.55;max-width:400px">This chart, and every light kept on this coast, is kept in their memory.</span>
+            <span onClick="{{ closeMemorial }}" style="cursor:pointer;margin-top:4px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#93a0e8;padding:7px 16px;border:1px solid rgba(150,160,220,.3);border-radius:999px;transition:all .2s" style-hover="color:#e8ebfa;border-color:rgba(240,217,168,.5)">with respect ✕</span>
           </div>
         </div>
       </div>
@@ -290,46 +371,107 @@ a:hover{color:#e8ebfa}
       <div style="display:flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:11px"><a href="#" style="color:#93a0e8">github</a><a href="#" style="color:#93a0e8">linkedin</a><a href="mailto:hello@argsea.com" style="color:#93a0e8">email</a></div>
       <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;justify-content:flex-end">
         <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">© 2026 · argsea.com</span>
-        <span style="font-size:12.5px;color:#8f9be0;font-style:italic">Flowers welcome. Watering optional.</span>
+        <span style="font-size:12.5px;color:#8f9be0;font-style:italic">No hobby is lost. Some are just between tides.</span>
       </div>
     </div>
   </div>
 </div>
-
+  <!-- mobile bottom tab bar · shown ≤600 (ratified 1b nav) · hidden on desktop -->
+  <div data-mob-tabs style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(15,18,32,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(150,160,220,.16);padding:7px 4px calc(4px + env(safe-area-inset-bottom));font-family:'IBM Plex Mono',monospace">
+    <a href="Hello.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
+      <svg width="19" height="22" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="currentColor"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="currentColor" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="currentColor" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="currentColor" stroke-width="1.4" fill="none"></path></svg>
+      <span style="font-size:9.5px">hello</span>
+    </a>
+    <a href="Projects.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
+      <span style="position:relative;width:19px;height:22px;display:flex;align-items:center;justify-content:center"><span style="position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,currentColor,transparent 62%);opacity:.4"></span><span style="width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 6px 1.5px currentColor"></span></span>
+      <span style="font-size:9.5px">projects</span>
+    </a>
+    <a href="Hobbies.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#f0d9a8">
+      <svg width="19" height="22" viewBox="0 0 20 22" fill="none"><path d="M4 21 V9 a6 6 0 0 1 12 0 V21 Z" fill="none" stroke="currentColor" stroke-width="1.5"></path><path d="M10 12 v5 M7.5 14.5 h5" stroke="currentColor" stroke-width="1.3"></path></svg>
+      <span style="font-size:9.5px">hobbies</span>
+    </a>
+    <a href="Notes.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
+      <svg width="19" height="22" viewBox="0 0 20 22" fill="none"><rect x="4" y="3" width="12" height="16" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect><path d="M7 7 h6 M7 10 h6 M7 13 h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg>
+      <span style="font-size:9.5px">notes</span>
+    </a>
+  </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1200, &quot;height&quot;: 900}}">
 class Component extends DCLogic {
-  state = { openIdx: null, nextIdx: 0, closing: false, flowers: {}, hoverIdx: null, haunting: false };
+  state = { openIdx: null, nextIdx: 0, closing: false, flares: {}, flaredNow: {}, hoverIdx: null, burst: 0, flareFiring: false, memorial: false };
 
   suggestions = ['???', 'blacksmithing?', 'sourdough?', 'birdwatching?', '3d printing?', 'kayaking?', 'chess?', 'fermenting things?', 'ham radio?', 'no. surely not.'];
 
-  keepers = [
-    { plot: '01', name: 'The home lab', service: '2021 - present', char: 'F W', kind: 'alive', wear: 0,
-      log: 'Still on watch. Do not bury. He can hear you.',
-      lastLog: '"All lamps green. One tweak from perfect. Will fix tonight." - every log entry, verbatim, since 2021.',
-      found: 'nothing missing. that\u2019s the whole point.', cause: 'not applicable, knock wood',
-      return: 'never left', disposition: 'still on watch' },
-    { plot: '02', name: 'Piano', service: '2023 - 2024', char: 'Fl W 3s', kind: 'haunt', wear: 0.15,
-      log: 'Light found cold. Bench tucked in. Metronome still ticking.',
-      lastLog: '"Got through the piece with both hands tonight. Good enough." - final entry, unsigned.',
-      found: 'one shaky recording the family still requests', cause: 'got good enough, which was the goal',
-      return: 'likely, pending a child\u2019s curiosity', disposition: 'occasionally haunting' },
-    { plot: '03', name: 'Music theory', service: '2023 - 2024', char: 'Fl W 3s', kind: 'dark', wear: 0.35, marker: 'sticks',
-      log: 'Vanished the same night as the piano keeper. The two logs match exactly.',
-      lastLog: '"The circle of fifths is just modular arithmetic wearing a cape." - margin note, underlined twice.',
-      found: 'annotated chord charts, still in a drawer', cause: 'see piano',
-      return: 'rises whenever piano does', disposition: 'laid to rest' },
-    { plot: '04', name: 'Game dev', service: '2020', char: 'Iso G 4s', kind: 'dark', wear: 0.85,
-      log: 'Kept one light, brightly, once. Extinguished it himself and signed the log.',
-      lastLog: '"Shipped. The cat is the boat. No further business." - last entry, signed with a flourish.',
-      found: 'Meo Wave Race, complete and undefeated · see light list no. 008', cause: 'retired at the top',
-      return: 'unlikely, the record is perfect', disposition: 'laid to rest' },
-    { plot: '05', name: 'Running', service: 'one summer', char: 'Fl W 8s', kind: 'dark', wear: 0.65, marker: 'sticks',
-      log: 'Missing since one summer. Kettle warm. Shoes by the door. Sea calm.',
-      lastLog: '"5k tomorrow, then every morning after." - only entry.',
-      found: 'the shoes. the shoes remain.', cause: 'no trace was ever found (the couch was not searched)',
-      return: 'spring makes promises it won\u2019t keep', disposition: 'vanished without trace' },
+  hobbies = [
+    { name: 'The home lab', service: '2021 · present', state: 'moored', coord: { lat: 58.22, lon: -7.50 }, seasons: '5',
+      bearing: 'Moored in the lee of Eilean Mòr, in sight of the keepers’ light. Never left the harbor.',
+      lastLog: '"All lamps green. One tweak from perfect. Will fix tonight." · every log entry, verbatim, since 2021.',
+      offCourse: 'It never went off course. It is moored where I can watch it from the lamp room.',
+      floats: 'everything. that is the whole point.',
+      odds: 'in port indefinitely' },
+    { name: 'Piano', service: '2023 · 2024', state: 'adrift', coord: { lat: 58.42, lon: -7.12 }, from: { lat: 58.24, lon: -7.44 }, seasons: '2',
+      bearing: 'Last seen drifting off the north point, sails slack, no hand at the tiller.',
+      lastLog: '"Got through the piece with both hands tonight. Good enough." · final entry, unsigned.',
+      offCourse: 'Slipped its mooring the night it was "good enough" and drifted out on the tide.',
+      floats: 'one shaky recording the family still requests',
+      odds: 'likely · pending a child\u2019s curiosity' },
+    { name: 'Music theory', service: '2023 · 2024', state: 'marooned', coord: { lat: 58.06, lon: -7.20 }, from: { lat: 58.28, lon: -7.30 }, seasons: '2',
+      bearing: 'Marooned on a small isle, the same sandbar the piano washed up on.',
+      lastLog: '"The circle of fifths is just modular arithmetic wearing a cape." · margin note, underlined twice.',
+      offCourse: 'Went overboard the same night as piano; the two washed up together.',
+      floats: 'annotated chord charts, still in a drawer',
+      odds: 'rises with every tide the piano does' },
+    { name: 'Game dev', service: '2020', state: 'port', coord: { lat: 58.20, lon: -6.75 }, from: { lat: 58.02, lon: -6.60 }, seasons: '1',
+      bearing: 'Moored in a safe harbor, colors still flying. Came in on purpose.',
+      lastLog: '"Shipped. The cat is the boat. No further business." · last entry, signed with a flourish.',
+      offCourse: 'Reached port, dropped anchor by choice, and ran the pennants up.',
+      floats: 'Meo Wave Race, complete and undefeated · see light no. 008',
+      odds: 'slim · the logbook is already perfect' },
+    { name: 'Running', service: 'one summer', state: 'inkspill', coord: { lat: 57.92, lon: -7.02 }, from: { lat: 58.06, lon: -7.10 }, seasons: '\u00bc',
+      bearing: 'Coordinates smudged. An ink-well tipped across this one and never dried.',
+      lastLog: '"5k tomorrow, then every morning after." · only entry.',
+      offCourse: 'An ink-well tipped over the chart and blotted the bearing to an unreadable smudge.',
+      floats: 'the shoes. the shoes remain.',
+      odds: 'spring keeps promising a fair wind' },
   ];
+
+  chartWin = { latTop: 58.58, latBot: 57.80, lonLeft: -7.98, lonRight: -6.55 };
+  memorialCoord = { lat: 58.283, lon: -7.583 };
+  unchartedCoord = { lat: 57.86, lon: -6.68 };
+  proj(c) {
+    const w = this.chartWin;
+    return { x: ((c.lon - w.lonLeft) / (w.lonRight - w.lonLeft)) * 100, y: ((w.latTop - c.lat) / (w.latTop - w.latBot)) * 100 };
+  }
+  wakePath(a, b) {
+    const p1 = this.proj(a), p2 = this.proj(b);
+    const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
+    const dx = p2.x - p1.x, dy = p2.y - p1.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const bow = Math.min(10, len * 0.3);
+    const cx = mx + (-dy / len) * bow, cy = my + (dx / len) * bow;
+    return { d: `M${p1.x.toFixed(1)} ${p1.y.toFixed(1)} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`, ox: p1.x.toFixed(1), oy: p1.y.toFixed(1) };
+  }
+  fmtCoord(c) {
+    const dm = (v, pos, neg) => { const a = Math.abs(v); const d = Math.floor(a); const m = Math.round((a - d) * 60); return d + '\u00b0' + String(m).padStart(2, '0') + '\u2032' + (v >= 0 ? pos : neg); };
+    return dm(c.lat, 'N', 'S') + ' ' + dm(c.lon, 'E', 'W');
+  }
+
+  pal = { white: { glow: '246,236,207' }, green: { glow: '111,202,151' } };
+
+  stateMeta = {
+    moored:   { label: 'moored · home waters', c: '240,217,168', solid: '#f0d9a8' },
+    adrift:   { label: 'adrift · lost at sea', c: '147,160,232', solid: '#93a0e8' },
+    marooned: { label: 'marooned', c: '147,160,232', solid: '#93a0e8' },
+    port:     { label: 'made port', c: '111,202,151', solid: '#6fca97' },
+    inkspill: { label: 'bearing smudged', c: '138,147,196', solid: '#8a93c4' },
+  };
+
+  charAnim(h) {
+    if (h.kind === 'fixed') return 'haloBreath 5s ease-in-out infinite';
+    const dur = Math.min(6, Math.max(3, h.period || 4));
+    const n = { flash: 'flashChar', iso: 'isoChar' }[h.kind] || 'haloBreath';
+    return `${n} ${dur}s ease-in-out infinite`;
+  }
 
   closeRec = () => {
     if (this.state.closing || this.state.openIdx == null) return;
@@ -337,164 +479,146 @@ class Component extends DCLogic {
     setTimeout(() => this.setState({ openIdx: null, closing: false }), 220);
   };
 
-  leaveFlower = () => {
+  sendFlare = () => {
     const i = this.state.openIdx;
     if (i == null) return;
-    const flowers = { ...this.state.flowers, [i]: (this.state.flowers[i] || 0) + 1 };
-    this.setState({ flowers });
-    try { localStorage.setItem('argsea-flowers', JSON.stringify(flowers)); } catch (e) {}
+    const key = this.hobbies[i].name;
+    const flares = { ...this.state.flares, [key]: (this.state.flares[key] || 0) + 1 };
+    clearTimeout(this._fire);
+    this.setState({ flares, flaredNow: { ...this.state.flaredNow, [key]: true }, burst: this.state.burst + 1, flareFiring: false });
+    requestAnimationFrame(() => this.setState({ flareFiring: true }));
+    this._fire = setTimeout(() => this.setState({ flareFiring: false }), 2500);
+    // shared key: the keeper's office (Admin) reads argsea-flares to tally motivation from the coast
+    try { localStorage.setItem('argsea-flares', JSON.stringify(flares)); } catch (e) {}
   };
+  openMemorial = () => this.setState({ memorial: true });
+  closeMemorial = () => this.setState({ memorial: false });
 
   componentDidMount() {
-    this.onKey = (e) => { if (e.key === 'Escape') this.closeRec(); };
+    this.onKey = (e) => { if (e.key !== 'Escape') return; if (this.state.memorial) this.setState({ memorial: false }); else this.closeRec(); };
     window.addEventListener('keydown', this.onKey);
-    this.hauntTimer = setInterval(() => {
-      this.setState({ haunting: true });
-      this.hauntOff = setTimeout(() => this.setState({ haunting: false }), 2200);
-    }, 53000);
     try {
-      const f = JSON.parse(localStorage.getItem('argsea-flowers') || '{}');
-      if (f && typeof f === 'object') this.setState({ flowers: f });
+      const f = JSON.parse(localStorage.getItem('argsea-flares') || '{}');
+      if (f && typeof f === 'object') this.setState({ flares: f });
     } catch (e) {}
   }
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.onKey);
-    clearInterval(this.hauntTimer);
-    clearTimeout(this.hauntOff);
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); clearTimeout(this._fire); }
+
+  pillStyle(state, on) {
+    const m = this.stateMeta[state];
+    return {
+      fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.1em', textTransform: 'uppercase',
+      padding: '3px 10px', borderRadius: '999px', whiteSpace: 'nowrap', flex: 'none',
+      color: m.solid, border: `1px ${state === 'moored' ? 'dashed' : 'solid'} rgba(${m.c},${on ? 0.6 : 0.45})`,
+      background: `rgba(${m.c},${on ? 0.14 : 0.08})`,
+    };
+  }
+
+  lightDotStyle(h, big) {
+    const glow = this.pal[h.color].glow;
+    const sz = big ? 6 : 5;
+    return {
+      position: big ? 'static' : 'absolute', left: '50%', bottom: big ? 'auto' : '-3px',
+      transform: big ? 'none' : 'translateX(-50%)',
+      width: sz + 'px', height: sz + 'px', borderRadius: '50%', flex: 'none',
+      background: '#fff', boxShadow: `0 0 7px 2px rgba(${glow},.85)`, animation: this.charAnim(h),
+    };
   }
 
   renderVals() {
-    const stoneTex = "url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22120%22%20height=%22120%22%3E%3Cfilter%20id=%22n%22%3E%3CfeTurbulence%20type=%22fractalNoise%22%20baseFrequency=%22.9%22%20numOctaves=%222%22/%3E%3CfeColorMatrix%20type=%22saturate%22%20values=%220%22/%3E%3C/filter%3E%3Crect%20width=%22120%22%20height=%22120%22%20filter=%22url(%23n)%22%20opacity=%22.16%22/%3E%3C/svg%3E')";
-    const rows = this.keepers.map((k, i) => {
-      const alive = k.kind === 'alive';
-      const haunt = k.kind === 'haunt';
-      const cnt = this.state.flowers[i] || 0;
-      const hovered = this.state.hoverIdx === i;
-      const dressing = [
-        { tufts: [{ right: '10px', s: 0.8 }], pebbles: [], pinwheel: false, mushroom: false },
-        { tufts: [{ left: '9px', s: 0.9 }, { right: '24px', s: 0.75, flip: true }], pebbles: [{ left: '32px' }], pinwheel: false, mushroom: false },
-        { tufts: [{ left: '11px', s: 0.85 }], pebbles: [{ left: '26px' }, { left: '56px' }, { right: '28px' }], pinwheel: false, mushroom: false },
-        { tufts: [{ left: '7px', s: 0.9 }], pebbles: [{ left: '24px' }], pinwheel: true, mushroom: false },
-        { tufts: [{ left: '3px', s: 1.15 }, { right: '6px', s: 1.05, flip: true }, { left: '30px', s: 0.9 }], pebbles: [{ right: '42px' }], pinwheel: false, mushroom: true },
-      ];
-      const dr = dressing[i % dressing.length];
-      const hauntingNow = this.state.haunting && haunt;
-      const lit = hovered || hauntingNow;
-      // a service date that doesn't start with a year ("one summer") is beyond dating: oldest state
-      const w = /^\d/.test(k.service || '') ? (k.wear || 0) : 1;
-      return {
-        ...k,
-        log: hauntingNow ? '…is that the metronome?' : k.log,
-        isAlive: alive, isDead: !alive,
-        isLamp: alive,
-        isStone: !alive && (!k.marker || k.marker === 'stone'),
-        isSticks: !alive && k.marker === 'sticks',
-        isDriftwood: !alive && k.marker === 'driftwood',
-        isCairn: !alive && k.marker === 'cairn',
-        isBuoy: !alive && k.marker === 'buoy',
-        sticks: {
-          position: 'relative', zIndex: 1, width: '80px', height: '88px',
-          transform: `rotate(${[0, -2.5, 2, -1.5, 2.5][i % 5] + w * 2}deg)`, transformOrigin: '50% 100%',
-          filter: lit ? 'drop-shadow(0 0 9px rgba(240,196,120,.3)) brightness(1.15)' : 'none',
-          transition: 'filter .3s ease',
-        },
-        hasCrack: w >= 0.8,
-        wearStyle: {
-          position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none',
-          background: [
-            `linear-gradient(105deg, rgba(8,10,22,${(0.32 * w).toFixed(2)}) 0%, transparent 42%)`,
-            `linear-gradient(0deg, rgba(8,10,22,${(0.22 * w).toFixed(2)}) 0%, transparent 30%)`,
-            w > 0.5 ? `radial-gradient(circle at ${24 + (i * 13) % 40}% ${30 + (i * 17) % 35}%, rgba(147,160,232,${(0.14 * w).toFixed(2)}) 0%, transparent 26%)` : 'none',
-          ].filter((x) => x !== 'none').join(','),
-        },
-        onClick: () => this.setState({ openIdx: i }),
-        onEnter: () => this.setState({ hoverIdx: i }),
-        onLeave: () => this.setState({ hoverIdx: null }),
-        lanternGlow: {
-          position: 'absolute', left: '26%', top: '52%', width: '124px', height: '124px',
-          transform: 'translate(-50%,-50%)', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(240,196,120,.3), transparent 64%)',
-          filter: 'blur(2px)', opacity: hovered ? 1 : hauntingNow ? 1 : 0, transition: 'opacity .35s ease .08s',
-          pointerEvents: 'none', zIndex: 0,
-        },
-        lantern: {
-          position: 'absolute', left: '-11px', bottom: '8px', width: '14px', height: '36px',
-          zIndex: 2, pointerEvents: 'none',
-          opacity: hovered ? 1 : 0,
-          transform: hovered ? 'translateY(0)' : 'translateY(11px)',
-          transition: 'opacity .28s ease, transform .38s cubic-bezier(.2,.8,.3,1.18)',
-        },
-        tufts: dr.tufts.map((t) => ({
-          position: 'absolute', bottom: '3px', left: t.left, right: t.right, zIndex: 3,
-          opacity: 0.85, transform: `scale(${t.s})${t.flip ? ' scaleX(-1)' : ''}`,
-          transformOrigin: '50% 100%', pointerEvents: 'none',
-        })),
-        pebbles: dr.pebbles.map((p) => ({
-          position: 'absolute', bottom: '4px', left: p.left, right: p.right,
-          width: '4px', height: '3px', borderRadius: '50%', background: '#8a93c4',
-          boxShadow: 'inset 0 -1px 0 rgba(0,0,0,.45)', zIndex: 3, pointerEvents: 'none',
-        })),
-        hasPinwheel: dr.pinwheel,
-        hasMushroom: dr.mushroom,
-        sprigs: Array.from({ length: Math.min(cnt, 3) }, (_, s) => ({
-          position: 'absolute', bottom: '2px', left: (13 + s * 26 + ((i * 7) % 8)) + 'px',
-          transform: 'rotate(' + (s % 2 ? 10 : -8) + 'deg)', zIndex: 2,
-        })),
-        rowStyle: {
-          position: 'relative',
-          display: 'flex', gap: '22px', alignItems: 'center', padding: '20px 10px',
-          borderTop: '1px solid rgba(150,160,220,.14)', cursor: 'pointer',
-          transition: 'background .2s',
-          animation: 'fadeUp .5s ease backwards', animationDelay: (0.25 + i * 0.08).toFixed(2) + 's',
-        },
-        stoneWrap: { position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 'none', width: '98px' },
-        stone: {
-          position: 'relative', zIndex: 1, boxSizing: 'border-box', width: '80px', height: '88px',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '5px',
-          borderRadius: alive ? '16px 18px 5px 5px' : ['38px 36px 5px 4px', '12px 15px 4px 5px', '28px 33px 5px 4px', '33px 38px 4px 5px'][i % 4],
-          background: stoneTex + ', ' + (lit ? 'linear-gradient(165deg,#3a3454 0%,#221d38 90%)' : 'linear-gradient(165deg,#1e2340 0%,#12162a 90%)'),
-          border: alive ? `1.5px dashed rgba(240,217,168,${lit ? '.75' : '.5'})` : lit ? '1px solid rgba(240,217,168,.45)' : '1px solid rgba(150,160,220,.26)',
-          boxShadow: lit
-            ? 'inset 0 1px 0 rgba(240,217,168,.16), inset 0 0 16px rgba(240,196,120,.12), 0 0 18px rgba(240,196,120,.16), 0 7px 16px rgba(0,0,0,.4)'
-            : 'inset 0 1px 0 rgba(200,210,255,.1), 0 7px 16px rgba(0,0,0,.4)',
-          transform: `rotate(${[0, -2.5, 2, -1.5, 2.5][i % 5]}deg)`,
-          transition: 'background .3s ease, border-color .3s ease, box-shadow .3s ease',
-        },
-        lampDot: {
-          width: '6px', height: '6px', borderRadius: '50%', flex: 'none',
-          background: alive || hauntingNow ? '#f0d9a8' : haunt ? '#8a93c4' : 'rgba(122,131,173,.3)',
-          boxShadow: hauntingNow ? '0 0 11px 3px rgba(240,217,168,.85)' : alive ? '0 0 7px 2px rgba(240,217,168,.55)' : 'none',
-          animation: alive ? 'lampPulse 4s ease-in-out infinite' : hauntingNow ? 'none' : haunt ? 'rareFlicker 11s linear infinite' : 'none',
-          transition: 'background .4s ease, box-shadow .4s ease',
-        },
-        dispStyle: {
-          fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.1em',
-          textTransform: 'uppercase', padding: '3px 10px', borderRadius: '999px', whiteSpace: 'nowrap',
-          color: alive ? '#f0d9a8' : haunt ? '#c3cbf2' : '#8a93c4',
-          border: alive ? '1px dashed rgba(240,217,168,.5)' : haunt ? '1px solid rgba(147,160,232,.4)' : '1px solid rgba(138,147,196,.3)',
-          background: alive ? 'rgba(240,217,168,.08)' : haunt ? 'rgba(147,160,232,.07)' : 'transparent',
-        },
-      };
-    });
-
     const sel = this.state.openIdx;
     const closing = this.state.closing;
-    const flowerCount = sel == null ? 0 : (this.state.flowers[sel] || 0);
+    const up = this.proj(this.unchartedCoord);
+    const mp = this.proj(this.memorialCoord);
+
+    const wakes = this.hobbies.filter((h) => h.from).map((h) => {
+      const w = this.wakePath(h.from, h.coord);
+      const m = this.stateMeta[h.state];
+      return { d: w.d, ox: w.ox, oy: w.oy, stroke: `rgba(${m.c},.5)` };
+    });
+
+    const markers = this.hobbies.map((h, i) => {
+      const p = this.proj(h.coord);
+      return {
+      name: h.name, bearing: h.bearing, sounding: h.seasons,
+      isMoored: h.state === 'moored', isAdrift: h.state === 'adrift', isMarooned: h.state === 'marooned',
+      isPort: h.state === 'port', isInkspill: h.state === 'inkspill',
+      wrap: {
+        position: 'absolute', left: p.x + '%', top: p.y + '%', transform: 'translate(-50%,-50%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', cursor: 'pointer', zIndex: 3,
+        transition: 'filter .2s, transform .2s',
+        filter: this.state.hoverIdx === i ? 'brightness(1.18)' : 'none',
+      },
+      plot: { position: 'absolute', left: '50%', bottom: '-5px', transform: 'translateX(-50%)', width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(147,160,232,.95)', boxShadow: '0 0 6px 1px rgba(147,160,232,.5)', pointerEvents: 'none' },
+      hasFlares: !!this.state.flaredNow[h.name],
+      flareGlow: { position: 'absolute', left: '50%', top: '28%', width: '32px', height: '32px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: 'radial-gradient(circle,rgba(255,106,82,.55),transparent 68%)', filter: 'blur(1px)', animation: 'flareGlowPulse 3s ease-in-out infinite', pointerEvents: 'none' },
+      chip: {
+        fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', color: '#dfe3f4',
+        background: 'rgba(14,18,38,.82)', border: '1px solid rgba(150,160,220,.28)', borderRadius: '7px',
+        padding: '3px 10px', whiteSpace: 'nowrap', boxShadow: '0 4px 10px rgba(0,0,0,.4)',
+      },
+      onOpen: () => this.setState({ openIdx: i, closing: false }),
+      onEnter: () => this.setState({ hoverIdx: i }),
+      onLeave: () => this.setState({ hoverIdx: null }),
+    }; });
+
+    const logRows = this.hobbies.map((h, i) => ({
+      name: h.name, coord: this.fmtCoord(h.coord), service: h.service, bearing: h.bearing, odds: h.odds,
+      stateLabel: this.stateMeta[h.state].label,
+      statePill: this.pillStyle(h.state, false),
+      oddsStyle: {
+        fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: h.state === 'inkspill' ? '#8a93c4' : (h.state === 'port' ? '#7f8fb8' : '#c3cbf2'),
+        textAlign: 'right', maxWidth: '190px', lineHeight: 1.4,
+      },
+      rowStyle: {
+        display: 'flex', gap: '18px', alignItems: 'center', padding: '18px 10px',
+        borderTop: '1px solid rgba(150,160,220,.14)', cursor: 'pointer', transition: 'background .2s',
+        background: this.state.hoverIdx === i ? 'rgba(147,160,232,.05)' : 'transparent',
+        animation: 'fadeUp .5s ease backwards', animationDelay: (0.3 + i * 0.07).toFixed(2) + 's',
+      },
+      onOpen: () => this.setState({ openIdx: i, closing: false }),
+      onEnter: () => this.setState({ hoverIdx: i }),
+      onLeave: () => this.setState({ hoverIdx: null }),
+    }));
+
+    const h = sel == null ? null : this.hobbies[sel];
+    const flareCount = h ? (this.state.flares[h.name] || 0) : 0;
+    const rec = h ? {
+      name: h.name, coord: this.fmtCoord(h.coord), service: h.service, lastLog: h.lastLog,
+      offCourse: h.offCourse, floats: h.floats, odds: h.odds,
+      stateLabel: this.stateMeta[h.state].label, pillStyle: this.pillStyle(h.state, true),
+    } : null;
+
     return {
-      rows,
-      rec: sel == null ? null : this.keepers[sel],
-      recBackdrop: { position: 'fixed', inset: 0, background: 'rgba(8,10,20,.72)', backdropFilter: 'blur(5px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(14px,4vw,40px)', animation: closing ? 'backdropOut .22s ease both' : 'backdropIn .25s ease both' },
-      recCard: { position: 'relative', width: 'min(620px,100%)', animation: closing ? 'cardOut .22s ease both' : 'cardIn .35s ease both' },
-      closeRec: this.closeRec,
-      stopProp: (e) => e.stopPropagation(),
-      leaveFlower: this.leaveFlower,
-      flowerLine: sel == null ? '' : flowerCount === 0 ? 'no flowers yet' : flowerCount === 1 ? '1 left so far' : flowerCount + ' left so far',
+      markers, logRows, rec, wakes,
+      plottedLine: `${this.hobbies.length} hobbies plotted · none sunk`,
+      unchartedWrap: {
+        position: 'absolute', left: up.x + '%', top: up.y + '%', transform: 'translate(-50%,-50%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', cursor: 'pointer', zIndex: 3,
+        transition: 'filter .2s', userSelect: 'none',
+      },
+      memorialWrap: {
+        position: 'absolute', left: mp.x + '%', top: mp.y + '%', transform: 'translate(-50%,-50%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', cursor: 'pointer', zIndex: 3,
+      },
       nextHobby: this.suggestions[this.state.nextIdx],
       cycleNext: () => this.setState((s) => ({ nextIdx: (s.nextIdx + 1) % this.suggestions.length })),
+      recBackdrop: { position: 'fixed', inset: 0, background: 'rgba(8,10,20,.72)', backdropFilter: 'blur(5px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(14px,4vw,40px)', animation: closing ? 'backdropOut .22s ease both' : 'backdropIn .25s ease both' },
+      recCard: { position: 'relative', width: 'min(620px,100%)', animation: closing ? 'cardOut .22s ease both' : 'cardIn .35s ease both' },
+      flareLine: flareCount > 0 ? 'flare away · the keeper will see it' : 'send one up to root for this one',
+      flareBurst: this.state.burst > 0,
+      flareFiring: this.state.flareFiring,
+      memorial: this.state.memorial,
+      openMemorial: this.openMemorial,
+      closeMemorial: this.closeMemorial,
+      memBackdrop: { position: 'fixed', inset: 0, background: 'rgba(6,8,16,.82)', backdropFilter: 'blur(6px)', zIndex: 55, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(14px,4vw,40px)', animation: 'backdropIn .25s ease both' },
+      memCard: { position: 'relative', width: 'min(500px,100%)', animation: 'cardIn .4s ease both' },
+      closeRec: this.closeRec,
+      sendFlare: this.sendFlare,
+      stopProp: (e) => e.stopPropagation(),
     };
   }
 }
-
 </script>
 </body>
 </html>
