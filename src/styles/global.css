@@ -96,6 +96,15 @@ a {
 	overflow-x: clip;
 }
 
+/* Below the phone line the fixed bottom tab bar (TabBar.astro) covers the
+   foot of the viewport, so every page leaves it 74px of clearance. The bar's
+   own safe-area inset rides its padding, not this. */
+@media (max-width: 600px) {
+	.page {
+		padding-bottom: 74px;
+	}
+}
+
 /* --- Shared text vocabulary --- */
 
 /* A section's label + "see more" link row: shared across index.astro's own
