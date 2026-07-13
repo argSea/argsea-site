@@ -253,24 +253,25 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             <sc-if value="{{ projTabIsWall }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;flex-direction:column;gap:12px;animation:fadeUp .5s ease both">
                 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// drag to move · grab the ⤾ corner to hang it crooked · published cards only.</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// drag a light along the coast · the register order lives on the rack</span>
                   <div style="display:flex;gap:8px;align-items:center">
-                    <span onClick="{{ wallReset }}" style="white-space:nowrap;flex-shrink:0;padding:8px 15px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#a5aed4;cursor:pointer;transition:color .2s,border-color .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">↺ tidy rows</span>
-                    <span onClick="{{ wallSave }}" style="white-space:nowrap;flex-shrink:0;padding:9px 18px;background:#f0d9a8;color:#1b2033;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;box-shadow:3px 3px 0 rgba(147,160,232,.6);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(147,160,232,.6)">hoist arrangement</span>
+                    <span onClick="{{ wallReset }}" style="white-space:nowrap;flex-shrink:0;padding:8px 15px;border:1px solid rgba(150,160,220,.3);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#a5aed4;cursor:pointer;transition:color .2s,border-color .2s" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">↺ tidy into rows</span>
+                    <span onClick="{{ wallSave }}" style="white-space:nowrap;flex-shrink:0;padding:9px 18px;background:#f0d9a8;color:#1b2033;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;box-shadow:3px 3px 0 rgba(147,160,232,.6);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(147,160,232,.6)">pin it</span>
                   </div>
                 </div>
-                <div style="position:relative;height:600px;border:1.5px dashed rgba(150,160,220,.3);border-radius:12px;background-image:radial-gradient(rgba(147,160,232,.1) 1px,transparent 1.5px);background-size:26px 26px;overflow:hidden">
-                  <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:60%;height:200px;pointer-events:none;background:radial-gradient(ellipse at 50% 0%, rgba(240,217,168,.06), transparent 68%)"></div>
+                <div style="position:relative;width:100%;aspect-ratio:1000/320;border:1px solid rgba(150,160,220,.22);border-radius:12px;box-sizing:border-box;overflow:hidden;background:radial-gradient(1px 1px at 8% 18%,rgba(240,217,168,.5),transparent 60%),radial-gradient(1px 1px at 21% 10%,rgba(240,217,168,.3),transparent 60%),radial-gradient(1px 1px at 38% 26%,rgba(240,217,168,.4),transparent 60%),radial-gradient(1px 1px at 55% 14%,rgba(240,217,168,.25),transparent 60%),radial-gradient(1px 1px at 69% 22%,rgba(240,217,168,.4),transparent 60%),radial-gradient(1px 1px at 84% 12%,rgba(240,217,168,.3),transparent 60%),radial-gradient(1px 1px at 94% 24%,rgba(240,217,168,.35),transparent 60%),linear-gradient(180deg,#0a0c18 0%,#0d1024 46%,#131a33 66%,#0a0e1c 100%)">
+                  <div style="position:absolute;left:0;right:0;bottom:0;height:36%;border-top:1px solid rgba(147,160,232,.16);background:linear-gradient(180deg,rgba(95,110,196,.12),rgba(10,14,28,.4));pointer-events:none"></div>
                   <sc-for list="{{ wallCards }}" as="w" hint-placeholder-count="6">
                     <div onPointerDown="{{ w.onDown }}" onPointerMove="{{ w.onMove }}" onPointerUp="{{ w.onUp }}" style="{{ w.style }}">
-                      <div style="{{ w.thumbStyle }}"></div>
-                      <span style="font-family:'Newsreader',serif;font-style:italic;font-size:12px;color:#3b3f5e;line-height:1.2;padding:5px 7px 6px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ w.title }}</span>
-                      <div style="{{ w.tackStyle }}"></div>
-                      <div onPointerDown="{{ w.onRotDown }}" onPointerMove="{{ w.onRotMove }}" onPointerUp="{{ w.onRotUp }}" title="drag to tilt" style="{{ w.rotHandleStyle }}">⤾</div>
+                      <span style="position:relative;width:14px;height:14px;display:flex;align-items:center;justify-content:center">
+                        <span style="position:absolute;width:43px;height:43px;border-radius:50%;background:radial-gradient(circle,rgba(240,217,168,.32),transparent 64%);filter:blur(1px);animation:lampPulse 5s ease-in-out infinite"></span>
+                        <span style="position:relative;width:12px;height:12px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 10px 3px rgba(240,217,168,.5)"></span>
+                      </span>
+                      <span style="font-family:'Newsreader',serif;font-style:italic;font-size:11.5px;line-height:1.2;color:#a5aed4;white-space:nowrap;max-width:130px;overflow:hidden;text-overflow:ellipsis;background:rgba(11,14,28,.55);padding:2px 7px;border-radius:999px;pointer-events:none">{{ w.title }}</span>
                     </div>
                   </sc-for>
                 </div>
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8">◐ mock · the arrangement sticks to this desk. the public wall picks it up with the next hoist.</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// the coast ships to the public site on the next lantern hoist.</span>
               </div>
             </sc-if>
 
@@ -2223,9 +2224,10 @@ class Component extends DCLogic {
   }
 
   wallDefaults(pubs) {
+    const rowY = [40, 62, 30, 70, 48, 56];
     const pos = {};
     pubs.forEach((p, i) => {
-      pos[p.title] = { x: 30 + (i % 4) * 218, y: 34 + Math.floor(i / 4) * 190 };
+      pos[p.title] = { x: pubs.length > 1 ? 8 + (84 * i) / (pubs.length - 1) : 50, y: rowY[i % rowY.length] };
     });
     return pos;
   }
@@ -2243,77 +2245,31 @@ class Component extends DCLogic {
 
     const pubs = s.projects.filter((p) => p.status === 'published');
     const pos = s.wallPos || this.wallDefaults(pubs);
-    const rots = [-2, 1.6, -1.2, 2.2, -0.8, 1.4, -1.8, 1];
 
     const wallCards = pubs.map((p, i) => {
-      const xy = pos[p.title] || { x: 30 + (i % 4) * 218, y: 34 + Math.floor(i / 4) * 190 };
-      const rot = xy.r == null ? rots[i % rots.length] : xy.r;
+      const xy = pos[p.title] || { x: 50, y: 48 };
       const grabbed = this.dragTitle === p.title;
-      const rotating = this.rotTitle === p.title;
       return {
         title: p.title,
         style: {
-          position: 'absolute', left: xy.x + 'px', top: xy.y + 'px', width: '190px', boxSizing: 'border-box',
-          transform: `rotate(${rot}deg)`,
-          background: 'linear-gradient(180deg,#efeadb,#e9e2d0)', border: '1px solid #d8cfb6', borderRadius: '3px',
-          padding: '6px', boxShadow: grabbed ? '0 18px 34px rgba(0,0,0,.55)' : '0 8px 18px rgba(0,0,0,.4)',
+          position: 'absolute', left: xy.x + '%', top: xy.y + '%', transform: 'translate(-50%,-50%)',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
           cursor: grabbed ? 'grabbing' : 'grab', touchAction: 'none', userSelect: 'none',
-          zIndex: grabbed || rotating ? 30 : 5 + (i % 4), transition: grabbed || rotating ? 'none' : 'box-shadow .2s',
-        },
-        rotHandleStyle: {
-          position: 'absolute', bottom: '-9px', right: '-9px', width: '22px', height: '22px',
-          borderRadius: '50%', background: '#1c2036', border: '1px solid rgba(240,217,168,.55)',
-          color: '#f0d9a8', fontSize: '12px', lineHeight: '20px', textAlign: 'center',
-          cursor: rotating ? 'grabbing' : 'grab', touchAction: 'none', userSelect: 'none',
-          boxShadow: '0 2px 6px rgba(0,0,0,.5)',
-        },
-        onRotDown: (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          e.currentTarget.setPointerCapture(e.pointerId);
-          const cardRect = e.currentTarget.parentElement.getBoundingClientRect();
-          const cx = cardRect.left + cardRect.width / 2, cy = cardRect.top + cardRect.height / 2;
-          this.rotTitle = p.title;
-          this.rotStart = { cx, cy, a0: Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI, r0: rot };
-          this.forceUpdate();
-        },
-        onRotMove: (e) => {
-          if (this.rotTitle !== p.title) return;
-          const rs = this.rotStart;
-          const a = Math.atan2(e.clientY - rs.cy, e.clientX - rs.cx) * 180 / Math.PI;
-          const nr = Math.max(-30, Math.min(30, Math.round((rs.r0 + a - rs.a0) * 10) / 10));
-          this.setState({ wallPos: { ...pos, [p.title]: { x: xy.x, y: xy.y, r: nr } } });
-        },
-        onRotUp: () => {
-          if (this.rotTitle !== p.title) return;
-          this.rotTitle = null;
-          try { localStorage.setItem('argsea-admin-wallpos', JSON.stringify(this.state.wallPos || pos)); } catch (err) {}
-          this.forceUpdate();
-        },
-        thumbStyle: {
-          width: '100%', aspectRatio: '1.55 / 1',
-          background: `linear-gradient(${115 + i * 40}deg, #454a70, #2b3050 55%, #5f6ec4)`,
-          filter: 'grayscale(.4) brightness(.9)', borderRadius: '2px',
-        },
-        tackStyle: {
-          position: 'absolute', top: '-4px', left: ['47%', '52%', '49%'][i % 3], width: '9px', height: '9px',
-          borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #ecd9a4, #8a6d3b 70%)',
-          boxShadow: '0 1px 3px rgba(0,0,0,.5)', pointerEvents: 'none',
+          zIndex: grabbed ? 20 : 5,
         },
         onDown: (e) => {
           e.preventDefault();
           e.currentTarget.setPointerCapture(e.pointerId);
-          const canvasRect = e.currentTarget.parentElement.getBoundingClientRect();
-          const cardRect = e.currentTarget.getBoundingClientRect();
           this.dragTitle = p.title;
-          this.dragOff = { x: e.clientX - cardRect.left, y: e.clientY - cardRect.top, canvas: canvasRect };
+          this.dragCanvas = e.currentTarget.parentElement.getBoundingClientRect();
           this.forceUpdate();
         },
         onMove: (e) => {
           if (this.dragTitle !== p.title) return;
-          const c = this.dragOff.canvas;
+          const c = this.dragCanvas;
+          const cl = (n) => Math.max(0, Math.min(100, n));
           this.setState({
-            wallPos: { ...pos, [p.title]: { x: Math.round(e.clientX - c.left - this.dragOff.x), y: Math.round(e.clientY - c.top - this.dragOff.y) } },
+            wallPos: { ...pos, [p.title]: { x: cl(((e.clientX - c.left) / c.width) * 100), y: cl(((e.clientY - c.top) / c.height) * 100) } },
           });
         },
         onUp: () => {
@@ -2338,12 +2294,12 @@ class Component extends DCLogic {
         const d = this.wallDefaults(pubs);
         this.setState({ wallPos: d });
         try { localStorage.setItem('argsea-admin-wallpos', JSON.stringify(d)); } catch (err) {}
-        this.log('the wall was tidied into rows. it will drift again.');
+        this.log('the coast was tidied into a row. it will drift again.');
       },
       wallSave: () => {
         try { localStorage.setItem('argsea-admin-wallpos', JSON.stringify(pos)); } catch (err) {}
-        this.log('wall arrangement hoisted to the public side');
-        this.showToast('⚑ arrangement pinned. the wall ships with the next hoist.');
+        this.log('the coast was pinned for the public side');
+        this.showToast('⚑ pinned. the coast ships with the next hoist.');
       },
     };
   }
