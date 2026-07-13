@@ -11,9 +11,9 @@ import './HarborCat.css';
 
 export type { CatContext } from '../../lib/catSpots';
 
-// One quip set per context (approved copy from HarborCat.dc.html); a poke never
-// repeats the quip currently on screen. An unknown context falls back to the
-// roaming header set.
+// One quip set per context (approved copy from the HarborCat and Hobbies mocks);
+// a poke never repeats the quip currently on screen. An unknown context falls
+// back to the roaming header set.
 const QUIPS: Record<CatContext, string[]> = {
 	postcard:  ['mrrp.', 'i sat on this one first.', 'read it to me.', 'this entry is mine now.', 'i approve. mostly.', 'the archive tastes fine.', 'you opened it, i inspected it.'],
 	note:      ['mrrp.', 'i walked across the keyboard during this one.', 'typo on line two. i left it.', 'read it to me.', 'i supervised this draft.', 'nap first. then read.', 'i have read it. no comment.'],
@@ -22,6 +22,7 @@ const QUIPS: Record<CatContext, string[]> = {
 	hero:      ['mrrp.', 'yes, that is the guy.', 'he does keep the lights on. i supervise.', 'hire him. i vouch. mostly.', 'the boxes-and-arrows are mine.'],
 	manifest:  ['mrrp.', 'you forgot to list me.', 'i am also a tool. kept in the tower.', 'inventory looks fine. i counted.', 'the queue is mine now.'],
 	graveyard: ['mrrp.', 'good hobbies. all dead.', 'the graveyard is warm. i checked.', 'nothing here is resting harder than me.', 'i outlasted the piano.'],
+	chart:     ['a sail, off the north point. maybe.', 'i keep watch for the ones that drift back.', 'none of them sank. i checked.', 'the boat always comes back. eventually.', 'one sail is overdue. i am counting.'],
 	contact:   ['mrrp.', 'say hi. or do not. i will know.', 'he answers email. i answer to no one.', 'the light is on.'],
 	card:      ['mrrp.', 'i sat on this one first.', 'this one shipped. i was there.', 'good project. mine now.', 'i approve. mostly.'],
 	tag:       ['mrrp.', 'good filter. i agree.', 'this is the tag that survives.', 'sorted. by me.', 'tinkering is a lifestyle.'],

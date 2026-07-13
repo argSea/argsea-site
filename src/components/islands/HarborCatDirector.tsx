@@ -11,7 +11,7 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import HarborCat from './HarborCat';
-import { pageCatPick, NAV_HAMBURGER_MAX, type CatPage, type CatSpot } from '../../lib/catSpots';
+import { pageCatPick, NAV_TABBAR_MAX, type CatPage, type CatSpot } from '../../lib/catSpots';
 import type { FigureheadDesign } from '../../lib/api';
 import './HarborCat.css';
 
@@ -49,15 +49,15 @@ export default function HarborCatDirector({ page, catPages, catSpots, catDesigns
 		}
 		const { selector, edge, align, dx = 0, dy = 0 } = spot.anchor;
 		const size = SIZE[spot.pose];
-		// A header spot is menu-gated below the hamburger breakpoint: the nav shows
-		// it in the open menu, so the director stands down there.
-		const hamburger = window.matchMedia(`(max-width: ${NAV_HAMBURGER_MAX}px)`);
+		// A menu-gated header spot stands down at or below the tab-bar breakpoint:
+		// the desktop nav is gone there, so the director yields the perch.
+		const phoneLine = window.matchMedia(`(max-width: ${NAV_TABBAR_MAX}px)`);
 		let raf = 0;
 		let tries = 0;
 		let alive = true;
 
 		const measure = () => {
-			if (spot.menuGated && hamburger.matches) {
+			if (spot.menuGated && phoneLine.matches) {
 				setPlacement(null);
 				return;
 			}
@@ -94,7 +94,7 @@ export default function HarborCatDirector({ page, catPages, catSpots, catDesigns
 
 		replace();
 		window.addEventListener('resize', replace);
-		hamburger.addEventListener('change', replace);
+		phoneLine.addEventListener('change', replace);
 		// Entry animations (fade-up, the placard, card re-entry) shift anchors as
 		// they settle; remeasure when each finishes
 		document.addEventListener('animationend', replace, true);
@@ -108,7 +108,7 @@ export default function HarborCatDirector({ page, catPages, catSpots, catDesigns
 			alive = false;
 			cancelAnimationFrame(raf);
 			window.removeEventListener('resize', replace);
-			hamburger.removeEventListener('change', replace);
+			phoneLine.removeEventListener('change', replace);
 			document.removeEventListener('animationend', replace, true);
 			classWatch.disconnect();
 		};
