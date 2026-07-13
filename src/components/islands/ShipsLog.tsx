@@ -37,6 +37,10 @@ const STATE_META: Record<HobbyState, StateMeta> = {
 	inkspill: { label: 'bearing smudged',      c: '138,147,196', solid: '#8a93c4' },
 };
 
+// The bearing card's cat gets its own lines, not the chart lookout's set; both
+// perches carry the 'chart' context, transcribed from the Hobbies mock's overlay.
+const BEARING_QUIPS = ['i read the log. twice.', 'it will drift back. probably.', 'mark a search. i will supervise.', 'the sea keeps what it likes.'];
+
 function proj(c: Coord) {
 	const w = CHART_WIN;
 	return {
@@ -345,6 +349,7 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 						<div
 							key={hobby.id}
 							className="shipslog__row"
+							data-logrow
 							data-hobby-id={hobby.id}
 							onClick={() => openHobby(index)}
 							onMouseEnter={() => onHover(index)}
@@ -352,7 +357,7 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 							style={{ display: 'flex', gap: '18px', alignItems: 'center', padding: '18px 10px', borderTop: '1px solid rgba(150,160,220,.14)', cursor: 'pointer', transition: 'background .2s', background: hoverIdx === index ? 'rgba(147,160,232,.05)' : 'transparent', animation: 'fadeUp .5s ease backwards', animationDelay: `${(0.3 + index * 0.07).toFixed(2)}s` }}
 						>
 							<span style={pillStyle(hobby.state, false)}>{meta.label}</span>
-							<span style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: '1 1 300px', minWidth: 0 }}>
+							<span data-logprose style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: '1 1 300px', minWidth: 0 }}>
 								<span style={{ display: 'flex', alignItems: 'baseline', gap: '11px', flexWrap: 'wrap' }}>
 									<span style={{ fontFamily: "'Gloock', serif", fontSize: 'clamp(19px,2.6vw,22px)', color: '#eef0fb', lineHeight: 1.2 }}>{hobby.name}</span>
 									<span className="shipslog__coord" data-hide-mobile style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', color: '#8a93c4' }}>◈ {hobby.coord ? fmtCoord(hobby.coord) : 'uncharted'}</span>
@@ -360,9 +365,9 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 								</span>
 								<span style={{ fontSize: '15px', fontStyle: 'italic', color: '#a5aed4', lineHeight: 1.5, textWrap: 'pretty' }}>{hobby.bearing}</span>
 							</span>
-							<span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px', flex: 'none' }}>
+							<span data-odds style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px', flex: 'none' }}>
 								<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10.5px', letterSpacing: '.1em', color: '#5f6ec4', textTransform: 'uppercase' }}>odds of return</span>
-								<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: hobby.state === 'inkspill' ? '#8a93c4' : hobby.state === 'port' ? '#7f8fb8' : '#c3cbf2', textAlign: 'right', maxWidth: '190px', lineHeight: 1.4 }}>{hobby.odds}</span>
+								<span data-odds-val style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: hobby.state === 'inkspill' ? '#8a93c4' : hobby.state === 'port' ? '#7f8fb8' : '#c3cbf2', textAlign: 'right', maxWidth: '190px', lineHeight: 1.4 }}>{hobby.odds}</span>
 							</span>
 						</div>
 					);
@@ -385,7 +390,7 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 			{open && (
 				<div onClick={requestClose} style={{ position: 'fixed', inset: 0, background: 'rgba(8,10,20,.72)', backdropFilter: 'blur(5px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(14px,4vw,40px)', animation: closing ? 'backdropOut .22s ease both' : 'backdropIn .25s ease both' }}>
 					<div className="shipslog__bearing" onClick={(event) => event.stopPropagation()} style={{ position: 'relative', width: 'min(620px,100%)', animation: closing ? 'cardOut .22s ease both' : 'cardIn .35s ease both' }}>
-						{catHere && <div className="cat-mount shipslog__cat-mount"><HarborCat pose="perched" context="note" designs={catDesigns} /></div>}
+						{catHere && <div className="cat-mount shipslog__cat-mount"><HarborCat pose="perched" context="chart" quips={BEARING_QUIPS} designs={catDesigns} /></div>}
 						<div style={{ maxHeight: '86vh', overflow: 'auto', background: 'linear-gradient(180deg,#f1ecdd,#eae3d1)', borderRadius: '6px 12px 12px 6px', boxShadow: '0 30px 80px rgba(0,0,0,.6)' }}>
 							<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', padding: '16px clamp(20px,4vw,30px)', borderBottom: '1.5px dashed rgba(110,100,75,.35)' }}>
 								<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11.5px', letterSpacing: '.14em', color: '#8a7f63', textTransform: 'uppercase' }}>Last known bearing</span>

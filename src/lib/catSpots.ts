@@ -11,7 +11,7 @@ export type CatPage = 'hello' | 'projects' | 'hobbies' | 'notes' | 'p404';
 export type CatPose = 'perched' | 'lying';
 export type CatContext =
 	| 'postcard' | 'note' | 'wreck' | 'header' | 'hero' | 'manifest'
-	| 'graveyard' | 'contact' | 'card' | 'tag' | 'row' | 'next';
+	| 'graveyard' | 'contact' | 'card' | 'tag' | 'row' | 'next' | 'chart';
 
 // A static spot's anchor: the element it rides and which edge/corner its paws
 // rest on, plus an optional pixel nudge. The director measures the element and
@@ -30,7 +30,7 @@ export interface CatSpot {
 	pose:       CatPose;
 	context:    CatContext;   // which quip set the poke pulls from
 	overlay:    boolean;      // true → shows only when its overlay opens (the owning island renders it)
-	menuGated?: boolean;      // header spots: on desktop the director rides the nav link; on mobile the nav shows it in the open hamburger menu
+	menuGated?: boolean;      // header spots: on desktop the director rides the nav link; below the tab-bar breakpoint the desktop nav is gone, so the spot stands down
 	anchor?:    CatAnchor;    // static spots only
 }
 
@@ -50,9 +50,9 @@ export const CATALOG: CatSpot[] = [
 	{ id: 'projects.overlay',   page: 'projects', pose: 'perched', context: 'postcard', overlay: true },
 
 	{ id: 'hobbies.header',   page: 'hobbies', pose: 'lying',   context: 'header',    overlay: false, menuGated: true, anchor: { selector: '.site-nav .links a.active', edge: 'top', align: 'center', dy: 16 } },
-	{ id: 'hobbies.entry',    page: 'hobbies', pose: 'perched', context: 'graveyard', overlay: false, anchor: { selector: '.shipslog__row',       edge: 'top', align: 'right' } },
+	{ id: 'hobbies.entry',    page: 'hobbies', pose: 'perched', context: 'chart',     overlay: false, anchor: { selector: '.shipslog__row',       edge: 'top', align: 'right' } },
 	{ id: 'hobbies.nextChip', page: 'hobbies', pose: 'perched', context: 'next',      overlay: false, anchor: { selector: '.shipslog__uncharted', edge: 'top', align: 'center', dy: 10 } },
-	{ id: 'hobbies.record',   page: 'hobbies', pose: 'perched', context: 'note',      overlay: true },
+	{ id: 'hobbies.record',   page: 'hobbies', pose: 'perched', context: 'chart',     overlay: true },
 
 	{ id: 'notes.header',  page: 'notes', pose: 'lying',   context: 'header', overlay: false, menuGated: true, anchor: { selector: '.site-nav .links a.active', edge: 'top', align: 'center', dy: 16 } },
 	{ id: 'notes.row',     page: 'notes', pose: 'perched', context: 'row',    overlay: false, anchor: { selector: '.note-row',                   edge: 'top', align: 'right' } },
@@ -61,9 +61,10 @@ export const CATALOG: CatSpot[] = [
 	{ id: 'p404.wreck', page: 'p404', pose: 'perched', context: 'wreck', overlay: false, anchor: { selector: '.placard', edge: 'top', align: 'right' } },
 ];
 
-// The narrow breakpoint where the nav collapses to a hamburger, kept in sync
-// with the media query in Nav's stylesheet. Below it, header spots are menu-gated.
-export const NAV_HAMBURGER_MAX = 600;
+// The phone line: at or below this width the desktop nav gives way to the bottom
+// tab bar, kept in sync with the media queries in Nav and TabBar. Below it,
+// menu-gated header spots stand down.
+export const NAV_TABBAR_MAX = 600;
 
 type Toggles = Record<string, boolean> | undefined;
 

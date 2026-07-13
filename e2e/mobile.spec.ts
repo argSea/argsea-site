@@ -66,3 +66,21 @@ test('below the phone line the hamburger and desktop links are gone, the compact
 	await expect(resume).toBeVisible();
 	await expect(resume).toHaveAttribute('href', '/resume.pdf');
 });
+
+test('the hobbies chart takes the mock\'s aspect ratio and the log rows stack', async ({ page }) => {
+	await page.goto('/hobbies');
+
+	const chart = page.locator('.shipslog__chart');
+	await expect(chart).toBeVisible();
+	const chartBox = await chart.evaluate((el) => {
+		const s = getComputedStyle(el);
+		return { aspectRatio: s.aspectRatio.replace(/\s/g, ''), maxHeight: s.maxHeight };
+	});
+	expect(chartBox.aspectRatio).toBe('5/6');
+	expect(chartBox.maxHeight).toBe('520px');
+
+	const row = page.locator('.shipslog__row').first();
+	await expect(row).toBeVisible();
+	const direction = await row.evaluate((el) => getComputedStyle(el).flexDirection);
+	expect(direction).toBe('column');
+});

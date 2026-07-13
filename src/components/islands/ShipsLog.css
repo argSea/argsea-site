@@ -138,6 +138,22 @@
 /* --- the phone line (600, the site's nav breakpoint) --- */
 @media (max-width: 600px) {
 	[data-hide-mobile] { display: none !important; }
-	[data-chart] { height: 600px !important; }
+	[data-chart] {
+		height: auto !important;
+		aspect-ratio: 5 / 6 !important;
+		max-height: 520px !important;
+	}
 	[data-mark] { transform: translate(-50%, -50%) scale(.82) !important; }
+	[data-logrow] {
+		flex-direction: column !important;
+		align-items: flex-start !important;
+		gap: 9px !important;
+		padding: 15px 2px !important;
+	}
+	[data-odds] { align-items: flex-start !important; }
+	[data-odds-val] {
+		text-align: left !important;
+		max-width: none !important;
+	}
+	[data-logprose] { flex: 0 1 auto !important; }
 }
