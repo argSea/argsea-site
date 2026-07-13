@@ -45,8 +45,12 @@ a:hover{color:#e8ebfa}
   [data-mob-resume]{display:inline-flex !important}
   [data-mob-tabs]{display:flex !important}
   [data-page]{padding-bottom:74px !important}
-  [data-chart]{height:600px !important}
+  [data-chart]{height:auto !important;aspect-ratio:5/6 !important;max-height:520px !important}
   [data-mark]{transform:translate(-50%,-50%) scale(.82) !important}
+  [data-logrow]{flex-direction:column !important;align-items:flex-start !important;gap:9px !important;padding:15px 2px !important}
+  [data-odds]{align-items:flex-start !important}
+  [data-odds-val]{text-align:left !important;max-width:none !important}
+  [data-logprose]{flex:0 1 auto !important}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
@@ -263,9 +267,9 @@ a:hover{color:#e8ebfa}
     </div>
 
     <sc-for list="{{ logRows }}" as="r" hint-placeholder-count="5">
-      <div onClick="{{ r.onOpen }}" onMouseEnter="{{ r.onEnter }}" onMouseLeave="{{ r.onLeave }}" style="{{ r.rowStyle }}" style-hover="background:rgba(147,160,232,.05)">
+      <div data-logrow onClick="{{ r.onOpen }}" onMouseEnter="{{ r.onEnter }}" onMouseLeave="{{ r.onLeave }}" style="{{ r.rowStyle }}" style-hover="background:rgba(147,160,232,.05)">
         <span style="{{ r.statePill }}">{{ r.stateLabel }}</span>
-        <span style="display:flex;flex-direction:column;gap:4px;flex:1 1 300px;min-width:0">
+        <span data-logprose style="display:flex;flex-direction:column;gap:4px;flex:1 1 300px;min-width:0">
           <span style="display:flex;align-items:baseline;gap:11px;flex-wrap:wrap">
             <span style="font-family:'Gloock',serif;font-size:clamp(19px,2.6vw,22px);color:#eef0fb;line-height:1.2">{{ r.name }}</span>
             <span data-hide-mobile style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a93c4">◈ {{ r.coord }}</span>
@@ -273,9 +277,9 @@ a:hover{color:#e8ebfa}
           </span>
           <span style="font-size:15px;font-style:italic;color:#a5aed4;line-height:1.5;text-wrap:pretty">{{ r.bearing }}</span>
         </span>
-        <span style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none">
+        <span data-odds style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase">odds of return</span>
-          <span style="{{ r.oddsStyle }}">{{ r.odds }}</span>
+          <span data-odds-val style="{{ r.oddsStyle }}">{{ r.odds }}</span>
         </span>
       </div>
     </sc-for>
@@ -387,12 +391,16 @@ a:hover{color:#e8ebfa}
       <span style="font-size:9.5px">projects</span>
     </a>
     <a href="Hobbies.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#f0d9a8">
-      <svg width="19" height="22" viewBox="0 0 20 22" fill="none"><path d="M4 21 V9 a6 6 0 0 1 12 0 V21 Z" fill="none" stroke="currentColor" stroke-width="1.5"></path><path d="M10 12 v5 M7.5 14.5 h5" stroke="currentColor" stroke-width="1.3"></path></svg>
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8.5" stroke="currentColor" stroke-width="1.4"></circle><path d="M11 3 L12.4 11 L11 19 L9.6 11 Z" fill="currentColor"></path><path d="M3 11 L11 9.6 L19 11 L11 12.4 Z" fill="currentColor" opacity="0.55"></path></svg>
       <span style="font-size:9.5px">hobbies</span>
     </a>
     <a href="Notes.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
       <svg width="19" height="22" viewBox="0 0 20 22" fill="none"><rect x="4" y="3" width="12" height="16" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect><path d="M7 7 h6 M7 10 h6 M7 13 h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg>
       <span style="font-size:9.5px">notes</span>
+    </a>
+    <a href="Contact.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
+      <svg width="19" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="6" width="16" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect><path d="M3.5 7 L11 12 L18.5 7" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg>
+      <span style="font-size:9.5px">contact</span>
     </a>
   </div>
 </x-dc>

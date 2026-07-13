@@ -47,6 +47,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
   [data-admin-topbar]{display:flex !important}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 </helmet>
 
 <div style="min-height:100vh;color:#dde1f0;font-family:'Newsreader',serif;overflow-x:hidden">
@@ -243,6 +244,11 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
               <button onClick="{{ newProject }}" style="padding:12px 20px;background:#93a0e8;color:#151830;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);cursor:pointer;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">+ kindle a light</button>
             </div>
 
+            <div style="display:flex;gap:9px;flex-wrap:wrap;animation:fadeUp .7s ease .08s both">
+              <span onClick="{{ projTabToRack }}" style="{{ projTabRackStyle }}">the rack</span>
+              <span onClick="{{ projTabToWall }}" style="{{ projTabWallStyle }}">the coast</span>
+              <span onClick="{{ projTabToLogs }}" style="{{ projTabLogsStyle }}">the logs</span>
+            </div>
 
             <sc-if value="{{ projTabIsWall }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;flex-direction:column;gap:12px;animation:fadeUp .5s ease both">
@@ -310,6 +316,34 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             </div>
             <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// a dark light stays on the list · the coast remembers. changes shine with the next hoist.</span>
             </sc-if>
+
+            <sc-if value="{{ projTabIsLogs }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:14px;animation:fadeUp .5s ease both">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">{{ logsCountLine }} · the full logs. one lit per light, any number of drafts.</span>
+                <button onClick="{{ newLog }}" style="padding:10px 18px;background:#f0d9a8;color:#1b2033;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;box-shadow:3px 3px 0 rgba(147,160,232,.6);transform:rotate(-.5deg);cursor:pointer">+ new log</button>
+              </div>
+              <sc-for list="{{ logRows }}" as="lg" hint-placeholder-count="2">
+                <div style="{{ lg.rowStyle }}">
+                  <span style="{{ lg.stateStyle }}">{{ lg.stateLabel }}</span>
+                  <div onClick="{{ lg.onOpen }}" style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:4px;cursor:pointer">
+                    <span style="font-family:'Gloock',serif;font-size:19px;color:#eef0fb;line-height:1.2">{{ lg.title }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#93a0e8">{{ lg.light }} · {{ lg.fresh }}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <span onClick="{{ lg.onOpen }}" style="{{ lg.actionStyle }}" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">open the desk</span>
+                    <sc-if value="{{ lg.notLit }}" hint-placeholder-val="{{ true }}"><span onClick="{{ lg.onPublish }}" style="{{ lg.actionStyle }}" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">publish</span></sc-if>
+                    <sc-if value="{{ lg.isLit }}" hint-placeholder-val="{{ false }}"><span onClick="{{ lg.onUnpublish }}" style="{{ lg.actionStyle }}" style-hover="color:#f0d9a8;border-color:rgba(240,217,168,.6)">unpublish</span></sc-if>
+                    <span onClick="{{ lg.onDup }}" style="{{ lg.actionStyle }}" style-hover="color:#c3cbf2;border-color:rgba(150,160,220,.5)">duplicate</span>
+                    <span onClick="{{ lg.onScrap }}" style="{{ lg.actionStyle }}" style-hover="color:#e77a70;border-color:rgba(231,122,112,.6)">scrap</span>
+                  </div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ logsNone }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Newsreader',serif;font-style:italic;font-size:15px;color:#7a83ad;padding:8px 2px">The shelf is empty. Start a log from a light with + new log.</span></sc-if>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;line-height:1.6">// a log belongs to one light. publishing swaps the lit one. nothing is public until the next hoist.</span>
+            </div>
+            </sc-if>
+
           </div>
         </sc-if>
 
@@ -1369,6 +1403,243 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
   </div>
 </sc-if>
 
+<!-- ============ THE LOG DESK (case-study editor · shell) ============ -->
+<sc-if value="{{ logDeskOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:75;background:#0a0d1a;display:flex;flex-direction:column;animation:backdropIn .25s ease both">
+    <div style="flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-bottom:1px solid rgba(150,160,220,.16);background:rgba(15,18,32,.96)">
+      <span onClick="{{ closeDesk }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;display:inline-flex;align-items:center;gap:8px" style-hover="color:#f0d9a8">← the logs shelf</span>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">{{ deskSaveLine }}</span>
+        <button onClick="{{ deskPublish }}" style="padding:9px 18px;background:#f0d9a8;color:#1b2033;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;box-shadow:2px 2px 0 rgba(147,160,232,.6);cursor:pointer">{{ deskPublishLabel }}</button>
+      </div>
+    </div>
+    <div style="flex:none;display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:9px 20px;border-bottom:1px solid rgba(150,160,220,.1);background:rgba(12,15,28,.92)">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#5f6ec4;text-transform:uppercase;letter-spacing:.12em;margin-right:2px">marks</span>
+      <span onClick="{{ markBold }}" title="bold" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;padding:5px 10px;border:1px solid rgba(150,160,220,.28);border-radius:7px;user-select:none;font-weight:700">B</span>
+      <span onClick="{{ markItalic }}" title="italic" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;padding:5px 10px;border:1px solid rgba(150,160,220,.28);border-radius:7px;user-select:none;font-style:italic;font-family:Newsreader,serif">I</span>
+      <span onClick="{{ markCode }}" title="inline code" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;padding:5px 10px;border:1px solid rgba(150,160,220,.28);border-radius:7px;user-select:none">&lt;/&gt;</span>
+      <span onClick="{{ markLink }}" title="link" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;padding:5px 10px;border:1px solid rgba(150,160,220,.28);border-radius:7px;user-select:none">link</span>
+      <span onClick="{{ markChip }}" title="keeper chip · a fact only you can fill" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;padding:5px 10px;border:1px solid rgba(150,160,220,.28);border-radius:7px;user-select:none;color:#f0d9a8;border-color:rgba(240,217,168,.45)">[?]</span>
+      <span style="width:1px;height:20px;background:rgba(150,160,220,.2);margin:0 4px"></span>
+      <span onClick="{{ deskUndo }}" title="undo" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;padding:5px 10px;border:1px solid rgba(150,160,220,.28);border-radius:7px;user-select:none">↶</span>
+      <span onClick="{{ deskRedo }}" title="redo" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;padding:5px 10px;border:1px solid rgba(150,160,220,.28);border-radius:7px;user-select:none">↷</span>
+      <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}"><span onClick="{{ openSaveTpl }}" title="save the selected blocks as a reusable set" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;padding:5px 10px;border:1px dashed rgba(240,217,168,.5);border-radius:7px;user-select:none;margin-left:auto">save set ({{ selCount }})</span><span onClick="{{ clearSel }}" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#7a83ad;cursor:pointer;padding:5px 8px;user-select:none">clear</span></sc-if><span onClick="{{ insertAtEnd }}" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;cursor:pointer;padding:5px 10px;border:1px solid rgba(150,160,220,.28);border-radius:7px;user-select:none;margin-left:auto;color:#f0d9a8;border-color:rgba(240,217,168,.5)">＋ block</span>
+    </div>
+    <div data-blockcanvas style="flex:1;overflow:auto;padding:clamp(24px,4vw,54px) 20px 90px">
+      <div style="max-width:760px;margin:0 auto;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.16em;color:#93a0e8;text-transform:uppercase">the light list · no. {{ deskRegNo }}</span>
+          <span style="display:inline-flex;align-items:center;gap:8px">
+            <svg width="14" height="17" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path></svg>
+            <span style="{{ deskStatePill }}">{{ deskStateLabel }}</span>
+          </span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;margin-left:auto">read-only from the light · {{ deskSlug }}</span>
+        </div>
+        <span style="margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.6">// the header lives in the blocks below (title, subhead, facts, established/tags), seeded from the light and owned by this log. select blocks with the ○ and save a set as a template.</span>
+        <div style="margin-top:26px;border-top:1px solid rgba(150,160,220,.16);padding-top:10px;display:flex;flex-direction:column;gap:2px">
+          <sc-for list="{{ deskBlocks }}" as="b" hint-placeholder-count="4">
+            <div style="{{ b.wrapStyle }}">
+              <div style="display:flex;align-items:center;gap:5px">
+                <span onClick="{{ b.toggleSel }}" title="select for a block set" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#93a0e8;padding:2px 5px;user-select:none">{{ b.selDot }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.13em;color:#5f6ec4;text-transform:uppercase;margin-right:auto">{{ b.typeLabel }}</span>
+                <span onClick="{{ b.moveUp }}" title="move up" style="{{ b.ctrlStyle }}" style-hover="color:#f0d9a8">↑</span>
+                <span onClick="{{ b.moveDown }}" title="move down" style="{{ b.ctrlStyle }}" style-hover="color:#f0d9a8">↓</span>
+                <span onClick="{{ b.dup }}" title="duplicate" style="{{ b.ctrlStyle }}" style-hover="color:#c3cbf2">⧉</span>
+                <span onClick="{{ b.insertBelow }}" title="insert below" style="{{ b.ctrlStyle }}" style-hover="color:#f0d9a8">＋</span>
+                <span onClick="{{ b.del }}" title="delete" style="{{ b.ctrlStyle }}" style-hover="color:#e77a70">✕</span>
+              </div>
+              <sc-if value="{{ b.isHeading }}" hint-placeholder-val="{{ false }}"><textarea value="{{ b.text }}" onChange="{{ b.onText }}" rows="1" style="width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;resize:vertical;border-left:2px solid rgba(240,217,168,.45);padding:2px 0 2px 14px;color:#f0f2fc;font-family:'Gloock',serif;font-size:clamp(23px,3.2vw,30px);line-height:1.15;resize:none"></textarea></sc-if>
+              <sc-if value="{{ b.isTitle }}" hint-placeholder-val="{{ false }}"><textarea value="{{ b.text }}" onChange="{{ b.onText }}" rows="1" placeholder="the light's title" style="width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;resize:vertical;color:#f0f2fc;font-family:'Gloock',serif;font-size:clamp(28px,4.6vw,44px);line-height:1.05;resize:none"></textarea></sc-if>
+              <sc-if value="{{ b.isSubhead }}" hint-placeholder-val="{{ false }}"><textarea value="{{ b.text }}" onChange="{{ b.onText }}" rows="2" placeholder="a one-line subhead" style="width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;resize:vertical;color:#a5aed4;font-family:'Newsreader',serif;font-style:italic;font-size:clamp(17px,2.4vw,20px);line-height:1.5"></textarea></sc-if>
+              <sc-if value="{{ b.isMeta }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4"><span>established</span><input type="text" value="{{ b.metaEst }}" onChange="{{ b.onMetaEst }}" style="background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:5px 9px;color:#dde1f0;font-family:inherit;font-size:12px;outline:none;width:140px"><span style="color:#93a0e8">tags</span><input type="text" value="{{ b.metaTagsText }}" onChange="{{ b.onMetaTags }}" placeholder="comma, separated" style="flex:1;min-width:160px;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:5px 9px;color:#dde1f0;font-family:inherit;font-size:12px;outline:none"></div></sc-if>
+              <sc-if value="{{ b.isPara }}" hint-placeholder-val="{{ false }}"><textarea value="{{ b.text }}" onChange="{{ b.onText }}" rows="3" placeholder="a paragraph..." style="width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;resize:vertical;color:#c3cbf2;font-family:'Newsreader',serif;font-size:17px;line-height:1.65"></textarea></sc-if>
+              <sc-if value="{{ b.isQuote }}" hint-placeholder-val="{{ false }}"><textarea value="{{ b.text }}" onChange="{{ b.onText }}" rows="2" placeholder="a line from the log..." style="width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;resize:vertical;border-left:2px solid rgba(240,217,168,.5);padding-left:16px;color:#c8b98a;font-family:'Newsreader',serif;font-style:italic;font-size:17px;line-height:1.6"></textarea></sc-if>
+              <sc-if value="{{ b.isList }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <span onClick="{{ b.toggleOrdered }}" style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#93a0e8;cursor:pointer;align-self:flex-start">{{ b.orderedLabel }} · switch</span>
+                  <sc-for list="{{ b.items }}" as="it" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:#f0d9a8;width:18px;flex:none;text-align:right">{{ it.marker }}</span><input type="text" value="{{ it.val }}" onChange="{{ it.onChange }}" style="flex:1;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:7px 10px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;font-family:'Newsreader',serif;font-size:16px"><span onClick="{{ it.onDel }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;padding:4px 6px">✕</span></div>
+                  </sc-for>
+                  <span onClick="{{ b.addItem }}" style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;cursor:pointer;padding:4px 10px;border:1px dashed rgba(150,160,220,.4);border-radius:999px">+ item</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ b.isCode }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:6px;background:#0d1120;border:1px solid rgba(150,160,220,.2);border-radius:10px;padding:12px 14px">
+                  <input type="text" value="{{ b.lang }}" onChange="{{ b.onLang }}" placeholder="language" style="align-self:flex-start;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:7px 10px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;font-size:11px;padding:4px 8px;width:130px">
+                  <textarea value="{{ b.code }}" onChange="{{ b.onCode }}" rows="5" placeholder="code..." style="width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;resize:vertical;color:#cdd6f4;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6"></textarea>
+                </div>
+              </sc-if>
+              <sc-if value="{{ b.isMermaid }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <textarea value="{{ b.code }}" onChange="{{ b.onCode }}" rows="5" placeholder="mermaid notation..." style="width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;resize:vertical;background:#0d1120;border:1px solid rgba(150,160,220,.2);border-radius:10px;padding:12px 14px;color:#cdd6f4;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.55"></textarea>
+                  <div style="display:flex;align-items:center;justify-content:center;min-height:80px;background:#12162a;border:1px solid rgba(150,160,220,.16);border-radius:10px;padding:14px;overflow:auto">
+                    <sc-if value="{{ b.mermaidReady }}" hint-placeholder-val="{{ false }}">{{ b.mermaidEl }}</sc-if>
+                    <sc-if value="{{ b.mermaidPending }}" hint-placeholder-val="{{ true }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">rendering the diagram...</span></sc-if>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ b.isFacts }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:8px"><input type="text" value="{{ r.k }}" onChange="{{ r.onK }}" placeholder="label" style="width:150px;flex:none;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:7px 10px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;text-transform:uppercase;font-size:10.5px;letter-spacing:.1em;color:#93a0e8"><input type="text" value="{{ r.v }}" onChange="{{ r.onV }}" placeholder="value" style="flex:1;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:7px 10px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none"><span onClick="{{ r.onDel }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;padding:4px 6px">✕</span></div>
+                  </sc-for>
+                  <span onClick="{{ b.addRow }}" style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;cursor:pointer;padding:4px 10px;border:1px dashed rgba(150,160,220,.4);border-radius:999px">+ fact</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ b.isOutcomes }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:8px"><input type="text" value="{{ r.big }}" onChange="{{ r.onBig }}" placeholder="the number" style="width:170px;flex:none;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:7px 10px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;font-family:'Gloock',serif;font-size:15px;color:#f0f2fc"><input type="text" value="{{ r.cap }}" onChange="{{ r.onCap }}" placeholder="what it means" style="flex:1;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:7px 10px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none"><span onClick="{{ r.onDel }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;padding:4px 6px">✕</span></div>
+                  </sc-for>
+                  <span onClick="{{ b.addRow }}" style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;cursor:pointer;padding:4px 10px;border:1px dashed rgba(150,160,220,.4);border-radius:999px">+ outcome</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ b.isFigure }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
+                  <div onClick="{{ b.onPick }}" title="pick from the darkroom" style="width:150px;height:100px;flex:none;border-radius:8px;cursor:pointer;background:{{ b.thumbBg }};border:1px solid rgba(150,160,220,.3);display:flex;align-items:flex-end;padding:7px;overflow:hidden"><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,.7);word-break:break-all">{{ b.imageKey }}</span></div>
+                  <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px"><span onClick="{{ b.onPick }}" style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;cursor:pointer;padding:4px 10px;border:1px dashed rgba(150,160,220,.4);border-radius:999px">pick from the darkroom</span><input type="text" value="{{ b.caption }}" onChange="{{ b.onCaption }}" placeholder="caption beneath the figure" style="box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:7px 10px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;font-family:'Newsreader',serif;font-style:italic;font-size:14px"></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ b.isComparison }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;gap:12px;flex-wrap:wrap">
+                    <sc-for list="{{ b.stages }}" as="st" hint-placeholder-count="2">
+                      <div style="display:flex;flex-direction:column;gap:6px;width:160px"><div onClick="{{ st.onPick }}" title="pick from the darkroom" style="width:160px;height:100px;border-radius:8px;cursor:pointer;background:{{ st.thumbBg }};border:1px solid rgba(150,160,220,.3);display:flex;align-items:flex-end;padding:6px;overflow:hidden"><span style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:rgba(255,255,255,.7);word-break:break-all">{{ st.imageKey }}</span></div><div style="display:flex;align-items:center;gap:6px"><input type="text" value="{{ st.label }}" onChange="{{ st.onLabel }}" placeholder="label" style="flex:1;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:7px 10px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;font-size:11px;padding:5px 8px"><span onClick="{{ st.onDel }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;padding:4px 6px">✕</span></div></div>
+                    </sc-for>
+                  </div>
+                  <span onClick="{{ b.addStage }}" style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;cursor:pointer;padding:4px 10px;border:1px dashed rgba(150,160,220,.4);border-radius:999px">+ stage</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ b.isTimeline }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px;border-left:2px solid rgba(147,160,232,.3);padding-left:14px">
+                  <sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><input type="text" value="{{ r.date }}" onChange="{{ r.onDate }}" placeholder="date" style="width:110px;flex:none;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:7px 10px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;color:#93a0e8;font-size:11px"><input type="text" value="{{ r.event }}" onChange="{{ r.onEvent }}" placeholder="what happened" style="flex:1;min-width:140px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:7px 10px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;font-family:'Newsreader',serif;font-size:15px"><input type="text" value="{{ r.link }}" onChange="{{ r.onLink }}" placeholder="evidence link (optional)" style="width:150px;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:6px;padding:7px 10px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;font-size:11px"><span onClick="{{ r.onDel }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;padding:4px 6px">✕</span></div>
+                  </sc-for>
+                  <span onClick="{{ b.addRow }}" style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#93a0e8;cursor:pointer;padding:4px 10px;border:1px dashed rgba(150,160,220,.4);border-radius:999px">+ entry</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ b.isCallout }}" hint-placeholder-val="{{ false }}">
+                <div style="{{ b.calloutStyle }}">
+                  <div style="display:flex;gap:6px">
+                    <sc-for list="{{ b.registers }}" as="rg" hint-placeholder-count="3"><span onClick="{{ rg.onPick }}" style="{{ rg.style }}">{{ rg.label }}</span></sc-for>
+                  </div>
+                  <textarea value="{{ b.text }}" onChange="{{ b.onText }}" rows="2" placeholder="the aside..." style="width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;resize:vertical;color:#dde1f0;font-family:'Newsreader',serif;font-size:15.5px;line-height:1.55"></textarea>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{ blocksEmpty }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Newsreader',serif;font-style:italic;font-size:15px;color:#7a83ad;padding:12px 2px">A blank desk. Add the first block below.</span></sc-if>
+          <div onClick="{{ insertAtEnd }}" style="margin-top:10px;border:1.5px dashed rgba(150,160,220,.3);border-radius:10px;padding:13px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#93a0e8;cursor:pointer" style-hover="border-color:rgba(240,217,168,.55);color:#f0d9a8">＋ add a block</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ============ BLOCK INSERT PALETTE ============ -->
+<sc-if value="{{ deskBlockMenuOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeInsert }}" style="position:fixed;inset:0;z-index:77;background:rgba(8,10,20,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,40px);animation:backdropIn .2s ease both">
+    <div onClick="{{ stopProp }}" style="width:min(440px,100%);background:#1c2036;border:1px solid rgba(150,160,220,.25);border-radius:14px;padding:22px;box-sizing:border-box;box-shadow:0 30px 80px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:14px;animation:overlayIn .3s ease both">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">insert a block</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+        <sc-for list="{{ blockPalette }}" as="pl" hint-placeholder-count="6"><span onClick="{{ pl.onAdd }}" style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#c3cbf2;cursor:pointer;padding:11px 13px;border:1px solid rgba(150,160,220,.22);border-radius:9px;background:#161a2c;transition:all .18s" style-hover="border-color:rgba(240,217,168,.6);color:#f0d9a8;background:#1e2338">{{ pl.label }}</span></sc-for>
+      </div>
+      <sc-if value="{{ hasTemplates }}" hint-placeholder-val="{{ false }}">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase;margin-top:4px">block sets</span>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ blockTemplatesList }}" as="tp" hint-placeholder-count="1"><span onClick="{{ tp.onAdd }}" style="display:flex;align-items:baseline;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#c3cbf2;cursor:pointer;padding:11px 13px;border:1px dashed rgba(240,217,168,.4);border-radius:9px;background:rgba(240,217,168,.05);transition:all .18s" style-hover="border-color:rgba(240,217,168,.7);color:#f0d9a8"><span style="color:#f0d9a8">▤</span>{{ tp.name }}<span style="color:#5f6ec4;margin-left:auto">{{ tp.count }} blocks</span></span></sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ============ DARKROOM PICKER ============ -->
+<sc-if value="{{ deskPickOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closePick }}" style="position:fixed;inset:0;z-index:77;background:rgba(8,10,20,.7);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,40px);animation:backdropIn .2s ease both">
+    <div onClick="{{ stopProp }}" style="width:min(620px,100%);max-height:80vh;overflow:auto;background:#1c2036;border:1px solid rgba(150,160,220,.25);border-radius:14px;padding:22px;box-sizing:border-box;box-shadow:0 30px 80px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:14px;animation:overlayIn .3s ease both">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the darkroom · pick a print</span><span onClick="{{ closePick }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;padding:6px 12px;border:1px solid rgba(150,160,220,.3);border-radius:999px">close ✕</span></div>
+      <input type="file" accept="image/*" multiple ref="{{ deskFileRefObj }}" onChange="{{ deskUpload }}" style="display:none">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px">
+        <div onClick="{{ triggerDeskUpload }}" title="develop a new print into the darkroom" style="cursor:pointer;display:flex;flex-direction:column;gap:5px"><div style="width:100%;height:80px;border-radius:7px;border:1.5px dashed rgba(240,217,168,.5);background:rgba(240,217,168,.05);display:flex;align-items:center;justify-content:center;color:#f0d9a8;font-family:'IBM Plex Mono',monospace;font-size:22px" style-hover="border-color:rgba(240,217,168,.8)">＋</div><span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#f0d9a8">develop a print</span></div>
+        <sc-for list="{{ pickImages }}" as="pm" hint-placeholder-count="6"><div onClick="{{ pm.onChoose }}" style="cursor:pointer;display:flex;flex-direction:column;gap:5px"><div style="width:100%;height:80px;border-radius:7px;background:{{ pm.bg }};border:1px solid rgba(150,160,220,.25);transition:border-color .18s" style-hover="border-color:rgba(240,217,168,.7)"></div><span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#a5aed4;word-break:break-all">{{ pm.name }}</span></div></sc-for>
+      </div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.6">// develop a print right here, or over in the darkroom tab. log images are darkroom references, independent of the light's own pictures.</span>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ============ SAVE BLOCK SET ============ -->
+<sc-if value="{{ tplNameOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ cancelSaveTpl }}" style="position:fixed;inset:0;z-index:79;background:rgba(8,10,20,.68);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,40px);animation:backdropIn .2s ease both">
+    <div onClick="{{ stopProp }}" style="width:min(440px,100%);background:#1c2036;border:1px solid rgba(240,217,168,.3);border-radius:14px;padding:22px;box-sizing:border-box;box-shadow:0 30px 80px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:14px;animation:overlayIn .3s ease both">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#f0d9a8;text-transform:uppercase">save a block set</span>
+      <span style="font-size:14.5px;color:#a5aed4;line-height:1.5">Name the selected blocks. The set joins the insert menu, so you can drop it into any log.</span>
+      <input type="text" value="{{ tplNameVal }}" onChange="{{ setTplName }}" placeholder="e.g. header" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#f0f2fc;font-family:'IBM Plex Mono',monospace;font-size:14px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px"><span onClick="{{ cancelSaveTpl }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;padding:9px 16px;border:1px solid rgba(150,160,220,.3);border-radius:999px">cancel</span><button onClick="{{ confirmSaveTpl }}" style="padding:10px 20px;background:#f0d9a8;color:#1b2033;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;box-shadow:2px 2px 0 rgba(147,160,232,.6);cursor:pointer">save the set</button></div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ============ NEW LOG FLOW ============ -->
+<sc-if value="{{ logNewOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ cancelNew }}" style="position:fixed;inset:0;z-index:76;background:rgba(8,10,20,.72);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,40px);animation:backdropIn .25s ease both">
+    <div onClick="{{ stopProp }}" style="width:min(560px,100%);max-height:86vh;overflow:auto;background:#1c2036;border:1px solid rgba(150,160,220,.25);border-radius:14px;padding:clamp(22px,4vw,30px);box-sizing:border-box;box-shadow:0 30px 80px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:16px;animation:overlayIn .35s ease both">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">a new full log</span>
+        <span onClick="{{ cancelNew }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2;padding:6px 12px;border:1px solid rgba(150,160,220,.3);border-radius:999px">close ✕</span>
+      </div>
+      <sc-if value="{{ logNewStepLight }}" hint-placeholder-val="{{ true }}">
+        <span style="font-family:'Gloock',serif;font-size:23px;color:#f0f2fc">Which light is this a log for?</span>
+        <span style="font-size:14.5px;color:#a5aed4;font-style:italic">A log belongs to one light. Lights already carrying a lit log are marked; publishing will swap it.</span>
+        <div style="display:flex;flex-direction:column;gap:9px;margin-top:4px">
+          <sc-for list="{{ lightOptions }}" as="lo" hint-placeholder-count="4">
+            <div onClick="{{ lo.onPick }}" style="{{ lo.rowStyle }}" style-hover="border-color:rgba(240,217,168,.6);background:#1e2338">
+              <span style="display:flex;flex-direction:column;gap:3px">
+                <span style="font-family:'Gloock',serif;font-size:17px;color:#eef0fb">{{ lo.title }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">no. {{ lo.reg }}</span>
+              </span>
+              <sc-if value="{{ lo.hasLit }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#f0d9a8;border:1px solid rgba(240,217,168,.5);border-radius:999px;padding:3px 9px">has a lit log</span></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ logNewStepTemplate }}" hint-placeholder-val="{{ false }}">
+        <span style="font-family:'Gloock',serif;font-size:23px;color:#f0f2fc">Start from a template</span>
+        <span style="font-size:14.5px;color:#a5aed4;font-style:italic">For {{ newLightTitle }}. The header seeds from the light either way.</span>
+        <div style="display:flex;flex-direction:column;gap:11px;margin-top:4px">
+          <sc-for list="{{ templateOptions }}" as="tp" hint-placeholder-count="2">
+            <div onClick="{{ tp.onPick }}" style="{{ tp.style }}">
+              <span style="font-family:'Gloock',serif;font-size:17px;color:#eef0fb">{{ tp.name }}</span>
+              <span style="font-size:13.5px;color:#a5aed4;line-height:1.5">{{ tp.blurb }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px">
+          <span onClick="{{ backNewLight }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#a5aed4" style-hover="color:#f0d9a8">← pick another light</span>
+          <button onClick="{{ createLog }}" style="padding:11px 20px;background:#f0d9a8;color:#1b2033;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;box-shadow:2px 2px 0 rgba(147,160,232,.6);cursor:pointer">open the desk →</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ============ PUBLISH CONFIRM ============ -->
+<sc-if value="{{ logConfirmOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ cancelPublish }}" style="position:fixed;inset:0;z-index:78;background:rgba(8,10,20,.78);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,40px);animation:backdropIn .25s ease both">
+    <div onClick="{{ stopProp }}" style="width:min(480px,100%);background:#1c2036;border:1px solid rgba(240,217,168,.3);border-radius:14px;padding:clamp(22px,4vw,30px);box-sizing:border-box;box-shadow:0 30px 80px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:14px;animation:overlayIn .35s ease both">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#f0d9a8;text-transform:uppercase">light this log</span>
+      <span style="font-family:'Gloock',serif;font-size:22px;color:#f0f2fc;line-height:1.2">Publish "{{ confirmLogTitle }}"?</span>
+      <span style="font-size:15px;color:#a5aed4;line-height:1.6">{{ confirmSwapLine }}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;line-height:1.6">// nothing is public until the next hoist. publishing only decides what the build sees.</span>
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:4px">
+        <span onClick="{{ cancelPublish }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;padding:9px 16px;border:1px solid rgba(150,160,220,.3);border-radius:999px" style-hover="color:#f0f2fc">not yet</span>
+        <button onClick="{{ confirmPublish }}" style="padding:10px 20px;background:#f0d9a8;color:#1b2033;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;box-shadow:2px 2px 0 rgba(147,160,232,.6);cursor:pointer">yes, light it</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 <!-- ============ TOAST ============ -->
 <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#1c2036;border:1.5px dashed rgba(240,217,168,.5);border-radius:999px;padding:11px 22px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8;box-shadow:0 10px 30px rgba(0,0,0,.5);z-index:80;animation:toastIn .3s ease both;white-space:nowrap">{{ toast }}</div>
@@ -1381,6 +1652,18 @@ class Component extends DCLogic {
   state = {
     screen: (this.props && this.props.startLoggedIn) ? 'dash' : 'login',
     user: '', pass: '', loginError: null,
+    logDesk: null, logNew: null, logConfirm: null, blockMenu: null, deskPick: null, blockSel: [], tplNameOpen: false, tplNameVal: '',
+    blockTemplates: [{ id: 'tpl-header', name: 'header', blocks: [{ type: 'title', text: 'The light title' }, { type: 'subhead', text: 'A one-line subhead, in the keeper voice.' }, { type: 'facts', rows: [{ k: 'ownership', v: '' }, { k: 'outcome', v: '' }, { k: 'scope', v: '' }] }, { type: 'meta', est: '', tags: [] }] }],
+    logs: [
+      { id: 'log-unmono', light: 'The Great Un-monolithing', state: 'lit', rev: 7, updated: '2 days ago',
+        title: 'The Great Un-monolithing', subtitle: 'One giant app became many small, well-behaved services. Readers never noticed. That was the point.',
+        est: '2024 - ongoing', tags: ['kubernetes','python','rabbitmq'],
+        facts: [{ k: 'ownership', v: 'design to operations, solo' }, { k: 'outcome', v: '5 minute publishes to a few seconds' }, { k: 'scope', v: '29 microservices + infrastructure' }],
+        body: '## The starting point\n\nThe publishing stack had been accreting since 2016: one enormous application that feared nothing, least of all my weekends. One engineer, bare metal, and a paper that ships every single day.\n\n> Drew the boxes before the arrows. Always the boxes first.\n\n## The shape of it\n\nSmall services that own their data and talk through a message bus instead of calling each other. Varnish absorbs reads at the edge. Every service looks the same, so 29 of them stay survivable for one keeper.\n\n## Migrating while the paper ships\n\nPeel a capability off, stand it on the bus, route to it, watch it, delete the old path. Repeat 29 times. Low-risk pieces first to prove the pattern; the scary ones last.\n\n## Outcomes\n\n:::outcomes\n29 services | in production, uniform, one keeper\n0 missed papers | it published every day, the whole way through\n:::' },
+      { id: 'log-newsroom', light: 'Newsroom plumbing', state: 'draft', rev: 2, updated: '5 days ago',
+        title: 'Newsroom plumbing', subtitle: 'A publishing workflow a real paper runs on, every day, deadlines and all.',
+        est: '2016 - ongoing', tags: ['rest','mongodb','nginx'], facts: [], body: '' },
+    ],
     projects: [
       { title: 'The Great Un-monolithing', cat: 'backend', tags: ['kubernetes','python','rabbitmq'], status: 'published', img: 'unmonolith-diagram.png',
         notes: ['What re-architecting taught me about not architecting', 'The queue is the product'],
@@ -2043,11 +2326,13 @@ class Component extends DCLogic {
     });
 
     return {
-      projTabIsRack: true, projTabIsWall: false,
+      projTabIsRack: tab === 'rack', projTabIsWall: tab === 'wall', projTabIsLogs: tab === 'logs',
       projTabToRack: () => this.setState({ projTab: 'rack' }),
       projTabToWall: () => this.setState({ projTab: 'wall' }),
+      projTabToLogs: () => this.setState({ projTab: 'logs' }),
       projTabRackStyle: tabStyle(tab === 'rack'),
       projTabWallStyle: tabStyle(tab === 'wall'),
+      projTabLogsStyle: tabStyle(tab === 'logs'),
       wallCards,
       wallReset: () => {
         const d = this.wallDefaults(pubs);
@@ -2075,6 +2360,10 @@ class Component extends DCLogic {
       else if (this.state.edit) this.setState({ edit: null });
     };
     window.addEventListener('keydown', this.onKey);
+    this.onDeskKey = (e) => { if (!this.state.logDesk) return; const z = (e.key === 'z' || e.key === 'Z') && (e.metaKey || e.ctrlKey); if (!z) return; e.preventDefault(); if (e.shiftKey) this.deskRedo(); else this.deskUndo(); };
+    window.addEventListener('keydown', this.onDeskKey);
+    if (window.mermaid) { try { window.mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose', themeVariables: { fontFamily: 'IBM Plex Mono, monospace', primaryColor: '#1a1e33', primaryTextColor: '#dde1f0', primaryBorderColor: '#93a0e8', lineColor: '#5f6ec4' } }); } catch (e) {} }
+    this._renderMermaid();
   }
   componentWillUnmount() {
     window.removeEventListener('keydown', this.onKey);
@@ -2271,6 +2560,195 @@ class Component extends DCLogic {
       this.log(`entry "${draft.title || 'untitled'}" ${idx == null ? 'drafted' : 'edited'}`);
       this.showToast(restored ? `↺ earlier printing filed · it's now ${item.status === 'published' ? 'inked ●' : 'pencilled ○'}` : '✎ entered in the log book');
     }
+  }
+
+  // ===== the full logs (case studies) =====
+  logRegNo(title) { const i = this.state.projects.findIndex((p) => p.title === title); return String((i + 1) * 2).padStart(3, '0'); }
+  logSlug(title) { return '/projects/' + String(title).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
+  standardLogBody() { return ['## The starting point', '', 'Set the scene: what existed, who it ran for, and the constraint that made it interesting. [? the constraint only you remember ?]', '', '> A line from the log, in the keeper\u2019s hand.', '', '## The shape of it', '', 'How it was built. Spend the novelty budget on the problem, not the plumbing.', '', '## Outcomes', '', ':::outcomes', 'the number | what it means', 'the number | what it means', ':::'].join('\n'); }
+  seedLogFromLight(title) { const p = this.state.projects.find((x) => x.title === title) || {}; return { title: p.title || 'Untitled log', subtitle: p.desc || '', est: p.year || '', tags: (p.tags || []).slice(), facts: [], body: this.standardLogBody() }; }
+  startNewLog = () => this.setState({ logNew: { step: 'light', light: null, template: 'standard' } });
+  cancelNew = () => this.setState({ logNew: null });
+  pickNewLight = (title) => this.setState((s) => ({ logNew: { ...s.logNew, light: title, step: 'template' } }));
+  backNewLight = () => this.setState((s) => ({ logNew: { ...s.logNew, step: 'light' } }));
+  pickTemplate = (tpl) => this.setState((s) => ({ logNew: { ...s.logNew, template: tpl } }));
+  createLog = () => { const nf = this.state.logNew; if (!nf || !nf.light) return; const seed = this.seedLogFromLight(nf.light); if (nf.template === 'blank') seed.body = ''; const id = 'log-' + Date.now().toString(36); const blocks = [...this.headerBlocks(seed), ...this.parseBody(seed.body || '')]; this._hist[id] = { stack: [JSON.stringify(blocks)], i: 0 }; this.setState((s) => ({ logs: [{ id, light: nf.light, state: 'draft', rev: 1, updated: 'just now', ...seed, blocks }, ...(s.logs || [])], logNew: null, logDesk: { id } })); if (this.markDirty) this.markDirty(); this.showToast('a new log, seeded from the light. saved as a draft.'); };
+  openDesk = (id) => { this.setState((s) => ({ logs: (s.logs || []).map((l) => { if (l.id !== id) return l; let blocks = l.blocks || this.parseBody(l.body || ''); if (!blocks.length || blocks[0].type !== 'title') blocks = [...this.headerBlocks(l), ...blocks]; if (!this._hist[id]) this._hist[id] = { stack: [JSON.stringify(blocks)], i: 0 }; return { ...l, blocks }; }), logDesk: { id }, blockMenu: null, deskPick: null })); };
+  closeDesk = () => this.setState({ logDesk: null });
+  setLogField = (patch) => this.setState((s) => ({ logs: (s.logs || []).map((l) => (s.logDesk && l.id === s.logDesk.id) ? { ...l, ...patch, updated: 'just now' } : l) }));
+  askPublish = (id) => this.setState({ logConfirm: { id } });
+  cancelPublish = () => this.setState({ logConfirm: null });
+  confirmPublish = () => { const id = this.state.logConfirm && this.state.logConfirm.id; if (!id) return; this.setState((s) => { const target = (s.logs || []).find((l) => l.id === id); if (!target) return { logConfirm: null }; const logs = (s.logs || []).map((l) => { if (l.id === id) return { ...l, state: 'lit' }; if (l.light === target.light && l.state === 'lit') return { ...l, state: 'draft' }; return l; }); return { logs, logConfirm: null }; }); if (this.markDirty) this.markDirty(); this.showToast('\u25cf lit. it goes public with the next hoist.'); };
+  unpublishLog = (id) => { this.setState((s) => ({ logs: (s.logs || []).map((l) => l.id === id ? { ...l, state: 'draft' } : l) })); if (this.markDirty) this.markDirty(); this.showToast('\u25cb back to draft. the coast will not see it.'); };
+  scrapLog = (id) => { this.setState((s) => ({ logs: (s.logs || []).filter((l) => l.id !== id), logDesk: (s.logDesk && s.logDesk.id === id) ? null : s.logDesk })); this.showToast('scrapped. the shelf is one lighter.'); };
+  dupLog = (id) => { this.setState((s) => { const src = (s.logs || []).find((l) => l.id === id); if (!src) return {}; return { logs: [{ ...src, id: 'log-' + Date.now().toString(36), state: 'draft', rev: 1, updated: 'just now', title: src.title + ' (rewrite)' }, ...s.logs] }; }); this.showToast('duplicated as a fresh draft to rewrite.'); };
+  _hist = {};
+  bid() { return 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+  parseBody(md) {
+    const lines = String(md || '').split('\n'); const out = []; let i = 0;
+    const push = (b) => out.push({ id: this.bid(), ...b });
+    while (i < lines.length) {
+      let ln = lines[i];
+      if (ln.trim() === '') { i++; continue; }
+      if (ln.indexOf('## ') === 0) { push({ type: 'heading', text: ln.slice(3).trim() }); i++; continue; }
+      if (ln.indexOf('```') === 0) { const lang = ln.slice(3).trim(); const buf = []; i++; while (i < lines.length && lines[i].indexOf('```') !== 0) { buf.push(lines[i]); i++; } i++; if (lang === 'mermaid') push({ type: 'mermaid', code: buf.join('\n') }); else push({ type: 'code', lang: lang || 'text', code: buf.join('\n') }); continue; }
+      if (ln.indexOf(':::facts') === 0) { const rows = []; i++; while (i < lines.length && lines[i].indexOf(':::') !== 0) { const m = lines[i].split(':'); if (m.length >= 2) rows.push({ k: m[0].trim(), v: m.slice(1).join(':').trim() }); i++; } i++; push({ type: 'facts', rows: rows.length ? rows : [{ k: '', v: '' }] }); continue; }
+      if (ln.indexOf(':::outcomes') === 0) { const rows = []; i++; while (i < lines.length && lines[i].indexOf(':::') !== 0) { const m = lines[i].split('|'); if (lines[i].trim()) rows.push({ big: (m[0] || '').trim(), cap: (m[1] || '').trim() }); i++; } i++; push({ type: 'outcomes', rows: rows.length ? rows : [{ big: '', cap: '' }] }); continue; }
+      if (ln.indexOf('> ') === 0) { const buf = []; while (i < lines.length && lines[i].indexOf('> ') === 0) { buf.push(lines[i].slice(2)); i++; } push({ type: 'quote', text: buf.join(' ') }); continue; }
+      if (/^!\[/.test(ln)) { const m = ln.match(/^!\[(.*?)\]\((.*?)\)/); push({ type: 'figure', caption: m ? m[1] : '', imageKey: m ? m[2] : '' }); i++; continue; }
+      if (/^(-|\d+\.)\s/.test(ln)) { const ordered = /^\d+\.\s/.test(ln); const items = []; while (i < lines.length && /^(-|\d+\.)\s/.test(lines[i])) { items.push(lines[i].replace(/^(-|\d+\.)\s/, '')); i++; } push({ type: 'list', ordered, items }); continue; }
+      const buf = []; while (i < lines.length && lines[i].trim() !== '' && lines[i].indexOf('## ') !== 0 && lines[i].indexOf('> ') !== 0 && lines[i].indexOf('```') !== 0 && lines[i].indexOf(':::') !== 0 && !/^(-|\d+\.)\s/.test(lines[i]) && !/^!\[/.test(lines[i])) { buf.push(lines[i]); i++; } push({ type: 'paragraph', text: buf.join(' ') });
+    }
+    return out.length ? out : [{ id: this.bid(), type: 'heading', text: 'The starting point' }, { id: this.bid(), type: 'paragraph', text: '' }];
+  }
+  serializeBlocks(bl) {
+    return (bl || []).map((b) => {
+      if (b.type === 'heading') return '## ' + (b.text || '');
+      if (b.type === 'paragraph') return b.text || '';
+      if (b.type === 'quote') return '> ' + (b.text || '');
+      if (b.type === 'list') return (b.items || []).map((it, k) => (b.ordered ? (k + 1) + '. ' : '- ') + it).join('\n');
+      if (b.type === 'code') return '```' + (b.lang || '') + '\n' + (b.code || '') + '\n```';
+      if (b.type === 'mermaid') return '```mermaid\n' + (b.code || '') + '\n```';
+      if (b.type === 'facts') return ':::facts\n' + (b.rows || []).map((r) => r.k + ': ' + r.v).join('\n') + '\n:::';
+      if (b.type === 'outcomes') return ':::outcomes\n' + (b.rows || []).map((r) => r.big + ' | ' + r.cap).join('\n') + '\n:::';
+      if (b.type === 'figure') return '![' + (b.caption || '') + '](' + (b.imageKey || '') + ')';
+      if (b.type === 'comparison') return ':::compare\n' + (b.stages || []).map((st) => st.label + ' | ' + st.imageKey).join('\n') + '\n:::';
+      if (b.type === 'timeline') return ':::timeline\n' + (b.rows || []).map((r) => r.date + ' | ' + r.event + (r.link ? ' | ' + r.link : '')).join('\n') + '\n:::';
+      if (b.type === 'callout') return ':::' + (b.register || 'note') + '\n' + (b.text || '') + '\n:::';
+      return '';
+    }).join('\n\n');
+  }
+  headerBlocks(src) { return [{ id: this.bid(), type: 'title', text: src.title || '' }, { id: this.bid(), type: 'subhead', text: src.subtitle || '' }, { id: this.bid(), type: 'facts', rows: (src.facts && src.facts.length) ? src.facts.map((r) => ({ k: r.k, v: r.v })) : [{ k: '', v: '' }] }, { id: this.bid(), type: 'meta', est: src.est || '', tags: (src.tags || []).slice() }]; }
+  toggleSel(id) { this.setState((s) => { const sel = s.blockSel || []; return { blockSel: sel.includes(id) ? sel.filter((x) => x !== id) : [...sel, id] }; }); }
+  clearSel = () => this.setState({ blockSel: [] });
+  openSaveTpl = () => { if (!(this.state.blockSel || []).length) return; this.setState({ tplNameOpen: true, tplNameVal: '' }); };
+  cancelSaveTpl = () => this.setState({ tplNameOpen: false });
+  confirmSaveTpl = () => { const name = (this.state.tplNameVal || '').trim(); if (!name) return; const s = this.state; const log = (s.logs || []).find((l) => s.logDesk && l.id === s.logDesk.id); if (!log) return; const selSet = s.blockSel || []; const chosen = (log.blocks || []).filter((b) => selSet.includes(b.id)).map((b) => { const c = JSON.parse(JSON.stringify(b)); delete c.id; return c; }); if (!chosen.length) return; this.setState((st) => ({ blockTemplates: [...(st.blockTemplates || []), { id: 'tpl-' + Date.now().toString(36), name, blocks: chosen }], tplNameOpen: false, blockSel: [] })); this.showToast('saved "' + name + '" as a block set.'); };
+  addTemplateAt(index, tplId) { const tpl = (this.state.blockTemplates || []).find((t) => t.id === tplId); if (!tpl) return; this.mutBlocks((bl) => { const n = bl.slice(); const copies = tpl.blocks.map((b) => ({ ...JSON.parse(JSON.stringify(b)), id: this.bid() })); n.splice(index, 0, ...copies); return n; }); this.setState({ blockMenu: null }); }
+  newBlock(type) {
+    const d = { title: { text: 'The light title' }, subhead: { text: '' }, meta: { est: '', tags: [] }, heading: { text: 'New section' }, paragraph: { text: '' }, quote: { text: '' }, list: { ordered: false, items: [''] }, code: { lang: 'bash', code: '' }, mermaid: { code: 'flowchart TB\n  a[start] --> b[end]' }, facts: { rows: [{ k: '', v: '' }] }, outcomes: { rows: [{ big: '', cap: '' }] }, figure: { imageKey: '', caption: '' }, comparison: { stages: [{ imageKey: '', label: 'before' }, { imageKey: '', label: 'after' }] }, timeline: { rows: [{ date: '', event: '', link: '' }] }, callout: { register: 'note', text: '' } }[type] || { text: '' };
+    return { id: this.bid(), type, ...d };
+  }
+  recordHist(id, blocks) { const h = this._hist[id] || { stack: [], i: -1 }; h.stack = h.stack.slice(0, h.i + 1); h.stack.push(JSON.stringify(blocks)); if (h.stack.length > 60) { h.stack.shift(); } h.i = h.stack.length - 1; this._hist[id] = h; }
+  restoreHist(id) { const h = this._hist[id]; if (!h) return; const blocks = JSON.parse(h.stack[h.i]); this.setState((s) => ({ logs: (s.logs || []).map((l) => l.id === id ? { ...l, blocks, body: this.serializeBlocks(blocks), updated: 'just now' } : l) })); }
+  deskUndo = () => { const id = this.state.logDesk && this.state.logDesk.id; const h = id && this._hist[id]; if (h && h.i > 0) { h.i--; this.restoreHist(id); } };
+  deskRedo = () => { const id = this.state.logDesk && this.state.logDesk.id; const h = id && this._hist[id]; if (h && h.i < h.stack.length - 1) { h.i++; this.restoreHist(id); } };
+  mutBlocks(fn) { const s = this.state; if (!s.logDesk) return; const log = (s.logs || []).find((l) => l.id === s.logDesk.id); if (!log) return; const next = fn((log.blocks || []).map((b) => ({ ...b }))); this.recordHist(log.id, next); const titleBlk = next.find((b) => b.type === 'title'); this.setState((st) => ({ logs: (st.logs || []).map((l) => l.id === log.id ? { ...l, blocks: next, body: this.serializeBlocks(next), title: titleBlk ? (titleBlk.text || l.title) : l.title, updated: 'just now' } : l) })); }
+  setBlk(id, patch) { this.mutBlocks((bl) => bl.map((b) => b.id === id ? { ...b, ...patch } : b)); }
+  delBlk(id) { this.mutBlocks((bl) => bl.filter((b) => b.id !== id)); }
+  dupBlk(id) { this.mutBlocks((bl) => { const k = bl.findIndex((b) => b.id === id); if (k < 0) return bl; const copy = { ...JSON.parse(JSON.stringify(bl[k])), id: this.bid() }; const n = bl.slice(); n.splice(k + 1, 0, copy); return n; }); }
+  moveBlk(id, dir) { this.mutBlocks((bl) => { const k = bl.findIndex((b) => b.id === id); const j = k + dir; if (k < 0 || j < 0 || j >= bl.length) return bl; const n = bl.slice(); const t = n[k]; n[k] = n[j]; n[j] = t; return n; }); }
+  addBlockAt(index, type) { this.mutBlocks((bl) => { const n = bl.slice(); n.splice(index, 0, this.newBlock(type)); return n; }); this.setState({ blockMenu: null }); }
+  setRow(id, key, idx, patch) { this.mutBlocks((bl) => bl.map((b) => b.id === id ? { ...b, [key]: (b[key] || []).map((r, k) => k === idx ? (typeof r === 'string' ? patch.val : { ...r, ...patch }) : r) } : b)); }
+  addRow(id, key, item) { this.mutBlocks((bl) => bl.map((b) => b.id === id ? { ...b, [key]: [...(b[key] || []), item] } : b)); }
+  delRow(id, key, idx) { this.mutBlocks((bl) => bl.map((b) => b.id === id ? { ...b, [key]: (b[key] || []).filter((r, k) => k !== idx) } : b)); }
+  openInsert = (i) => this.setState((s) => ({ blockMenu: s.blockMenu === i ? null : i }));
+  closeInsert = () => this.setState({ blockMenu: null });
+  applyMark = (kind) => {
+    const el = document.activeElement; if (!el || (el.tagName !== 'TEXTAREA' && el.tagName !== 'INPUT')) { this.showToast('click into a text block first'); return; }
+    const a = el.selectionStart, b = el.selectionEnd, v = el.value, sel = v.slice(a, b);
+    const W = { bold: ['**', '**'], italic: ['*', '*'], code: ['`', '`'], link: ['[', '](https://)'], chip: ['[? ', ' ?]'] }[kind];
+    let ins; if (kind === 'chip' && !sel) ins = '[? a fact only you know ?]'; else ins = W[0] + (sel || (kind === 'link' ? 'link text' : 'text')) + W[1];
+    const nv = v.slice(0, a) + ins + v.slice(b);
+    const setter = Object.getOwnPropertyDescriptor((el.tagName === 'TEXTAREA' ? HTMLTextAreaElement : HTMLInputElement).prototype, 'value').set; setter.call(el, nv); el.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+  openPick = (target) => this.setState({ deskPick: target });
+  closePick = () => this.setState({ deskPick: null });
+  choosePick = (name) => { const t = this.state.deskPick; if (!t) return; if (t.key === 'comparison') this.setRow(t.id, 'stages', t.idx, { imageKey: name }); else this.setBlk(t.id, { imageKey: name }); this.setState({ deskPick: null }); };
+  _deskFileRef = React.createRef();
+  mediaBg(name) { const m = (this.state.media || []).find((x) => x.name === name) || {}; return m.url ? ('center/cover no-repeat url(' + m.url + ')') : this.tonePal(m.tone); }
+  deskDevelop = (e) => { const files = Array.from((e.target && e.target.files) || []).filter((f) => f.type.startsWith('image/') || /\.(png|jpe?g|gif|svg|webp)$/i.test(f.name)); if (files.length) { const tiles = files.map((f) => ({ name: f.name, url: URL.createObjectURL(f), tone: Math.floor(Math.random() * 6) })); this.setState((s) => ({ media: [...tiles, ...(s.media || [])] })); const t = this.state.deskPick; if (t) { if (t.key === 'comparison') this.setRow(t.id, 'stages', t.idx, { imageKey: tiles[0].name }); else this.setBlk(t.id, { imageKey: tiles[0].name }); this.setState({ deskPick: null }); } this.showToast(files.length === 1 ? 'developed in the darkroom and placed.' : files.length + ' prints developed in the darkroom.'); } else { this.showToast('the darkroom only develops images'); } if (e.target) e.target.value = ''; };
+  triggerDeskUpload = () => { const el = this._deskFileRef && this._deskFileRef.current; if (el) el.click(); };
+  tonePal(n) { return ['#39406e', '#6a5a38', '#6e3a3a', '#356a56', '#553a6a', '#6a5a3a'][(n || 0) % 6]; }
+  _mmCache = {};
+  _mmQueue(code) {
+    if (code in this._mmCache) return;
+    this._mmCache[code] = null;
+    if (!window.mermaid) { this._mmCache[code] = '<span style="font-family:monospace;font-size:11px;color:#5f6ec4">mermaid loading...</span>'; return; }
+    try {
+      window.mermaid.render('mm' + Math.random().toString(36).slice(2), code).then((r) => { this._mmCache[code] = r.svg; this.forceUpdate(); }).catch(() => { this._mmCache[code] = '<span style="font-family:monospace;font-size:11px;color:#e77a70">diagram not valid yet</span>'; this.forceUpdate(); });
+    } catch (e) { this._mmCache[code] = '<span style="font-family:monospace;font-size:11px;color:#e77a70">diagram not valid yet</span>'; }
+  }
+  _renderMermaid() { if (!window.mermaid) return; const nodes = document.querySelectorAll('[data-mermaid]'); nodes.forEach((n) => { const code = n.getAttribute('data-mermaid') || ''; if (n.getAttribute('data-rendered') === code) return; n.setAttribute('data-rendered', code); try { window.mermaid.render('mm-' + Math.random().toString(36).slice(2), code).then((r) => { n.innerHTML = r.svg; }).catch(() => { n.innerHTML = '<span style=\"font-family:monospace;font-size:11px;color:#e77a70\">diagram not valid yet</span>'; }); } catch (e) {} }); }
+  componentDidUpdate() { this._renderMermaid(); }
+  blockDeskVals(open) {
+    const mono = "'IBM Plex Mono', monospace";
+    const blocks = open.blocks || [];
+    const id = open.id; const h = this._hist[id];
+    const media = this.state.media || [];
+    const ctrlStyle = { fontFamily: mono, fontSize: '11px', color: '#7a83ad', cursor: 'pointer', padding: '3px 7px', borderRadius: '6px', userSelect: 'none' };
+    const deskBlocks = blocks.map((b, idx) => {
+      const sel = (this.state.blockSel || []).includes(b.id);
+      const vm = { id: b.id, idx, type: b.type,
+        isTitle: b.type === 'title', isSubhead: b.type === 'subhead', isMeta: b.type === 'meta',
+        selected: sel, toggleSel: () => this.toggleSel(b.id), selDot: sel ? '◉' : '○',
+        wrapStyle: sel ? { display: 'flex', flexDirection: 'column', gap: '7px', padding: '12px', background: 'rgba(240,217,168,.06)', boxShadow: 'inset 3px 0 0 #f0d9a8', borderRadius: '6px' } : { display: 'flex', flexDirection: 'column', gap: '7px', padding: '12px 0', borderBottom: '1px solid rgba(150,160,220,.07)' },
+        metaEst: b.est || '', metaTagsText: (b.tags || []).join(', '), onMetaEst: (e) => this.setBlk(b.id, { est: e.target.value }), onMetaTags: (e) => this.setBlk(b.id, { tags: e.target.value.split(',').map((t) => t.trim()).filter(Boolean) }),
+        isHeading: b.type === 'heading', isPara: b.type === 'paragraph', isQuote: b.type === 'quote', isList: b.type === 'list', isCode: b.type === 'code', isMermaid: b.type === 'mermaid', isFacts: b.type === 'facts', isOutcomes: b.type === 'outcomes', isFigure: b.type === 'figure', isComparison: b.type === 'comparison', isTimeline: b.type === 'timeline', isCallout: b.type === 'callout',
+        text: b.text || '', ordered: !!b.ordered, lang: b.lang || '', code: b.code || '', mermaidCode: b.code || '',
+        onText: (e) => this.setBlk(b.id, { text: e.target.value }), onCode: (e) => this.setBlk(b.id, { code: e.target.value }), onLang: (e) => this.setBlk(b.id, { lang: e.target.value }),
+        moveUp: () => this.moveBlk(b.id, -1), moveDown: () => this.moveBlk(b.id, 1), dup: () => this.dupBlk(b.id), del: () => this.delBlk(b.id), insertBelow: () => this.openInsert(idx + 1), ctrlStyle,
+        typeLabel: { title: 'title', subhead: 'subhead', meta: 'established / tags', heading: 'heading', paragraph: 'paragraph', quote: 'from the log', list: b.ordered ? 'ordered list' : 'list', code: 'code', mermaid: 'diagram', facts: 'facts', outcomes: 'outcomes', figure: 'figure', comparison: 'comparison', timeline: 'timeline', callout: (b.register || 'note') + ' callout' }[b.type] };
+      if (b.type === 'list') { vm.toggleOrdered = () => this.setBlk(b.id, { ordered: !b.ordered }); vm.orderedLabel = b.ordered ? 'ordered' : 'bulleted'; vm.items = (b.items || []).map((it, k) => ({ i: k, val: it, marker: b.ordered ? (k + 1) + '.' : '\u2022', onChange: (e) => this.setRow(b.id, 'items', k, { val: e.target.value }), onDel: () => this.delRow(b.id, 'items', k) })); vm.addItem = () => this.addRow(b.id, 'items', ''); }
+      if (b.type === 'facts') { vm.rows = (b.rows || []).map((r, k) => ({ i: k, k: r.k, v: r.v, onK: (e) => this.setRow(b.id, 'rows', k, { k: e.target.value }), onV: (e) => this.setRow(b.id, 'rows', k, { v: e.target.value }), onDel: () => this.delRow(b.id, 'rows', k) })); vm.addRow = () => this.addRow(b.id, 'rows', { k: '', v: '' }); }
+      if (b.type === 'outcomes') { vm.rows = (b.rows || []).map((r, k) => ({ i: k, big: r.big, cap: r.cap, onBig: (e) => this.setRow(b.id, 'rows', k, { big: e.target.value }), onCap: (e) => this.setRow(b.id, 'rows', k, { cap: e.target.value }), onDel: () => this.delRow(b.id, 'rows', k) })); vm.addRow = () => this.addRow(b.id, 'rows', { big: '', cap: '' }); }
+      if (b.type === 'timeline') { vm.rows = (b.rows || []).map((r, k) => ({ i: k, date: r.date, event: r.event, link: r.link || '', onDate: (e) => this.setRow(b.id, 'rows', k, { date: e.target.value }), onEvent: (e) => this.setRow(b.id, 'rows', k, { event: e.target.value }), onLink: (e) => this.setRow(b.id, 'rows', k, { link: e.target.value }), onDel: () => this.delRow(b.id, 'rows', k) })); vm.addRow = () => this.addRow(b.id, 'rows', { date: '', event: '', link: '' }); }
+      if (b.type === 'figure') { vm.imageKey = b.imageKey || ''; vm.caption = b.caption || ''; vm.hasImg = !!b.imageKey; vm.thumbBg = this.mediaBg(b.imageKey); vm.onCaption = (e) => this.setBlk(b.id, { caption: e.target.value }); vm.onPick = () => this.openPick({ id: b.id, key: 'figure' }); }
+      if (b.type === 'comparison') { vm.stages = (b.stages || []).map((st, k) => ({ i: k, imageKey: st.imageKey || '', label: st.label || '', hasImg: !!st.imageKey, thumbBg: this.mediaBg(st.imageKey), onLabel: (e) => this.setRow(b.id, 'stages', k, { label: e.target.value }), onPick: () => this.openPick({ id: b.id, key: 'comparison', idx: k }), onDel: () => this.delRow(b.id, 'stages', k) })); vm.addStage = () => this.addRow(b.id, 'stages', { imageKey: '', label: 'stage' }); }
+      if (b.type === 'callout') { const rc = { note: { c: '#93a0e8', bg: 'rgba(147,160,232,.08)', bd: 'rgba(147,160,232,.4)' }, warning: { c: '#f0d9a8', bg: 'rgba(240,217,168,.08)', bd: 'rgba(240,217,168,.45)' }, 'dead-end': { c: '#e77a70', bg: 'rgba(231,122,112,.08)', bd: 'rgba(231,122,112,.45)' } }[b.register || 'note']; vm.calloutStyle = { border: '1px solid ' + rc.bd, background: rc.bg, borderRadius: '10px', padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: '8px' }; vm.calloutColor = rc.c; vm.registers = ['note', 'warning', 'dead-end'].map((r) => ({ label: r, on: (b.register || 'note') === r, onPick: () => this.setBlk(b.id, { register: r }), style: { fontFamily: mono, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '.1em', padding: '3px 9px', borderRadius: '999px', cursor: 'pointer', color: (b.register || 'note') === r ? '#1b2033' : '#a5aed4', background: (b.register || 'note') === r ? rc.c : 'transparent', border: '1px solid ' + rc.bd } })); }
+      if (b.type === 'mermaid') { const code = b.code || ''; const has = code in this._mmCache; const svg = this._mmCache[code]; if (!has) this._mmQueue(code); vm.mermaidReady = has && svg != null; vm.mermaidPending = !has || svg == null; vm.mermaidEl = (has && svg != null) ? React.createElement('div', { style: { width: '100%', display: 'flex', justifyContent: 'center' }, dangerouslySetInnerHTML: { __html: svg } }) : null; }
+      return vm;
+    });
+    const palette = [{ t: 'title', l: 'title' }, { t: 'subhead', l: 'subhead' }, { t: 'heading', l: 'heading' }, { t: 'paragraph', l: 'paragraph' }, { t: 'quote', l: 'quote' }, { t: 'list', l: 'list' }, { t: 'code', l: 'code' }, { t: 'mermaid', l: 'mermaid' }, { t: 'facts', l: 'facts' }, { t: 'meta', l: 'established / tags' }, { t: 'outcomes', l: 'outcomes' }, { t: 'figure', l: 'figure' }, { t: 'comparison', l: 'comparison' }, { t: 'timeline', l: 'timeline' }, { t: 'callout', l: 'callout' }];
+    const pick = this.state.deskPick;
+    return {
+      deskBlocks, deskBlockMenuOpen: this.state.blockMenu != null, deskBlockMenuIndex: this.state.blockMenu,
+      blockTemplatesList: (this.state.blockTemplates || []).map((t) => ({ id: t.id, name: t.name, count: t.blocks.length, onAdd: () => this.addTemplateAt(this.state.blockMenu == null ? deskBlocks.length : this.state.blockMenu, t.id) })),
+      hasTemplates: (this.state.blockTemplates || []).length > 0,
+      selCount: (this.state.blockSel || []).length, hasSel: (this.state.blockSel || []).length > 0, clearSel: this.clearSel, openSaveTpl: this.openSaveTpl,
+      tplNameOpen: this.state.tplNameOpen, tplNameVal: this.state.tplNameVal, setTplName: (e) => this.setState({ tplNameVal: e.target.value }), confirmSaveTpl: this.confirmSaveTpl, cancelSaveTpl: this.cancelSaveTpl,
+      blockPalette: palette.map((p) => ({ type: p.t, label: p.l, onAdd: () => this.addBlockAt(this.state.blockMenu == null ? deskBlocks.length : this.state.blockMenu, p.t) })),
+      insertAtEnd: () => this.openInsert(blocks.length), closeInsert: this.closeInsert,
+      markBold: () => this.applyMark('bold'), markItalic: () => this.applyMark('italic'), markCode: () => this.applyMark('code'), markLink: () => this.applyMark('link'), markChip: () => this.applyMark('chip'),
+      canUndo: !!(h && h.i > 0), canRedo: !!(h && h.i < h.stack.length - 1), deskUndo: this.deskUndo, deskRedo: this.deskRedo,
+      deskPickOpen: !!pick, closePick: this.closePick, deskFileRefObj: this._deskFileRef, triggerDeskUpload: this.triggerDeskUpload, deskUpload: this.deskDevelop, pickImages: media.map((m) => ({ name: m.name, bg: this.mediaBg(m.name), onChoose: () => this.choosePick(m.name) })),
+      blocksEmpty: blocks.length === 0,
+    };
+  }
+
+  logDeskVals() {
+    const s = this.state; const open = s.logDesk ? (s.logs || []).find((l) => l.id === s.logDesk.id) : null;
+    if (!open) return { logDeskOpen: false };
+    const p = s.projects.find((x) => x.title === open.light) || {}; const i = s.projects.findIndex((x) => x.title === open.light); const mono = "'IBM Plex Mono', monospace";
+    const outline = String(open.body || '').split('\n').filter((ln) => ln.indexOf('## ') === 0).map((ln, k) => ({ n: String(k + 1).padStart(2, '0'), label: ln.slice(3).trim() }));
+    return { logDeskOpen: true, deskRegNo: String((i + 1) * 2).padStart(3, '0'), deskSlug: this.logSlug(open.light), deskLit: p.status === 'published', deskStateLabel: open.state === 'lit' ? 'lit' : 'draft',
+      deskStatePill: open.state === 'lit' ? { fontFamily: mono, fontSize: '10.5px', letterSpacing: '.14em', textTransform: 'uppercase', padding: '4px 12px', borderRadius: '999px', color: '#f0d9a8', border: '1px solid rgba(240,217,168,.55)', background: 'rgba(240,217,168,.12)' } : { fontFamily: mono, fontSize: '10.5px', letterSpacing: '.14em', textTransform: 'uppercase', padding: '4px 12px', borderRadius: '999px', color: '#93a0e8', border: '1px dashed rgba(147,160,232,.55)', background: 'rgba(147,160,232,.08)' },
+      deskTitle: open.title, deskSubtitle: open.subtitle, deskEst: open.est, deskTagsText: (open.tags || []).join(', '), deskFacts: (open.facts || []).slice(0, 6), deskOutline: outline, deskHasBody: outline.length > 0,
+      deskSaveLine: 'saved \u00b7 draft rev ' + open.rev, deskIsLit: open.state === 'lit', deskPublishLabel: open.state === 'lit' ? 'lit on the coast' : 'publish this log',
+      setDeskTitle: (e) => this.setLogField({ title: e.target.value }), setDeskSubtitle: (e) => this.setLogField({ subtitle: e.target.value }), setDeskEst: (e) => this.setLogField({ est: e.target.value }), setDeskTags: (e) => this.setLogField({ tags: e.target.value.split(',').map((t) => t.trim()).filter(Boolean) }),
+      deskPublish: () => this.askPublish(open.id), closeDesk: this.closeDesk, ...this.blockDeskVals(open) };
+  }
+  logFlowVals() {
+    const s = this.state; const nf = s.logNew; const mono = "'IBM Plex Mono', monospace"; if (!nf) return { logNewOpen: false };
+    const litBy = {}; (s.logs || []).forEach((l) => { if (l.state === 'lit') litBy[l.light] = true; });
+    const rowBase = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', padding: '13px 15px', borderRadius: '10px', cursor: 'pointer', border: '1px solid rgba(150,160,220,.2)', background: '#161a2c', transition: 'border-color .2s, background .2s' };
+    return { logNewOpen: true, logNewStepLight: nf.step === 'light', logNewStepTemplate: nf.step === 'template', newLightTitle: nf.light,
+      lightOptions: s.projects.map((p, i) => ({ title: p.title, reg: String((i + 1) * 2).padStart(3, '0'), hasLit: !!litBy[p.title], onPick: () => this.pickNewLight(p.title), rowStyle: rowBase })),
+      templateOptions: [{ id: 'standard', name: 'the standard log', blurb: 'the house structure: starting point, the shape of it, outcomes. amber gaps left to fill.' }, { id: 'blank', name: 'a blank desk', blurb: 'nothing but the header. build the body block by block.' }].map((t) => ({ id: t.id, name: t.name, blurb: t.blurb, on: nf.template === t.id, onPick: () => this.pickTemplate(t.id), style: { display: 'flex', flexDirection: 'column', gap: '7px', padding: '16px 18px', borderRadius: '12px', cursor: 'pointer', transition: 'all .2s', border: nf.template === t.id ? '1.5px dashed rgba(240,217,168,.7)' : '1px solid rgba(150,160,220,.25)', background: nf.template === t.id ? 'rgba(240,217,168,.07)' : '#161a2c' } })),
+      cancelNew: this.cancelNew, backNewLight: this.backNewLight, createLog: this.createLog };
+  }
+  logConfirmVals() {
+    const s = this.state; const c = s.logConfirm; if (!c) return { logConfirmOpen: false };
+    const target = (s.logs || []).find((l) => l.id === c.id); if (!target) return { logConfirmOpen: false };
+    const current = (s.logs || []).find((l) => l.light === target.light && l.state === 'lit' && l.id !== target.id);
+    return { logConfirmOpen: true, confirmLogTitle: target.title, confirmSwap: !!current, confirmSwapLine: current ? '\u201c' + current.title + '\u201d is the lit log for this light. Publishing this one sends that one back to draft. Only one log stays lit per light.' : 'No other log is lit for this light, so this one takes the spot.', confirmPublish: this.confirmPublish, cancelPublish: this.cancelPublish };
+  }
+  logsVals() {
+    const s = this.state; const mono = "'IBM Plex Mono', monospace";
+    const stateChip = (st) => st === 'lit' ? { label: 'lit', color: '#f0d9a8', border: '1px solid rgba(240,217,168,.5)', background: 'rgba(240,217,168,.12)' } : { label: 'draft', color: '#93a0e8', border: '1px dashed rgba(147,160,232,.5)', background: 'rgba(147,160,232,.08)' };
+    const actionStyle = { fontFamily: mono, fontSize: '11.5px', padding: '6px 12px', borderRadius: '999px', cursor: 'pointer', whiteSpace: 'nowrap', border: '1px solid rgba(150,160,220,.28)', color: '#a5aed4', transition: 'color .2s, border-color .2s' };
+    const logRows = (s.logs || []).map((lg) => { const chip = stateChip(lg.state); return { id: lg.id, title: lg.title, light: 'no. ' + this.logRegNo(lg.light) + ' \u00b7 ' + lg.light, fresh: 'rev ' + lg.rev + ' \u00b7 ' + lg.updated, stateLabel: chip.label, stateStyle: { fontFamily: mono, fontSize: '10px', letterSpacing: '.13em', textTransform: 'uppercase', padding: '3px 10px', borderRadius: '999px', color: chip.color, border: chip.border, background: chip.background, whiteSpace: 'nowrap', flex: 'none' }, isLit: lg.state === 'lit', notLit: lg.state !== 'lit', onOpen: () => this.openDesk(lg.id), onPublish: () => this.askPublish(lg.id), onUnpublish: () => this.unpublishLog(lg.id), onScrap: () => this.scrapLog(lg.id), onDup: () => this.dupLog(lg.id), actionStyle, rowStyle: { display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 18px', borderRadius: '12px', border: '1px solid rgba(150,160,220,.16)', background: '#1a1e33', flexWrap: 'wrap' } }; });
+    return { logRows, logsAny: logRows.length > 0, logsNone: logRows.length === 0, logsCountLine: logRows.length + ' logs on the shelf \u00b7 ' + logRows.filter((r) => r.isLit).length + ' lit', newLog: this.startNewLog, stopProp: (e) => e.stopPropagation(), ...this.logDeskVals(), ...this.logFlowVals(), ...this.logConfirmVals() };
   }
 
   renderVals() {
@@ -2558,6 +3036,7 @@ class Component extends DCLogic {
       isNotes: scr === 'notes', isCopy: scr === 'copy', isMedia: scr === 'media', isKeeper: scr === 'keeper', isEggs: scr === 'eggs', isDoodles: scr === 'doodles', isFigurehead: scr === 'figurehead',
       ...this.marginaliaVals(),
       ...this.projectsWallVals(),
+      ...this.logsVals(),
       // login
       user: s.user, pass: s.pass, loginError: s.loginError,
       setUser: (ev) => this.setState({ user: ev.target.value, loginError: null }),
