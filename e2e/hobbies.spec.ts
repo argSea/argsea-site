@@ -1,200 +1,141 @@
-// The hobby graveyard (fixtures build): a still-burning hobby gets the lamp
-// marker and the gold pill, a resting one gets its own marker/pill, and the
-// manila record modal opens with the found/cause/return fields and
-// leave-a-flower, persisted to localStorage keyed by the hobby's id.
+// The ship's log (fixtures build): hobbies plot onto the wandering chart at
+// their projected bearings, a wake trails the ones that slipped a mooring, an
+// uncharted hobby rides the log but never the chart, the Flannan memorial keeps
+// its real Fl(2) light, the bearing card reads a hobby's last log and sends up a
+// flare, and reduced motion stills the whole thing.
 import { test, expect } from '@playwright/test';
 
-test('the register renders one row per hobby, still-burning first', async ({ page }) => {
+test('the log lists one row per hobby, ordered by the keeper\'s key', async ({ page }) => {
 	await page.goto('/hobbies');
-	const rows = page.locator('.graveyard__row');
-	await expect(rows).toHaveCount(7);
-	await expect(rows.first().locator('.graveyard__name')).toHaveText('The home lab');
+	const rows = page.locator('.shipslog__row');
+	await expect(rows).toHaveCount(6);
+	await expect(rows.first()).toContainText('The home lab');
+	// only the five charted hobbies count toward the header tally; the uncharted one does not
+	await expect(page.locator('.shipslog__plotted')).toHaveText('5 hobbies plotted · none sunk');
 });
 
-test('a still-burning hobby wears the lamp marker and the gold pill', async ({ page }) => {
+test('marks project onto the chart at the mock\'s percentages for the fixture coords', async ({ page }) => {
 	await page.goto('/hobbies');
-	const row = page.locator('.graveyard__row').first();
-	await expect(row.locator('.graveyard__lamp')).toBeVisible();
-	await expect(row.locator('.graveyard__pill')).toHaveText('still on watch');
-	// alive rows never carry the resting anchor spot
-	await expect(row).not.toHaveClass(/graveyard__row--resting/);
+	// The home lab sits at 58.22 N, 7.50 W; the chart window projects that to
+	// 33.57% across and 46.15% down (proj() in ShipsLog.tsx, from Hobbies.dc.html).
+	const mark = page.locator('.shipslog__mark[data-hobby-id="fixture-hobby-1"]');
+	await expect(mark).toHaveCount(1);
+	const left = await mark.evaluate((el) => parseFloat((el as HTMLElement).style.left));
+	const top = await mark.evaluate((el) => parseFloat((el as HTMLElement).style.top));
+	expect(left).toBeCloseTo(33.57, 1);
+	expect(top).toBeCloseTo(46.15, 1);
 });
 
-test('a resting hobby with a sticks marker reads its disposition', async ({ page }) => {
+test('every charted hobby gets a mark carrying its state; five states, five marks', async ({ page }) => {
 	await page.goto('/hobbies');
-	// The two active lamps lead (The home lab, Changing my OS), then Piano falls
-	// to the stone; Music theory (row 3) is the first with marker: 'sticks'
-	const row = page.locator('.graveyard__row').nth(3);
-	await expect(row.locator('.graveyard__name')).toHaveText('Music theory');
-	await expect(row.locator('.graveyard__sticks-plate')).toBeVisible();
-	await expect(row.locator('.graveyard__pill')).toHaveText('laid to rest');
-	await expect(row).toHaveClass(/graveyard__row--resting/);
-});
-
-test('a row opens the keeper\'s record modal with the found/cause/return fields', async ({ page }) => {
-	await page.goto('/hobbies');
-	await page.locator('.graveyard__row').nth(2).click(); // Piano
-
-	const modal = page.locator('.record-modal');
-	await expect(modal).toBeVisible();
-	await expect(modal.locator('.record-modal__kicker')).toContainText('plot 03');
-	await expect(modal.locator('.record-modal__name')).toHaveText('Piano');
-	const grid = modal.locator('.record-modal__grid');
-	await expect(grid).toContainText('one shaky recording the family still requests');
-	await expect(grid).toContainText('got good enough, which was the goal');
-});
-
-test('leaving a flower increments the count and survives a reload', async ({ page }) => {
-	await page.goto('/hobbies');
-	await page.locator('.graveyard__row').nth(1).click();
-
-	const modal = page.locator('.record-modal');
-	await expect(modal.locator('.record-modal__flower-count')).toHaveText('no flowers yet');
-	await modal.locator('.record-modal__flower-btn').click();
-	await expect(modal.locator('.record-modal__flower-count')).toHaveText('1 left so far');
-
-	await page.reload();
-	await page.locator('.graveyard__row').nth(1).click();
-	await expect(page.locator('.record-modal .record-modal__flower-count')).toHaveText('1 left so far');
-});
-
-test('the record modal closes on Escape', async ({ page }) => {
-	await page.goto('/hobbies');
-	await page.locator('.graveyard__row').first().click();
-	await expect(page.locator('.record-modal')).toBeVisible();
-	await page.keyboard.press('Escape');
-	await expect(page.locator('.record-modal')).toHaveCount(0);
-});
-
-test('the haunting moment golds the haunt hobby\'s dot and swaps its log line, then reverts', async ({ page }) => {
-	await page.clock.install();
-	await page.goto('/hobbies');
-
-	// Piano is the resting haunt: its dot idles on the rare flicker (Changing my
-	// OS is the other haunt-kind row, but it's active, so its dot pulses gold).
-	const piano = page.locator('.graveyard__row', { has: page.getByText('Piano', { exact: true }) });
-	await expect(piano.locator('.graveyard__log')).toHaveText('Light found cold. Bench tucked in. Metronome still ticking.');
-	await expect(piano.locator('.graveyard__lamp-dot--haunt')).toBeVisible();
-
-	await page.clock.fastForward('00:53');
-	await expect(piano.locator('.graveyard__log')).toHaveText('…is that the metronome?');
-	await expect(piano.locator('.graveyard__lamp-dot--haunting')).toBeVisible();
-	// the haunting class carries the flared glow: ~1.5x the mock's dot (7px blur
-	// → 11px), ratified 2026-07-11. Read from the rule, not a mid-transition
-	// computed value the frozen clock would catch interpolating.
-	const flare = await page.evaluate(() => {
-		for (const sheet of Array.from(document.styleSheets)) {
-			let rules: CSSRule[];
-			try { rules = Array.from(sheet.cssRules); } catch { continue; }
-			for (const rule of rules) {
-				if (rule instanceof CSSStyleRule && rule.selectorText === '.graveyard__lamp-dot--haunting') {
-					return rule.style.boxShadow;
-				}
-			}
-		}
-		return '';
-	});
-	expect(flare).toContain('11px');
-
-	await page.clock.fastForward('00:03');
-	await expect(piano.locator('.graveyard__log')).toHaveText('Light found cold. Bench tucked in. Metronome still ticking.');
-	await expect(piano.locator('.graveyard__lamp-dot--haunt')).toBeVisible();
-});
-
-test('the fireflies actually roam: the keyframes live where the island can reach them', async ({ page }) => {
-	await page.goto('/hobbies');
-
-	const firefly = page.locator('.graveyard__firefly').first();
-	await expect(firefly).toBeVisible();
-	await expect
-		.poll(() => firefly.evaluate((el) => el.getAnimations().some((a) => 'animationName' in a && (a as CSSAnimation).animationName === 'fireflyRoam' && a.playState === 'running')))
-		.toBe(true);
-});
-
-// The old-fields-only record (Ham radio): every new field sits empty and the
-// register reads the postcard-era dates/epitaph/eulogy instead.
-test('an old-fields-only hobby falls back to its dormant record', async ({ page }) => {
-	await page.goto('/hobbies');
-	const row = page.locator('.graveyard__row', { has: page.getByText('Ham radio', { exact: true }) });
-
-	// service falls back to the old dates
-	await expect(row.locator('.graveyard__service')).toHaveText('2016 - 2018');
-	// the pill falls back to the epitaph with its leading dagger stripped
-	await expect(row.locator('.graveyard__pill')).toHaveText('went quiet on all bands');
-	// the row line falls back to the eulogy
-	await expect(row.locator('.graveyard__log')).toContainText('Last heard on 40 meters');
-	// an empty char renders no code at all
-	await expect(row.locator('.graveyard__char-row')).toHaveCount(0);
-});
-
-test('the old-fields record modal composes from present parts and hides empty lines', async ({ page }) => {
-	await page.goto('/hobbies');
-	await page.locator('.graveyard__row', { has: page.getByText('Ham radio', { exact: true }) }).click();
-
-	const modal = page.locator('.record-modal');
-	await expect(modal).toBeVisible();
-	// the empty char drops out: "kept 2016 - 2018", not a dangling "kept  · "
-	await expect(modal.locator('.record-modal__subtitle')).toHaveText('kept 2016 - 2018');
-	// no found/cause/return survive, so the grid never renders
-	await expect(modal.locator('.record-modal__grid')).toHaveCount(0);
-	// the pull-quote is hidden with no lastLog
-	await expect(modal.locator('.record-modal__lastlog')).toHaveCount(0);
-	// the foot disposition falls back to the epitaph, dagger stripped
-	await expect(modal.locator('.record-modal__disposition')).toHaveText('disposition · went quiet on all bands');
-});
-
-// Changing my OS is active yet its disposition haunts: it keeps the lamp, and
-// the haunt rides on top as flavor (the HAUNTING pill, the flare in a moment).
-test('an active hobby that haunts keeps the lamp and the HAUNTING pill', async ({ page }) => {
-	await page.goto('/hobbies');
-	const row = page.locator('.graveyard__row', { has: page.getByText('Changing my OS', { exact: true }) });
-
-	// active wins the lamp; the haunt stays flavor on top of it
-	await expect(row.locator('.graveyard__lamp')).toBeVisible();
-	await expect(row.locator('.graveyard__pill--haunt')).toBeVisible();
-	// an active hobby is never a grave: no resting anchor, no mound
-	await expect(row).not.toHaveClass(/graveyard__row--resting/);
-	await expect(row.locator('.graveyard__mound')).toHaveCount(0);
-});
-
-test('every grave carries a dirt mound; the still-burning lamp does not', async ({ page }) => {
-	await page.goto('/hobbies');
-	const graves = await page.locator('.graveyard__row--resting').count();
-	await expect(page.locator('.graveyard__mound')).toHaveCount(graves);
-	// row 0 is the living lamp: no grave, no mound
-	await expect(page.locator('.graveyard__row').first().locator('.graveyard__mound')).toHaveCount(0);
-});
-
-test('no grave stacks more than one dressing object (grass aside)', async ({ page }) => {
-	await page.goto('/hobbies');
-	const markers = page.locator('.graveyard__marker');
-	const count = await markers.count();
-	for (let i = 0; i < count; i += 1) {
-		const objects = await markers.nth(i).locator('.graveyard__dress-object').count();
-		expect(objects).toBeLessThanOrEqual(1);
+	await expect(page.locator('.shipslog__mark')).toHaveCount(5);
+	for (const state of ['moored', 'adrift', 'marooned', 'port', 'inkspill']) {
+		await expect(page.locator(`.shipslog__mark[data-state="${state}"]`)).toHaveCount(1);
 	}
 });
 
-test('plot plaques number by register position, and the foot stands one past the last', async ({ page }) => {
+test('an uncharted hobby rides the log but never the chart', async ({ page }) => {
 	await page.goto('/hobbies');
-	// The two active lamps lead, then the graves, so the plaques read 01..07 down
-	// the register whatever the keeper's manual order key is; the foot is one past.
-	await expect(page.locator('.graveyard__row').nth(0).locator('.graveyard__lamp-plate')).toHaveText('01');
-	await expect(page.locator('.graveyard__row').nth(1).locator('.graveyard__lamp-plate')).toHaveText('02');
-	await expect(page.locator('.graveyard__row').nth(6).locator('.graveyard__stone-plot')).toHaveText('07');
-	await expect(page.locator('.graveyard__foot .mono-comment')).toHaveText('// plot 08 stands open.');
+	const row = page.locator('.shipslog__row[data-hobby-id="fixture-hobby-6"]');
+	await expect(row).toHaveCount(1);
+	// the coord cell reads "uncharted" in the mock's mono register, not a bearing
+	await expect(row.locator('.shipslog__coord')).toHaveText('◈ uncharted');
+	// and it draws no mark on the chart
+	await expect(page.locator('.shipslog__mark[data-hobby-id="fixture-hobby-6"]')).toHaveCount(0);
 });
 
-test('the dirt mound is brown and stacks in front of the marker body', async ({ page }) => {
+test('a wake trails only the hobbies that carry a from-position', async ({ page }) => {
 	await page.goto('/hobbies');
-	const grave = page.locator('.graveyard__row--resting').first();
+	// piano/music theory/game dev/running each carry `from`; the moored home lab
+	// (no from) and the uncharted one draw none
+	await expect(page.locator('.shipslog__wake')).toHaveCount(4);
+});
 
-	// the mound layers above the marker body, so the dirt banks in front of the stone
-	const moundZ = await grave.locator('.graveyard__mound').evaluate((el) => Number(getComputedStyle(el).zIndex));
-	const bodyZ = await grave.locator('.graveyard__marker-body').evaluate((el) => Number(getComputedStyle(el).zIndex));
-	expect(moundZ).toBeGreaterThan(bodyZ);
+test('a mark opens the bearing card with its last log and its off-course fields', async ({ page }) => {
+	await page.goto('/hobbies');
+	await page.locator('.shipslog__row[data-hobby-id="fixture-hobby-2"]').click(); // Piano
 
-	// the cap is the mock's brown dirt (#4a3826 = rgb(74, 56, 38)), not the old navy
-	const cap = await grave.locator('.graveyard__mound-cap').evaluate((el) => getComputedStyle(el).backgroundImage);
-	expect(cap).toContain('74, 56, 38');
+	const card = page.locator('.shipslog__bearing');
+	await expect(card).toBeVisible();
+	await expect(card.locator('.shipslog__bearing-name')).toHaveText('Piano');
+	await expect(card).toContainText('Got through the piece with both hands tonight');
+	await expect(card).toContainText('Slipped its mooring the night it was "good enough"');
+	await expect(card).toContainText('one shaky recording the family still requests');
+	await expect(card).toContainText('- the keeper, still hoping');
+});
+
+test('the bearing card closes on Escape', async ({ page }) => {
+	await page.goto('/hobbies');
+	await page.locator('.shipslog__row').first().click();
+	await expect(page.locator('.shipslog__bearing')).toBeVisible();
+	await page.keyboard.press('Escape');
+	await expect(page.locator('.shipslog__bearing')).toHaveCount(0);
+});
+
+test('sending up a flare flips the card\'s line and the tally survives a reload', async ({ page }) => {
+	await page.goto('/hobbies');
+	await page.locator('.shipslog__row[data-hobby-id="fixture-hobby-2"]').click();
+
+	const card = page.locator('.shipslog__bearing');
+	await expect(card.locator('.shipslog__flare-line')).toHaveText('send one up to root for this one');
+	await card.locator('.shipslog__flare-btn').click();
+	await expect(card.locator('.shipslog__flare-line')).toHaveText('flare away · the keeper will see it');
+
+	// the local tally (argsea-flares) keeps the line flipped when the card reopens
+	await page.reload();
+	await page.locator('.shipslog__row[data-hobby-id="fixture-hobby-2"]').click();
+	await expect(page.locator('.shipslog__bearing .shipslog__flare-line')).toHaveText('flare away · the keeper will see it');
+});
+
+test('the uncharted slot cycles the next-hobby suggestions', async ({ page }) => {
+	await page.goto('/hobbies');
+	const chip = page.locator('.shipslog__uncharted');
+	await expect(chip).toContainText('next: ???');
+	await chip.click();
+	await expect(chip).toContainText('next: blacksmithing?');
+	await chip.click();
+	await expect(chip).toContainText('next: sourdough?');
+});
+
+test('the memorial opens from both the cartouche and the mark, and closes three ways', async ({ page }) => {
+	await page.goto('/hobbies');
+
+	// from the cartouche, closed with the "with respect" chip
+	await page.locator('.shipslog__cartouche').click();
+	const modal = page.locator('.shipslog__memorial-modal');
+	await expect(modal).toBeVisible();
+	await expect(modal).toContainText('James Ducat · Thomas Marshall · Donald MacArthur');
+	await page.locator('.shipslog__mem-close').click();
+	await expect(modal).toHaveCount(0);
+
+	// from the mark, closed on Escape
+	await page.locator('.shipslog__memorial').click();
+	await expect(page.locator('.shipslog__memorial-modal')).toBeVisible();
+	await page.keyboard.press('Escape');
+	await expect(page.locator('.shipslog__memorial-modal')).toHaveCount(0);
+
+	// from the mark again, closed by clicking the backdrop
+	await page.locator('.shipslog__memorial').click();
+	await expect(page.locator('.shipslog__memorial-modal')).toBeVisible();
+	await page.mouse.click(6, 6);
+	await expect(page.locator('.shipslog__memorial-modal')).toHaveCount(0);
+});
+
+test('the memorial mark keeps the real Flannan light running: Fl(2) W 30s', async ({ page }) => {
+	await page.goto('/hobbies');
+	const lamp = page.locator('.shipslog__flannan').first();
+	await expect(lamp).toBeVisible();
+	// assert the characteristic by its keyframe, not by timing the flash
+	await expect
+		.poll(() => lamp.evaluate((el) => el.getAnimations().some((a) => 'animationName' in a && (a as CSSAnimation).animationName === 'flannanFl2' && a.playState === 'running')))
+		.toBe(true);
+});
+
+test('reduced motion stills the chart', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/hobbies');
+	const lamp = page.locator('.shipslog__flannan').first();
+	await expect(lamp).toBeVisible();
+	// the global kill-switch strips every animation under reduced motion
+	expect(await lamp.evaluate((el) => el.getAnimations().length)).toBe(0);
 });

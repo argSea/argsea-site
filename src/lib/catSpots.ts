@@ -50,8 +50,8 @@ export const CATALOG: CatSpot[] = [
 	{ id: 'projects.overlay',   page: 'projects', pose: 'perched', context: 'postcard', overlay: true },
 
 	{ id: 'hobbies.header',   page: 'hobbies', pose: 'lying',   context: 'header',    overlay: false, menuGated: true, anchor: { selector: '.site-nav .links a.active', edge: 'top', align: 'center', dy: 16 } },
-	{ id: 'hobbies.entry',    page: 'hobbies', pose: 'perched', context: 'graveyard', overlay: false, anchor: { selector: '.graveyard__row--resting', edge: 'top', align: 'right' } },
-	{ id: 'hobbies.nextChip', page: 'hobbies', pose: 'perched', context: 'next',      overlay: false, anchor: { selector: '.next-chip',                edge: 'top', align: 'center', dy: 10 } },
+	{ id: 'hobbies.entry',    page: 'hobbies', pose: 'perched', context: 'graveyard', overlay: false, anchor: { selector: '.shipslog__row',       edge: 'top', align: 'right' } },
+	{ id: 'hobbies.nextChip', page: 'hobbies', pose: 'perched', context: 'next',      overlay: false, anchor: { selector: '.shipslog__uncharted', edge: 'top', align: 'center', dy: 10 } },
 	{ id: 'hobbies.record',   page: 'hobbies', pose: 'perched', context: 'note',      overlay: true },
 
 	{ id: 'notes.header',  page: 'notes', pose: 'lying',   context: 'header', overlay: false, menuGated: true, anchor: { selector: '.site-nav .links a.active', edge: 'top', align: 'center', dy: 16 } },

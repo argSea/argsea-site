@@ -10,8 +10,8 @@
 // singleton; the say-hi email is the keeper's; the keeper's stores is
 // approved copy hardcoded by design. The journal strip is the newest notes,
 // static links out to /notes, and disappears once there are none. The
-// hobbies preview is data-driven: still-burning hobbies fill "currently
-// learning", resting ones become graveyard chips.
+// hobbies preview is data-driven: on-watch hobbies fill "currently learning",
+// the wandering ones become the ship's log chips.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LighthouseMark from '../components/LighthouseMark.astro';
 import WaveDivider from '../components/WaveDivider.astro';
@@ -19,7 +19,7 @@ import HomeLights from '../components/islands/HomeLights';
 import JournalStrip from '../components/JournalStrip.astro';
 import JournalStripDirector from '../components/islands/JournalStripDirector';
 import NextHobbyChip from '../components/islands/NextHobbyChip';
-import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead, getNotes, getDoodles, getSuggestions, getCarvings } from '../lib/api';
+import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead, getNotes, getDoodles, getSuggestions, getCarvings, type Hobby, type HobbyState } from '../lib/api';
 import { boltedSvg } from '../lib/carvings';
 
 const projects = await getProjects();
@@ -58,29 +58,31 @@ const stores = [
 	{ label: 'infrastructure', items: 'kubernetes · docker · nginx · linux' },
 ];
 
-// The list arrives order-sorted, still-burning first. The split is on `active`,
-// not `kind === 'alive'`: a hobby that haunts while it's still being lived keeps
-// its place on the mantel, not the graveyard. Tilts alternate so the headstones
+// The list arrives order-sorted. On-watch hobbies (moored or made port, the
+// ones the keeper still keeps a light on) fill the mantel; everything still
+// wandering becomes a chip tagged with its state. Tilts alternate so the chips
 // don't all lean the same way.
 const hobbies = await getHobbies();
-const learning = hobbies.filter((hobby) => hobby.active);
-const resting = hobbies.filter((hobby) => !hobby.active);
+const onWatch = (hobby: Hobby) => hobby.state === 'moored' || hobby.state === 'port';
+const learning = hobbies.filter(onWatch);
+const wandering = hobbies.filter((hobby) => !onWatch(hobby));
+
+// Mirrors STATE_META on the ship's log: the chip carries the label's first
+// segment, so a state with a longer gloss ("adrift · lost at sea") still reads
+// as one word here (e.g. "piano · adrift"). The dagger died with the graveyard.
+const STATE_LABEL: Record<HobbyState, string> = {
+	moored:   'moored',
+	adrift:   'adrift',
+	marooned: 'marooned',
+	port:     'made port',
+	inkspill: 'bearing smudged',
+};
 
 const tilts = [-2, 1.5, -1, 2.2, -1.5, 1.8];
-// Lowercase name, dagger, disposition (Hello.dc.html's "piano † got good
-// enough" format): the mock's own bespoke phrases per chip are stale
-// siblings of this same data, so disposition is the single source, not a
-// second hand-written copy of it (integrator ruling, 2026-07-11). An empty
-// disposition falls back to the epitaph with its leading dagger dropped; a
-// record with neither shows just the name, no dangling dagger (operator
-// ruling, 2026-07-11).
-const graveyardChips = resting.map((hobby, index) => {
-	const phrase = hobby.disposition || hobby.epitaph.replace(/^\s*†\s*/, '');
-	return {
-		text: phrase ? `${hobby.name.toLowerCase()} † ${phrase}` : hobby.name.toLowerCase(),
-		tilt: tilts[index % tilts.length],
-	};
-});
+const hobbyChips = wandering.map((hobby, index) => ({
+	text: `${hobby.name.toLowerCase()} · ${STATE_LABEL[hobby.state]}`,
+	tilt: tilts[index % tilts.length],
+}));
 ---
 <BaseLayout title="Justin Smith · argsea.com" active="hello" quipKey="quipHello">
 	<!-- hero -->
@@ -138,14 +140,14 @@ const graveyardChips = resting.map((hobby, index) => {
 		</div>
 	</section>
 
-	<!-- hobbies preview: still-burning hobbies fill the mantel, resting ones the graveyard -->
+	<!-- hobbies preview: on-watch hobbies fill the mantel, the wandering ones the ship's log -->
 	<section class="hobbies-preview">
 		<div class="row-head">
 			<span class="section-head-cluster">
 				<span class="section-label">Hobbies</span>
 				<span class="section-aside">past and present, abridged</span>
 			</span>
-			<a href="/hobbies" class="mono-link">the full graveyard →</a>
+			<a href="/hobbies" class="mono-link">the full chart →</a>
 		</div>
 		<div class="hobbies-preview__grid">
 			<div class="panel panel--learning">
@@ -164,9 +166,9 @@ const graveyardChips = resting.map((hobby, index) => {
 					<span class="grave-lantern__core"></span>
 					<span class="grave-lantern__halo"></span>
 				</div>
-				<span class="panel__label">The hobby graveyard</span>
+				<span class="panel__label">The ship's log</span>
 				<div class="panel__chips">
-					{graveyardChips.map((chip) => (
+					{hobbyChips.map((chip) => (
 						<span class="grave-chip" style={`--tilt:${chip.tilt}deg`}>{chip.text}</span>
 					))}
 				</div>
@@ -177,7 +179,7 @@ const graveyardChips = resting.map((hobby, index) => {
 			</div>
 		</div>
 		<div class="hobbies-preview__foot">
-			<span class="mono-comment">// the graveyard only grows. that's fine.</span>
+			<span class="mono-comment">// the chart only grows. that's fine.</span>
 			<NextHobbyChip client:load values={suggestions.map((s) => s.value)} variant="headstone" />
 		</div>
 	</section>
