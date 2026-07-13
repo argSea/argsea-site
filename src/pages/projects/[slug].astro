@@ -1,59 +1,101 @@
 ---
-// A project's full case-study log, per CaseStudy.dc.html: SSG'd only for
-// projects with a non-empty caseStudy (ruling: sessions/repo/2026-07-11-
-// portfolio-evolution-build.md, scope item 5). The keeper's-dialect markdown
-// is parsed at build time (src/lib/caseStudy.ts) and its mermaid blocks
-// rendered to static SVG in the same pass (src/lib/mermaid.ts) so the shipped
-// page carries zero runtime mermaid and no CDN.
+// A project's full case-study log, per CaseStudy.dc.html. The log is published
+// as a CaseLog document of typed blocks (src/lib/caseStudy.ts); getStaticPaths
+// joins published projects to published case logs on projectId and SSG's one
+// page per pair. Mermaid blocks render to static SVG (src/lib/mermaid.ts) and
+// code blocks to themed token spans (src/lib/codeHighlight.ts) in the same
+// build pass, so the shipped page carries zero runtime mermaid, no highlighter,
+// and no CDN.
 //
-// "next log" picks the next project with a case study, in list order,
-// wrapping; the mock's own version indexes into the filtered list using the
-// current project's position in the *full* list, which can pick an
-// unintuitive "next" once case studies aren't contiguous. That's flagged in
-// the mock's own transcription as a likely bug, not a deliberate design; this
-// port uses the sane version. Inert today either way: only one project
-// (the flagship) carries a case study, so `others` is always empty.
+// The header lives in the blocks: the first title/subhead/facts/meta feed the
+// entry header (the kicker no., light badge, pill, and slug stay project-fed,
+// and a project field backfills a header block the log omits); any later blocks
+// of those kinds render in-flow. All remaining blocks render in order, headings
+// auto-numbered 01, 02, ...
+//
+// "next log" picks the next project with a log, in list order, wrapping. Inert
+// today: only the flagship carries a log, so `next` is always null.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CaseStudyInline from '../../components/CaseStudyInline.astro';
 import LightBadge from '../../components/islands/LightBadge';
-import { getProjects, getKeeperProfile } from '../../lib/api';
-import { parseCaseStudy, type CaseStudyBlock } from '../../lib/caseStudy';
+import { getProjects, getCaseLogs, getKeeperProfile } from '../../lib/api';
+import { parseInline, numberHeadings, type CaseLogBlock } from '../../lib/caseStudy';
 import { renderMermaidBlocks, closeMermaidBrowser } from '../../lib/mermaid';
+import { highlightCodeBlocks } from '../../lib/codeHighlight';
 import { DEFAULT_LIGHT, registryNo, codeFor } from '../../lib/lightChar';
 import { mediaUrl } from '../../lib/media';
-import type { Project } from '../../lib/api';
+import type { Project, CaseLog } from '../../lib/api';
 
 export async function getStaticPaths() {
 	const projects = await getProjects();
-	const withCaseStudy = projects.filter((project) => project.caseStudy);
+	const caseLogs = await getCaseLogs();
+	const logByProject = new Map(caseLogs.map((log) => [log.projectId, log]));
 
-	const paths = await Promise.all(withCaseStudy.map(async (project, index) => {
-		const blocks = parseCaseStudy(project.caseStudy);
-		await renderMermaidBlocks(blocks);
-		const next = withCaseStudy.length > 1 ? withCaseStudy[(index + 1) % withCaseStudy.length] : null;
-		return { params: { slug: project.slug }, props: { project, blocks, next } };
+	const pairs = projects
+		.filter((project) => project.slug && logByProject.has(project.id))
+		.map((project) => ({ project, caselog: logByProject.get(project.id)! }));
+
+	const paths = await Promise.all(pairs.map(async ({ project, caselog }, index) => {
+		await renderMermaidBlocks(caselog.blocks);
+		await highlightCodeBlocks(caselog.blocks);
+		const next = pairs.length > 1 ? pairs[(index + 1) % pairs.length] : null;
+		return {
+			params: { slug: project.slug },
+			props: { project, caselog, next: next ? { slug: next.project.slug, title: next.project.title } : null },
+		};
 	}));
 
-	// Every diagram across every case study is rendered by now; let the shared
-	// browser go so `astro build` can actually exit.
+	// Every diagram and code block across every log is rendered by now; let the
+	// shared browser go so `astro build` can actually exit.
 	await closeMermaidBrowser();
 	return paths;
 }
 
 interface Props {
 	project: Project;
-	blocks:  CaseStudyBlock[];
-	next:    Project | null;
+	caselog: CaseLog;
+	next:    { slug: string; title: string } | null;
 }
 
-const { project, blocks, next } = Astro.props as Props;
+const { project, caselog, next } = Astro.props as Props;
 const keeper = await getKeeperProfile();
 
 const light = project.light ?? DEFAULT_LIGHT;
 const dark = Boolean(light.extinguished);
+
+const blocks = caselog.blocks;
+
+// The header lives in blocks: the first title/subhead/facts/meta feed the entry
+// header; any later ones render in-flow. A project field backfills a header
+// block the log omits, so a log without its own header still renders the old way.
+const blockOfKind = <K extends CaseLogBlock['kind']>(kind: K) =>
+	blocks.find((block): block is Extract<CaseLogBlock, { kind: K }> => block.kind === kind);
+
+const firstTitle = blockOfKind('title');
+const firstSubhead = blockOfKind('subhead');
+const firstFacts = blockOfKind('facts');
+const firstMeta = blockOfKind('meta');
+
+const headerTitle = firstTitle?.text ?? project.title;
+const headerSubhead = firstSubhead?.text ?? project.shortDesc;
+const headerFacts = firstFacts?.rows ?? (project.facts ?? []).map((fact) => ({ heading: fact.heading, fact: fact.fact }));
+const headerEst = firstMeta?.established ?? project.firstLit;
+const headerTags = firstMeta?.tags ?? (project.tags ?? []);
+
+// The first of each header kind is spent on the header above; everything else
+// (including any later title/subhead/facts/meta) renders in order below.
+const headerBlocks = new Set<CaseLogBlock>();
+for (const block of [firstTitle, firstSubhead, firstFacts, firstMeta]) {
+	if (block) {
+		headerBlocks.add(block);
+	}
+}
+const body = numberHeadings(blocks.filter((block) => !headerBlocks.has(block)));
+
+const CALLOUT_LABEL = { note: 'note', warning: 'heads up', 'dead-end': 'dead end' } as const;
 ---
 <BaseLayout title={`${project.title} · case study · argsea.com`} active="projects" quipKey="quipProjects">
-	{project.caseStudy ? (
+	{body.length > 0 ? (
 		<article class="cs">
 			<div class="cs-header">
 				<a href="/projects" class="cs-breadcrumb fade-up fade-up--1">← the light list</a>
@@ -67,12 +109,12 @@ const dark = Boolean(light.extinguished);
 					<span class={`status-pill ${dark ? 'status-pill--dark' : 'status-pill--lit'}`}>{dark ? `dark · ${light.extinguished}` : 'lit'}</span>
 				</div>
 
-				<h1 class="cs-title fade-up fade-up--3">{project.title}</h1>
-				<p class="cs-desc fade-up fade-up--3">{project.shortDesc}</p>
+				<h1 class="cs-title fade-up fade-up--3">{headerTitle}</h1>
+				<p class="cs-desc fade-up fade-up--3">{headerSubhead}</p>
 
-				{(project.facts ?? []).length > 0 && (
+				{headerFacts.length > 0 && (
 					<div class="cs-header-facts fade-up fade-up--4">
-						{(project.facts ?? []).map((fact) => (
+						{headerFacts.map((fact) => (
 							<div class="cs-header-facts__row">
 								<span class="cs-header-facts__label">{fact.heading}</span>
 								<span class="cs-header-facts__value">{fact.fact}</span>
@@ -82,38 +124,52 @@ const dark = Boolean(light.extinguished);
 				)}
 
 				<div class="cs-meta fade-up fade-up--4">
-					<span>established · <span class="cs-meta__value">{project.firstLit}</span></span>
-					<span>tags · <span class="cs-meta__value">{(project.tags ?? []).join(' · ')}</span></span>
+					<span>established · <span class="cs-meta__value">{headerEst}</span></span>
+					<span>tags · <span class="cs-meta__value">{headerTags.join(' · ')}</span></span>
 				</div>
 			</div>
 
 			<div class="cs-log">
 				<div class="cs-body">
-					{blocks.map((block) => {
-						switch (block.type) {
+					{body.map(({ block, no }) => {
+						switch (block.kind) {
+							case 'title':
+								// A later title block: the display heading, in-flow.
+								return <div class="cs-title">{block.text}</div>;
+							case 'subhead':
+								// A later subhead block: an italic paragraph, in-flow.
+								return <p class="cs-desc">{block.text}</p>;
+							case 'meta':
+								// A later meta block: the mono meta line, in-flow.
+								return (
+									<div class="cs-meta">
+										<span>established · <span class="cs-meta__value">{block.established}</span></span>
+										<span>tags · <span class="cs-meta__value">{block.tags.join(' · ')}</span></span>
+									</div>
+								);
 							case 'heading':
 								return (
-									<div class="cs-heading" style={block.number === '01' ? 'margin-top:18px' : undefined}>
-										<span class="cs-heading__no">{block.number}</span>
-										<span class="cs-heading__text"><CaseStudyInline nodes={block.nodes} /></span>
+									<div class="cs-heading" style={no === '01' ? 'margin-top:18px' : undefined}>
+										<span class="cs-heading__no">{no}</span>
+										<span class="cs-heading__text"><CaseStudyInline nodes={parseInline(block.text)} /></span>
 									</div>
 								);
 							case 'paragraph':
-								return <p class="cs-p"><CaseStudyInline nodes={block.nodes} /></p>;
+								return <p class="cs-p"><CaseStudyInline nodes={parseInline(block.text)} /></p>;
 							case 'quote':
 								return (
 									<div class="cs-quote">
 										<span class="cs-quote__label">from the log</span>
-										<span class="cs-quote__text"><CaseStudyInline nodes={block.nodes} /></span>
+										<span class="cs-quote__text"><CaseStudyInline nodes={parseInline(block.text)} /></span>
 									</div>
 								);
 							case 'list':
 								return (
 									<div class="cs-list">
-										{block.items.map((item) => (
+										{block.items.map((item, index) => (
 											<div class="cs-list__row">
-												<span class="cs-list__marker">·</span>
-												<span class="cs-list__text"><CaseStudyInline nodes={item} /></span>
+												<span class={block.ordered ? 'cs-list__marker cs-list__marker--num' : 'cs-list__marker'}>{block.ordered ? `${index + 1}.` : '·'}</span>
+												<span class="cs-list__text"><CaseStudyInline nodes={parseInline(item)} /></span>
 											</div>
 										))}
 									</div>
@@ -123,8 +179,8 @@ const dark = Boolean(light.extinguished);
 									<div class="cs-facts-block">
 										{block.rows.map((row) => (
 											<div class="cs-facts-block__row">
-												<span class="cs-facts-block__label">{row.label}</span>
-												<span class="cs-facts-block__value"><CaseStudyInline nodes={row.value} /></span>
+												<span class="cs-facts-block__label">{row.heading}</span>
+												<span class="cs-facts-block__value"><CaseStudyInline nodes={parseInline(row.fact)} /></span>
 											</div>
 										))}
 									</div>
@@ -132,16 +188,21 @@ const dark = Boolean(light.extinguished);
 							case 'outcomes':
 								return (
 									<div class="cs-outcomes">
-										{block.cards.map((card) => (
+										{block.rows.map((row) => (
 											<div class="cs-outcomes__card">
-												<span class="cs-outcomes__big"><CaseStudyInline nodes={card.big} /></span>
-												<span class="cs-outcomes__caption"><CaseStudyInline nodes={card.caption} /></span>
+												<span class="cs-outcomes__big"><CaseStudyInline nodes={parseInline(row.value)} /></span>
+												<span class="cs-outcomes__caption"><CaseStudyInline nodes={parseInline(row.caption)} /></span>
 											</div>
 										))}
 									</div>
 								);
 							case 'code':
-								return <pre class="cs-code">{block.body}</pre>;
+								// Highlighted at build (codeHighlight.ts) for a known lang;
+								// an unknown/empty lang leaves html unset and falls back to
+								// the plain pre, same as the mock.
+								return block.html
+									? <pre class="cs-code" set:html={block.html} />
+									: <pre class="cs-code">{block.code}</pre>;
 							case 'mermaid':
 								return <div class="cs-mermaid" set:html={block.svg} />;
 							case 'figure':
@@ -155,7 +216,7 @@ const dark = Boolean(light.extinguished);
 									<figure class="cs-figure">
 										<div class="cs-figure__frame">
 											<img
-												src={mediaUrl(block.key)}
+												src={mediaUrl(block.image)}
 												alt={block.caption}
 												loading="lazy"
 												onerror="this.closest('.cs-figure__frame').classList.add('cs-figure__frame--empty');this.remove();"
@@ -163,6 +224,57 @@ const dark = Boolean(light.extinguished);
 										</div>
 										{block.caption && <figcaption class="cs-figure__caption">{block.caption}</figcaption>}
 									</figure>
+								);
+							case 'comparison':
+								// Before/after prints side by side; each frame takes the same
+								// onerror empty-paper fallback as a lone figure.
+								return (
+									<figure class="cs-compare">
+										<div class="cs-compare__grid">
+											{block.stages.map((stage) => (
+												<div class="cs-compare__stage">
+													<span class="cs-compare__label">{stage.label}</span>
+													<div class="cs-compare__frame">
+														<img
+															src={mediaUrl(stage.image)}
+															alt={stage.label}
+															loading="lazy"
+															onerror="this.closest('.cs-compare__frame').classList.add('cs-compare__frame--empty');this.remove();"
+														/>
+													</div>
+												</div>
+											))}
+										</div>
+									</figure>
+								);
+							case 'timeline':
+								return (
+									<div class="cs-timeline">
+										{block.rows.map((row) => (
+											<div class="cs-timeline__row">
+												<span class="cs-timeline__dot" />
+												<span class="cs-timeline__date">{row.date}</span>
+												<span class="cs-timeline__event"><CaseStudyInline nodes={parseInline(row.event)} /></span>
+												{row.link && <a href={row.link} class="cs-timeline__link">evidence →</a>}
+											</div>
+										))}
+									</div>
+								);
+							case 'links':
+								return (
+									<div class="cs-links">
+										<span class="cs-links__label">links</span>
+										{block.rows.map((row) => (
+											<a href={row.url} class="cs-links__link">{row.label}</a>
+										))}
+									</div>
+								);
+							case 'callout':
+								return (
+									<div class={`cs-callout cs-callout--${block.register}`}>
+										<span class="cs-callout__label">{CALLOUT_LABEL[block.register]}</span>
+										<span class="cs-callout__text"><CaseStudyInline nodes={parseInline(block.text)} /></span>
+									</div>
 								);
 							default:
 								return null;
@@ -365,7 +477,7 @@ const dark = Boolean(light.extinguished);
 		line-height: 1.6;
 	}
 
-	/* --- - / * lists --- */
+	/* --- - / * lists, and 1. ordered lists --- */
 	.cs-list {
 		margin: 16px 0 0;
 		display: flex;
@@ -384,6 +496,12 @@ const dark = Boolean(light.extinguished);
 		font-size: 12px;
 		color: var(--gold);
 		flex: none;
+	}
+
+	/* ordered rows number in gold, wider gutter so 10. and 1. still align */
+	.cs-list__marker--num {
+		font-size: 12.5px;
+		min-width: 20px;
 	}
 
 	.cs-list__text {
@@ -456,7 +574,7 @@ const dark = Boolean(light.extinguished);
 		color: var(--periwinkle);
 	}
 
-	/* --- fenced code (non-mermaid) --- */
+	/* --- fenced code (non-mermaid), highlighted at build via shiki --- */
 	.cs-code {
 		margin: 18px 0 0;
 		background: #131728;
@@ -535,6 +653,176 @@ const dark = Boolean(light.extinguished);
 		text-align: center;
 	}
 
+	/* --- :::compare::: before/after prints --- */
+	.cs-compare {
+		margin: 22px 0 0;
+	}
+
+	.cs-compare__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+		gap: 14px;
+	}
+
+	.cs-compare__stage {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.cs-compare__label {
+		font-family: var(--font-mono);
+		font-size: 10.5px;
+		letter-spacing: .14em;
+		color: var(--periwinkle-deep);
+		text-transform: uppercase;
+	}
+
+	.cs-compare__frame {
+		background: #141830;
+		border: 1px solid rgba(150, 160, 220, .18);
+		border-radius: 12px;
+		overflow: hidden;
+		height: 210px;
+	}
+
+	.cs-compare__frame img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+	.cs-compare__frame--empty {
+		background: #fdfcf8;
+		border-color: transparent;
+	}
+
+	/* --- :::timeline::: the log's rail with gold dots and evidence links --- */
+	.cs-timeline {
+		margin: 22px 0 0;
+		border-left: 2px solid rgba(147, 160, 232, .3);
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		padding-left: 22px;
+	}
+
+	.cs-timeline__row {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.cs-timeline__dot {
+		position: absolute;
+		left: -28px;
+		top: 5px;
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: var(--gold);
+		box-shadow: 0 0 8px 2px rgba(240, 217, 168, .4);
+	}
+
+	.cs-timeline__date {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: .12em;
+		color: var(--periwinkle);
+		text-transform: uppercase;
+	}
+
+	.cs-timeline__event {
+		font-size: 16px;
+		line-height: 1.6;
+		color: var(--text-soft);
+	}
+
+	.cs-timeline__link {
+		font-family: var(--font-mono);
+		font-size: 11.5px;
+		color: #c8b98a;
+		border-bottom: 1px dotted rgba(200, 185, 138, .5);
+		align-self: flex-start;
+	}
+
+	/* --- :::links::: a labeled row of quiet links --- */
+	.cs-links {
+		margin: 18px 0 0;
+		display: flex;
+		gap: 10px 20px;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+	.cs-links__label {
+		font-family: var(--font-mono);
+		font-size: 10.5px;
+		letter-spacing: .14em;
+		color: var(--periwinkle-deep);
+		text-transform: uppercase;
+	}
+
+	.cs-links__link {
+		font-family: var(--font-mono);
+		font-size: 12.5px;
+		color: var(--periwinkle);
+		border-bottom: 1px dotted rgba(147, 160, 232, .45);
+	}
+
+	/* --- :::note/warning/dead-end::: callouts by register --- */
+	.cs-callout {
+		margin: 20px 0 0;
+		border: 1px solid;
+		border-radius: 12px;
+		padding: 14px 18px;
+		display: flex;
+		flex-direction: column;
+		gap: 7px;
+	}
+
+	.cs-callout__label {
+		font-family: var(--font-mono);
+		font-size: 10px;
+		letter-spacing: .18em;
+		text-transform: uppercase;
+	}
+
+	.cs-callout__text {
+		font-size: 15.5px;
+		line-height: 1.6;
+		color: var(--text-soft);
+	}
+
+	.cs-callout--note {
+		border-color: rgba(147, 160, 232, .35);
+		background: rgba(147, 160, 232, .07);
+	}
+
+	.cs-callout--note .cs-callout__label {
+		color: var(--periwinkle);
+	}
+
+	.cs-callout--warning {
+		border-color: rgba(240, 217, 168, .4);
+		background: rgba(240, 217, 168, .07);
+	}
+
+	.cs-callout--warning .cs-callout__label {
+		color: var(--gold);
+	}
+
+	.cs-callout--dead-end {
+		border-color: rgba(231, 122, 112, .4);
+		background: rgba(231, 122, 112, .07);
+	}
+
+	.cs-callout--dead-end .cs-callout__label {
+		color: #e77a70;
+	}
+
 	/* --- inline: [? fact needed ?] amber chip --- */
 	.cs-body :global(.cs-chip) {
 		font-family: var(--font-mono);
@@ -544,6 +832,12 @@ const dark = Boolean(light.extinguished);
 		border-bottom: 1px dashed rgba(233, 185, 110, .55);
 		border-radius: 3px;
 		padding: 1px 7px;
+	}
+
+	/* --- inline: [text](url) quiet link, proof not navigation --- */
+	.cs-body :global(.cs-inline-link) {
+		color: #c8b98a;
+		border-bottom: 1px dotted rgba(200, 185, 138, .55);
 	}
 
 	.cs-body :global(.cs-inline-code) {
@@ -576,10 +870,10 @@ const dark = Boolean(light.extinguished);
 		color: var(--gold);
 	}
 
-	/* --- missing-state: no case study resolved for this slug. Defensive only:
-	   getStaticPaths above never generates a path without one, per the
-	   scoping ruling, so this never actually renders in production; kept for
-	   fidelity to the mock and so the branch fails safe if that ever changes. --- */
+	/* --- missing-state: no renderable blocks resolved for this slug. Defensive
+	   only: getStaticPaths above never generates a path without a case log, so
+	   this never actually renders in production; kept for fidelity to the mock
+	   and so the branch fails safe if that ever changes. --- */
 	.cs-missing {
 		padding: clamp(48px, 9vw, 96px) var(--gutter);
 		display: flex;

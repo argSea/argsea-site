@@ -1,7 +1,7 @@
 ---
-// One run of a case-study block's inline-parsed text (heading/paragraph/quote/
-// list-item/facts-value/outcomes-cell), rendered per node kind. Shared so
-// [slug].astro doesn't repeat this switch five times.
+// One run of a case-log block's inline-parsed text (heading/paragraph/quote/
+// list-item/facts-value/outcomes-cell/timeline-event/callout-text), rendered per
+// node kind. Shared so [slug].astro doesn't repeat this switch everywhere.
 import type { InlineNode } from '../lib/caseStudy';
 
 interface Props {
@@ -14,6 +14,8 @@ const { nodes } = Astro.props;
 	switch (node.kind) {
 		case 'chip':
 			return <span class="cs-chip" title="a fact only the keeper can fill in">[ {node.value} ]</span>;
+		case 'link':
+			return <a href={node.url} title="proof, not navigation" class="cs-inline-link">{node.value}</a>;
 		case 'code':
 			return <code class="cs-inline-code">{node.value}</code>;
 		case 'bold':

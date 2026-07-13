@@ -408,7 +408,7 @@ function RegisterRow({ project, index, matches, hovered, onOpen, onHover, onUnho
 			<span className="register__code" style={{ color: dark ? '#7a83ad' : `rgb(${glow})` }}>{code}</span>
 			<span className="register__first-lit">{project.firstLit}</span>
 			<span className="register__status"><StatusPill dark={dark} year={light.extinguished} /></span>
-			<span className={`register__read${project.caseStudy ? ' register__read--full' : ''}`}>{project.caseStudy ? 'full log →' : 'read →'}</span>
+			<span className={`register__read${project.hasLog ? ' register__read--full' : ''}`}>{project.hasLog ? 'full log →' : 'read →'}</span>
 		</div>
 	);
 }

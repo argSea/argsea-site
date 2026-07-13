@@ -1,0 +1,168 @@
+[
+  {
+    "id": "fixture-caselog-1",
+    "projectId": "fixture-project-1",
+    "status": "published",
+    "title": "The Great Un-monolithing",
+    "blocks": [
+      {
+        "kind": "title",
+        "text": "The Great Un-monolithing"
+      },
+      {
+        "kind": "subhead",
+        "text": "One giant app became many small, well-behaved services. Readers never noticed. That was the point."
+      },
+      {
+        "kind": "facts",
+        "rows": [
+          {
+            "heading": "ownership",
+            "fact": "design to operations, solo"
+          },
+          {
+            "heading": "scale",
+            "fact": "29 services · ~2M visits a month"
+          },
+          {
+            "heading": "constraint",
+            "fact": "the paper came out every day, mid-migration"
+          },
+          {
+            "heading": "result",
+            "fact": "the old stack went dark in 2025"
+          }
+        ]
+      },
+      {
+        "kind": "meta",
+        "established": "2024",
+        "tags": [
+          "kubernetes",
+          "python",
+          "rabbitmq"
+        ]
+      },
+      {
+        "kind": "heading",
+        "text": "The starting point"
+      },
+      {
+        "kind": "paragraph",
+        "text": "The Post-Gazette's publishing stack had been accreting since roughly 2016. One enormous application that did everything and feared nothing, least of all my weekends. Deploys were [? how deploys worked, and how scary ?], and every change carried the whole system's risk."
+      },
+      {
+        "kind": "paragraph",
+        "text": "The constraints were plain. One engineer. Bare metal on premises, no cloud autoscaling to hide behind. And a paper that publishes every single day, so there was no maintenance window big enough to swap the stack in one move."
+      },
+      {
+        "kind": "quote",
+        "text": "Drew the boxes before the arrows. Always the boxes first."
+      },
+      {
+        "kind": "heading",
+        "text": "The shape of it"
+      },
+      {
+        "kind": "paragraph",
+        "text": "Services stay small, own their data, and talk through RabbitMQ instead of calling each other directly. Varnish absorbs read traffic at the edge, so a couple million visits a month never becomes a couple million origin hits. MetalLB hands out real IPs, because bare metal does not come with a load balancer."
+      },
+      {
+        "kind": "mermaid",
+        "code": "flowchart TB\n  lb[metallb] --> ing[nginx ingress]\n  ing --> va[varnish cache]\n  va --> bus{{rabbitmq · the event bus}}\n  bus --> svc[python services · x29]\n  svc --> mdb[(mongodb)]\n  svc --> rds[(redis)]"
+      },
+      {
+        "kind": "paragraph",
+        "text": "The rule that made 29 services survivable for one keeper: every service looks the same. Same repo layout, same base image, same health checks, same way onto and off the bus. The novelty budget goes to the problem, not the plumbing."
+      },
+      {
+        "kind": "heading",
+        "text": "Migrating while the paper ships"
+      },
+      {
+        "kind": "paragraph",
+        "text": "The monolith came apart one capability at a time. Peel a function off, stand it up as a service on the bus, route traffic to it, watch it for a while, then delete the old code path. Repeat 29 times. The first peel was [? the first service extracted, and why it went first ?]."
+      },
+      {
+        "kind": "paragraph",
+        "text": "Order mattered more than speed. Low-risk, high-annoyance pieces went first, to prove the pattern. The scary ones went last, once the platform had earned trust."
+      },
+      {
+        "kind": "facts",
+        "rows": [
+          {
+            "heading": "timeline",
+            "fact": "[? months to production, months refining ?]"
+          },
+          {
+            "heading": "first peel",
+            "fact": "[? service name ?]"
+          },
+          {
+            "heading": "scariest peel",
+            "fact": "[? service name, and why it waited ?]"
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "text": "What went wrong"
+      },
+      {
+        "kind": "quote",
+        "text": "The lamp swap happened at night. Obviously."
+      },
+      {
+        "kind": "paragraph",
+        "text": "Events everywhere is worth it for the decoupling, and you pay for it in debugging: tracing a story across queues is harder than reading a stack trace. [? how you trace across the bus today ?]"
+      },
+      {
+        "kind": "figure",
+        "image": "first-screenshot.svg",
+        "caption": "the first screenshot, from the station archive"
+      },
+      {
+        "kind": "paragraph",
+        "text": "The mistake worth admitting: [? the thing that actually broke once, and what it taught you ?]"
+      },
+      {
+        "kind": "heading",
+        "text": "What I'd change now"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          "Fewer, fatter services from day one. The honest number is probably [? your honest number ?].",
+          "[? the second thing you'd do differently ?]",
+          "[? the opinion only someone who ran this would have ?]"
+        ]
+      },
+      {
+        "kind": "heading",
+        "text": "Outcomes"
+      },
+      {
+        "kind": "outcomes",
+        "rows": [
+          {
+            "value": "29 services",
+            "caption": "in production, uniform, one keeper"
+          },
+          {
+            "value": "~2M visits/mo",
+            "caption": "served through the platform"
+          },
+          {
+            "value": "0 missed papers",
+            "caption": "it published every day, the whole way through"
+          },
+          {
+            "value": "old stack: dark",
+            "caption": "decommissioned 2025 · see light no. 014"
+          }
+        ]
+      }
+    ]
+  }
+]

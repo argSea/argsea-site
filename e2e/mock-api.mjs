@@ -66,6 +66,7 @@ const carvings = fixture('carvings').concat(mode === 'fallback' ? [{
 
 const routes = {
 	'/1/project':                    projects,
+	'/1/caselog':                    fixture('caselogs'),
 	'/1/hobby':                      fixture('hobbies'),
 	'/1/note':                       fixture('notes'),
 	'/1/copy':                       fixture('siteCopy'),
