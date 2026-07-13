@@ -10,6 +10,7 @@ import '../styles/global.css';
 
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import TabBar from '../components/TabBar.astro';
 import HarborCatDirector from '../components/islands/HarborCatDirector';
 import { getSiteCopy, getFigurehead, type QuipField } from '../lib/api';
 import type { CatPage } from '../lib/catSpots';
@@ -44,10 +45,14 @@ const catPage: CatPage = active === 'none' ? 'p404' : active;
 	</head>
 	<body>
 		<div class="page">
-			<Nav active={active} catPage={catPage} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />
+			<Nav active={active} />
 			<slot />
 			<Footer quip={copy[quipKey]} />
 		</div>
+		{/* Body-level, not inside .page: the projects page makes .page its own
+		    z-index:0 stacking context, which would trap a fixed bar under the
+		    body-portaled harbor cat. Kept a sibling so the bar always wins. */}
+		<TabBar active={active} />
 		{copy.eggs.cat && <HarborCatDirector client:idle page={catPage} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />}
 	</body>
 </html>

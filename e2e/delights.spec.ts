@@ -116,55 +116,18 @@ test('the desktop header wears the lying cat on the nav link', async ({ page }) 
 	expect(box.y).toBeLessThan(90);
 });
 
-test('the narrow nav is a hamburger that opens and closes', async ({ page }) => {
-	await page.setViewportSize({ width: 390, height: 844 });
-	await page.goto('/');
-
-	// the desktop links are gone; the burger stands in
-	await expect(page.locator('.site-nav .links')).toBeHidden();
-	const burger = page.locator('.nav-burger');
-	await expect(burger).toBeVisible();
-	await expect(burger).toHaveAttribute('aria-expanded', 'false');
-
-	await burger.click();
-	await expect(page.locator('#nav-menu')).toBeVisible();
-	await expect(burger).toHaveAttribute('aria-expanded', 'true');
-
-	// a link tap closes it
-	await page.locator('#nav-menu a', { hasText: 'hobbies' }).click({ noWaitAfter: true });
-	await expect(page.locator('#nav-menu')).toHaveCount(0);
-});
-
-test('on mobile the header cat is menu-gated: it lies on the open panel edge', async ({ page }) => {
-	// Math.random 0 pins the header spot
+test('below the phone line the menu-gated header cat stands down, no cat on the collapsed nav', async ({ page }) => {
+	// Math.random 0 pins each page's header spot; it's menu-gated, so below the
+	// phone line (the hamburger and its menu are gone, the tab bar took over)
+	// the director stands down instead of clamping to the hidden nav links.
 	await page.addInitScript(() => { Math.random = () => 0; });
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto('/projects');
 	await page.waitForTimeout(400);
 
-	// nothing clamped over the brand row; the header cat waits for the menu
+	// the retired hamburger is gone and nothing rides the brand row
+	await expect(page.locator('.nav-burger')).toHaveCount(0);
 	await expect(page.locator('.harbor-cat')).toHaveCount(0);
-
-	await page.locator('.nav-burger').click();
-	await expect(page.locator('#nav-menu .harbor-cat--lying')).toBeVisible();
-	// still exactly one cat
-	await expect(page.locator('.harbor-cat')).toHaveCount(1);
-
-	// it rides the panel itself, draped over the top border, not any nav link
-	await expect(page.locator('.nav-menu__item .cat-mount')).toHaveCount(0);
-	const panel = (await page.locator('#nav-menu').boundingBox())!;
-	const mount = (await page.locator('.cat-mount--menu').boundingBox())!;
-	expect(mount.y).toBeLessThan(panel.y);
-	expect(mount.y + mount.height).toBeGreaterThan(panel.y);
-});
-
-test('the hamburger menu closes on Escape', async ({ page }) => {
-	await page.setViewportSize({ width: 390, height: 844 });
-	await page.goto('/');
-	await page.locator('.nav-burger').click();
-	await expect(page.locator('#nav-menu')).toBeVisible();
-	await page.keyboard.press('Escape');
-	await expect(page.locator('#nav-menu')).toHaveCount(0);
 });
 
 test('an overlay spot shows the cat only when the overlay opens', async ({ page }) => {

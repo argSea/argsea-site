@@ -1,23 +1,17 @@
 ---
 import LighthouseMark from './LighthouseMark.astro';
-import NavMenu from './islands/NavMenu';
-import type { CatPage } from '../lib/catSpots';
-import type { FigureheadDesign } from '../lib/api';
 
 // Borderless nav: lighthouse mark + name on the left, mono links on the
 // right. `active` underlines the current page in gold; the 404 page passes
-// 'none'. Below the hamburger breakpoint the right-hand links collapse into the
-// NavMenu island's toggle + panel.
+// 'none'. Below the phone line the desktop links give way to the bottom tab
+// bar (TabBar.astro); only a compact resume link stays up here. The header cat
+// is placed by HarborCatDirector; below the phone line its menu-gated header
+// spot simply stands down.
 interface Props {
-	active:     'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
-	catPage:    CatPage;
-	catEnabled: boolean;
-	catPages:   Record<string, boolean>;
-	catSpots:   Record<string, boolean>;
-	catDesigns: FigureheadDesign[];
+	active: 'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
 }
 
-const { active, catPage, catEnabled, catPages, catSpots, catDesigns } = Astro.props;
+const { active } = Astro.props;
 
 const links = [
 	{ id: 'hello',    label: 'hello',    href: '/' },
@@ -37,9 +31,8 @@ const links = [
 		))}
 		<a href="/resume.pdf">resume ↗</a>
 	</nav>
-	{/* Only functions below the hamburger breakpoint, so only hydrate there:
-	    on desktop the director owns the header cat and this never mounts */}
-	<NavMenu client:media="(max-width: 600px)" active={active} page={catPage} links={links} catEnabled={catEnabled} catPages={catPages} catSpots={catSpots} catDesigns={catDesigns} />
+	{/* The one link that stays up top once the links collapse into the tab bar */}
+	<a class="nav-resume" href="/resume.pdf">resume ↗</a>
 </header>
 
 <style>
@@ -80,11 +73,25 @@ const links = [
 		padding-bottom: 2px;
 	}
 
-	/* Below the hamburger breakpoint the desktop links give way to the NavMenu
-	   toggle (kept in sync with NAV_HAMBURGER_MAX in src/lib/catSpots.ts) */
+	/* The compact resume link only shows once the full links collapse */
+	.nav-resume {
+		display: none;
+		align-items: center;
+		color: var(--periwinkle);
+		font-family: var(--font-mono);
+		font-size: 13px;
+	}
+
+	/* Below the phone line the desktop links give way to the bottom tab bar
+	   (TabBar.astro); only the compact resume link stays up top. Kept in sync
+	   with NAV_HAMBURGER_MAX in src/lib/catSpots.ts. */
 	@media (max-width: 600px) {
 		.links {
 			display: none;
+		}
+
+		.nav-resume {
+			display: inline-flex;
 		}
 	}
 </style>
