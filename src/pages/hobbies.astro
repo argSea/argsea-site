@@ -1,11 +1,11 @@
 ---
-// The hobby graveyard: static header, then the HobbyGraveyard island owns
-// the register rows, the manila record modal, the fireflies, the cat's paw
-// rounds, and leave-a-flower (localStorage). Data stays on getHobbies()/
-// getSuggestions() with the expanded Hobby shape; the raw characteristics
-// ("Fl W 3s" and friends) stay per the standing exemption in the identity doc.
+// The ship's log: a static header, then the ShipsLog island owns the wandering
+// chart (projected marks, wakes, the Flannan memorial), the log list, the
+// bearing card with its flares, and the in-memoriam modal. Data stays on
+// getHobbies()/getSuggestions(); a hobby with a null coord rides the log only,
+// never the chart.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HobbyGraveyard from '../components/islands/HobbyGraveyard';
+import ShipsLog from '../components/islands/ShipsLog';
 import { getHobbies, getSuggestions, getSiteCopy, getFigurehead } from '../lib/api';
 
 const hobbies = await getHobbies();
@@ -13,15 +13,15 @@ const suggestions = await getSuggestions();
 const copy = await getSiteCopy();
 const catDesigns = await getFigurehead();
 ---
-<BaseLayout title="The hobby graveyard · argsea.com" active="hobbies" quipKey="quipHobbies">
+<BaseLayout title="The ship's log · argsea.com" active="hobbies" quipKey="quipHobbies">
 	<section class="head">
-		<span class="head__kicker section-label fade-up fade-up--1">Hobbies · past and present</span>
-		<h1 class="head__title fade-up fade-up--2">The hobby graveyard</h1>
-		<p class="head__intro fade-up fade-up--3">Up the hill from the tower. Every hobby kept a small light here once; the station buries its keepers properly.</p>
-		<p class="head__subintro fade-up fade-up--4">In memory of the keepers of Flannan Isle, who actually vanished. Everyone below just wandered off.</p>
+		<span class="head__kicker section-label fade-up fade-up--1">Hobbies · past and adrift</span>
+		<h1 class="head__title fade-up fade-up--2">Off course, not overboard</h1>
+		<p class="head__intro fade-up fade-up--3">Every hobby I ever picked up is still out there somewhere. None of them sank. The chart just needs updating, and the keeper is slow with the ink.</p>
+		<p class="head__subintro fade-up fade-up--4">Filed with the harbor watch, who logs every overdue ship as "expected on the next fair wind," never "lost."</p>
 	</section>
 
-	<HobbyGraveyard
+	<ShipsLog
 		client:load
 		hobbies={hobbies}
 		suggestions={suggestions.map((s) => s.value)}
@@ -34,16 +34,16 @@ const catDesigns = await getFigurehead();
 
 <style>
 	.head {
-		padding: clamp(40px, 7vw, 64px) var(--gutter) 22px;
+		padding: clamp(40px, 7vw, 64px) var(--gutter) 20px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		text-align: center;
-		gap: 10px;
+		gap: 16px;
 	}
 
 	.head__kicker {
-		margin-bottom: 8px;
+		margin-bottom: 0;
 		font-size: 12px;
 		letter-spacing: .18em;
 	}
@@ -52,15 +52,16 @@ const catDesigns = await getFigurehead();
 		margin: 0;
 		font-family: var(--font-display);
 		font-weight: 400;
-		font-size: clamp(32px, 5.5vw, 46px);
+		font-size: clamp(34px, 5.8vw, 50px);
 		color: var(--text-strong);
+		line-height: 1.08;
 	}
 
 	.head__intro {
 		margin: 0;
 		font-size: clamp(16px, 2.3vw, 18px);
 		color: var(--text-body);
-		max-width: 600px;
+		max-width: 620px;
 		line-height: 1.6;
 	}
 
@@ -69,7 +70,7 @@ const catDesigns = await getFigurehead();
 		font-size: 14px;
 		font-style: italic;
 		color: var(--text-dim);
-		max-width: 540px;
+		max-width: 560px;
 		line-height: 1.55;
 	}
 </style>

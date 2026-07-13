@@ -102,56 +102,39 @@ export interface Project {
 	updatedAt:    string;
 }
 
-// A resting/still-burning hobby's disposition, driving the graveyard's lamp-dot
-// and pill colors: alive stays lit, haunt occasionally flickers, dark is laid
-// to rest. Distinct from `disposition`, the freeform label a visitor reads.
-export type HobbyKind = 'alive' | 'haunt' | 'dark';
+// A hobby's disposition on the wandering chart: none of them sank, they just
+// wandered to five different places. Moored ones never left home waters, port
+// ones came in on purpose, the rest are somewhere between adrift and off the
+// edge of the chart (see stateMeta on the ship's log for the labels).
+export type HobbyState = 'moored' | 'port' | 'adrift' | 'marooned' | 'inkspill';
 
-// The graveyard headstone/marker a resting hobby gets; '' falls through to the
-// stone default, same as an absent marker.
-export type HobbyMarker = '' | 'stone' | 'sticks' | 'driftwood' | 'cairn' | 'buoy' | 'lamp';
-
-// The wire shape, field-for-field with the domain's Hobby struct. `active` is
-// the one stored lifecycle bool, not `kind`. The postcard-era dates/epitaph/
-// eulogy ride along as optional dormant fields (declared below) so the register
-// can fall back to them; a migrated document fills the new fields and may leave
-// these empty. Never exported: everything downstream of FixtureSource/ApiSource
-// sees the derived Hobby below instead.
-interface HobbyDoc {
-	id:          string;
-	name:        string;
-	active:      boolean;     // currently-learning vs resting; the wire's only lifecycle field
-	service:     string;      // freeform tenure, e.g. "2021 - present"
-	char:        string;      // a light-style characteristic string, e.g. "Fl W 3s"
-	marker:      HobbyMarker;
-	wear:        number;      // 0..1, weathering; a non-dated service string reads as fully worn
-	disposition: string;      // freeform label the register pill shows
-	log:         string;      // the register row's own line
-	lastLog:     string;      // the record's italic pull-quote
-	found:       string;      // "what was found"
-	cause:       string;      // "cause of vanishing"
-	return:      string;      // "re-appointment"
-	// The postcard-era record, dormant on the wire; the register falls back
-	// to these when the new fields sit empty (operator ruling 2026-07-11:
-	// dates stand in for service, the epitaph for the pill, the eulogy for
-	// the log). Fixtures may omit them; toHobby() normalizes.
-	dates?:      string;
-	epitaph?:    string;
-	eulogy?:     string;
-	tags:        string[];
-	order:       number;      // the keeper's manual sort key
-	createdAt:   string;
-	updatedAt:   string;
+// A plotted position in degrees: latitude north-positive, longitude east-
+// positive, so the argsea district's west longitudes come through negative,
+// matching the chart's own projection window.
+export interface Coord {
+	lat: number;
+	lon: number;
 }
 
-// The domain shape islands actually consume: HobbyDoc plus `kind`, derived by
-// toHobby() below rather than carried on the wire. Keeping `kind` here (not
-// `active`) means the graveyard's rendering never had to change shape.
-export interface Hobby extends HobbyDoc {
-	kind:    HobbyKind;
-	dates:   string;
-	epitaph: string;
-	eulogy:  string;
+// The wire shape, field-for-field with the domain's Hobby struct. `coord` null
+// means uncharted: the hobby shows in the log with an "uncharted" position but
+// never gets a mark on the chart. `from` absent or null means no wake, so a
+// hobby that never slipped its mooring draws no trail.
+export interface Hobby {
+	id:        string;
+	name:      string;
+	service:   string;        // freeform tenure, e.g. "2021 · present"
+	state:     HobbyState;
+	coord:     Coord | null;  // null = uncharted: in the log, off the chart
+	from?:     Coord | null;  // absent/null = no wake trail
+	seasons:   string;        // the sounding beside the mark: seasons kept at it, not fathoms
+	bearing:   string;        // the log row's own line and the mark's tooltip
+	lastLog:   string;        // the bearing card's italic pull-quote
+	offCourse: string;        // "how it went off course"
+	floats:    string;        // "what still floats"
+	odds:      string;        // "odds of return", on the row and the card
+	tags?:     string[];      // the home strip's currently-learning side labels ("plex · htpc"); unused on the chart
+	order:     number;        // the keeper's manual sort key
 }
 
 export interface Note {
@@ -325,30 +308,6 @@ export interface ContentSource {
 	getCarvings(): Promise<Carving[]>;
 }
 
-// kind is derived, never stored (2026-07-11 integrator ruling: the wire
-// carries `active`, not `kind`; deriving it here, once, means a future wire
-// `kind` field replaces exactly this one spot, in both sources at once).
-// A haunt-flavored disposition wins outright, standing or not (operator
-// ruling 2026-07-11: the keeper's word is the explicit signal; a hobby can
-// haunt you while you live it). Otherwise standing burns alive, resting
-// goes dark.
-function deriveHobbyKind(active: boolean, disposition: string): HobbyKind {
-	if (/haunt/i.test(disposition)) {
-		return 'haunt';
-	}
-	return active ? 'alive' : 'dark';
-}
-
-function toHobby(doc: HobbyDoc): Hobby {
-	return {
-		...doc,
-		dates:   doc.dates ?? '',
-		epitaph: doc.epitaph ?? '',
-		eulogy:  doc.eulogy ?? '',
-		kind:    deriveHobbyKind(doc.active, doc.disposition),
-	};
-}
-
 class ApiSource implements ContentSource {
 	constructor(private readonly baseUrl: string, private readonly keeperId: string) {}
 
@@ -363,7 +322,7 @@ class ApiSource implements ContentSource {
 	}
 
 	getProjects(): Promise<Project[]> { return this.list<Project>('/1/project'); }
-	async getHobbies(): Promise<Hobby[]> { return (await this.list<HobbyDoc>('/1/hobby')).map(toHobby); }
+	getHobbies(): Promise<Hobby[]> { return this.list<Hobby>('/1/hobby'); }
 	getNotes(): Promise<Note[]> { return this.list<Note>('/1/note'); }
 
 	/** The copy singleton is public and not lifecycle-gated, so no ?published flag. */
@@ -442,7 +401,7 @@ class ApiSource implements ContentSource {
 
 class FixtureSource implements ContentSource {
 	getProjects(): Promise<Project[]> { return Promise.resolve(projectsFixture as Project[]); }
-	getHobbies(): Promise<Hobby[]> { return Promise.resolve((hobbiesFixture as HobbyDoc[]).map(toHobby)); }
+	getHobbies(): Promise<Hobby[]> { return Promise.resolve(hobbiesFixture as Hobby[]); }
 	getNotes(): Promise<Note[]> { return Promise.resolve(notesFixture as Note[]); }
 	getSiteCopy(): Promise<SiteCopy> { return Promise.resolve(siteCopyFixture as SiteCopy); }
 	getKeeperProfile(): Promise<KeeperProfile> { return Promise.resolve(keeperProfileFixture as KeeperProfile); }
@@ -465,14 +424,9 @@ export async function getProjects(): Promise<Project[]> {
 	return (await source.getProjects()).sort((a, b) => a.order - b.order || a.createdAt.localeCompare(b.createdAt));
 }
 
-/**
- * Still-burning hobbies rank first, then the keeper's manual `order`. Grouping
- * on `active`, not `kind === 'alive'`, keeps a haunting-but-active hobby up with
- * the living: it earns the lamp, so it belongs among the lamps, not the graves.
- */
+/** Hobbies by the keeper's manual `order` key; the API pre-sorts, this holds the fixtures to the same rule. */
 export async function getHobbies(): Promise<Hobby[]> {
-	const living = (hobby: Hobby) => Number(hobby.active);
-	return (await source.getHobbies()).sort((a, b) => living(b) - living(a) || a.order - b.order);
+	return (await source.getHobbies()).sort((a, b) => a.order - b.order);
 }
 
 /** Notes newest-first; RFC3339 strings compare chronologically. */

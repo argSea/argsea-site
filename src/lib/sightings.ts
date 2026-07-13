@@ -12,7 +12,7 @@
 // fixtures default) leaves the beacon disarmed, so nothing ever fires.
 const BASE = (import.meta.env.PUBLIC_ARGSEA_API_URL ?? '').replace(/\/+$/, '');
 
-type Kind = 'sail' | 'flip' | 'read' | 'visit' | 'bottle';
+type Kind = 'sail' | 'flip' | 'read' | 'visit' | 'bottle' | 'flare';
 
 interface Sighting {
 	kind:    Kind;
@@ -62,6 +62,7 @@ let sailed = false;
 const flips = new Set<string>();
 const reads = new Set<string>();
 const visits = new Set<string>();
+const flares = new Set<string>();
 
 /** The page loaded: fired once per load from the base layout, carrying where we are and where the visitor came from. */
 export function sightSail(): void {
@@ -90,13 +91,27 @@ export function sightRead(id: string): void {
 	send({ kind: 'read', path: location.pathname, subject: id, ref: '' });
 }
 
-/** A keeper's record opened: fired once per hobby per page view, when a grave's record modal opens in the graveyard. */
+/** A hobby's bearing opened: fired once per hobby per page view, when its bearing card opens on the ship's log. */
 export function sightVisit(id: string): void {
 	if (!id || visits.has(id)) {
 		return;
 	}
 	visits.add(id);
 	send({ kind: 'visit', path: location.pathname, subject: id, ref: '' });
+}
+
+/**
+ * A flare sent up for an overdue hobby: fired once per hobby per page view, like
+ * a visit. The client can fire a hobby's flare again for its own UI, but the
+ * beacon counts it once; the persistent tally the keeper reads lives in the
+ * watch room, off the argsea-flares localStorage the card also keeps.
+ */
+export function sightFlare(id: string): void {
+	if (!id || flares.has(id)) {
+		return;
+	}
+	flares.add(id);
+	send({ kind: 'flare', path: location.pathname, subject: id, ref: '' });
 }
 
 /** A bottle dropped: fired on every boat poke and never deduped, since each poke serves a fresh proverb. */

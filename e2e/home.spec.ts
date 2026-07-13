@@ -76,22 +76,14 @@ test('the journal strip spells the entry count as a word', async ({ page }) => {
 	await expect(page.locator('.journal-strip__vol')).toHaveText('log book · vol. 2026 · three entries of many');
 });
 
-test('the graveyard preview chips read lowercase name, dagger, disposition', async ({ page }) => {
+// The ship's log preview: the wandering hobbies (anything not moored or in
+// port) become chips tagged lowercase-name · state, the state read from the
+// same stateMeta the chart uses (its first segment, so "adrift", not the full
+// gloss). Piano leads the wandering set.
+test('the ship\'s log preview chips read lowercase name and state', async ({ page }) => {
 	await page.goto('/');
 	const chips = page.locator('.grave-chip');
-	await expect(chips.first()).toHaveText('piano † occasionally haunting');
-});
-
-// The dagger only joins a name to a phrase; a record with no disposition and
-// no epitaph shows just the name, so no chip ever trails a lone dagger.
-test('a graveyard chip never dangles a dagger', async ({ page }) => {
-	await page.goto('/');
-	const chips = page.locator('.grave-chip');
-	const count = await chips.count();
-	for (let i = 0; i < count; i += 1) {
-		const text = (await chips.nth(i).textContent())?.trim() ?? '';
-		expect(text.endsWith('†')).toBe(false);
-	}
+	await expect(chips.first()).toHaveText('piano · adrift');
 });
 
 test('the flagship polaroid ships a real print, not a broken glyph', async ({ page }) => {

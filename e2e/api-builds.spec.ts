@@ -31,27 +31,19 @@ test('contact band, socials, and sign-off come from the fetched profile', async 
 });
 
 // The mock API serves the checked-in hobbies fixture verbatim over the real
-// wire route, so this exercises the api.ts mapping layer's kind derivation
-// (active → alive; !active + haunt-flavored disposition → haunt; otherwise
-// dark) against a genuinely kind-less document, not just the fixture path.
-test('a wire hobby with only `active` (no `kind`) derives correctly through the mock API', async ({ page }) => {
+// wire route, so this exercises ApiSource end to end: the ship's log renders
+// the wire hobbies, projects the charted ones onto the chart, and keeps the
+// uncharted one in the log only, same as the fixtures build does.
+test('wire hobbies render onto the ship\'s log through the API path', async ({ page }) => {
 	await page.goto(`${FEATURED_BUILD}/hobbies`);
-	const rows = page.locator('.graveyard__row');
-	await expect(rows).toHaveCount(7);
+	await expect(page.locator('.shipslog__row')).toHaveCount(6);
 
-	// The home lab: active: true → derived alive → the lamp marker, not a stone
-	await expect(rows.first().locator('.graveyard__lamp')).toBeVisible();
+	// The home lab (order 1) leads the log and gets a moored mark on the chart
+	await expect(page.locator('.shipslog__mark[data-hobby-id="fixture-hobby-1"][data-state="moored"]')).toHaveCount(1);
 
-	// Piano: active: false, disposition "occasionally haunting" → derived haunt,
-	// resting, so a stone whose dot idles on the rare flicker
-	const piano = page.locator('.graveyard__row', { has: page.getByText('Piano', { exact: true }) });
-	await expect(piano.locator('.graveyard__lamp-dot--haunt')).toBeVisible();
-
-	// Changing my OS: active: true with a haunting disposition. Active keeps the
-	// lamp; the haunt rides on top as the HAUNTING pill, not a grave
-	const standingHaunt = page.locator('.graveyard__row', { has: page.getByText('Changing my OS', { exact: true }) });
-	await expect(standingHaunt.locator('.graveyard__pill--haunt')).toBeVisible();
-	await expect(standingHaunt.locator('.graveyard__lamp')).toBeVisible();
+	// The uncharted hobby rides the log with an "uncharted" position, never a mark
+	await expect(page.locator('.shipslog__mark[data-hobby-id="fixture-hobby-6"]')).toHaveCount(0);
+	await expect(page.locator('.shipslog__row[data-hobby-id="fixture-hobby-6"] .shipslog__coord')).toHaveText('◈ uncharted');
 });
 
 // Order 7 (The old publishing stack) is nulled to facts:null/noteIds:null in

@@ -11,7 +11,7 @@ const ARMED = 'http://127.0.0.1:4824';
 const DISARMED = 'http://127.0.0.1:4821';
 
 interface Sighting {
-	kind:    'sail' | 'flip' | 'read' | 'visit' | 'bottle';
+	kind:    'sail' | 'flip' | 'read' | 'visit' | 'bottle' | 'flare';
 	path:    string;
 	subject: string;
 	ref:     string;
@@ -89,24 +89,41 @@ test('opening a note on the notes page emits one read with the note id', async (
 	expect(only(seen, 'read')[0]).toMatchObject({ kind: 'read', path: '/notes', subject: 'fixture-note-1', ref: '' });
 });
 
-test('opening a hobby record emits one visit with the hobby id, and reopening it does not double-fire', async ({ page }) => {
+test('opening a hobby\'s bearing emits one visit with the hobby id, and reopening it does not double-fire', async ({ page }) => {
 	const seen = await collect(page);
 	await page.goto(`${ARMED}/hobbies`);
 
-	await page.locator('.graveyard__row').first().click();
-	await expect(page.locator('.record-modal')).toBeVisible();
+	await page.locator('.shipslog__row').first().click();
+	await expect(page.locator('.shipslog__bearing')).toBeVisible();
 
 	await expect.poll(() => only(seen, 'visit').length).toBe(1);
 	expect(only(seen, 'visit')[0]).toMatchObject({ kind: 'visit', path: '/hobbies', subject: 'fixture-hobby-1', ref: '' });
 
-	// close and reopen the same record: the once-per-hobby guard holds
+	// close and reopen the same bearing: the once-per-hobby guard holds
 	await page.keyboard.press('Escape');
-	await expect(page.locator('.record-modal')).toHaveCount(0);
-	await page.locator('.graveyard__row').first().click();
-	await expect(page.locator('.record-modal')).toBeVisible();
+	await expect(page.locator('.shipslog__bearing')).toHaveCount(0);
+	await page.locator('.shipslog__row').first().click();
+	await expect(page.locator('.shipslog__bearing')).toBeVisible();
 
 	await page.waitForTimeout(300);
 	expect(only(seen, 'visit')).toHaveLength(1);
+});
+
+test('sending up a flare emits one flare with the hobby id, and re-firing it does not double-count the beacon', async ({ page }) => {
+	const seen = await collect(page);
+	await page.goto(`${ARMED}/hobbies`);
+
+	await page.locator('.shipslog__row').first().click();
+	await expect(page.locator('.shipslog__bearing')).toBeVisible();
+	await page.locator('.shipslog__flare-btn').click();
+
+	await expect.poll(() => only(seen, 'flare').length).toBe(1);
+	expect(only(seen, 'flare')[0]).toMatchObject({ kind: 'flare', path: '/hobbies', subject: 'fixture-hobby-1', ref: '' });
+
+	// the card can fire again for its own tally, but the beacon counts once per view
+	await page.locator('.shipslog__flare-btn').click();
+	await page.waitForTimeout(300);
+	expect(only(seen, 'flare')).toHaveLength(1);
 });
 
 test('poking the boat emits a bottle, and poking it again emits another with no dedupe', async ({ page }) => {
