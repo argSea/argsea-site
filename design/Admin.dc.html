@@ -721,6 +721,178 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
           </div>
         </sc-if>
 
+        <!-- ===== THE WATCH DESK (current watch singleton) ===== -->
+        <sc-if value="{{ isWatch }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="The watch desk" style="display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">site copy</span>
+              <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">The watch desk</span>
+              <span style="font-size:15.5px;color:#a5aed4;font-style:italic">What the front door says you are up to. One record, written over whole each time it is kept. Nothing here has a history, that is the point.</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:26px;align-items:flex-start;animation:fadeUp .7s ease .15s both">
+              <div style="flex:1 1 400px;min-width:320px;display:flex;flex-direction:column;gap:18px">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the letter</span>
+                  <textarea value="{{ watchLetter }}" onChange="{{ onWatchLetter }}" rows="8" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:10px;padding:14px 16px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.6;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// a letter, not a log. a blank line starts a new paragraph.</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">out of the rotation</span>
+                  <input type="text" value="{{ watchRotation }}" onChange="{{ onWatchRotation }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:10px;padding:11px 16px;color:#a5aed4;font-family:'Newsreader',serif;font-style:italic;font-size:14.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the bearings · three at most</span>
+                  <sc-if value="{{ watchOrphans }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8;line-height:1.6;background:rgba(240,217,168,.07);border:1px solid rgba(240,217,168,.3);border-radius:8px;padding:9px 12px">{{ watchOrphans }}</span>
+                  </sc-if>
+                  <sc-for list="{{ watchBearings }}" as="b" hint-placeholder-count="3">
+                    <div style="display:flex;flex-direction:column;gap:8px;background:#131728;border:1px solid rgba(150,160,220,.18);border-radius:10px;padding:12px 14px">
+                      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                        <input type="text" value="{{ b.label }}" onChange="{{ b.onLabel }}" title="the verb. wrangling, plotting, reading..." style="width:104px;background:#0f1322;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:8px 10px;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                        <select value="{{ b.source }}" onChange="{{ b.onSource }}" style="background:#0f1322;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:8px 10px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none">
+                          <option value="free">points nowhere yet</option>
+                          <option value="light">a light</option>
+                          <option value="hobby">a hobby</option>
+                          <option value="note">a note</option>
+                        </select>
+                        <sc-if value="{{ b.hasTargets }}" hint-placeholder-val="{{ false }}">
+                          <select value="{{ b.target }}" onChange="{{ b.onTarget }}" style="flex:1;min-width:150px;background:#0f1322;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:8px 10px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none">
+                            <sc-for list="{{ b.targets }}" as="t" hint-placeholder-count="3"><option value="{{ t.v }}">{{ t.v }}</option></sc-for>
+                          </select>
+                        </sc-if>
+                        <span onClick="{{ b.onRemove }}" title="strike the bearing" style="margin-left:auto;cursor:pointer;color:#5f6ec4;font-family:'IBM Plex Mono',monospace;font-size:13px;padding:2px 4px" style-hover="color:#b0483a">✕</span>
+                      </div>
+                      <input type="text" value="{{ b.name }}" onChange="{{ b.onName }}" title="what the front door shows. picking a source refills it; edit freely after." style="width:100%;box-sizing:border-box;background:#0f1322;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:8px 12px;color:#dde1f0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                    </div>
+                  </sc-for>
+                  <sc-if value="{{ watchCanAdd }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ addBearing }}" style="padding:11px 16px;background:transparent;border:1.5px dashed rgba(240,217,168,.45);border-radius:10px;color:#f0d9a8;font-family:'IBM Plex Mono',monospace;font-size:12.5px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s" style-hover="border-color:rgba(240,217,168,.8);background:rgba(240,217,168,.05)">+ a bearing</button>
+                  </sc-if>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the postcard · from the darkroom</span>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px">
+                    <sc-for list="{{ watchPhotos }}" as="ph" hint-placeholder-count="6">
+                      <div onClick="{{ ph.onChoose }}" style="cursor:pointer;display:flex;flex-direction:column;gap:4px">
+                        <div style="{{ ph.frameStyle }}"></div>
+                        <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#a5aed4;word-break:break-all">{{ ph.name }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.6">// pick a print, tap it again to take it back down. the caption stamps itself from the save date. new prints develop in the darkroom tab.</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the cat's remarks</span>
+                  <sc-for list="{{ watchQuips }}" as="q" hint-placeholder-count="3">
+                    <div style="display:flex;gap:8px;align-items:center">
+                      <input type="text" value="{{ q.text }}" onChange="{{ q.onText }}" style="flex:1;min-width:0;background:#0f1322;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:8px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                      <span onClick="{{ q.onRemove }}" title="the cat forgets this one" style="cursor:pointer;color:#5f6ec4;font-family:'IBM Plex Mono',monospace;font-size:13px;padding:2px 4px" style-hover="color:#b0483a">✕</span>
+                    </div>
+                  </sc-for>
+                  <button onClick="{{ addQuip }}" style="padding:10px 16px;background:transparent;border:1.5px dashed rgba(240,217,168,.45);border-radius:10px;color:#f0d9a8;font-family:'IBM Plex Mono',monospace;font-size:12.5px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s" style-hover="border-color:rgba(240,217,168,.8);background:rgba(240,217,168,.05)">+ a remark</button>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.6">// these belong to the watch cat only. tailor them to the letter; the cat elsewhere keeps its own material. click the preview cat to hear one.</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid rgba(150,160,220,.14);padding-top:16px">
+                  <button onClick="{{ saveWatch }}" style="padding:11px 22px;background:#f0d9a8;color:#1b2033;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;box-shadow:2px 2px 0 rgba(147,160,232,.6);cursor:pointer">keep the watch</button>
+                  <span onClick="{{ clearWatch }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a86b8;transition:color .2s" style-hover="color:#b0483a">clear the watch</span>
+                  <sc-if value="{{ watchFlash }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6fca97">{{ watchFlash }}</span></sc-if>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;flex:1 1 100%">// {{ watchStamp }}</span>
+                </div>
+              </div>
+              <div style="flex:1 1 360px;min-width:300px;display:flex;flex-direction:column;gap:10px;position:sticky;top:20px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">how the front door reads it</span>
+                <sc-if value="{{ watchNotEmpty }}" hint-placeholder-val="{{ true }}">
+                  <div style="position:relative;background:linear-gradient(160deg,#161a2e,#12162a);border:1px solid rgba(150,160,220,.2);border-radius:14px;padding:24px 26px;display:flex;flex-direction:column;gap:14px">
+                    <dc-import name="HarborCat" pose="perched" bubble="left" quips="{{ watchQuipsStr }}" hint-size="46px,54px" style="position:absolute;top:-36px;right:24px;width:46px;height:54px;z-index:3"></dc-import>
+                    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:6px 12px">
+                      <span style="display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#f0d9a8;text-transform:uppercase"><span style="width:5px;height:5px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 7px 2px rgba(240,217,168,.55);animation:lampPulse 4s ease-in-out infinite"></span>Now</span>
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">{{ watchKeptShort }}</span>
+                    </div>
+                    <sc-for list="{{ watchParas }}" as="p" hint-placeholder-count="2">
+                      <div style="font-family:'Newsreader',serif;font-size:14.5px;line-height:1.65;color:#a5aed4;font-weight:300;text-wrap:pretty">{{ p.t }}</div>
+                    </sc-for>
+                    <sc-if value="{{ watchRotationOn }}" hint-placeholder-val="{{ true }}">
+                      <div style="font-family:'Newsreader',serif;font-size:13px;font-style:italic;color:#9aa3c9;line-height:1.6;text-wrap:pretty">Out of the rotation on purpose: {{ watchRotation }}</div>
+                    </sc-if>
+                    <sc-if value="{{ watchHasBearings }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;flex-wrap:nowrap;align-items:baseline;gap:6px 10px;border-top:1px solid rgba(150,160,220,.14);padding-top:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;line-height:1.7;white-space:nowrap;overflow:hidden">
+                        <sc-for list="{{ watchPrevBearings }}" as="w" hint-placeholder-count="3">
+                          <span style="display:inline-flex;align-items:baseline;gap:7px">
+                            <sc-if value="{{ w.sep }}" hint-placeholder-val="{{ false }}"><span style="color:#3d4468">·</span></sc-if>
+                            <span style="color:#8a93c4">{{ w.label }}</span>
+                            <span style="color:{{ w.nameColor }}">{{ w.name }}</span>
+                          </span>
+                        </sc-for>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ watchPhotoOn }}" hint-placeholder-val="{{ false }}">
+                  <div style="align-self:flex-end;width:200px;display:flex;flex-direction:column;gap:7px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:7px 7px 10px;box-shadow:0 8px 20px rgba(0,0,0,.45);transform:rotate(1.6deg)">
+                    <div style="{{ watchPhotoStyle }}"></div>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#93a0e8;text-align:center">from the season · jul 2026</span>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ watchEmpty }}" hint-placeholder-val="{{ false }}">
+                  <div style="border:1.5px dashed rgba(150,160,220,.3);border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center">
+                    <span style="font-family:'Newsreader',serif;font-style:italic;font-size:14.5px;color:#7a83ad">The watch stands empty.</span>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">the homepage section folds away until the next one is kept</span>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ===== THE TOOL BENCH (stores) ===== -->
+        <sc-if value="{{ isBench }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="Tool bench" style="display:flex;flex-direction:column;gap:22px;position:relative">
+            <dc-import name="HarborCat" pose="lying" quips="every drawer has been slept in.|four drawers. i counted.|none of these tools are for opening tins. noted." hint-size="52px,60px" style="position:absolute;top:-10px;right:22px;width:54px;height:62px;z-index:3"></dc-import>
+            <div style="display:flex;flex-direction:column;gap:8px;animation:fadeUp .7s ease .05s both">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the stores</span>
+              <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">The tool bench</span>
+              <span style="font-size:15.5px;color:#a5aed4;font-style:italic">What earns the shelf, sorted into drawers. Four drawers at most: a bench with more is a shed.</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start;animation:fadeUp .7s ease .15s both">
+              <div style="flex:1 1 230px;max-width:340px;display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ benchCats }}" as="c" hint-placeholder-count="3">
+                  <div onClick="{{ c.onPick }}" style="{{ c.rowStyle }}" style-hover="background:rgba(147,160,232,.08)">
+                    <span style="{{ c.nameStyle }}">{{ c.name }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;white-space:nowrap">{{ c.count }}</span>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ benchNotFull }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ addBenchCat }}" style="padding:12px 16px;background:transparent;border:1.5px dashed rgba(240,217,168,.45);border-radius:10px;color:#f0d9a8;font-family:'IBM Plex Mono',monospace;font-size:12.5px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s" style-hover="border-color:rgba(240,217,168,.8);background:rgba(240,217,168,.05)">+ a new drawer</button>
+                </sc-if>
+                <sc-if value="{{ benchFull }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;line-height:1.6;padding:0 4px">// the bench is full. four drawers is plenty.</span>
+                </sc-if>
+              </div>
+              <sc-if value="{{ benchHasSel }}" hint-placeholder-val="{{ true }}">
+                <div style="flex:2 1 340px;background:#131728;border:1px solid rgba(150,160,220,.18);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:16px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                    <input type="text" value="{{ benchSelName }}" onChange="{{ onBenchName }}" title="the drawer's label. write on the brass plate." style="flex:1 1 180px;background:#0f1322;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:9px 14px;color:#f0d9a8;font-family:'IBM Plex Mono',monospace;font-size:13.5px;letter-spacing:.06em;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                    <span onClick="{{ scrapDrawer }}" style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8a86b8;cursor:pointer;user-select:none;transition:color .2s" style-hover="color:#b0483a">{{ scrapLabel }}</span>
+                  </div>
+                  <div style="display:flex;gap:10px 9px;flex-wrap:wrap;align-items:center">
+                    <sc-for list="{{ benchItems }}" as="t" hint-placeholder-count="5">
+                      <span style="display:inline-flex;align-items:center;gap:8px;padding:5px 8px 5px 14px;border:1px solid rgba(150,160,220,.32);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#c3cbf2;background:rgba(147,160,232,.06)">{{ t.label }}<span onClick="{{ t.onDel }}" title="off the bench" style="width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#5f6ec4;cursor:pointer;transition:color .2s,background .2s" style-hover="color:#b0483a;background:rgba(176,72,58,.12)">×</span></span>
+                    </sc-for>
+                    <sc-if value="{{ benchEmpty }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:14px;color:#5f6ec4;font-style:italic">an empty drawer. it happens to the best benches.</span>
+                    </sc-if>
+                  </div>
+                  <form onSubmit="{{ addBenchItem }}" style="display:flex;gap:10px;margin:0;flex-wrap:wrap">
+                    <input type="text" value="{{ benchItemText }}" onChange="{{ onBenchItemText }}" placeholder="a tool that earned the shelf..." style="flex:1 1 200px;background:#0f1322;border:1px solid rgba(150,160,220,.25);border-radius:999px;padding:10px 16px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                    <button type="submit" style="padding:10px 18px;background:#93a0e8;color:#151830;border:none;border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;cursor:pointer;box-shadow:2px 2px 0 rgba(240,217,168,.85);transition:transform .2s" style-hover="transform:translateY(-1px)">+ add</button>
+                  </form>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4">// a tool earns its drawer by paging me at least once.</span>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+
         <!-- ===== DARKROOM (media) ===== -->
         <sc-if value="{{ isMedia }}" hint-placeholder-val="{{ false }}">
           <div data-screen-label="Darkroom" style="display:flex;flex-direction:column;gap:22px">
@@ -1692,6 +1864,32 @@ class Component extends DCLogic {
   state = {
     screen: (this.props && this.props.startLoggedIn) ? 'dash' : 'login',
     user: '', pass: '', loginError: null,
+    bench: [
+      { id: 'langs', name: 'languages', items: ['java', 'python', 'node.js', 'go', 'php'] },
+      { id: 'dataq', name: 'data & queues', items: ['mongodb', 'redis', 'rabbitmq', 'varnish'] },
+      { id: 'infra', name: 'infrastructure', items: ['kubernetes', 'docker', 'nginx', 'linux'] },
+    ],
+    benchSel: 'langs', benchItemText: '', benchArm: null,
+    // the current watch · a singleton, overwritten whole on each save. savedAt stamps the public dateline.
+    watch: {
+      savedAt: '15 jul 2026',
+      letter: 'Most of my time right now goes to the ArcXP migration: moving the newsroom onto its new stack while the paper keeps publishing, the kind of work nobody notices unless it goes wrong.\n\nThe un-monolithing that cleared the way is finally written up, and the home lab keeps growing past what any household could plausibly need. I am trying to write things down while they are still true. Dad the rest of the time, which is most of the time.',
+      rotation: 'Conference talks, one more framework, and the piano. Not abandoned, just set down where I can see them.',
+      bearings: [
+        { label: 'wrangling', name: 'The ArcXP migration', source: 'free', target: null },
+        { label: 'logging', name: 'What re-architecting taught me about not architecting', source: 'note', target: 'What re-architecting taught me about not architecting' },
+        { label: 'tinkering', name: 'The home lab', source: 'hobby', target: 'The home lab' },
+      ],
+      photo: null,
+      quips: [
+        'he says the migration is going fine. he is lying.',
+        'dad the rest of the time. the cat the rest of that.',
+        'the piano is on hold. i checked. it\u2019s still there.',
+        'writing things down while they are still true. bold.',
+        'the lab grew again last night. i heard it.',
+      ],
+    },
+    watchFlash: null,
     logDesk: null, logNew: null, logConfirm: null, blockMenu: null, deskPick: null, blockSel: [], tplNameOpen: false, tplNameVal: '',
     blockTemplates: [{ id: 'tpl-header', name: 'header', blocks: [{ type: 'title', text: 'The light title' }, { type: 'subhead', text: 'A one-line subhead, in the keeper voice.' }, { type: 'facts', rows: [{ k: 'ownership', v: '' }, { k: 'outcome', v: '' }, { k: 'scope', v: '' }] }, { type: 'meta', est: '', tags: [] }] }],
     logs: [
@@ -2841,6 +3039,123 @@ class Component extends DCLogic {
     return { logRows, logsAny: logRows.length > 0, logsNone: logRows.length === 0, logsCountLine: logRows.length + ' logs on the shelf \u00b7 ' + logRows.filter((r) => r.isLit).length + ' lit', newLog: this.startNewLog, stopProp: (e) => e.stopPropagation(), ...this.logDeskVals(), ...this.logFlowVals(), ...this.logConfirmVals() };
   }
 
+  // the watch desk · sources a bearing can point at; href is the public page
+  watchHrefs = { light: 'Projects.dc.html', hobby: 'Hobbies.dc.html', note: 'Notes.dc.html' };
+  setWatch(patch) { this.setState((st) => ({ watch: { ...st.watch, ...patch } })); }
+  setBearing(i, patch) { this.setState((st) => ({ watch: { ...st.watch, bearings: st.watch.bearings.map((b, j) => (j === i ? { ...b, ...patch } : b)) } })); }
+
+  watchVals() {
+    const s = this.state;
+    const w = s.watch;
+    const srcItems = { light: s.projects.map((p) => p.title), hobby: s.hobbies.map((h) => h.name), note: s.notes.map((n) => n.title) };
+    // the link rides on target (what was picked), not name (what it shows) · rename freely, the link holds
+    const orphans = w.bearings.filter((b) => b.source !== 'free' && !(srcItems[b.source] || []).includes(b.target || b.name)).map((b) => b.target || b.name);
+    const trunc = (t) => ((t || '').length > 24 ? (t || '').slice(0, 23).trimEnd() + '…' : t || '');
+    return {
+      watchLetter: w.letter, onWatchLetter: (e) => this.setWatch({ letter: e.target.value }),
+      watchRotation: w.rotation, onWatchRotation: (e) => this.setWatch({ rotation: e.target.value }),
+      watchKeptShort: 'kept ' + w.savedAt.replace(' 2026', ''),
+      watchStamp: 'the dateline stamps itself on save · last kept ' + w.savedAt,
+      watchOrphans: orphans.length ? 'adrift: "' + orphans.join('", "') + '" no longer matches anything at its source. the name stays; the link went with the tide.' : null,
+      watchBearings: w.bearings.map((b, i) => ({
+        label: b.label, name: b.name, source: b.source, target: b.target,
+        onLabel: (e) => this.setBearing(i, { label: e.target.value }),
+        onName: (e) => this.setBearing(i, { name: e.target.value }),
+        onSource: (e) => { const v = e.target.value; const list = srcItems[v]; this.setBearing(i, list && list.length ? { source: v, target: list[0], name: list[0] } : { source: v, target: null }); },
+        hasTargets: b.source !== 'free',
+        targets: (srcItems[b.source] || []).map((t) => ({ v: t })),
+        onTarget: (e) => this.setBearing(i, { target: e.target.value, name: e.target.value }),
+        onRemove: () => this.setState((st) => ({ watch: { ...st.watch, bearings: st.watch.bearings.filter((_, j) => j !== i) } })),
+      })),
+      watchCanAdd: w.bearings.length < 3,
+      addBearing: () => this.setState((st) => (st.watch.bearings.length >= 3 ? null : { watch: { ...st.watch, bearings: [...st.watch.bearings, { label: 'minding', name: 'a new thread', source: 'free' }] } })),
+      watchPhotos: s.media.map((m) => ({
+        name: m.name,
+        frameStyle: { width: '100%', height: '58px', borderRadius: '7px', background: this.mediaBg(m.name), border: w.photo === m.name ? '2px solid #f0d9a8' : '1px solid rgba(150,160,220,.25)', cursor: 'pointer', transition: 'border-color .18s', boxSizing: 'border-box' },
+        onChoose: () => this.setWatch({ photo: this.state.watch.photo === m.name ? null : m.name }),
+      })),
+      watchPhotoOn: !!w.photo,
+      watchPhotoStyle: w.photo ? { width: '100%', height: '92px', background: this.mediaBg(w.photo) } : null,
+      watchParas: (w.letter || '').split(/\n\s*\n/).filter(Boolean).map((t) => ({ t })),
+      watchRotationOn: !!(w.rotation || '').trim(),
+      watchEmpty: !(w.letter || '').trim() && !w.bearings.length,
+      watchNotEmpty: !!(w.letter || '').trim() || !!w.bearings.length,
+      watchPrevBearings: w.bearings.map((b, i) => ({ sep: i > 0, label: b.label, name: trunc(b.name), nameColor: b.source === 'free' ? '#d6dcf4' : '#f0d9a8' })),
+      watchHasBearings: !!w.bearings.length,
+      saveWatch: () => {
+        this.setWatch({ savedAt: '15 jul 2026' });
+        this.setState({ watchFlash: 'kept · the front door reads this now' });
+        clearTimeout(this._wf); this._wf = setTimeout(() => this.setState({ watchFlash: null }), 2600);
+      },
+      clearWatch: () => this.setState((st) => ({ watch: { ...st.watch, letter: '', rotation: '', bearings: [], photo: null } })),
+      watchFlash: s.watchFlash,
+      // the cat's remarks · these travel with the watch record, so they can needle the current letter
+      watchQuips: (w.quips || []).map((q, i) => ({
+        text: q,
+        onText: (e) => { const v = e.target.value; this.setState((st) => ({ watch: { ...st.watch, quips: st.watch.quips.map((x, j) => (j === i ? v : x)) } })); },
+        onRemove: () => this.setState((st) => ({ watch: { ...st.watch, quips: st.watch.quips.filter((_, j) => j !== i) } })),
+      })),
+      addQuip: () => this.setState((st) => ({ watch: { ...st.watch, quips: [...(st.watch.quips || []), 'a fresh remark. the cat will workshop it.'] } })),
+      watchQuipsStr: (w.quips || []).map((q) => q.trim()).filter(Boolean).join('|') || 'no remarks. suspicious.',
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const sel = s.bench.find((cat) => cat.id === s.benchSel) || s.bench[0];
+    const full = s.bench.length >= 4;
+    return {
+      benchCats: s.bench.map((cat) => {
+        const on = sel && cat.id === sel.id;
+        return {
+          name: cat.name,
+          count: cat.items.length + (cat.items.length === 1 ? ' tool' : ' tools'),
+          onPick: () => this.setState({ benchSel: cat.id, benchArm: null }),
+          rowStyle: {
+            display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '10px',
+            padding: '13px 16px', borderRadius: '10px', cursor: 'pointer', transition: 'background .2s, border-color .2s',
+            background: on ? 'rgba(240,217,168,.09)' : '#131728',
+            border: on ? '1px solid rgba(240,217,168,.5)' : '1px solid rgba(150,160,220,.18)',
+          },
+          nameStyle: { fontFamily: "'IBM Plex Mono', monospace", fontSize: '13px', color: on ? '#f0d9a8' : '#c3cbf2' },
+        };
+      }),
+      benchFull: full, benchNotFull: !full,
+      addBenchCat: () => {
+        if (this.state.bench.length >= 4) return;
+        const id = 'cat' + Date.now();
+        this.setState((st) => ({ bench: [...st.bench, { id, name: 'new drawer', items: [] }], benchSel: id, benchArm: null }));
+      },
+      benchHasSel: !!sel,
+      benchSelName: sel ? sel.name : '',
+      onBenchName: (e) => { const v = e.target.value; const id = sel.id; this.setState((st) => ({ bench: st.bench.map((cat) => cat.id === id ? { ...cat, name: v } : cat) })); },
+      benchItems: sel ? sel.items.map((it, i) => ({
+        label: it,
+        onDel: () => { const id = sel.id; this.setState((st) => ({ bench: st.bench.map((cat) => cat.id === id ? { ...cat, items: cat.items.filter((_, j) => j !== i) } : cat) })); },
+      })) : [],
+      benchEmpty: !!sel && sel.items.length === 0,
+      benchItemText: s.benchItemText,
+      onBenchItemText: (e) => this.setState({ benchItemText: e.target.value }),
+      addBenchItem: (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        const v = (this.state.benchItemText || '').trim();
+        if (!v || !sel) return;
+        const id = sel.id;
+        this.setState((st) => ({ benchItemText: '', bench: st.bench.map((cat) => cat.id === id ? { ...cat, items: [...cat.items, v] } : cat) }));
+      },
+      scrapDrawer: () => {
+        if (!sel) return;
+        if (this.state.benchArm !== sel.id) { this.setState({ benchArm: sel.id }); return; }
+        this.setState((st) => {
+          const left = st.bench.filter((cat) => cat.id !== sel.id);
+          return { bench: left, benchArm: null, benchSel: left.length ? left[0].id : null };
+        });
+      },
+      scrapLabel: sel && s.benchArm === sel.id ? 'sure? it all goes overboard' : 'scrap this drawer',
+      scrapHot: !!sel && s.benchArm === sel.id,
+    };
+  }
+
   renderVals() {
     const s = this.state;
     const scr = s.screen;
@@ -2851,8 +3166,10 @@ class Component extends DCLogic {
       { id: 'notes', glyph: '✎', label: 'the log book' },
       { id: 'copy', glyph: '⚑', label: 'signal flags' },
       { id: 'eggs', glyph: '✧', label: "smuggler's cove" },
+      { id: 'watch', glyph: '☉', label: 'the watch desk' },
       { id: 'media', glyph: '❏', label: 'the darkroom' },
       { id: 'doodles', glyph: '✐', label: 'marginalia' },
+      { id: 'bench', glyph: '⚒', label: 'the tool bench' },
       { id: 'figurehead', glyph: '♞', label: 'the carving shop' },
       { id: 'keeper', glyph: '⌂', label: 'the keeper' },
     ];
@@ -3122,9 +3439,11 @@ class Component extends DCLogic {
     return {
       // screens
       isLogin: scr === 'login', isApp: scr !== 'login',
-      isDash: scr === 'dash', isProjects: scr === 'projects', isHobbies: scr === 'hobbies',
-      isNotes: scr === 'notes', isCopy: scr === 'copy', isMedia: scr === 'media', isKeeper: scr === 'keeper', isEggs: scr === 'eggs', isDoodles: scr === 'doodles', isFigurehead: scr === 'figurehead',
+      isDash: scr === 'dash', isProjects: scr === 'projects', isHobbies: scr === 'hobbies', isBench: scr === 'bench',
+      isWatch: scr === 'watch', isNotes: scr === 'notes', isCopy: scr === 'copy', isMedia: scr === 'media', isKeeper: scr === 'keeper', isEggs: scr === 'eggs', isDoodles: scr === 'doodles', isFigurehead: scr === 'figurehead',
       ...this.marginaliaVals(),
+      ...this.benchVals(),
+      ...this.watchVals(),
       ...this.projectsWallVals(),
       ...this.logsVals(),
       ...this.logPointerVals(),
