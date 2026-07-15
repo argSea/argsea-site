@@ -409,7 +409,17 @@ class ApiSource implements ContentSource {
 	async getWatch(): Promise<Watch> {
 		try {
 			const res = await fetch(`${this.baseUrl}/1/watch`);
-			return res.ok ? (await res.json() as Watch | null) ?? EMPTY_WATCH : EMPTY_WATCH;
+			if (!res.ok) {
+				return EMPTY_WATCH;
+			}
+			const doc = await res.json() as Watch | null;
+			if (!doc) {
+				return EMPTY_WATCH;
+			}
+			// An API from before the empty-holds fix marshals a never-kept
+			// watch's nil slices as null; a kept letter with null holds would
+			// break the build at bearings.map, so normalize on arrival.
+			return { ...doc, bearings: doc.bearings ?? [], quips: doc.quips ?? [] };
 		} catch {
 			return EMPTY_WATCH;
 		}
