@@ -77,13 +77,13 @@ test('the journal strip spells the entry count as a word', async ({ page }) => {
 });
 
 // The ship's log preview: the wandering hobbies (anything not moored or in
-// port) become chips tagged lowercase-name · state, the state read from the
-// same stateMeta the chart uses (its first segment, so "adrift", not the full
-// gloss). Piano leads the wandering set.
-test('the ship\'s log preview chips read lowercase name and state', async ({ page }) => {
+// port) become chart pills tagged lowercase-name · state, the state read from
+// the same stateMeta the chart uses (its first segment, so "adrift", not the
+// full gloss). Piano leads the wandering set.
+test('the ship\'s log preview pills read lowercase name and state', async ({ page }) => {
 	await page.goto('/');
-	const chips = page.locator('.grave-chip');
-	await expect(chips.first()).toHaveText('piano · adrift');
+	const pills = page.locator('.chart-pill');
+	await expect(pills.first()).toHaveText('piano · adrift');
 });
 
 test('the flagship polaroid ships a real print, not a broken glyph', async ({ page }) => {

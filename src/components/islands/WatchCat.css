@@ -1,0 +1,11 @@
+/* The watch panel's header perch, verbatim to Hello.dc.html: paws on the
+ * panel's top edge, centered in the flexible gap the header leaves for it. */
+
+.watch-cat-mount {
+	top: -64px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 54px;
+	height: 62px;
+	z-index: 3;
+}

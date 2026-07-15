@@ -166,6 +166,45 @@ export interface Note {
 	updatedAt:     string;
 }
 
+// What a bearing on the current watch points at: a light (project), a hobby,
+// a note, or nothing at all; "none" renders as plain text, never a link.
+export type BearingKind = 'none' | 'light' | 'hobby' | 'note';
+
+// One TL;DR bearing on the current watch: a verb ("wrangling"), the name the
+// strip shows, and the record it steers to (resolved to a route at build time).
+export interface WatchBearing {
+	verb:     string;
+	kind:     BearingKind;
+	targetId: string;
+	name:     string;
+}
+
+// The current watch singleton (GET /1/watch): the keeper's letter from right
+// now, the TL;DR bearings strip (≤3 on the wire), the season's postcard, and
+// the perched cat's lines. An empty letter is the wire's "no current watch":
+// the front door collapses the whole section rather than render an empty box.
+export interface Watch {
+	id:              string;
+	letter:          string;   // plain text; blank lines split paragraphs
+	rotation:        string;   // the italic "out of the rotation" line; '' = none
+	bearings:        WatchBearing[];
+	postcardMediaId: string;   // media name for the season's photo; '' = no postcard
+	quips:           string[]; // the watch panel cat's lines
+	keptAt:          string;   // RFC3339; renders "kept {d mmm}" and "from the season · {mmm yyyy}"
+}
+
+// The empty watch: what no record, an unreachable API, and the fixtures build
+// all collapse to, so every source agrees on the one collapse signal.
+const EMPTY_WATCH: Watch = {
+	id:              '',
+	letter:          '',
+	rotation:        '',
+	bearings:        [],
+	postcardMediaId: '',
+	quips:           [],
+	keptAt:          '',
+};
+
 // The smuggler's cove master switches: which easter eggs are live. Absent on
 // the wire reads as on; an older copy document must not silently sink an egg.
 export interface EggToggles {
@@ -316,6 +355,7 @@ export interface ContentSource {
 	getHobbies(): Promise<Hobby[]>;
 	getNotes(): Promise<Note[]>;
 	getSiteCopy(): Promise<SiteCopy>;
+	getWatch(): Promise<Watch>;
 	getKeeperProfile(): Promise<KeeperProfile>;
 	getFigurehead(): Promise<FigureheadDesign[]>;
 	getSuggestions(): Promise<Suggestion[]>;
@@ -349,6 +389,22 @@ class ApiSource implements ContentSource {
 			throw new Error(`argsea api: GET ${url} responded ${res.status}`);
 		}
 		return await res.json() as SiteCopy;
+	}
+
+	/**
+	 * The current watch singleton: public and not lifecycle-gated, like the copy
+	 * singleton, so no ?published flag. Never fails the build: unreachable/error/
+	 * empty all read as "no current watch" (an empty letter), and the front door
+	 * collapses the section instead. `?? EMPTY_WATCH` guards a 200 with a bare
+	 * null body, same precedent as getCarvings.
+	 */
+	async getWatch(): Promise<Watch> {
+		try {
+			const res = await fetch(`${this.baseUrl}/1/watch`);
+			return res.ok ? (await res.json() as Watch | null) ?? EMPTY_WATCH : EMPTY_WATCH;
+		} catch {
+			return EMPTY_WATCH;
+		}
 	}
 
 	/** The profile route is public (no auth, no ?published flag) but needs the keeper's user id from build config. */
@@ -421,6 +477,9 @@ class FixtureSource implements ContentSource {
 	getHobbies(): Promise<Hobby[]> { return Promise.resolve(hobbiesFixture as Hobby[]); }
 	getNotes(): Promise<Note[]> { return Promise.resolve(notesFixture as Note[]); }
 	getSiteCopy(): Promise<SiteCopy> { return Promise.resolve(siteCopyFixture as SiteCopy); }
+	// No watch fixture on purpose: an offline build proves the empty-watch
+	// collapse (the section only ever renders against a live API with a kept watch)
+	getWatch(): Promise<Watch> { return Promise.resolve(EMPTY_WATCH); }
 	getKeeperProfile(): Promise<KeeperProfile> { return Promise.resolve(keeperProfileFixture as KeeperProfile); }
 	getFigurehead(): Promise<FigureheadDesign[]> { return Promise.resolve(figureheadFixture as FigureheadDesign[]); }
 	getSuggestions(): Promise<Suggestion[]> { return Promise.resolve(suggestionsFixture as Suggestion[]); }
@@ -473,6 +532,11 @@ let siteCopyPromise: Promise<SiteCopy> | undefined;
 export function getSiteCopy(): Promise<SiteCopy> {
 	siteCopyPromise ??= source.getSiteCopy().then(withCopyDefaults);
 	return siteCopyPromise;
+}
+
+/** The keeper's current watch; an empty letter means none is kept and the home section collapses. */
+export function getWatch(): Promise<Watch> {
+	return source.getWatch();
 }
 
 // Memoized for the same reason as SiteCopy: the footer asks on every page.
