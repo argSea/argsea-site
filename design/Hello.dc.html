@@ -14,6 +14,7 @@
 <style>
 html{background:#131628}
 image-slot{display:block;width:100%;height:100%}
+image-slot#watch-postcard{color:#9aa3c9}
 body{margin:0;background:linear-gradient(180deg,#11131f 0%,#131628 100%)}
 a{text-decoration:none}
 a:hover{color:#e8ebfa}
@@ -35,6 +36,22 @@ a:hover{color:#e8ebfa}
 @keyframes wiggle14{0%,100%{transform:rotate(11deg)}50%{transform:rotate(17deg)}}
 @keyframes postmarkSway{0%,100%{transform:rotate(9deg)}50%{transform:rotate(15deg)}}
 @keyframes lampPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes morseHi{0%,4.9%{opacity:1}5%,9.9%{opacity:.12}10%,14.9%{opacity:1}15%,19.9%{opacity:.12}20%,24.9%{opacity:1}25%,29.9%{opacity:.12}30%,34.9%{opacity:1}35%,49.9%{opacity:.12}50%,54.9%{opacity:1}55%,59.9%{opacity:.12}60%,64.9%{opacity:1}65%,100%{opacity:.12}}
+/* the postcard straddles the hero/watch seam only when it actually sits beside the panel */
+@media(min-width:940px){
+  [data-postcard]{margin-top:-60px}
+}
+/* mid widths: the postcard rides beside the letter, shrinking with the room */
+@media(min-width:601px) and (max-width:939px){
+  [data-postcard]{flex:0 0 auto !important;width:clamp(120px,21vw,250px);min-width:0 !important;margin-top:-34px}
+  [data-watchpanel]{min-width:0}
+  [data-bearings]{white-space:normal !important;flex-wrap:wrap !important;overflow:visible !important}
+}
+/* phone: small enough to sit on the card itself */
+@media(max-width:600px){
+  [data-postcard]{position:absolute;right:26px;bottom:12px;width:132px;min-width:0 !important;z-index:3}
+  [data-watchpanel]{padding-bottom:118px !important}
+}
 @keyframes sail{0%{left:-60px}100%{left:102%}}
 @keyframes bobBoat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-3px) rotate(2deg)}}
 @keyframes flashChar{0%,68%{opacity:.08}78%{opacity:1}88%{opacity:.08}100%{opacity:.08}}
@@ -64,7 +81,7 @@ a:hover{color:#e8ebfa}
 <div data-page style="min-height:100vh;color:#dde1f0;font-family:'Newsreader',serif;display:flex;flex-direction:column;overflow-x:hidden">
 
   <!-- nav -->
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:clamp(18px,3vw,30px) clamp(20px,5vw,52px) 10px">
+  <div style="width:100%;max-width:1480px;margin:0 auto;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:clamp(18px,3vw,30px) clamp(20px,5vw,52px) 10px">
     <a href="Hello.dc.html" style="display:flex;align-items:center;gap:12px">
       <span style="position:relative;display:inline-flex">
         <svg width="24" height="28" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
@@ -76,28 +93,65 @@ a:hover{color:#e8ebfa}
       <a href="Projects.dc.html" style="color:#93a0e8">projects</a>
       <a href="Hobbies.dc.html" style="color:#93a0e8">hobbies</a>
       <a href="Notes.dc.html" style="color:#93a0e8">notes</a>
-      <a href="Contact.dc.html" style="color:#93a0e8">contact</a>
       <a href="#" style="color:#93a0e8">resume ↗</a>
     </div>
     <a data-mob-resume href="#" style="display:none;align-items:center;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:13px">resume ↗</a>
   </div>
 
   <!-- hero -->
-  <div style="position:relative;padding:clamp(56px,9vw,96px) clamp(20px,5vw,52px) clamp(40px,6vw,64px);overflow:hidden">
+  <div style="width:100%;max-width:1480px;margin:0 auto;box-sizing:border-box;position:relative;padding:clamp(48px,7vw,76px) clamp(20px,5vw,52px) clamp(30px,5vw,44px);overflow:hidden">
     <div style="position:absolute;right:14%;top:90px;width:5px;height:5px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 14px 4px rgba(240,217,168,.4);animation:drift 11s ease-in-out infinite"></div>
     <div style="position:absolute;right:32%;top:220px;width:4px;height:4px;border-radius:50%;background:#93a0e8;box-shadow:0 0 12px 3px rgba(147,160,232,.35);animation:drift 14s ease-in-out 2s infinite"></div>
     <div style="position:absolute;right:9%;top:320px;width:4px;height:4px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 12px 3px rgba(240,217,168,.3);animation:drift 9s ease-in-out 1s infinite"></div>
     <div style="position:absolute;left:8%;bottom:60px;width:4px;height:4px;border-radius:50%;background:#93a0e8;box-shadow:0 0 12px 3px rgba(147,160,232,.3);animation:drift 13s ease-in-out 3s infinite"></div>
-    <div data-hide-mobile style="position:absolute;right:clamp(24px,6vw,72px);top:76px;width:110px;height:110px;border:1.5px dashed rgba(147,160,232,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:postmarkSway 9s ease-in-out infinite">
-      <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#93a0e8;line-height:1.7">PITTSBURGH<br>PA · EST 2014<br>ARGSEA.COM</div>
+    <!-- postmark, with the light stamped in · it blinks hi in morse -->
+    <div data-hide-mobile title="···· ··" style="position:absolute;right:clamp(24px,6vw,72px);top:64px;width:92px;height:92px;border:1.5px dashed rgba(147,160,232,.4);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;animation:postmarkSway 9s ease-in-out infinite">
+      <svg width="34" height="38" viewBox="0 0 18 20" fill="none" stroke="#93a0e8" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 2 L12 6 L6 6 Z" fill="#93a0e8" stroke="none" style="animation:morseHi 4s linear infinite"></path>
+        <path d="M7 6 L6 15 M11 6 L12 15 M7 9.5 h4"></path>
+        <path d="M4 17 q5 -3 10 0"></path>
+      </svg>
     </div>
     <div style="display:flex;flex-direction:column;gap:24px;max-width:720px">
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase;animation:fadeUp .7s ease .05s both">Justin Smith · senior software engineer, Pittsburgh PA</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase;animation:fadeUp .7s ease .05s both">Senior software engineer · Pittsburgh PA</div>
       <div style="font-family:'Gloock',serif;font-size:clamp(34px,6.5vw,58px);line-height:1.1;color:#f0f2fc;text-wrap:balance;animation:fadeUp .7s ease .15s both">I help keep the lights on behind the news.</div>
-      <div style="font-size:clamp(17px,2.4vw,20px);line-height:1.6;color:#a5aed4;font-weight:300;animation:fadeUp .7s ease .25s both">Backend engineering at the Post-Gazette: a Kubernetes platform designed and built solo, 29 services, a couple million visits a month, a healthy amount of boxes-and-arrows. Dad the rest of the time. Serial picker-upper of hobbies.</div>
-      <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:4px;animation:fadeUp .7s ease .35s both">
-        <a href="Projects.dc.html" style="padding:13px 24px;background:#93a0e8;color:#151830;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:14px;box-shadow:3px 3px 0 rgba(240,217,168,.85);transform:rotate(-.5deg);display:inline-flex;transition:transform .2s,box-shadow .2s" style-hover="transform:rotate(0deg) translateY(-2px);box-shadow:5px 5px 0 rgba(240,217,168,.85)">the projects</a>
-        <a href="mailto:hello@argsea.com" style="padding:13px 24px;border:1px solid rgba(150,160,220,.4);color:#c3cbf2;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:14px;display:inline-flex;transition:border-color .2s,transform .2s" style-hover="border-color:rgba(240,217,168,.7);transform:translateY(-2px)">say hi</a>
+    </div>
+  </div>
+
+  <!-- the current watch · what the keeper is focused on now -->
+  <div style="width:100%;max-width:1480px;margin:0 auto;box-sizing:border-box;position:relative;padding:0 clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-wrap:wrap;justify-content:space-between;gap:26px;align-items:stretch">
+    <div data-watchpanel style="flex:1 1 440px;max-width:660px;background:linear-gradient(160deg,#161a2e,#12162a);border:1px solid rgba(150,160,220,.2);border-radius:14px;padding:clamp(24px,4vw,34px) clamp(22px,4vw,36px);display:flex;flex-direction:column;gap:18px;animation:fadeUp .7s ease .3s both;position:relative">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px 16px">
+        <span style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+          <span style="display:inline-flex;align-items:center;gap:9px;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#f0d9a8;text-transform:uppercase"><span style="width:6px;height:6px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 8px 2px rgba(240,217,168,.55);animation:lampPulse 4s ease-in-out infinite"></span>Now</span>
+          <span style="font-size:15px;color:#5f6ec4;font-style:italic">the current watch</span>
+        </span>
+        <!-- the cat, posted in the header gap between the kicker and the dateline -->
+        <span style="flex:1 1 0;min-width:0;position:relative;align-self:stretch"><dc-import name="HarborCat" pose="perched" bubble="left" quips="he says the migration is going fine. he is lying.|dad the rest of the time. the cat the rest of that.|the piano is on hold. i checked. it's still there.|writing things down while they are still true. bold.|the lab grew again last night. i heard it." hint-size="54px,62px" style="position:absolute;top:-64px;left:50%;transform:translateX(-50%);width:54px;height:62px;z-index:3"></dc-import></span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4">kept 15 jul</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="font-size:clamp(16px,2.2vw,18.5px);line-height:1.7;color:#a5aed4;font-weight:300;text-wrap:pretty">Most of my time right now goes to the ArcXP migration: moving the newsroom onto its new stack while the paper keeps publishing, the kind of work nobody notices unless it goes wrong.</div>
+        <div style="font-size:clamp(16px,2.2vw,18.5px);line-height:1.7;color:#a5aed4;font-weight:300;text-wrap:pretty">The un-monolithing that cleared the way is finally written up, and the home lab keeps growing past what any household could plausibly need. I am trying to write things down while they are still true. Dad the rest of the time, which is most of the time.</div>
+        <div style="font-size:15.5px;font-style:italic;color:#9aa3c9;line-height:1.65;text-wrap:pretty">Out of the rotation on purpose: conference talks, one more framework, and the piano. Not abandoned, just set down where I can see them.</div>
+      </div>
+      <div data-bearings style="display:flex;flex-wrap:nowrap;align-items:baseline;gap:7px 12px;border-top:1px solid rgba(150,160,220,.14);padding-top:14px;font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.7;white-space:nowrap;overflow:hidden">
+        <sc-for list="{{ watchRows }}" as="w" hint-placeholder-count="3">
+          <span style="display:inline-flex;align-items:baseline;gap:8px">
+            <sc-if value="{{ w.sep }}" hint-placeholder-val="{{ false }}"><span style="color:#3d4468">·</span></sc-if>
+            <span style="color:#8a93c4">{{ w.label }}</span>
+            <a href="{{ w.href }}" style="color:{{ w.nameColor }}">{{ w.name }}</a>
+          </span>
+        </sc-for>
+      </div>
+    </div>
+    <!-- the postcard rack · one real photo from the season, swapped whenever the watch is -->
+    <div data-postcard style="flex:1 1 300px;max-width:516px;min-width:250px;display:flex;align-items:flex-start;justify-content:center;position:relative;z-index:2;animation:fadeUp .7s ease .4s both">
+      <div style="width:100%;display:flex;flex-direction:column;gap:10px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:9px 9px 14px;box-shadow:0 10px 26px rgba(0,0,0,.5);transform:rotate(1.6deg);transition:transform .25s" style-hover="transform:rotate(.4deg) translateY(-3px)">
+        <div style="width:100%;aspect-ratio:4/3;overflow:hidden;background:#1e2440;color:#9aa3c9">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="watch-postcard" shape="rect" placeholder="a photo from right now · drop it here" style="display:block;width:100%;height:100%;color:#9aa3c9" hint-size="100%,100%"></x-import>
+        </div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#93a0e8;text-align:center">from the season · jul 2026</span>
       </div>
     </div>
   </div>
@@ -138,7 +192,7 @@ a:hover{color:#e8ebfa}
   </div>
 
   <!-- featured lights preview -->
-  <div style="padding:clamp(28px,5vw,44px) clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column;gap:18px">
+  <div style="width:100%;max-width:1480px;margin:0 auto;box-sizing:border-box;padding:clamp(28px,5vw,44px) clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column;gap:18px">
     <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px">
       <span style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Selected work</span><span style="font-size:15px;color:#5f6ec4;font-style:italic">lights I keep burning</span></span>
       <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">the whole coast →</a>
@@ -219,6 +273,67 @@ a:hover{color:#e8ebfa}
     </div>
   </div>
 
+  <!-- hobby ledger preview -->
+  <div style="width:100%;max-width:1480px;margin:0 auto;box-sizing:border-box;padding:clamp(28px,5vw,44px) clamp(20px,5vw,52px) clamp(24px,4vw,32px);display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Hobbies</span><span style="font-size:15px;color:#5f6ec4;font-style:italic">past and present, abridged</span></span>
+      <a href="Hobbies.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">the full chart →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;align-items:stretch">
+      <div style="padding:24px 26px;background:rgba(240,217,168,.06);border:1.5px dashed rgba(240,217,168,.4);border-radius:12px;transform:rotate(-.3deg);display:flex;flex-direction:column;gap:12px;transition:transform .25s" style-hover="transform:rotate(0deg)">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:#f0d9a8;text-transform:uppercase">Currently learning</span>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><span style="font-family:'Gloock',serif;font-size:20px;color:#f0f2fc">The home lab</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#93a0e8">plex · htpc</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><span style="font-family:'Gloock',serif;font-size:20px;color:#f0f2fc">CachyOS tinkering</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#93a0e8">linux · always</span></div>
+        </div>
+        <span style="font-size:14.5px;color:#a5aed4;font-style:italic">One tweak from perfect, forever.</span>
+      </div>
+      <div style="position:relative;padding:24px 26px;background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;transform:rotate(.3deg);display:flex;flex-direction:column;gap:12px;transition:transform .25s" style-hover="transform:rotate(0deg)">
+        <!-- a compass rose in the corner, from the chart -->
+        <svg aria-hidden="true" width="36" height="36" viewBox="0 0 36 36" fill="none" style="position:absolute;top:10px;right:14px;pointer-events:none;opacity:.55">
+          <circle cx="18" cy="18" r="8.5" stroke="#93a0e8" stroke-width=".9" opacity=".5"></circle>
+          <circle cx="18" cy="18" r="12.5" stroke="#93a0e8" stroke-width=".6" opacity=".25" stroke-dasharray="1.5 3"></circle>
+          <path d="M18 2 L20 16 L18 18 L16 16 Z" fill="#93a0e8" opacity=".8"></path>
+          <path d="M18 34 L20 20 L18 18 L16 20 Z" fill="#93a0e8" opacity=".4"></path>
+          <path d="M2 18 L16 16 L18 18 L16 20 Z" fill="#93a0e8" opacity=".4"></path>
+          <path d="M34 18 L20 16 L18 18 L20 20 Z" fill="#93a0e8" opacity=".4"></path>
+          <circle cx="18" cy="18" r="1.2" fill="#93a0e8"></circle>
+        </svg>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:#93a0e8;text-transform:uppercase;padding-right:34px">The ship's log</span>
+        <div style="position:relative">
+          <!-- the fleet's wake, plotted -->
+          <svg aria-hidden="true" viewBox="0 0 800 60" preserveAspectRatio="none" style="position:absolute;left:0;top:-8px;width:100%;height:calc(100% + 16px);pointer-events:none">
+            <path d="M-8 44 C 110 12, 230 56, 380 30 S 640 4, 808 26" fill="none" stroke="rgba(147,160,232,.4)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="0.1 8"></path>
+          </svg>
+          <div style="display:flex;gap:10px 9px;flex-wrap:wrap;align-items:center;position:relative">
+            <span style="padding:4px 12px;border:1px solid rgba(147,160,232,.45);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#93a0e8;background:rgba(147,160,232,.08);white-space:nowrap">piano · adrift</span>
+            <span style="padding:4px 12px;border:1px solid rgba(147,160,232,.45);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#93a0e8;background:rgba(147,160,232,.08);white-space:nowrap">music theory · marooned</span>
+            <span style="padding:4px 12px;border:1px solid rgba(111,202,151,.45);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6fca97;background:rgba(111,202,151,.08);white-space:nowrap">game dev · made port</span>
+            <span style="position:relative;padding:4px 12px;border:1px solid rgba(138,147,196,.45);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a93c4;background:rgba(138,147,196,.08);white-space:nowrap">running · bearing smudged<span title="the ink never dried" style="position:absolute;right:-8px;bottom:-6px;width:16px;height:13px;border-radius:56% 44% 62% 38% / 54% 60% 40% 46%;background:radial-gradient(circle at 40% 38%,#3a4380,#1a1f42);transform:rotate(-14deg)"></span><span style="position:absolute;right:-13px;bottom:3px;width:4px;height:4px;border-radius:50%;background:#2a3160"></span></span>
+          </div>
+        </div>
+        <!-- fireflies, being disruptive -->
+        <div style="position:absolute;left:20%;top:54%;animation:fireflyRoam 11s ease-in-out infinite;pointer-events:none;z-index:2">
+          <div style="position:absolute;left:50%;top:50%;width:46px;height:46px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.26),transparent 65%);filter:blur(2px);animation:lampPulse 3.2s ease-in-out infinite"></div>
+          <div style="width:3px;height:3px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 6px 2px rgba(240,217,168,.55);animation:lampPulse 3.2s ease-in-out infinite"></div>
+        </div>
+        <div style="position:absolute;left:58%;top:36%;animation:fireflyRoam 14s ease-in-out -5s infinite reverse;pointer-events:none;z-index:2">
+          <div style="position:absolute;left:50%;top:50%;width:38px;height:38px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.22),transparent 65%);filter:blur(2px);animation:lampPulse 4.1s ease-in-out .8s infinite"></div>
+          <div style="width:2.5px;height:2.5px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 5px 2px rgba(240,217,168,.5);animation:lampPulse 4.1s ease-in-out .8s infinite"></div>
+        </div>
+        <div style="position:absolute;left:74%;top:66%;animation:fireflyRoam 9s ease-in-out -2s infinite;pointer-events:none;z-index:2">
+          <div style="position:absolute;left:50%;top:50%;width:32px;height:32px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.2),transparent 65%);filter:blur(2px);animation:lampPulse 2.7s ease-in-out .4s infinite"></div>
+          <div style="width:2px;height:2px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 5px 1.5px rgba(240,217,168,.45);animation:lampPulse 2.7s ease-in-out .4s infinite"></div>
+        </div>
+        <span style="font-size:14.5px;color:#7a83ad;font-style:italic">None of them sank. Some are just further from port than others.</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// the chart only fills in. that's fine.</span>
+      <span onClick="{{ cycleNext }}" title="sea room held for the next hobby" style="padding:4px 12px;border:1.5px dashed rgba(240,217,168,.55);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#f0d9a8;cursor:pointer;user-select:none;transition:transform .15s" style-hover="transform:scale(1.04)" style-active="transform:scale(.96)">next: {{ nextHobby }}</span>
+    </div>
+  </div>
+
   <!-- overlay: the light-list entry (shared component) -->
   <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
     <dc-import name="ProjectOverlay" light="{{ open }}" no="{{ openNo }}" closing="{{ ovClosing }}" coast-link="{{ true }}" on-close="{{ closeOverlay }}" hint-size="100%,300px"></dc-import>
@@ -274,7 +389,7 @@ a:hover{color:#e8ebfa}
   </sc-if>
 
   <!-- from the log -->
-  <div style="padding:0 clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column">
+  <div style="width:100%;max-width:1480px;margin:0 auto;box-sizing:border-box;padding:0 clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column">
     <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-bottom:12px">
       <span style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Writing</span><span style="font-size:15px;color:#5f6ec4;font-style:italic">from the keeper's journal</span></span>
       <a href="Notes.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">the full journal →</a>
@@ -330,7 +445,7 @@ a:hover{color:#e8ebfa}
   </div>
 
   <!-- keeper's stores -->
-  <div style="padding:0 clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column;gap:16px">
+  <div style="width:100%;max-width:1480px;margin:0 auto;box-sizing:border-box;padding:0 clamp(20px,5vw,52px) clamp(36px,6vw,56px);display:flex;flex-direction:column;gap:16px">
     <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
       <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Tools</span>
       <span style="font-size:15px;color:#5f6ec4;font-style:italic">the keeper's stores, kept in the tower</span>
@@ -352,58 +467,8 @@ a:hover{color:#e8ebfa}
     <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// everything in the stores has paged me at least once. that's how it earns the shelf.</span>
   </div>
 
-  <!-- hobby ledger preview -->
-  <div style="padding:clamp(28px,5vw,44px) clamp(20px,5vw,52px) clamp(24px,4vw,32px);display:flex;flex-direction:column;gap:16px">
-    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px">
-      <span style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Hobbies</span><span style="font-size:15px;color:#5f6ec4;font-style:italic">past and present, abridged</span></span>
-      <a href="Hobbies.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">the full chart →</a>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;align-items:stretch">
-      <div style="padding:24px 26px;background:rgba(240,217,168,.06);border:1.5px dashed rgba(240,217,168,.4);border-radius:12px;transform:rotate(-.3deg);display:flex;flex-direction:column;gap:12px;transition:transform .25s" style-hover="transform:rotate(0deg)">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:#f0d9a8;text-transform:uppercase">Currently learning</span>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><span style="font-family:'Gloock',serif;font-size:20px;color:#f0f2fc">The home lab</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#93a0e8">plex · htpc</span></div>
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><span style="font-family:'Gloock',serif;font-size:20px;color:#f0f2fc">CachyOS tinkering</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#93a0e8">linux · always</span></div>
-        </div>
-        <span style="font-size:14.5px;color:#a5aed4;font-style:italic">One tweak from perfect, forever.</span>
-      </div>
-      <div style="position:relative;padding:24px 26px;background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;transform:rotate(.3deg);display:flex;flex-direction:column;gap:12px;transition:transform .25s" style-hover="transform:rotate(0deg)">
-        <!-- the keeper's lantern, keeping watch -->
-        <div style="position:absolute;top:14px;right:18px;width:3px;height:26px;background:#2a2f52"></div>
-        <div style="position:absolute;top:8px;right:15px;width:9px;height:10px;background:#141225;border:1px solid rgba(240,217,168,.5);border-radius:2px"></div>
-        <div style="position:absolute;top:10.5px;right:17px;width:5px;height:5.5px;background:#f0d9a8;box-shadow:0 0 9px 2px rgba(240,217,168,.65);animation:lampPulse 6s ease-in-out infinite"></div>
-        <div style="position:absolute;top:-24px;right:-28px;width:130px;height:110px;background:radial-gradient(circle,rgba(240,196,120,.15),transparent 62%);filter:blur(2px);animation:lampPulse 6s ease-in-out infinite;pointer-events:none"></div>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:#93a0e8;text-transform:uppercase;padding-right:34px">The ship's log</span>
-        <div style="display:flex;gap:10px 9px;flex-wrap:wrap;align-items:flex-end">
-          <span style="padding:7px 14px 6px;border:1px solid rgba(150,160,220,.32);border-bottom-color:rgba(150,160,220,.16);border-radius:11px 11px 2px 2px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;transform:rotate(-2deg);transform-origin:50% 100%;box-shadow:0 6px 6px -4px rgba(0,0,0,.55)">piano · adrift</span>
-          <span style="padding:7px 14px 6px;border:1px solid rgba(150,160,220,.32);border-bottom-color:rgba(150,160,220,.16);border-radius:11px 11px 2px 2px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;transform:rotate(1.5deg);transform-origin:50% 100%;box-shadow:0 6px 6px -4px rgba(0,0,0,.55)">music theory · marooned</span>
-          <span style="padding:7px 14px 6px;border:1px solid rgba(150,160,220,.32);border-bottom-color:rgba(150,160,220,.16);border-radius:11px 11px 2px 2px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;transform:rotate(-1deg);transform-origin:50% 100%;box-shadow:0 6px 6px -4px rgba(0,0,0,.55)">game dev · made port</span>
-          <span style="padding:7px 14px 6px;border:1px solid rgba(150,160,220,.32);border-bottom-color:rgba(150,160,220,.16);border-radius:11px 11px 2px 2px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#a5aed4;transform:rotate(2.2deg);transform-origin:50% 100%;box-shadow:0 6px 6px -4px rgba(0,0,0,.55)">running · bearing smudged</span>
-        </div>
-        <!-- fireflies, being disruptive -->
-        <div style="position:absolute;left:20%;top:54%;animation:fireflyRoam 11s ease-in-out infinite;pointer-events:none;z-index:2">
-          <div style="position:absolute;left:50%;top:50%;width:46px;height:46px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.26),transparent 65%);filter:blur(2px);animation:lampPulse 3.2s ease-in-out infinite"></div>
-          <div style="width:3px;height:3px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 6px 2px rgba(240,217,168,.55);animation:lampPulse 3.2s ease-in-out infinite"></div>
-        </div>
-        <div style="position:absolute;left:58%;top:36%;animation:fireflyRoam 14s ease-in-out -5s infinite reverse;pointer-events:none;z-index:2">
-          <div style="position:absolute;left:50%;top:50%;width:38px;height:38px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.22),transparent 65%);filter:blur(2px);animation:lampPulse 4.1s ease-in-out .8s infinite"></div>
-          <div style="width:2.5px;height:2.5px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 5px 2px rgba(240,217,168,.5);animation:lampPulse 4.1s ease-in-out .8s infinite"></div>
-        </div>
-        <div style="position:absolute;left:74%;top:66%;animation:fireflyRoam 9s ease-in-out -2s infinite;pointer-events:none;z-index:2">
-          <div style="position:absolute;left:50%;top:50%;width:32px;height:32px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,196,120,.2),transparent 65%);filter:blur(2px);animation:lampPulse 2.7s ease-in-out .4s infinite"></div>
-          <div style="width:2px;height:2px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 5px 1.5px rgba(240,217,168,.45);animation:lampPulse 2.7s ease-in-out .4s infinite"></div>
-        </div>
-        <span style="font-size:14.5px;color:#7a83ad;font-style:italic">None of them sank. Some are just further from port than others.</span>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">// the graveyard only grows. that's fine.</span>
-      <span onClick="{{ cycleNext }}" title="pre-dug, awaiting the next hobby" style="padding:7px 14px 6px;border:1.5px dashed rgba(240,217,168,.55);border-radius:11px 11px 2px 2px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;cursor:pointer;user-select:none;transform:rotate(1.2deg);transform-origin:50% 100%;box-shadow:0 6px 6px -4px rgba(0,0,0,.45);transition:transform .15s" style-hover="transform:rotate(0deg) scale(1.04)" style-active="transform:scale(.96)">next: {{ nextHobby }}</span>
-    </div>
-  </div>
-
   <!-- contact band -->
-  <div style="padding:clamp(40px,7vw,72px) clamp(20px,5vw,52px) clamp(28px,5vw,48px);display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center">
+  <div style="width:100%;max-width:1480px;margin:0 auto;box-sizing:border-box;padding:clamp(40px,7vw,72px) clamp(20px,5vw,52px) clamp(28px,5vw,48px);display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center">
     <svg width="30" height="34" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
     <div style="font-family:'Gloock',serif;font-size:clamp(24px,4.5vw,34px);color:#f0f2fc;max-width:560px;line-height:1.2;text-wrap:balance">Need a hand keeping your lights on?</div>
     <div style="font-size:17px;color:#a5aed4;font-style:italic;max-width:460px">Backend, architecture, planning, or just to talk shop.</div>
@@ -414,7 +479,7 @@ a:hover{color:#e8ebfa}
   </div>
 
   <!-- footer -->
-  <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 28px;padding:26px clamp(20px,5vw,52px) 24px;border-top:1px solid rgba(150,160,220,.12)">
+  <div style="margin-top:auto;margin-left:auto;margin-right:auto;width:100%;max-width:1480px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 28px;padding:26px clamp(20px,5vw,52px) 24px;border-top:1px solid rgba(150,160,220,.12)">
     <div style="flex:1 1 240px;max-width:400px;font-size:11px;line-height:1.55;color:#6b74a0;font-style:italic;text-wrap:pretty"><span style="font-family:'Gloock',serif;font-style:normal;font-size:12.5px;color:#a5aed4">argsea</span> <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-style:normal;color:#5f6ec4">/ˈɑːrɡ·siː/ · noun</span> &nbsp;1. the Argo, but for one &nbsp;2. <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-style:normal">argc</span>, but forever &nbsp;3. a sea of water, or of stars &nbsp;4. what a method signature becomes if I'm not supervised</div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
       <div style="display:flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:11px"><a href="#" style="color:#93a0e8">github</a><a href="#" style="color:#93a0e8">linkedin</a><a href="mailto:hello@argsea.com" style="color:#93a0e8">email</a></div>
@@ -441,10 +506,6 @@ a:hover{color:#e8ebfa}
     <a href="Notes.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
       <svg width="19" height="22" viewBox="0 0 20 22" fill="none"><rect x="4" y="3" width="12" height="16" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect><path d="M7 7 h6 M7 10 h6 M7 13 h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg>
       <span style="font-size:9.5px">notes</span>
-    </a>
-    <a href="Contact.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
-      <svg width="19" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="6" width="16" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect><path d="M3.5 7 L11 12 L18.5 7" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg>
-      <span style="font-size:9.5px">contact</span>
     </a>
   </div>
 </div>
@@ -572,6 +633,13 @@ class Component extends DCLogic {
     const openNo = openP ? String((L.indexOf(openP) + 1) * 2).padStart(3, '0') : '';
     const logClosing = this.state.logClosing;
     return {
+      // the bearings are ad-hoc: label, name, sub, and link are all free text on the watch record.
+      // point them at a light, a note, a hobby, or nothing at all; href is optional.
+      watchRows: [
+        { label: 'wrangling', name: 'The ArcXP migration', sub: 'in flight · no page yet', href: null },
+        { label: 'logging', name: this.logEntries[0] ? this.logEntries[0].title : 'the journal', sub: (this.logEntries[0] && this.logEntries[0].date ? this.logEntries[0].date + ' · ' : '') + 'the journal', href: 'Notes.dc.html' },
+        { label: 'tinkering', name: 'The home lab', sub: 'currently learning · the chart', href: 'Hobbies.dc.html' },
+      ].map((w, i) => ({ ...w, name: (w.name || '').length > 24 ? (w.name || '').slice(0, 23).trimEnd() + '…' : w.name, sep: i > 0, href: w.href || null, nameColor: w.href ? '#f0d9a8' : '#d6dcf4' })),
       open, openNo, ovClosing: this.state.ovClosing,
       log: (() => {
         const n = this.state.openLog == null ? null : this.logEntries[this.state.openLog];
