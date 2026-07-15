@@ -11,7 +11,8 @@ import './HarborCat.css';
 
 export type { CatContext } from '../../lib/catSpots';
 
-// One quip set per context (approved copy from the HarborCat and Hobbies mocks);
+// One quip set per context (approved copy from the HarborCat and Hobbies mocks;
+// the ledger and watch sets are new keeper drafts awaiting the voice pass);
 // a poke never repeats the quip currently on screen. An unknown context falls
 // back to the roaming header set.
 const QUIPS: Record<CatContext, string[]> = {
@@ -21,8 +22,9 @@ const QUIPS: Record<CatContext, string[]> = {
 	header:    ['mrrp.', 'this is my page now.', 'you may look. briefly.', 'i live up here.', 'the lighthouse sent me.', 'mind the tail.'],
 	hero:      ['mrrp.', 'yes, that is the guy.', 'he does keep the lights on. i supervise.', 'hire him. i vouch. mostly.', 'the boxes-and-arrows are mine.'],
 	manifest:  ['mrrp.', 'you forgot to list me.', 'i am also a tool. kept in the tower.', 'inventory looks fine. i counted.', 'the queue is mine now.'],
-	graveyard: ['mrrp.', 'good hobbies. all dead.', 'the graveyard is warm. i checked.', 'nothing here is resting harder than me.', 'i outlasted the piano.'],
+	ledger:    ['mrrp.', 'the compass points at me. correct.', 'i smudged the ink. it needed it.', 'none of them sank. i checked the chart twice.', 'sea room held. i am sitting in it.'],
 	chart:     ['a sail, off the north point. maybe.', 'i keep watch for the ones that drift back.', 'none of them sank. i checked.', 'the boat always comes back. eventually.', 'one sail is overdue. i am counting.'],
+	watch:     ['mrrp.', 'i keep this watch too. from up here.', 'the log is current. i checked.', 'he writes it down. i live it.', 'nothing to report. the good kind.'],
 	contact:   ['mrrp.', 'say hi. or do not. i will know.', 'he answers email. i answer to no one.', 'the light is on.'],
 	card:      ['mrrp.', 'i sat on this one first.', 'this one shipped. i was there.', 'good project. mine now.', 'i approve. mostly.'],
 	tag:       ['mrrp.', 'good filter. i agree.', 'this is the tag that survives.', 'sorted. by me.', 'tinkering is a lifestyle.'],

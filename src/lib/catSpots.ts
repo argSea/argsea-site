@@ -11,7 +11,7 @@ export type CatPage = 'hello' | 'projects' | 'hobbies' | 'notes' | 'p404';
 export type CatPose = 'perched' | 'lying';
 export type CatContext =
 	| 'postcard' | 'note' | 'wreck' | 'header' | 'hero' | 'manifest'
-	| 'graveyard' | 'contact' | 'card' | 'tag' | 'row' | 'next' | 'chart';
+	| 'ledger' | 'contact' | 'card' | 'tag' | 'row' | 'next' | 'chart' | 'watch';
 
 // A static spot's anchor: the element it rides and which edge/corner its paws
 // rest on, plus an optional pixel nudge. The director measures the element and
@@ -39,8 +39,15 @@ export interface CatSpot {
 export const CATALOG: CatSpot[] = [
 	{ id: 'hello.header',    page: 'hello',    pose: 'lying',   context: 'header',    overlay: false, menuGated: true, anchor: { selector: '.site-nav .links a.active', edge: 'top', align: 'center', dy: 16 } },
 	{ id: 'hello.hero',      page: 'hello',    pose: 'perched', context: 'hero',      overlay: false, anchor: { selector: '.hero__headline',            edge: 'top',    align: 'left'   } },
+	// Anchorless: the watch panel's own mount (WatchCat.tsx) renders this pick
+	// with the record's quips, so the director stands down the way it does for
+	// overlay spots. An empty watch (no section built) leaves the pick catless
+	// for that view, same as any missing anchor.
+	{ id: 'hello.watch',     page: 'hello',    pose: 'perched', context: 'watch',     overlay: false },
 	{ id: 'hello.manifest',  page: 'hello',    pose: 'perched', context: 'manifest',  overlay: false, anchor: { selector: '.stores__grid',               edge: 'bottom', align: 'right'  } },
-	{ id: 'hello.graveyard', page: 'hello',    pose: 'perched', context: 'graveyard', overlay: false, anchor: { selector: '.panel--graveyard .panel__chips', edge: 'top', align: 'right' } },
+	// The id stays frozen (admin contract) though the graveyard motif gave way
+	// to the chart strip; the perch and its lines moved with the redesign.
+	{ id: 'hello.graveyard', page: 'hello',    pose: 'perched', context: 'ledger',    overlay: false, anchor: { selector: '.panel--chart .panel__pills', edge: 'top', align: 'right' } },
 	{ id: 'hello.contact',   page: 'hello',    pose: 'perched', context: 'contact',   overlay: false, anchor: { selector: '.contact__headline',         edge: 'top',    align: 'center' } },
 	{ id: 'hello.postcard',  page: 'hello',    pose: 'perched', context: 'postcard',  overlay: true },
 

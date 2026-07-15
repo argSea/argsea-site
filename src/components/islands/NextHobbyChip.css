@@ -23,11 +23,17 @@
 	transform: scale(.96);
 }
 
-/* The home graveyard's variant: an empty headstone, pre-dug for the next
-   hobby, alongside the other headstones' rounded-top/flat-bottom shape. */
-.next-chip--headstone {
-	border-radius: 11px 11px 2px 2px;
-	transform: rotate(1.2deg);
-	transform-origin: 50% 100%;
-	box-shadow: 0 6px 6px -4px rgba(0, 0, 0, .45);
+/* The home chart strip's variant: the mock's smaller uppercase pill, sitting
+   level (no resting tilt) beside the strip's mono caption. */
+.next-chip--round {
+	padding: 4px 12px;
+	border: 1.5px dashed rgba(240, 217, 168, .55);
+	font-size: 11px;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	transform: none;
+}
+
+.next-chip--round:hover {
+	transform: scale(1.04);
 }

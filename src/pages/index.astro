@@ -1,17 +1,22 @@
 ---
-// Hello: hero, wave-with-boat (and its coast-in-miniature beacons), the
-// flagship + featured cards, journal strip, the keeper's stores, hobbies
-// preview, contact band. The dictionary lives in the shared Footer now, read
-// from copy.dict (no dedicated dictionary block on this page anymore). The
-// flagship card is the `flagship` flag; the two small cards are the
-// `featured` flag in list order, never title matching, falling back to the
-// next two by order so the section never shows the flagship alone. It opens
-// the Light List entry in place; hero copy comes from the SiteCopy
-// singleton; the say-hi email is the keeper's; the keeper's stores is
-// approved copy hardcoded by design. The journal strip is the newest notes,
-// static links out to /notes, and disappears once there are none. The
-// hobbies preview is data-driven: on-watch hobbies fill "currently learning",
-// the wandering ones become the ship's log chips.
+// Hello: hero (kicker + headline, the morse-HI seal), the current watch
+// (build-time /1/watch: the letter, the TL;DR bearings, the season's
+// postcard; an empty letter collapses the whole section), wave-with-boat
+// (and its coast-in-miniature beacons), the flagship + featured cards,
+// hobbies preview, journal strip, the keeper's stores, contact band. The
+// dictionary lives in the shared Footer now, read from copy.dict (no
+// dedicated dictionary block on this page anymore). The flagship card is the
+// `flagship` flag; the two small cards are the `featured` flag in list
+// order, never title matching, falling back to the next two by order so the
+// section never shows the flagship alone. It opens the Light List entry in
+// place; the hero headline comes from the SiteCopy singleton and the kicker
+// from the keeper's papers (title + city, no name: the wordmark owns it);
+// the say-hi email is the keeper's; the keeper's stores read the tool
+// bench's drawers off the copy singleton, falling back to the approved
+// design copy. The journal strip is the newest notes, static links
+// out to /notes, and disappears once there are none. The hobbies preview is
+// data-driven: on-watch hobbies fill "currently learning", the wandering
+// ones become the ship's log's chart pills.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LighthouseMark from '../components/LighthouseMark.astro';
 import WaveDivider from '../components/WaveDivider.astro';
@@ -19,8 +24,10 @@ import HomeLights from '../components/islands/HomeLights';
 import JournalStrip from '../components/JournalStrip.astro';
 import JournalStripDirector from '../components/islands/JournalStripDirector';
 import NextHobbyChip from '../components/islands/NextHobbyChip';
-import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead, getNotes, getDoodles, getSuggestions, getCarvings, type Hobby, type HobbyState } from '../lib/api';
+import WatchCat from '../components/islands/WatchCat';
+import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead, getNotes, getDoodles, getSuggestions, getCarvings, getWatch, type Hobby, type HobbyState, type WatchBearing } from '../lib/api';
 import { boltedSvg } from '../lib/carvings';
+import { mediaUrl } from '../lib/media';
 
 const projects = await getProjects();
 const allNotes = await getNotes();
@@ -52,24 +59,73 @@ const towerSvg = boltedSvg('tower-stub', await getCarvings());
 // overlay islands share one pick); the frontmatter just forwards the toggles.
 const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 
-const stores = [
-	{ label: 'languages',      items: 'java · python · node.js · go · php' },
-	{ label: 'data & queues',  items: 'mongodb · redis · rabbitmq · varnish' },
-	{ label: 'infrastructure', items: 'kubernetes · docker · nginx · linux' },
-];
+// The current watch: an empty letter is the wire's "no watch kept" (and the
+// unreachable-API fallback), so the whole section, panel and postcard both,
+// simply doesn't render. Never an empty box under the hero.
+const watch = await getWatch();
+const watchKept = watch.letter !== '';
+const watchParagraphs = watch.letter.split(/\n\s*\n/).map((block) => block.trim()).filter((block) => block !== '');
+const watchPostcard = watch.postcardMediaId !== '';
+
+// "kept 15 jul" / "from the season · jul 2026", lowercase, no leading zero;
+// UTC so every build formats the record the same. A keptAt that doesn't
+// parse just drops the dates rather than printing NaN.
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+const keptAt = new Date(watch.keptAt);
+const keptValid = !Number.isNaN(keptAt.getTime());
+const keptLine = keptValid ? `kept ${keptAt.getUTCDate()} ${MONTHS[keptAt.getUTCMonth()]}` : '';
+const seasonCaption = keptValid ? `from the season · ${MONTHS[keptAt.getUTCMonth()]} ${keptAt.getUTCFullYear()}` : 'from the season';
+
+// A bearing's destination by kind: a light steers into its full log when one
+// is lit (else the coast at large), a hobby to the chart, a note to the
+// journal; kind "none" stays plain text, never a link.
+const bearingHref = (bearing: WatchBearing): string | null => {
+	if ('light' === bearing.kind) {
+		const light = projects.find((project) => project.id === bearing.targetId);
+		return light?.hasLog ? `/projects/${light.slug}` : '/projects';
+	}
+	if ('hobby' === bearing.kind) {
+		return '/hobbies';
+	}
+	if ('note' === bearing.kind) {
+		return '/notes';
+	}
+	return null;
+};
+
+// The mock's own trim: the strip is a single clipped line on desktop, so a
+// runaway bearing name ends on an ellipsis instead of vanishing mid-word.
+const trimName = (name: string) => name.length > 24 ? `${name.slice(0, 23).trimEnd()}…` : name;
+
+const bearings = watch.bearings.map((bearing) => ({
+	verb: bearing.verb,
+	name: trimName(bearing.name),
+	href: bearingHref(bearing),
+}));
+
+// The keeper's stores read the admin's tool bench (SiteCopy.stores, ≤4
+// drawers); a copy document from before the bench existed, or an emptied one,
+// falls back to the approved design copy so today's render never changes.
+const benchDrawers = copy.stores ?? [];
+const stores = benchDrawers.length > 0
+	? benchDrawers.map((drawer) => ({ label: drawer.label, items: (drawer.tools ?? []).join(' · ') }))
+	: [
+		{ label: 'languages',      items: 'java · python · node.js · go · php' },
+		{ label: 'data & queues',  items: 'mongodb · redis · rabbitmq · varnish' },
+		{ label: 'infrastructure', items: 'kubernetes · docker · nginx · linux' },
+	];
 
 // The list arrives order-sorted. On-watch hobbies (moored or made port, the
 // ones the keeper still keeps a light on) fill the mantel; everything still
-// wandering becomes a chip tagged with its state. Tilts alternate so the chips
-// don't all lean the same way.
+// wandering becomes a chart pill tagged with its state.
 const hobbies = await getHobbies();
 const onWatch = (hobby: Hobby) => hobby.state === 'moored' || hobby.state === 'port';
 const learning = hobbies.filter(onWatch);
 const wandering = hobbies.filter((hobby) => !onWatch(hobby));
 
-// Mirrors STATE_META on the ship's log: the chip carries the label's first
+// Mirrors STATE_META on the ship's log: the pill carries the label's first
 // segment, so a state with a longer gloss ("adrift · lost at sea") still reads
-// as one word here (e.g. "piano · adrift"). The dagger died with the graveyard.
+// as one word here (e.g. "piano · adrift").
 const STATE_LABEL: Record<HobbyState, string> = {
 	moored:   'moored',
 	adrift:   'adrift',
@@ -78,10 +134,18 @@ const STATE_LABEL: Record<HobbyState, string> = {
 	inkspill: 'bearing smudged',
 };
 
-const tilts = [-2, 1.5, -1, 2.2, -1.5, 1.8];
-const hobbyChips = wandering.map((hobby, index) => ({
-	text: `${hobby.name.toLowerCase()} · ${STATE_LABEL[hobby.state]}`,
-	tilt: tilts[index % tilts.length],
+// A pill wears its state's own ink on the chart: green for a hobby that made
+// port, the smudged gray (plus the blot) for an inkspill, periwinkle for the
+// rest. moored/port never wander, so only the wandering states need color here.
+const PILL_STATE_CLASS: Partial<Record<HobbyState, string>> = {
+	port:     'chart-pill--port',
+	inkspill: 'chart-pill--smudged',
+};
+
+const hobbyPills = wandering.map((hobby) => ({
+	text:       `${hobby.name.toLowerCase()} · ${STATE_LABEL[hobby.state]}`,
+	stateClass: PILL_STATE_CLASS[hobby.state],
+	smudged:    'inkspill' === hobby.state,
 }));
 ---
 <BaseLayout title="Justin Smith · argsea.com" active="hello" quipKey="quipHello">
@@ -91,19 +155,68 @@ const hobbyChips = wandering.map((hobby, index) => ({
 		<div class="firefly ff-2"></div>
 		<div class="firefly ff-3"></div>
 		<div class="firefly ff-4"></div>
-		<div class="postmark-circle">
-			<div class="postmark-circle__text">PITTSBURGH<br />PA · EST 2014<br />ARGSEA.COM</div>
+		<!-- the seal: the light stamped into the postmark · it blinks hi in morse -->
+		<div class="postmark-circle" title="···· ··">
+			<svg width="34" height="38" viewBox="0 0 18 20" fill="none" stroke="#93a0e8" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path class="postmark-circle__lamp" d="M9 2 L12 6 L6 6 Z" fill="#93a0e8" stroke="none"></path>
+				<path d="M7 6 L6 15 M11 6 L12 15 M7 9.5 h4"></path>
+				<path d="M4 17 q5 -3 10 0"></path>
+			</svg>
 		</div>
 		<div class="hero__copy">
-			<div class="section-label fade-up fade-up--1">{copy.heroKicker}</div>
+			<div class="section-label fade-up fade-up--1">{keeper.title} · {keeper.location}</div>
 			<h1 class="hero__headline fade-up fade-up--2">{copy.heroHeadline}</h1>
-			<p class="hero__body fade-up fade-up--3">{copy.heroBody}</p>
-			<div class="hero__actions fade-up fade-up--4">
-				<a href="/projects" class="btn btn--primary">the projects</a>
-				<a href={`mailto:${keeper.email}`} class="btn btn--outline">say hi</a>
-			</div>
 		</div>
 	</section>
+
+	<!-- the current watch · what the keeper is focused on now -->
+	{watchKept && (
+		<section class:list={['watch', { 'watch--postcarded': watchPostcard }]}>
+			<div class="watch__panel">
+				<div class="watch__head">
+					<span class="watch__head-cluster">
+						<span class="watch__kicker"><span class="watch__lamp"></span>Now</span>
+						<span class="watch__aside">the current watch</span>
+					</span>
+					{/* the cat, posted in the header gap between the kicker and the dateline */}
+					<span class="watch__cat-host">
+						{copy.eggs.cat && <WatchCat client:idle quips={watch.quips} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />}
+					</span>
+					{keptLine && <span class="watch__dateline">{keptLine}</span>}
+				</div>
+				<div class="watch__letter">
+					{watchParagraphs.map((paragraph) => (
+						<p class="watch__para">{paragraph}</p>
+					))}
+					{watch.rotation && <p class="watch__rotation">{watch.rotation}</p>}
+				</div>
+				{bearings.length > 0 && (
+					<div class="watch__bearings">
+						{bearings.map((bearing, index) => (
+							<span class="watch__bearing">
+								{index > 0 && <span class="watch__bearing-sep">·</span>}
+								<span class="watch__bearing-verb">{bearing.verb}</span>
+								{bearing.href
+									? <a href={bearing.href} class="watch__bearing-name">{bearing.name}</a>
+									: <span class="watch__bearing-name watch__bearing-name--plain">{bearing.name}</span>}
+							</span>
+						))}
+					</div>
+				)}
+			</div>
+			{/* the postcard rack · one real photo from the season, swapped whenever the watch is */}
+			{watchPostcard && (
+				<div class="watch__postcard">
+					<div class="watch__postcard-frame">
+						<div class="watch__postcard-photo">
+							<img src={mediaUrl(watch.postcardMediaId)} alt="a photo from the season" />
+						</div>
+						<span class="watch__postcard-caption">{seasonCaption}</span>
+					</div>
+				</div>
+			)}
+		</section>
+	)}
 
 	<WaveDivider projects={projects} proverbs={proverbs} />
 
@@ -117,6 +230,64 @@ const hobbyChips = wandering.map((hobby, index) => ({
 			<a href="/projects" class="mono-link">the whole coast →</a>
 		</div>
 		<HomeLights client:load flagship={flagship} featured={featuredTwo} notes={allNotes} doodles={journalDoodles} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} towerSvg={towerSvg} />
+	</section>
+
+	<!-- hobbies preview: on-watch hobbies fill the mantel, the wandering ones the ship's log chart -->
+	<section class="hobbies-preview">
+		<div class="row-head">
+			<span class="section-head-cluster">
+				<span class="section-label">Hobbies</span>
+				<span class="section-aside">past and present, abridged</span>
+			</span>
+			<a href="/hobbies" class="mono-link">the full chart →</a>
+		</div>
+		<div class="hobbies-preview__grid">
+			<div class="panel panel--learning">
+				<span class="panel__label panel__label--gold">Currently learning</span>
+				<div class="panel__rows">
+					{learning.map((hobby) => (
+						<div class="panel__row"><span class="panel__name">{hobby.name}</span><span class="panel__tags">{(hobby.tags ?? []).join(' · ')}</span></div>
+					))}
+				</div>
+				<span class="panel__aside">One tweak from perfect, forever.</span>
+			</div>
+			<div class="panel panel--chart">
+				<!-- a compass rose in the corner, from the chart -->
+				<svg class="panel__rose" aria-hidden="true" width="36" height="36" viewBox="0 0 36 36" fill="none">
+					<circle cx="18" cy="18" r="8.5" stroke="#93a0e8" stroke-width=".9" opacity=".5"></circle>
+					<circle cx="18" cy="18" r="12.5" stroke="#93a0e8" stroke-width=".6" opacity=".25" stroke-dasharray="1.5 3"></circle>
+					<path d="M18 2 L20 16 L18 18 L16 16 Z" fill="#93a0e8" opacity=".8"></path>
+					<path d="M18 34 L20 20 L18 18 L16 20 Z" fill="#93a0e8" opacity=".4"></path>
+					<path d="M2 18 L16 16 L18 18 L16 20 Z" fill="#93a0e8" opacity=".4"></path>
+					<path d="M34 18 L20 16 L18 18 L20 20 Z" fill="#93a0e8" opacity=".4"></path>
+					<circle cx="18" cy="18" r="1.2" fill="#93a0e8"></circle>
+				</svg>
+				<span class="panel__label panel__label--chart">The ship's log</span>
+				<div class="panel__plot">
+					<!-- the fleet's wake, plotted behind the pills -->
+					<svg class="panel__wake" aria-hidden="true" viewBox="0 0 800 60" preserveAspectRatio="none">
+						<path d="M-8 44 C 110 12, 230 56, 380 30 S 640 4, 808 26" fill="none" stroke="rgba(147,160,232,.4)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="0.1 8"></path>
+					</svg>
+					<div class="panel__pills">
+						{hobbyPills.map((pill) => (
+							<span class:list={['chart-pill', pill.stateClass]}>
+								{pill.text}
+								{pill.smudged && <span class="chart-pill__smudge" title="the ink never dried"></span>}
+								{pill.smudged && <span class="chart-pill__drip"></span>}
+							</span>
+						))}
+					</div>
+				</div>
+				<div class="chart-firefly chart-firefly--a" aria-hidden="true"><span class="chart-firefly__halo"></span><span class="chart-firefly__dot"></span></div>
+				<div class="chart-firefly chart-firefly--b" aria-hidden="true"><span class="chart-firefly__halo"></span><span class="chart-firefly__dot"></span></div>
+				<div class="chart-firefly chart-firefly--c" aria-hidden="true"><span class="chart-firefly__halo"></span><span class="chart-firefly__dot"></span></div>
+				<span class="panel__aside panel__aside--dim">None of them sank. Some are just further from port than others.</span>
+			</div>
+		</div>
+		<div class="hobbies-preview__foot">
+			<span class="mono-comment">// the chart only fills in. that's fine.</span>
+			<NextHobbyChip client:load values={suggestions.map((s) => s.value)} variant="round" />
+		</div>
 	</section>
 
 	<JournalStrip notes={journalPreview} doodles={journalDoodles} />
@@ -140,50 +311,6 @@ const hobbyChips = wandering.map((hobby, index) => ({
 		</div>
 	</section>
 
-	<!-- hobbies preview: on-watch hobbies fill the mantel, the wandering ones the ship's log -->
-	<section class="hobbies-preview">
-		<div class="row-head">
-			<span class="section-head-cluster">
-				<span class="section-label">Hobbies</span>
-				<span class="section-aside">past and present, abridged</span>
-			</span>
-			<a href="/hobbies" class="mono-link">the full chart →</a>
-		</div>
-		<div class="hobbies-preview__grid">
-			<div class="panel panel--learning">
-				<span class="panel__label panel__label--gold">Currently learning</span>
-				<div class="panel__rows">
-					{learning.map((hobby) => (
-						<div class="panel__row"><span class="panel__name">{hobby.name}</span><span class="panel__tags">{(hobby.tags ?? []).join(' · ')}</span></div>
-					))}
-				</div>
-				<span class="panel__aside">One tweak from perfect, forever.</span>
-			</div>
-			<div class="panel panel--graveyard">
-				<div class="grave-lantern" aria-hidden="true">
-					<span class="grave-lantern__post"></span>
-					<span class="grave-lantern__box"></span>
-					<span class="grave-lantern__core"></span>
-					<span class="grave-lantern__halo"></span>
-				</div>
-				<span class="panel__label">The ship's log</span>
-				<div class="panel__chips">
-					{hobbyChips.map((chip) => (
-						<span class="grave-chip" style={`--tilt:${chip.tilt}deg`}>{chip.text}</span>
-					))}
-				</div>
-				<div class="grave-firefly grave-firefly--a" aria-hidden="true"><span class="grave-firefly__halo"></span><span class="grave-firefly__dot"></span></div>
-				<div class="grave-firefly grave-firefly--b" aria-hidden="true"><span class="grave-firefly__halo"></span><span class="grave-firefly__dot"></span></div>
-				<div class="grave-firefly grave-firefly--c" aria-hidden="true"><span class="grave-firefly__halo"></span><span class="grave-firefly__dot"></span></div>
-				<span class="panel__aside panel__aside--dim">None of them sank. Some are just further from port than others.</span>
-			</div>
-		</div>
-		<div class="hobbies-preview__foot">
-			<span class="mono-comment">// the chart only grows. that's fine.</span>
-			<NextHobbyChip client:load values={suggestions.map((s) => s.value)} variant="headstone" />
-		</div>
-	</section>
-
 	<!-- contact band -->
 	<section class="contact">
 		<LighthouseMark width={30} height={34} />
@@ -197,10 +324,20 @@ const hobbyChips = wandering.map((hobby, index) => ({
 </BaseLayout>
 
 <style>
+	/* The mock's per-section shells: every home band caps at 1480px and
+	   centers, so an ultrawide screen stops flinging the sections apart
+	   (JournalStrip.astro and the shared nav carry their own). */
+	.hero, .watch, .postcards, .hobbies-preview, .stores, .contact {
+		width: 100%;
+		max-width: 1480px;
+		margin: 0 auto;
+		box-sizing: border-box;
+	}
+
 	/* --- hero --- */
 	.hero {
 		position: relative;
-		padding: clamp(56px, 9vw, 96px) var(--gutter) clamp(40px, 6vw, 64px);
+		padding: clamp(48px, 7vw, 76px) var(--gutter) clamp(30px, 5vw, 44px);
 		overflow: hidden;
 	}
 
@@ -213,30 +350,43 @@ const hobbyChips = wandering.map((hobby, index) => ({
 	.postmark-circle {
 		position: absolute;
 		right: clamp(24px, 6vw, 72px);
-		top: 76px;
-		width: 110px;
-		height: 110px;
+		top: 64px;
+		width: 92px;
+		height: 92px;
 		border: 1.5px dashed rgba(147, 160, 232, .4);
 		border-radius: 50%;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		gap: 3px;
 		transform: rotate(12deg);
 		animation: postmarkSway 9s ease-in-out infinite;
 	}
 
-	.postmark-circle__text {
-		text-align: center;
-		font-family: var(--font-mono);
-		font-size: 10px;
-		letter-spacing: .14em;
-		color: var(--periwinkle);
-		line-height: 1.7;
+	.postmark-circle__lamp {
+		animation: morseHi 4s linear infinite;
 	}
 
 	@keyframes postmarkSway {
 		0%, 100% { transform: rotate(9deg); }
 		50%      { transform: rotate(15deg); }
+	}
+
+	/* HI in morse (···· ··): the seal's lamp blinks the greeting on a 4s loop */
+	@keyframes morseHi {
+		0%, 4.9%   { opacity: 1; }
+		5%, 9.9%   { opacity: .12; }
+		10%, 14.9% { opacity: 1; }
+		15%, 19.9% { opacity: .12; }
+		20%, 24.9% { opacity: 1; }
+		25%, 29.9% { opacity: .12; }
+		30%, 34.9% { opacity: 1; }
+		35%, 49.9% { opacity: .12; }
+		50%, 54.9% { opacity: 1; }
+		55%, 59.9% { opacity: .12; }
+		60%, 64.9% { opacity: 1; }
+		65%, 100%  { opacity: .12; }
 	}
 
 	@media (max-width: 600px) {
@@ -260,20 +410,241 @@ const hobbyChips = wandering.map((hobby, index) => ({
 		text-wrap: balance;
 	}
 
-	.hero__body {
-		margin: 0;
-		font-size: clamp(17px, 2.4vw, 20px);
-		line-height: 1.6;
-		color: var(--text-body);
-		font-weight: 300;
-	}
-
-	.hero__actions {
+	/* --- the current watch --- */
+	.watch {
+		position: relative;
+		padding: 0 var(--gutter) clamp(36px, 6vw, 56px);
 		display: flex;
 		flex-wrap: wrap;
-		gap: 14px;
+		justify-content: space-between;
+		gap: 26px;
+		align-items: stretch;
+	}
+
+	.watch__panel {
+		position: relative;
+		flex: 1 1 440px;
+		max-width: 660px;
+		background: linear-gradient(160deg, #161a2e, #12162a);
+		border: 1px solid var(--border-card);
+		border-radius: 14px;
+		padding: clamp(24px, 4vw, 34px) clamp(22px, 4vw, 36px);
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		animation: fadeUp .7s ease .3s both;
+	}
+
+	.watch__head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 8px 16px;
+	}
+
+	.watch__head-cluster {
+		display: flex;
+		align-items: baseline;
+		gap: 12px;
+		flex-wrap: wrap;
+	}
+
+	.watch__kicker {
+		display: inline-flex;
 		align-items: center;
-		margin-top: 4px;
+		gap: 9px;
+		font-family: var(--font-mono);
+		font-size: 13px;
+		letter-spacing: .14em;
+		color: var(--gold);
+		text-transform: uppercase;
+	}
+
+	.watch__lamp {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: var(--gold);
+		box-shadow: 0 0 8px 2px rgba(240, 217, 168, .55);
+		animation: lampPulse 4s ease-in-out infinite;
+	}
+
+	.watch__aside {
+		font-size: 15px;
+		color: var(--periwinkle-deep);
+		font-style: italic;
+	}
+
+	/* The cat's perch: the flexible gap between the kicker and the dateline
+	   (WatchCat.tsx mounts into it when the page's one-cat pick lands here) */
+	.watch__cat-host {
+		flex: 1 1 0;
+		min-width: 0;
+		position: relative;
+		align-self: stretch;
+	}
+
+	.watch__dateline {
+		font-family: var(--font-mono);
+		font-size: 11.5px;
+		color: var(--periwinkle-deep);
+	}
+
+	.watch__letter {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.watch__para {
+		margin: 0;
+		font-size: clamp(16px, 2.2vw, 18.5px);
+		line-height: 1.7;
+		color: var(--text-body);
+		font-weight: 300;
+		text-wrap: pretty;
+	}
+
+	.watch__rotation {
+		margin: 0;
+		font-size: 15.5px;
+		font-style: italic;
+		color: #9aa3c9;
+		line-height: 1.65;
+		text-wrap: pretty;
+	}
+
+	/* One clipped line on desktop; the mid-width query below lets it wrap */
+	.watch__bearings {
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: baseline;
+		gap: 7px 12px;
+		border-top: 1px solid rgba(150, 160, 220, .14);
+		padding-top: 14px;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		line-height: 1.7;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+
+	.watch__bearing {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 8px;
+	}
+
+	.watch__bearing-sep {
+		color: #3d4468;
+	}
+
+	.watch__bearing-verb {
+		color: #8a93c4;
+	}
+
+	.watch__bearing-name {
+		color: var(--gold);
+	}
+
+	.watch__bearing-name--plain {
+		color: #d6dcf4;
+	}
+
+	.watch__postcard {
+		flex: 1 1 300px;
+		max-width: 516px;
+		min-width: 250px;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		position: relative;
+		z-index: 2;
+		animation: fadeUp .7s ease .4s both;
+	}
+
+	/* Resting tilt is a base transform: reduced-motion strips the hover lift, keeps the pose */
+	.watch__postcard-frame {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		background: #252b49;
+		border: 1px solid rgba(150, 160, 220, .22);
+		padding: 9px 9px 14px;
+		box-shadow: 0 10px 26px rgba(0, 0, 0, .5);
+		transform: rotate(1.6deg);
+		transition: transform .25s;
+	}
+
+	.watch__postcard-frame:hover {
+		transform: rotate(.4deg) translateY(-3px);
+	}
+
+	.watch__postcard-photo {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		background: #1e2440;
+	}
+
+	.watch__postcard-photo img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.watch__postcard-caption {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--periwinkle);
+		text-align: center;
+	}
+
+	/* the postcard straddles the hero/watch seam only when it actually sits beside the panel */
+	@media (min-width: 940px) {
+		.watch__postcard {
+			margin-top: -60px;
+		}
+	}
+
+	/* mid widths: the postcard rides beside the letter, shrinking with the room */
+	@media (min-width: 601px) and (max-width: 939px) {
+		.watch__postcard {
+			flex: 0 0 auto;
+			width: clamp(120px, 21vw, 250px);
+			min-width: 0;
+			margin-top: -34px;
+		}
+
+		.watch__panel {
+			min-width: 0;
+		}
+
+		.watch__bearings {
+			white-space: normal;
+			flex-wrap: wrap;
+			overflow: visible;
+		}
+	}
+
+	/* phone: small enough to sit on the card itself (the panel's extra bottom
+	   padding makes the room, and only when there is a postcard to seat) */
+	@media (max-width: 600px) {
+		.watch__postcard {
+			position: absolute;
+			right: 26px;
+			bottom: 12px;
+			width: 132px;
+			min-width: 0;
+			z-index: 3;
+		}
+
+		.watch--postcarded .watch__panel {
+			padding-bottom: 118px;
+		}
 	}
 
 	/* --- postcards preview --- */
@@ -355,7 +726,7 @@ const hobbyChips = wandering.map((hobby, index) => ({
 		transform: rotate(-.3deg);
 	}
 
-	.panel--graveyard {
+	.panel--chart {
 		position: relative;
 		background: var(--card-alt);
 		border: 1px solid rgba(150, 160, 220, .18);
@@ -372,6 +743,19 @@ const hobbyChips = wandering.map((hobby, index) => ({
 
 	.panel__label--gold {
 		color: var(--gold);
+	}
+
+	/* Clears the compass rose in the corner */
+	.panel__label--chart {
+		padding-right: 34px;
+	}
+
+	.panel__rose {
+		position: absolute;
+		top: 10px;
+		right: 14px;
+		pointer-events: none;
+		opacity: .55;
 	}
 
 	.panel__rows {
@@ -410,72 +794,73 @@ const hobbyChips = wandering.map((hobby, index) => ({
 		color: var(--text-dim);
 	}
 
-	.panel__chips {
+	.panel__plot {
+		position: relative;
+	}
+
+	.panel__wake {
+		position: absolute;
+		left: 0;
+		top: -8px;
+		width: 100%;
+		height: calc(100% + 16px);
+		pointer-events: none;
+	}
+
+	.panel__pills {
 		display: flex;
 		gap: 10px 9px;
 		flex-wrap: wrap;
-		align-items: flex-end;
+		align-items: center;
+		position: relative;
 	}
 
-	/* Headstones: rounded tops over flat bottoms, a static per-chip tilt
-	   pivoting from the ground, and a soft shadow pooled underneath. */
-	.grave-chip {
-		padding: 7px 14px 6px;
-		border: 1px solid var(--border-chip);
-		border-bottom-color: rgba(150, 160, 220, .16);
-		border-radius: 11px 11px 2px 2px;
+	.chart-pill {
+		padding: 4px 12px;
+		border: 1px solid rgba(147, 160, 232, .45);
+		border-radius: 999px;
 		font-family: var(--font-mono);
-		font-size: 12.5px;
-		color: var(--text-body);
-		transform: rotate(var(--tilt));
-		transform-origin: 50% 100%;
-		box-shadow: 0 6px 6px -4px rgba(0, 0, 0, .55);
+		font-size: 11px;
+		letter-spacing: .08em;
+		text-transform: uppercase;
+		color: var(--periwinkle);
+		background: rgba(147, 160, 232, .08);
+		white-space: nowrap;
 	}
 
-	/* The keeper's lantern, watching over the graveyard from the card's corner */
-	.grave-lantern__post {
-		position: absolute;
-		top: 14px;
-		right: 18px;
-		width: 3px;
-		height: 26px;
-		background: #2a2f52;
+	.chart-pill--port {
+		border-color: rgba(111, 202, 151, .45);
+		color: #6fca97;
+		background: rgba(111, 202, 151, .08);
 	}
 
-	.grave-lantern__box {
-		position: absolute;
-		top: 8px;
-		right: 15px;
-		width: 9px;
-		height: 10px;
-		background: #141225;
-		border: 1px solid rgba(240, 217, 168, .5);
-		border-radius: 2px;
+	.chart-pill--smudged {
+		position: relative;
+		border-color: rgba(138, 147, 196, .45);
+		color: #8a93c4;
+		background: rgba(138, 147, 196, .08);
 	}
 
-	.grave-lantern__core {
+	/* the ink never dried: a blot pooling off the smudged bearing's corner */
+	.chart-pill__smudge {
 		position: absolute;
-		top: 10.5px;
-		right: 17px;
-		width: 5px;
-		height: 5.5px;
+		right: -8px;
+		bottom: -6px;
+		width: 16px;
+		height: 13px;
+		border-radius: 56% 44% 62% 38% / 54% 60% 40% 46%;
+		background: radial-gradient(circle at 40% 38%, #3a4380, #1a1f42);
+		transform: rotate(-14deg);
+	}
+
+	.chart-pill__drip {
+		position: absolute;
+		right: -13px;
+		bottom: 3px;
+		width: 4px;
+		height: 4px;
 		border-radius: 50%;
-		background: var(--gold);
-		box-shadow: 0 0 9px 2px rgba(240, 217, 168, .65);
-		animation: lampPulse 6s ease-in-out infinite;
-	}
-
-	.grave-lantern__halo {
-		position: absolute;
-		top: -24px;
-		right: -28px;
-		width: 130px;
-		height: 110px;
-		border-radius: 50%;
-		background: radial-gradient(circle, rgba(240, 196, 120, .15), transparent 62%);
-		filter: blur(2px);
-		animation: lampPulse 6s ease-in-out infinite;
-		pointer-events: none;
+		background: #2a3160;
 	}
 
 	@keyframes lampPulse {
@@ -483,43 +868,39 @@ const hobbyChips = wandering.map((hobby, index) => ({
 		50%      { opacity: 1; }
 	}
 
-	/* Three fireflies roaming the graveyard card; hidden outright under
-	   reduced motion rather than left frozen mid-roam. */
-	.grave-firefly {
+	/* Three fireflies roaming the chart card; hidden outright under reduced
+	   motion rather than left frozen mid-roam. */
+	.chart-firefly {
 		position: absolute;
 		pointer-events: none;
 		z-index: 2;
 	}
 
-	.grave-firefly--a { left: 20%; top: 54%; animation: fireflyRoam 11s ease-in-out infinite; }
-	.grave-firefly--b { left: 58%; top: 36%; animation: fireflyRoam 14s ease-in-out -5s infinite reverse; }
-	.grave-firefly--c { left: 74%; top: 66%; animation: fireflyRoam 9s ease-in-out -2s infinite; }
+	.chart-firefly--a { left: 20%; top: 54%; animation: fireflyRoam 11s ease-in-out infinite; }
+	.chart-firefly--b { left: 58%; top: 36%; animation: fireflyRoam 14s ease-in-out -5s infinite reverse; }
+	.chart-firefly--c { left: 74%; top: 66%; animation: fireflyRoam 9s ease-in-out -2s infinite; }
 
-	.grave-firefly__halo {
+	.chart-firefly__halo {
 		position: absolute;
 		left: 50%;
 		top: 50%;
-		width: 46px;
-		height: 46px;
 		transform: translate(-50%, -50%);
 		border-radius: 50%;
-		background: radial-gradient(circle, rgba(240, 196, 120, .26), transparent 65%);
 		filter: blur(2px);
-		animation: lampPulse 3.2s ease-in-out infinite;
 	}
 
-	.grave-firefly__dot {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		width: 3px;
-		height: 3px;
-		transform: translate(-50%, -50%);
+	.chart-firefly__dot {
+		display: block;
 		border-radius: 50%;
 		background: var(--gold);
-		box-shadow: 0 0 6px 2px rgba(240, 217, 168, .55);
-		animation: lampPulse 3.2s ease-in-out infinite;
 	}
+
+	.chart-firefly--a .chart-firefly__halo { width: 46px; height: 46px; background: radial-gradient(circle, rgba(240, 196, 120, .26), transparent 65%); animation: lampPulse 3.2s ease-in-out infinite; }
+	.chart-firefly--a .chart-firefly__dot  { width: 3px;   height: 3px;   box-shadow: 0 0 6px 2px rgba(240, 217, 168, .55);   animation: lampPulse 3.2s ease-in-out infinite; }
+	.chart-firefly--b .chart-firefly__halo { width: 38px; height: 38px; background: radial-gradient(circle, rgba(240, 196, 120, .22), transparent 65%); animation: lampPulse 4.1s ease-in-out .8s infinite; }
+	.chart-firefly--b .chart-firefly__dot  { width: 2.5px; height: 2.5px; box-shadow: 0 0 5px 2px rgba(240, 217, 168, .5);    animation: lampPulse 4.1s ease-in-out .8s infinite; }
+	.chart-firefly--c .chart-firefly__halo { width: 32px; height: 32px; background: radial-gradient(circle, rgba(240, 196, 120, .2), transparent 65%);  animation: lampPulse 2.7s ease-in-out .4s infinite; }
+	.chart-firefly--c .chart-firefly__dot  { width: 2px;   height: 2px;   box-shadow: 0 0 5px 1.5px rgba(240, 217, 168, .45); animation: lampPulse 2.7s ease-in-out .4s infinite; }
 
 	@keyframes fireflyRoam {
 		0%, 100% { translate: 0 0; }
@@ -531,7 +912,7 @@ const hobbyChips = wandering.map((hobby, index) => ({
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.grave-firefly {
+		.chart-firefly {
 			display: none;
 		}
 	}
