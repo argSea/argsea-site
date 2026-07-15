@@ -227,6 +227,13 @@ export interface Lighthouse {
 	line: string;  // the one-liner the coordinate flip reveals
 }
 
+// One drawer of the keeper's stores, edited on the admin's tool bench: a mono
+// label ("languages") and the tools shelved under it.
+export interface StoreDrawer {
+	label: string;
+	tools: string[];
+}
+
 // The "signal flags" singleton: the little lines of copy that fly over every
 // page, plus the smuggler's cove (easter-egg toggles and their content). All
 // text fields are plain text; the API does not sanitize them as HTML, so
@@ -242,6 +249,7 @@ export interface SiteCopy {
 	heroHeadline:   string;
 	heroBody:       string;
 	dict:           string;
+	stores?:        StoreDrawer[] | null; // the tool bench's drawers (≤4); absent/empty → the home page's approved design copy
 	eggs:           EggToggles;
 	catPages:       CatPages;    // per-page master switch for the harbor cat
 	catSpots:       CatSpots;    // per-spot switch, keyed by the frozen spot ids

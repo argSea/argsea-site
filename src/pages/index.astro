@@ -11,8 +11,9 @@
 // section never shows the flagship alone. It opens the Light List entry in
 // place; the hero headline comes from the SiteCopy singleton and the kicker
 // from the keeper's papers (title + city, no name: the wordmark owns it);
-// the say-hi email is the keeper's; the keeper's stores is approved copy
-// hardcoded by design. The journal strip is the newest notes, static links
+// the say-hi email is the keeper's; the keeper's stores read the tool
+// bench's drawers off the copy singleton, falling back to the approved
+// design copy. The journal strip is the newest notes, static links
 // out to /notes, and disappears once there are none. The hobbies preview is
 // data-driven: on-watch hobbies fill "currently learning", the wandering
 // ones become the ship's log's chart pills.
@@ -102,11 +103,17 @@ const bearings = watch.bearings.map((bearing) => ({
 	href: bearingHref(bearing),
 }));
 
-const stores = [
-	{ label: 'languages',      items: 'java · python · node.js · go · php' },
-	{ label: 'data & queues',  items: 'mongodb · redis · rabbitmq · varnish' },
-	{ label: 'infrastructure', items: 'kubernetes · docker · nginx · linux' },
-];
+// The keeper's stores read the admin's tool bench (SiteCopy.stores, ≤4
+// drawers); a copy document from before the bench existed, or an emptied one,
+// falls back to the approved design copy so today's render never changes.
+const benchDrawers = copy.stores ?? [];
+const stores = benchDrawers.length > 0
+	? benchDrawers.map((drawer) => ({ label: drawer.label, items: (drawer.tools ?? []).join(' · ') }))
+	: [
+		{ label: 'languages',      items: 'java · python · node.js · go · php' },
+		{ label: 'data & queues',  items: 'mongodb · redis · rabbitmq · varnish' },
+		{ label: 'infrastructure', items: 'kubernetes · docker · nginx · linux' },
+	];
 
 // The list arrives order-sorted. On-watch hobbies (moored or made port, the
 // ones the keeper still keeps a light on) fill the mantel; everything still
