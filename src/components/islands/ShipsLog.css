@@ -30,6 +30,19 @@
 	50%      { transform: scaleX(.86) skewX(-8deg); }
 }
 
+/* Carving anchors, diorama-side (the LighthouseMark contract in global.css):
+ * a bolted carving that tags its flame or wake keeps the builtin's pulse from
+ * the page, scoped per spot so an anchored carving bolted elsewhere never
+ * picks up a stray one; a carving without the tag settles as static art. */
+
+[data-bolted="moored-lamp"] [data-carving-anchor="lamp"] {
+	animation: lampPulse 4s ease-in-out infinite;
+}
+
+[data-bolted="adrift-wake"] [data-carving-anchor="wake"] {
+	animation: wakePulse 3s ease-in-out infinite;
+}
+
 /* --- per-state marks --- */
 
 @keyframes boatDrift {

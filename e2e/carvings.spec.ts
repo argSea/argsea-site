@@ -1,10 +1,12 @@
 // The carving shop's site-side half: every spot renders its bolted svg with
 // a built-in fallback (see src/lib/carvings.ts). The shipped fixtures carry
-// only the seven builtins and bolt nothing, so both bolted scenarios live in
-// the fallback mock-api build (e2e/mock-api.mjs): a jar over `bottle` proves
-// a shop swap reaches its mount, and a no-anchor carving over `tower-stub`
-// proves the characteristic engine degrades to steady art instead of
-// crashing.
+// only builtins and bolt nothing, so every bolted scenario lives in the
+// fallback mock-api build (e2e/mock-api.mjs): a jar over `bottle` proves a
+// shop swap reaches its mount, a no-anchor carving over `tower-stub` proves
+// the characteristic engine degrades to steady art instead of crashing, and
+// the promote wave's bolts prove a swap reaches one spot per new page region
+// (hello / hobbies / 404 / tab bar), with the buoy's no-anchor carving
+// holding the CSS-side lamp steady the same way.
 import { test, expect } from '@playwright/test';
 
 const FALLBACK_BUILD = 'http://127.0.0.1:4823';
@@ -63,4 +65,61 @@ test('a tower-stub carving without the lamp anchor swaps the shape and holds the
 		const running = await page.locator('.lamp__halo').evaluate((el) => el.getAnimations().length);
 		expect(running).toBe(0);
 	}).toPass();
+});
+
+test('a bolted carving reaches the hello page: the panel rose swaps to the carved tile', async ({ page }) => {
+	await page.goto(`${FALLBACK_BUILD}/`);
+	// The mock tile is a lone rect; the built-in rose is circles and paths,
+	// never a rect.
+	const rose = page.locator('.panel__rose');
+	await expect(rose).toHaveAttribute('data-bolted', 'panel-rose');
+	await expect(rose.locator('rect')).toHaveCount(1);
+	await expect(rose.locator('circle')).toHaveCount(0);
+});
+
+test('a bolted carving reaches the wandering chart: the sea serpent swaps to the carved plank', async ({ page }) => {
+	await page.goto(`${FALLBACK_BUILD}/hobbies`);
+	const serpent = page.locator('[data-bolted="sea-serpent"]');
+	await expect(serpent).toHaveCount(1);
+	await expect(serpent.locator('rect')).toHaveCount(1);
+	await expect(serpent.locator('circle')).toHaveCount(0);
+});
+
+test('a bolted buoy without the lamp anchor swaps the shape and holds the blink steady', async ({ page }) => {
+	await page.goto(`${FALLBACK_BUILD}/404.html`);
+	const buoy = page.locator('.buoy svg');
+	await expect(buoy).toHaveAttribute('data-bolted', 'buoy');
+	await expect(buoy.locator('rect')).toHaveCount(1);
+	await expect(buoy.locator('ellipse')).toHaveCount(0);
+
+	// No anchor tag, so the page's carvingBuoyLamp rule never attaches; the
+	// wrapper keeps bobbing (that motion is the mount's, not the carving's).
+	const running = await buoy.locator('rect').evaluate((el) => el.getAnimations().length);
+	expect(running).toBe(0);
+});
+
+test('a bolted carving reaches the tab bar below the phone line: the notes letter swaps to the carved dot', async ({ page }) => {
+	await page.setViewportSize({ width: 390, height: 844 });
+	await page.goto(`${FALLBACK_BUILD}/`);
+	const letter = page.locator('.tab-bar [data-bolted="notes-letter"]');
+	await expect(letter).toBeVisible();
+	await expect(letter.locator('circle')).toHaveCount(1);
+	await expect(letter.locator('rect')).toHaveCount(0);
+});
+
+test('the fixtures build bolts nothing: every promoted spot renders its built-in art', async ({ page }) => {
+	// baseURL serves the fixtures build; its carvings all carry boltedTo null
+	await page.goto('/');
+	const rose = page.locator('.panel__rose');
+	expect(await rose.getAttribute('data-bolted')).toBeNull();
+	await expect(rose.locator('circle')).toHaveCount(3);
+
+	await page.goto('/hobbies');
+	await expect(page.locator('.shipslog__chart')).toBeVisible();
+	await expect(page.locator('[data-bolted]')).toHaveCount(0);
+
+	await page.goto('/404.html');
+	const buoy = page.locator('.buoy svg');
+	expect(await buoy.getAttribute('data-bolted')).toBeNull();
+	await expect(buoy.locator('ellipse')).toHaveCount(1);
 });

@@ -14,15 +14,41 @@ export type CarvingSpot =
 	| 'tower-stub'
 	| 'paw'
 	| 'wave-line'
-	| 'boat-wake';
+	| 'boat-wake'
+	// the 2026-07-16 promote wave: hello
+	| 'morse-seal'
+	| 'panel-rose'
+	| 'fleet-wake'
+	// the wandering chart (the diorama boat/wake are their own swap points on
+	// purpose, never the v1 boat/boat-wake spots, even though the geometry
+	// matches today; the Flannan memorial trio is deliberately not a spot)
+	| 'chart-rose'
+	| 'sea-serpent'
+	| 'moored-lamp'
+	| 'adrift-boat'
+	| 'adrift-wake'
+	| 'marooned-palm'
+	| 'port-anchor'
+	| 'signal-flare'
+	| 'compass-rose-star'
+	| 'sail-tent'
+	// 404
+	| 'gull'
+	| 'route-line'
+	| 'buoy'
+	// the phone-line tab bar (the hello tab rides lighthouse-logo)
+	| 'compass'
+	| 'notes-letter';
 
 // A bolted carving's animateable light element: the lighthouse-logo's pulsing
-// flame or the tower-stub's beacon core. A carving that doesn't tag one
-// degrades to static art (graceful, loose-rules: never a crash over a missing
-// shape). global.css's [data-carving-anchor="lamp"] rule is what actually
-// keeps the CSS pulse running for a bolted lighthouse-logo; the characteristic
-// engine's mounts (tower-stub) read this same flag to decide whether to hold
-// their halo/core steady instead of igniting them.
+// flame, the tower-stub's beacon core, or any of the promote wave's lamps
+// (morse-seal, moored-lamp, buoy; adrift-wake tags "wake" instead). A carving
+// that doesn't tag one degrades to static art (graceful, loose-rules: never a
+// crash over a missing shape). The per-spot [data-carving-anchor] rules in
+// global.css/ShipsLog.css are what actually keep the CSS pulses running for a
+// bolted carving; the characteristic engine's mounts (tower-stub) read this
+// same flag to decide whether to hold their halo/core steady instead of
+// igniting them.
 const LAMP_ANCHOR = 'data-carving-anchor="lamp"';
 
 /**

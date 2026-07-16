@@ -408,6 +408,40 @@ a {
 	50%      { opacity: 1; }
 }
 
+/* The promote wave's other page-side lamps, same contract: the hero seal's
+   morse greeting and the 404 buoy's blink belong to their pages, never to a
+   carving record, so a bolted carving only picks them up by tagging its lamp.
+   Scoped per spot (data-bolted) so an anchored carving bolted elsewhere never
+   blinks hi. The keyframes are copies of the pages' own scoped ones, which
+   set:html'd markup can't reach. */
+[data-bolted="morse-seal"] [data-carving-anchor="lamp"] {
+	animation: carvingMorseHi 4s linear infinite;
+}
+
+[data-bolted="buoy"] [data-carving-anchor="lamp"] {
+	animation: carvingBuoyLamp 2.2s ease-in-out infinite;
+}
+
+@keyframes carvingMorseHi {
+	0%, 4.9%   { opacity: 1; }
+	5%, 9.9%   { opacity: .12; }
+	10%, 14.9% { opacity: 1; }
+	15%, 19.9% { opacity: .12; }
+	20%, 24.9% { opacity: 1; }
+	25%, 29.9% { opacity: .12; }
+	30%, 34.9% { opacity: 1; }
+	35%, 49.9% { opacity: .12; }
+	50%, 54.9% { opacity: 1; }
+	55%, 59.9% { opacity: .12; }
+	60%, 64.9% { opacity: 1; }
+	65%, 100%  { opacity: .12; }
+}
+
+@keyframes carvingBuoyLamp {
+	0%, 100% { opacity: .35; }
+	50%      { opacity: 1; }
+}
+
 /* The one sailing idiom every drifting-across-the-sky/sea object shares
    (cirrus, the boat, the squall): left, not transform, so a wrapper's own
    top/width/height stay simple inline numbers instead of fighting a second

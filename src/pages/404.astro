@@ -8,10 +8,18 @@
 // cutover.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LightList from '../components/islands/LightList';
-import { getSiteCopy } from '../lib/api';
+import { getSiteCopy, getCarvings } from '../lib/api';
+import { boltedSvg, innerMarkup } from '../lib/carvings';
 
 const copy = await getSiteCopy();
 const lighthouses = copy.eggs.lights ? copy.lighthouses : [];
+
+// This page's three carving spots: the gull, the route line, the buoy. The
+// wreck stays carved in place (salvage rights unresolved).
+const carvings = await getCarvings();
+const gullSvg = boltedSvg('gull', carvings);
+const routeSvg = boltedSvg('route-line', carvings);
+const buoySvg = boltedSvg('buoy', carvings);
 ---
 <BaseLayout title="404 · run aground · argsea.com" active="none" quipKey="quip404">
 	<section class="shallows">
@@ -20,7 +28,13 @@ const lighthouses = copy.eggs.lights ? copy.lighthouses : [];
 		<div class="firefly ff-3"></div>
 
 		<div class="gull">
-			<svg width="26" height="10" viewBox="0 0 26 10" fill="none"><path d="M1 8 Q6.5 1 13 6 Q19.5 1 25 8" stroke="#8f9be0" stroke-width="1.4" fill="none" stroke-linecap="round" /></svg>
+			<svg width="26" height="10" viewBox="0 0 26 10" fill="none" data-bolted={gullSvg ? 'gull' : undefined}>
+				{gullSvg ? (
+					<Fragment set:html={innerMarkup(gullSvg)} />
+				) : (
+					<path d="M1 8 Q6.5 1 13 6 Q19.5 1 25 8" stroke="#8f9be0" stroke-width="1.4" fill="none" stroke-linecap="round" />
+				)}
+			</svg>
 		</div>
 
 		<div class="copy">
@@ -51,7 +65,13 @@ const lighthouses = copy.eggs.lights ? copy.lighthouses : [];
 			<div class="shoal-crest"></div>
 
 			<!-- dotted route line that dies at the sand -->
-			<svg class="route" viewBox="0 0 300 70" fill="none" preserveAspectRatio="none"><path d="M0 6 Q90 -8 170 34 T292 58" stroke="rgba(240,217,168,.5)" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round" fill="none" /></svg>
+			<svg class="route" viewBox="0 0 300 70" fill="none" preserveAspectRatio="none" data-bolted={routeSvg ? 'route-line' : undefined}>
+				{routeSvg ? (
+					<Fragment set:html={innerMarkup(routeSvg)} />
+				) : (
+					<path d="M0 6 Q90 -8 170 34 T292 58" stroke="rgba(240,217,168,.5)" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round" fill="none" />
+				)}
+			</svg>
 			<div class="route-end"></div>
 
 			<div class="wreck">
@@ -73,12 +93,18 @@ const lighthouses = copy.eggs.lights ? copy.lighthouses : [];
 			</div>
 
 			<div class="buoy">
-				<svg width="30" height="46" viewBox="0 0 30 46" fill="none" style="overflow:visible">
-					<ellipse class="buoy__lamp" cx="15" cy="8" rx="4" ry="4" fill="#f0d9a8" />
-					<path d="M15 12 V20" stroke="#5f6ec4" stroke-width="1.6" />
-					<path d="M6 22 L24 22 L21 40 L9 40 Z" fill="#c05a4a" />
-					<path d="M7.4 30 L22.6 30" stroke="#f0d9a8" stroke-width="4" />
-					<path d="M6 22 L24 22" stroke="#e8ebfa" stroke-width="1.4" opacity=".6" />
+				<svg width="30" height="46" viewBox="0 0 30 46" fill="none" style="overflow:visible" data-bolted={buoySvg ? 'buoy' : undefined}>
+					{buoySvg ? (
+						<Fragment set:html={innerMarkup(buoySvg)} />
+					) : (
+						<>
+							<ellipse class="buoy__lamp" cx="15" cy="8" rx="4" ry="4" fill="#f0d9a8" />
+							<path d="M15 12 V20" stroke="#5f6ec4" stroke-width="1.6" />
+							<path d="M6 22 L24 22 L21 40 L9 40 Z" fill="#c05a4a" />
+							<path d="M7.4 30 L22.6 30" stroke="#f0d9a8" stroke-width="4" />
+							<path d="M6 22 L24 22" stroke="#e8ebfa" stroke-width="1.4" opacity=".6" />
+						</>
+					)}
 				</svg>
 			</div>
 

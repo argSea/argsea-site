@@ -49,12 +49,14 @@ const projects = fixture('projects').map((project) => ({
 	...(project.order === 7 ? { facts: null, noteIds: null } : {}),
 }));
 
-// The fallback build also bolts two carvings the shipped fixtures never do
-// (they carry only the seven builtins, so every spot falls back): a jar over
+// The fallback build also bolts carvings the shipped fixtures never do (they
+// carry only builtins and bolt nothing, so every spot falls back): a jar over
 // `bottle`, proving a shop swap actually reaches a mount, and a tower-stub
 // carving that carries no lamp anchor, proving the characteristic engine
 // degrades to steady art instead of crashing when a carving doesn't tag the
-// element it attaches to.
+// element it attaches to. The promote wave adds one bolt per new page region
+// (hello / hobbies / 404 / tab bar); the buoy's carries no lamp anchor, so
+// the CSS-side pulse must hold steady the same way the tower-stub's does.
 const carvings = fixture('carvings').concat(mode === 'fallback' ? [{
 	id:        'mock-carving-bottle-jar',
 	name:      'Mock jar',
@@ -71,6 +73,38 @@ const carvings = fixture('carvings').concat(mode === 'fallback' ? [{
 	boltedTo:  ['tower-stub'],
 	createdAt: '2026-07-11T00:00:00Z',
 	updatedAt: '2026-07-11T00:00:00Z',
+}, {
+	id:        'mock-carving-panel-rose-tile',
+	name:      'Mock tile',
+	svg:       '<svg width="36" height="36" viewBox="0 0 36 36" fill="none"><rect x="8" y="8" width="20" height="20" fill="#e78787"></rect></svg>',
+	builtin:   false,
+	boltedTo:  ['panel-rose'],
+	createdAt: '2026-07-16T00:00:00Z',
+	updatedAt: '2026-07-16T00:00:00Z',
+}, {
+	id:        'mock-carving-serpent-plank',
+	name:      'Mock plank',
+	svg:       '<svg width="72" height="26" viewBox="0 0 72 26" fill="none"><rect x="4" y="8" width="64" height="10" fill="#e78787"></rect></svg>',
+	builtin:   false,
+	boltedTo:  ['sea-serpent'],
+	createdAt: '2026-07-16T00:00:00Z',
+	updatedAt: '2026-07-16T00:00:00Z',
+}, {
+	id:        'mock-carving-buoy-no-anchor',
+	name:      'Mock buoy (no anchor)',
+	svg:       '<svg width="30" height="46" viewBox="0 0 30 46" fill="none"><rect x="8" y="6" width="14" height="34" fill="#7a83ad"></rect></svg>',
+	builtin:   false,
+	boltedTo:  ['buoy'],
+	createdAt: '2026-07-16T00:00:00Z',
+	updatedAt: '2026-07-16T00:00:00Z',
+}, {
+	id:        'mock-carving-notes-dot',
+	name:      'Mock dot',
+	svg:       '<svg width="19" height="22" viewBox="0 0 20 22" fill="none"><circle cx="10" cy="11" r="7" fill="currentColor"></circle></svg>',
+	builtin:   false,
+	boltedTo:  ['notes-letter'],
+	createdAt: '2026-07-16T00:00:00Z',
+	updatedAt: '2026-07-16T00:00:00Z',
 }] : []);
 
 const routes = {
