@@ -44,7 +44,9 @@ export const CATALOG: CatSpot[] = [
 	// overlay spots. An empty watch (no section built) leaves the pick catless
 	// for that view, same as any missing anchor.
 	{ id: 'hello.watch',     page: 'hello',    pose: 'perched', context: 'watch',     overlay: false },
-	{ id: 'hello.manifest',  page: 'hello',    pose: 'perched', context: 'manifest',  overlay: false, anchor: { selector: '.stores__grid',               edge: 'bottom', align: 'right'  } },
+	// The id stays frozen (admin contract) though the stores grid flattened
+	// onto the pre-footer ledge; the perch rode along to the end of the line.
+	{ id: 'hello.manifest',  page: 'hello',    pose: 'perched', context: 'manifest',  overlay: false, anchor: { selector: '.stores-ledge__line',         edge: 'top',    align: 'right'  } },
 	// The id stays frozen (admin contract) though the graveyard motif gave way
 	// to the chart strip; the perch and its lines moved with the redesign.
 	{ id: 'hello.graveyard', page: 'hello',    pose: 'perched', context: 'ledger',    overlay: false, anchor: { selector: '.panel--chart .panel__pills', edge: 'top', align: 'right' } },
