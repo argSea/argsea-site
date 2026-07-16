@@ -99,6 +99,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
         </div>
       </div>
       <sc-for list="{{ navItems }}" as="nv" hint-placeholder-count="6">
+        <sc-if value="{{ nv.hasRule }}" hint-placeholder-val="{{ false }}"><div style="flex:none;height:1px;background:rgba(150,160,220,.14);margin:6px 12px"></div></sc-if>
         <div onClick="{{ nv.onClick }}" style="{{ nv.style }}" style-hover="color:#e8ebfa;transform:translateX(4px)"><span style="width:18px;display:inline-block;text-align:center">{{ nv.glyph }}</span>{{ nv.label }}</div>
       </sc-for>
 
@@ -459,7 +460,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             <dc-import name="HarborCat" quips="i am a doodle.|caption: cat, from life.|press me into an entry. i dare you." hint-size="52px,60px" style="position:absolute;top:-34px;right:202px;width:50px;height:58px;z-index:3"></dc-import>
             <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;animation:fadeUp .7s ease .05s both">
               <div style="display:flex;flex-direction:column;gap:8px">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the log book</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the writing desk</span>
                 <span style="font-family:'Gloock',serif;font-size:clamp(28px,4vw,38px);color:#f0f2fc">The keeper's journal</span>
                 <span style="font-size:15.5px;color:#a5aed4;font-style:italic">{{ notesCountLine }}</span>
               </div>
@@ -2843,7 +2844,7 @@ class Component extends DCLogic {
         return { notes, projects, edit: null };
       });
       this.log(`entry "${draft.title || 'untitled'}" ${idx == null ? 'drafted' : 'edited'}`);
-      this.showToast(restored ? `↺ earlier printing filed · it's now ${item.status === 'published' ? 'inked ●' : 'pencilled ○'}` : '✎ entered in the log book');
+      this.showToast(restored ? `↺ earlier printing filed · it's now ${item.status === 'published' ? 'inked ●' : 'pencilled ○'}` : '✎ filed at the writing desk');
     }
   }
 
@@ -3161,17 +3162,17 @@ class Component extends DCLogic {
     const scr = s.screen;
     const nav = [
       { id: 'dash', glyph: '✦', label: 'the watch room' },
+      { id: 'watch', glyph: '☉', label: 'the watch desk', rule: true },
       { id: 'projects', glyph: '✺', label: 'the light list' },
       { id: 'hobbies', glyph: '✳', label: 'the wandering chart' },
-      { id: 'notes', glyph: '✎', label: 'the log book' },
-      { id: 'copy', glyph: '⚑', label: 'signal flags' },
-      { id: 'eggs', glyph: '✧', label: "smuggler's cove" },
-      { id: 'watch', glyph: '☉', label: 'the watch desk' },
-      { id: 'media', glyph: '❏', label: 'the darkroom' },
-      { id: 'doodles', glyph: '✐', label: 'marginalia' },
+      { id: 'notes', glyph: '✎', label: 'writing desk' },
       { id: 'bench', glyph: '⚒', label: 'the tool bench' },
+      { id: 'doodles', glyph: '✐', label: 'marginalia', rule: true },
       { id: 'figurehead', glyph: '♞', label: 'the carving shop' },
+      { id: 'media', glyph: '❏', label: 'the darkroom' },
+      { id: 'copy', glyph: '⚑', label: 'signal flags', rule: true },
       { id: 'keeper', glyph: '⌂', label: 'the keeper' },
+      { id: 'eggs', glyph: '✧', label: "smuggler's cove" },
     ];
 
     const pubProj = s.projects.filter((p) => p.status === 'published').length;
@@ -3467,7 +3468,7 @@ class Component extends DCLogic {
         this.setState((st) => ({ keeper: { ...st.keeper, [k]: v } }));
       },
       // nav
-      navItems: nav.map((n) => ({ ...n, style: this.navStyle(scr === n.id), chipStyle: this.navChipStyle(scr === n.id), onClick: () => this.setState({ screen: n.id, confirmDel: null }) })),
+      navItems: nav.map((n) => ({ ...n, hasRule: !!n.rule, style: this.navStyle(scr === n.id), chipStyle: this.navChipStyle(scr === n.id), onClick: () => this.setState({ screen: n.id, confirmDel: null }) })),
       // deploy
       deploying: s.deploying, notDeploying: !s.deploying,
       deploy: () => this.deploy(),
