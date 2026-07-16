@@ -49,12 +49,21 @@ const projects = fixture('projects').map((project) => ({
 	...(project.order === 7 ? { facts: null, noteIds: null } : {}),
 }));
 
-// The fallback build also bolts a tower-stub carving that carries no lamp
-// anchor, on top of the base fixture's bottle bolt: the one scenario the
-// checked-in fixtures build can't exercise (it never bolts tower-stub at
-// all), proving the characteristic engine degrades to steady art instead of
-// crashing when a carving doesn't tag the element it attaches to.
+// The fallback build also bolts two carvings the shipped fixtures never do
+// (they carry only the seven builtins, so every spot falls back): a jar over
+// `bottle`, proving a shop swap actually reaches a mount, and a tower-stub
+// carving that carries no lamp anchor, proving the characteristic engine
+// degrades to steady art instead of crashing when a carving doesn't tag the
+// element it attaches to.
 const carvings = fixture('carvings').concat(mode === 'fallback' ? [{
+	id:        'mock-carving-bottle-jar',
+	name:      'Mock jar',
+	svg:       '<svg width="32" height="20" viewBox="0 0 40 24" fill="none"><rect x="10" y="4" width="20" height="18" fill="#e78787"></rect><circle cx="20" cy="13" r="5" fill="#1b1f38"></circle></svg>',
+	builtin:   false,
+	boltedTo:  ['bottle'],
+	createdAt: '2026-07-11T00:00:00Z',
+	updatedAt: '2026-07-11T00:00:00Z',
+}, {
 	id:        'mock-carving-tower-no-anchor',
 	name:      'Mock tower (no anchor)',
 	svg:       '<svg width="26" height="34" viewBox="0 0 26 34" fill="none"><rect x="8" y="6" width="10" height="22" fill="#7a83ad"></rect></svg>',

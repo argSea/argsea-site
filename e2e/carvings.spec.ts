@@ -1,16 +1,16 @@
 // The carving shop's site-side half: every spot renders its bolted svg with
-// a built-in fallback (see src/lib/carvings.ts). The fixtures build bolts a
-// test carving to `bottle` (src/data/fixtures/carvings.json); the fallback
-// mock-api build additionally bolts a no-anchor carving to `tower-stub`
-// (e2e/mock-api.mjs), the one scenario the checked-in fixtures can't
-// exercise on their own, to prove the characteristic engine degrades to
-// steady art instead of crashing.
+// a built-in fallback (see src/lib/carvings.ts). The shipped fixtures carry
+// only the seven builtins and bolt nothing, so both bolted scenarios live in
+// the fallback mock-api build (e2e/mock-api.mjs): a jar over `bottle` proves
+// a shop swap reaches its mount, and a no-anchor carving over `tower-stub`
+// proves the characteristic engine degrades to steady art instead of
+// crashing.
 import { test, expect } from '@playwright/test';
 
 const FALLBACK_BUILD = 'http://127.0.0.1:4823';
 
 test('the bolted bottle renders the carved shape, the unbolted boat stays built-in', async ({ page }) => {
-	await page.goto('/');
+	await page.goto(`${FALLBACK_BUILD}/`);
 	// The boat never stops sailing, so a real click would wait forever for it
 	// to hold still; dispatch the click at wherever it is right now (same
 	// idiom as e2e/delights.spec.ts's own bottle-drop spec). The dispatch can
@@ -22,13 +22,13 @@ test('the bolted bottle renders the carved shape, the unbolted boat stays built-
 		await expect(bottle).toBeVisible({ timeout: 500 });
 	}).toPass();
 	await expect(bottle).toHaveAttribute('data-bolted', 'bottle');
-	// The fixture's test carving is a jar (rect + circle); the built-in is two
-	// rects and a path, never a circle.
+	// The mock's jar carving is a rect + circle; the built-in is two rects and
+	// a path, never a circle.
 	await expect(bottle.locator('circle')).toHaveCount(1);
 	await expect(bottle.locator('path')).toHaveCount(0);
 
-	// The boat sits right beside it and carries no bolt in the fixtures build:
-	// its built-in three-path hull renders exactly as it always has.
+	// The boat sits right beside it and carries no bolt in this build: its
+	// built-in three-path hull renders exactly as it always has.
 	const boat = page.locator('.boat');
 	expect(await boat.getAttribute('data-bolted')).toBeNull();
 	await expect(boat.locator('path')).toHaveCount(3);

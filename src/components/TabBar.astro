@@ -5,16 +5,38 @@
 // active tab lights gold from `active`; the 404 passes 'none' so none light.
 // Static markup, no JS. BaseLayout renders one per page. The icons are the
 // design mocks' own (design/*.dc.html [data-mob-tabs]); currentColor carries
-// each tab's tint into them.
+// each tab's tint into them. The hello tab's lighthouse mounts the
+// lighthouse-logo carving spot the same way LighthouseMark.astro does, so a
+// bolted swap in the shop reaches the tab bar instead of leaving it the one
+// place still wearing the old mark; only the built-in fallback keeps
+// currentColor (a bolted carving paints its own colors, as at every other
+// mount). The compass and notes letter stay hardcoded: they are catalogued
+// as notes, not spots.
+import { getCarvings } from '../lib/api';
+import { boltedSvg, innerMarkup } from '../lib/carvings';
+
 interface Props {
 	active: 'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
 }
 
 const { active } = Astro.props;
+
+const bolted = boltedSvg('lighthouse-logo', await getCarvings());
 ---
 <nav class="tab-bar" aria-label="sections">
 	<a href="/" class:list={['tab', { active: active === 'hello' }]}>
-		<svg width="19" height="22" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="currentColor"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="currentColor" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="currentColor" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="currentColor" stroke-width="1.4" fill="none"></path></svg>
+		<svg width="19" height="22" viewBox="0 0 26 30" fill="none" data-bolted={bolted ? 'lighthouse-logo' : undefined}>
+			{bolted ? (
+				<Fragment set:html={innerMarkup(bolted)} />
+			) : (
+				<>
+					<path d="M13 2 L17 9 L9 9 Z" fill="currentColor"></path>
+					<rect x="10" y="9" width="6" height="14" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+					<path d="M10 13 h6 M10 17 h6" stroke="currentColor" stroke-width="1.4"></path>
+					<path d="M6 27 q7 -4 14 0" stroke="currentColor" stroke-width="1.4" fill="none"></path>
+				</>
+			)}
+		</svg>
 		<span class="tab__label">hello</span>
 	</a>
 	<a href="/projects" class:list={['tab', { active: active === 'projects' }]}>
