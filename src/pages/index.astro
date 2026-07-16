@@ -3,20 +3,20 @@
 // (build-time /1/watch: the letter, the TL;DR bearings, the season's
 // postcard; an empty letter collapses the whole section), wave-with-boat
 // (and its coast-in-miniature beacons), the flagship + featured cards,
-// hobbies preview, journal strip, the keeper's stores, contact band. The
-// dictionary lives in the shared Footer now, read from copy.dict (no
-// dedicated dictionary block on this page anymore). The flagship card is the
-// `flagship` flag; the two small cards are the `featured` flag in list
-// order, never title matching, falling back to the next two by order so the
-// section never shows the flagship alone. It opens the Light List entry in
-// place; the hero headline comes from the SiteCopy singleton and the kicker
-// from the keeper's papers (title + city, no name: the wordmark owns it);
-// the say-hi email is the keeper's; the keeper's stores read the tool
-// bench's drawers off the copy singleton, falling back to the approved
-// design copy. The journal strip is the newest notes, static links
-// out to /notes, and disappears once there are none. The hobbies preview is
-// data-driven: on-watch hobbies fill "currently learning", the wandering
-// ones become the ship's log's chart pills.
+// hobbies preview, journal strip, contact band, and the stores ledge riding
+// just above the footer. The dictionary lives in the shared Footer now, read
+// from copy.dict (no dedicated dictionary block on this page anymore). The
+// flagship card is the `flagship` flag; the two small cards are the
+// `featured` flag in list order, never title matching, falling back to the
+// next two by order so the section never shows the flagship alone. It opens
+// the Light List entry in place; the hero headline comes from the SiteCopy
+// singleton and the kicker from the keeper's papers (title + city, no name:
+// the wordmark owns it); the say-hi email is the keeper's; the stores ledge
+// flattens the tool bench's drawers off the copy singleton into one run,
+// falling back to the approved design copy. The journal strip is the newest
+// notes, static links out to /notes, and disappears once there are none.
+// The hobbies preview is data-driven: on-watch hobbies fill "currently
+// learning", the wandering ones become the ship's log's chart pills.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LighthouseMark from '../components/LighthouseMark.astro';
 import WaveDivider from '../components/WaveDivider.astro';
@@ -103,17 +103,14 @@ const bearings = watch.bearings.map((bearing) => ({
 	href: bearingHref(bearing),
 }));
 
-// The keeper's stores read the admin's tool bench (SiteCopy.stores, ≤4
-// drawers); a copy document from before the bench existed, or an emptied one,
-// falls back to the approved design copy so today's render never changes.
-const benchDrawers = copy.stores ?? [];
-const stores = benchDrawers.length > 0
-	? benchDrawers.map((drawer) => ({ label: drawer.label, items: (drawer.tools ?? []).join(' · ') }))
-	: [
-		{ label: 'languages',      items: 'java · python · node.js · go · php' },
-		{ label: 'data & queues',  items: 'mongodb · redis · rabbitmq · varnish' },
-		{ label: 'infrastructure', items: 'kubernetes · docker · nginx · linux' },
-	];
+// The stores ledge flattens the admin's tool bench (SiteCopy.stores, ≤4
+// drawers) into one run, drawer order preserved, labels dropped; a copy
+// document from before the bench existed, or one with nothing shelved, falls
+// back to the approved design copy so the ledge never runs empty.
+const benchTools = (copy.stores ?? []).flatMap((drawer) => drawer.tools ?? []);
+const storesRun = benchTools.length > 0
+	? benchTools.join(' · ')
+	: 'java · python · node.js · go · php · mongodb · redis · rabbitmq · varnish · kubernetes · docker · nginx · linux';
 
 // The list arrives order-sorted. On-watch hobbies (moored or made port, the
 // ones the keeper still keeps a light on) fill the mantel; everything still
@@ -293,24 +290,6 @@ const hobbyPills = wandering.map((hobby) => ({
 	<JournalStrip notes={journalPreview} doodles={journalDoodles} />
 	<JournalStripDirector client:idle notes={journalPreview} allNotes={allNotes} doodles={journalDoodles} projects={projects} signoff={keeper.signoff} towerSvg={towerSvg} />
 
-	<!-- the keeper's stores: no destination page, so the section head carries no link -->
-	<section class="stores">
-		<div class="row-head">
-			<span class="section-head-cluster">
-				<span class="section-label">Tools</span>
-				<span class="section-aside">the keeper's stores, kept in the tower</span>
-			</span>
-		</div>
-		<div class="stores__grid">
-			{stores.map((column) => (
-				<div class="stores__col">
-					<span class="stores__label">{column.label}</span>
-					<span class="stores__items">{column.items}</span>
-				</div>
-			))}
-		</div>
-	</section>
-
 	<!-- contact band -->
 	<section class="contact">
 		<LighthouseMark width={30} height={34} />
@@ -321,13 +300,18 @@ const hobbyPills = wandering.map((hobby) => ({
 			<a href="/resume.pdf" class="btn btn--roomy btn--outline">resume ↗</a>
 		</div>
 	</section>
+
+	<!-- the stores ledge: the tool bench flattened onto one line above the footer -->
+	<div class="stores-ledge">
+		<span class="stores-ledge__line"><span class="stores-ledge__kicker">the stores</span> · {storesRun}</span>
+	</div>
 </BaseLayout>
 
 <style>
 	/* The mock's per-section shells: every home band caps at 1480px and
 	   centers, so an ultrawide screen stops flinging the sections apart
 	   (JournalStrip.astro and the shared nav carry their own). */
-	.hero, .watch, .postcards, .hobbies-preview, .stores, .contact {
+	.hero, .watch, .postcards, .hobbies-preview, .contact {
 		width: 100%;
 		max-width: 1480px;
 		margin: 0 auto;
@@ -655,43 +639,6 @@ const hobbyPills = wandering.map((hobby) => ({
 		gap: 18px;
 	}
 
-	/* --- the keeper's stores --- */
-	.stores {
-		padding: 0 var(--gutter) clamp(36px, 6vw, 56px);
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-	}
-
-	.stores__grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-		gap: 18px 28px;
-	}
-
-	.stores__col {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-		border-top: 1px solid var(--border-card);
-		padding-top: 12px;
-	}
-
-	.stores__label {
-		font-family: var(--font-mono);
-		font-size: 11.5px;
-		letter-spacing: .12em;
-		color: var(--periwinkle-deep);
-		text-transform: uppercase;
-	}
-
-	.stores__items {
-		font-family: var(--font-mono);
-		font-size: 13.5px;
-		color: var(--text-soft);
-		line-height: 1.8;
-	}
-
 	/* --- hobbies preview --- */
 	.hobbies-preview {
 		padding: clamp(28px, 5vw, 44px) var(--gutter) clamp(24px, 4vw, 32px);
@@ -956,5 +903,34 @@ const hobbyPills = wandering.map((hobby) => ({
 		flex-wrap: wrap;
 		justify-content: center;
 		margin-top: 4px;
+	}
+
+	/* --- the stores ledge --- */
+	/* A footer tier, not a home band: it wears the mock's own shell (the 1480
+	   cap plus the footer's bottom-hug margin) instead of joining the section
+	   list up top */
+	.stores-ledge {
+		margin-top: auto;
+		margin-left: auto;
+		margin-right: auto;
+		width: 100%;
+		max-width: 1480px;
+		box-sizing: border-box;
+		padding: 20px var(--gutter) 18px;
+		border-top: 1px solid rgba(150, 160, 220, .12);
+	}
+
+	.stores-ledge__line {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		line-height: 1.9;
+		color: var(--text-dim);
+	}
+
+	/* Bold on the mock's own terms: it loads mono 400/500 too, so the kicker's
+	   700 is the same synthesized bold there and here */
+	.stores-ledge__kicker {
+		font-weight: 700;
+		color: var(--periwinkle);
 	}
 </style>
