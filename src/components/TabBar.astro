@@ -5,13 +5,13 @@
 // active tab lights gold from `active`; the 404 passes 'none' so none light.
 // Static markup, no JS. BaseLayout renders one per page. The icons are the
 // design mocks' own (design/*.dc.html [data-mob-tabs]); currentColor carries
-// each tab's tint into them. The hello tab's lighthouse mounts the
-// lighthouse-logo carving spot the same way LighthouseMark.astro does, so a
+// each tab's tint into them. All three icons mount carving spots the same way
+// LighthouseMark.astro does (the lighthouse rides the site-wide
+// lighthouse-logo; the compass and notes letter have their own spots), so a
 // bolted swap in the shop reaches the tab bar instead of leaving it the one
-// place still wearing the old mark; only the built-in fallback keeps
+// place still wearing the old art; only the built-in fallbacks keep
 // currentColor (a bolted carving paints its own colors, as at every other
-// mount). The compass and notes letter stay hardcoded: they are catalogued
-// as notes, not spots.
+// mount).
 import { getCarvings } from '../lib/api';
 import { boltedSvg, innerMarkup } from '../lib/carvings';
 
@@ -21,7 +21,10 @@ interface Props {
 
 const { active } = Astro.props;
 
-const bolted = boltedSvg('lighthouse-logo', await getCarvings());
+const carvings = await getCarvings();
+const bolted = boltedSvg('lighthouse-logo', carvings);
+const compassSvg = boltedSvg('compass', carvings);
+const letterSvg = boltedSvg('notes-letter', carvings);
 ---
 <nav class="tab-bar" aria-label="sections">
 	<a href="/" class:list={['tab', { active: active === 'hello' }]}>
@@ -44,11 +47,30 @@ const bolted = boltedSvg('lighthouse-logo', await getCarvings());
 		<span class="tab__label">projects</span>
 	</a>
 	<a href="/hobbies" class:list={['tab', { active: active === 'hobbies' }]}>
-		<svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8.5" stroke="currentColor" stroke-width="1.4"></circle><path d="M11 3 L12.4 11 L11 19 L9.6 11 Z" fill="currentColor"></path><path d="M3 11 L11 9.6 L19 11 L11 12.4 Z" fill="currentColor" opacity="0.55"></path></svg>
+		<svg width="20" height="20" viewBox="0 0 22 22" fill="none" data-bolted={compassSvg ? 'compass' : undefined}>
+			{compassSvg ? (
+				<Fragment set:html={innerMarkup(compassSvg)} />
+			) : (
+				<>
+					<circle cx="11" cy="11" r="8.5" stroke="currentColor" stroke-width="1.4"></circle>
+					<path d="M11 3 L12.4 11 L11 19 L9.6 11 Z" fill="currentColor"></path>
+					<path d="M3 11 L11 9.6 L19 11 L11 12.4 Z" fill="currentColor" opacity="0.55"></path>
+				</>
+			)}
+		</svg>
 		<span class="tab__label">hobbies</span>
 	</a>
 	<a href="/notes" class:list={['tab', { active: active === 'notes' }]}>
-		<svg width="19" height="22" viewBox="0 0 20 22" fill="none"><rect x="4" y="3" width="12" height="16" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect><path d="M7 7 h6 M7 10 h6 M7 13 h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg>
+		<svg width="19" height="22" viewBox="0 0 20 22" fill="none" data-bolted={letterSvg ? 'notes-letter' : undefined}>
+			{letterSvg ? (
+				<Fragment set:html={innerMarkup(letterSvg)} />
+			) : (
+				<>
+					<rect x="4" y="3" width="12" height="16" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect>
+					<path d="M7 7 h6 M7 10 h6 M7 13 h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path>
+				</>
+			)}
+		</svg>
 		<span class="tab__label">notes</span>
 	</a>
 </nav>

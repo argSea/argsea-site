@@ -26,7 +26,7 @@ import JournalStripDirector from '../components/islands/JournalStripDirector';
 import NextHobbyChip from '../components/islands/NextHobbyChip';
 import WatchCat from '../components/islands/WatchCat';
 import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getFigurehead, getNotes, getDoodles, getSuggestions, getCarvings, getWatch, type Hobby, type HobbyState, type WatchBearing } from '../lib/api';
-import { boltedSvg } from '../lib/carvings';
+import { boltedSvg, innerMarkup } from '../lib/carvings';
 import { mediaUrl } from '../lib/media';
 
 const projects = await getProjects();
@@ -50,8 +50,13 @@ const catDesigns = await getFigurehead();
 const suggestions = await getSuggestions();
 
 // tower-stub is a carving spot inside LightEntryOverlay, reached here via
-// HomeLights; that island can't reach src/lib/api.ts itself.
-const towerSvg = boltedSvg('tower-stub', await getCarvings());
+// HomeLights; that island can't reach src/lib/api.ts itself. The other three
+// are this page's own mounts: the hero seal, the panel rose, the fleet wake.
+const carvings = await getCarvings();
+const towerSvg = boltedSvg('tower-stub', carvings);
+const sealSvg = boltedSvg('morse-seal', carvings);
+const roseSvg = boltedSvg('panel-rose', carvings);
+const fleetWakeSvg = boltedSvg('fleet-wake', carvings);
 
 // The smuggler's cove: the copy singleton's egg toggles gate what gets wired.
 // Bottle off (or an emptied proverb list) leaves the boat sailing, unpokeable.
@@ -154,10 +159,16 @@ const hobbyPills = wandering.map((hobby) => ({
 		<div class="firefly ff-4"></div>
 		<!-- the seal: the light stamped into the postmark · it blinks hi in morse -->
 		<div class="postmark-circle" title="···· ··">
-			<svg width="34" height="38" viewBox="0 0 18 20" fill="none" stroke="#93a0e8" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-				<path class="postmark-circle__lamp" d="M9 2 L12 6 L6 6 Z" fill="#93a0e8" stroke="none"></path>
-				<path d="M7 6 L6 15 M11 6 L12 15 M7 9.5 h4"></path>
-				<path d="M4 17 q5 -3 10 0"></path>
+			<svg width="34" height="38" viewBox="0 0 18 20" fill="none" stroke="#93a0e8" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-bolted={sealSvg ? 'morse-seal' : undefined}>
+				{sealSvg ? (
+					<Fragment set:html={innerMarkup(sealSvg)} />
+				) : (
+					<>
+						<path class="postmark-circle__lamp" d="M9 2 L12 6 L6 6 Z" fill="#93a0e8" stroke="none"></path>
+						<path d="M7 6 L6 15 M11 6 L12 15 M7 9.5 h4"></path>
+						<path d="M4 17 q5 -3 10 0"></path>
+					</>
+				)}
 			</svg>
 		</div>
 		<div class="hero__copy">
@@ -250,20 +261,30 @@ const hobbyPills = wandering.map((hobby) => ({
 			</div>
 			<div class="panel panel--chart">
 				<!-- a compass rose in the corner, from the chart -->
-				<svg class="panel__rose" aria-hidden="true" width="36" height="36" viewBox="0 0 36 36" fill="none">
-					<circle cx="18" cy="18" r="8.5" stroke="#93a0e8" stroke-width=".9" opacity=".5"></circle>
-					<circle cx="18" cy="18" r="12.5" stroke="#93a0e8" stroke-width=".6" opacity=".25" stroke-dasharray="1.5 3"></circle>
-					<path d="M18 2 L20 16 L18 18 L16 16 Z" fill="#93a0e8" opacity=".8"></path>
-					<path d="M18 34 L20 20 L18 18 L16 20 Z" fill="#93a0e8" opacity=".4"></path>
-					<path d="M2 18 L16 16 L18 18 L16 20 Z" fill="#93a0e8" opacity=".4"></path>
-					<path d="M34 18 L20 16 L18 18 L20 20 Z" fill="#93a0e8" opacity=".4"></path>
-					<circle cx="18" cy="18" r="1.2" fill="#93a0e8"></circle>
+				<svg class="panel__rose" aria-hidden="true" width="36" height="36" viewBox="0 0 36 36" fill="none" data-bolted={roseSvg ? 'panel-rose' : undefined}>
+					{roseSvg ? (
+						<Fragment set:html={innerMarkup(roseSvg)} />
+					) : (
+						<>
+							<circle cx="18" cy="18" r="8.5" stroke="#93a0e8" stroke-width=".9" opacity=".5"></circle>
+							<circle cx="18" cy="18" r="12.5" stroke="#93a0e8" stroke-width=".6" opacity=".25" stroke-dasharray="1.5 3"></circle>
+							<path d="M18 2 L20 16 L18 18 L16 16 Z" fill="#93a0e8" opacity=".8"></path>
+							<path d="M18 34 L20 20 L18 18 L16 20 Z" fill="#93a0e8" opacity=".4"></path>
+							<path d="M2 18 L16 16 L18 18 L16 20 Z" fill="#93a0e8" opacity=".4"></path>
+							<path d="M34 18 L20 16 L18 18 L20 20 Z" fill="#93a0e8" opacity=".4"></path>
+							<circle cx="18" cy="18" r="1.2" fill="#93a0e8"></circle>
+						</>
+					)}
 				</svg>
 				<span class="panel__label panel__label--chart">The ship's log</span>
 				<div class="panel__plot">
 					<!-- the fleet's wake, plotted behind the pills -->
-					<svg class="panel__wake" aria-hidden="true" viewBox="0 0 800 60" preserveAspectRatio="none">
-						<path d="M-8 44 C 110 12, 230 56, 380 30 S 640 4, 808 26" fill="none" stroke="rgba(147,160,232,.4)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="0.1 8"></path>
+					<svg class="panel__wake" aria-hidden="true" viewBox="0 0 800 60" preserveAspectRatio="none" data-bolted={fleetWakeSvg ? 'fleet-wake' : undefined}>
+						{fleetWakeSvg ? (
+							<Fragment set:html={innerMarkup(fleetWakeSvg)} />
+						) : (
+							<path d="M-8 44 C 110 12, 230 56, 380 30 S 640 4, 808 26" fill="none" stroke="rgba(147,160,232,.4)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="0.1 8"></path>
+						)}
 					</svg>
 					<div class="panel__pills">
 						{hobbyPills.map((pill) => (

@@ -6,12 +6,29 @@
 // never the chart.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ShipsLog from '../components/islands/ShipsLog';
-import { getHobbies, getSuggestions, getSiteCopy, getFigurehead } from '../lib/api';
+import { getHobbies, getSuggestions, getSiteCopy, getFigurehead, getCarvings } from '../lib/api';
+import { boltedSvg } from '../lib/carvings';
 
 const hobbies = await getHobbies();
 const suggestions = await getSuggestions();
 const copy = await getSiteCopy();
 const catDesigns = await getFigurehead();
+
+// The diorama's ten carving spots, resolved here because ShipsLog is an
+// island and can't reach src/lib/api.ts itself (the towerSvg precedent).
+const carvings = await getCarvings();
+const bolted = {
+	chartRose:       boltedSvg('chart-rose', carvings),
+	seaSerpent:      boltedSvg('sea-serpent', carvings),
+	mooredLamp:      boltedSvg('moored-lamp', carvings),
+	adriftBoat:      boltedSvg('adrift-boat', carvings),
+	adriftWake:      boltedSvg('adrift-wake', carvings),
+	maroonedPalm:    boltedSvg('marooned-palm', carvings),
+	portAnchor:      boltedSvg('port-anchor', carvings),
+	signalFlare:     boltedSvg('signal-flare', carvings),
+	compassRoseStar: boltedSvg('compass-rose-star', carvings),
+	sailTent:        boltedSvg('sail-tent', carvings),
+};
 ---
 <BaseLayout title="The ship's log · argsea.com" active="hobbies" quipKey="quipHobbies">
 	<section class="head">
@@ -29,6 +46,7 @@ const catDesigns = await getFigurehead();
 		catPages={copy.catPages}
 		catSpots={copy.catSpots}
 		catDesigns={catDesigns}
+		bolted={bolted}
 	/>
 </BaseLayout>
 

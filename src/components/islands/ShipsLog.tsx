@@ -5,12 +5,16 @@
 // Flannan Isle memorial keeps its real Fl(2) W 30s light as tribute, and the
 // bearing card lets a visitor send up a flare for an overdue one. Flares keep a
 // local tally for the card's own line (argsea-flares, the key the watch room
-// reads); the beacon is the real count, fired once per hobby per view.
+// reads); the beacon is the real count, fired once per hobby per view. The
+// diorama's static art rides ten carving spots (BoltedSvg mounts; bolted markup
+// resolved build-time by hobbies.astro); the memorial trio and the computed
+// line-work are deliberately not spots.
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactElement } from 'react';
 import type { Coord, FigureheadDesign, Hobby, HobbyState } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
 import { sightFlare, sightVisit } from '../../lib/sightings';
 import { useEscapeKey } from './useEscapeKey';
+import BoltedSvg from './BoltedSvg';
 import HarborCat from './HarborCat';
 import './ShipsLog.css';
 
@@ -83,6 +87,23 @@ function pillStyle(state: HobbyState, on: boolean): CSSProperties {
 	};
 }
 
+// The diorama's bolted carvings, one slot per spot, resolved build-time by
+// hobbies.astro (the towerSvg precedent, ten spots wide: an island can't
+// reach src/lib/api.ts itself). The memorial trio and the computed line-work
+// have no slot here on purpose: they are not spots.
+export interface DioramaCarvings {
+	chartRose:       string | null;
+	seaSerpent:      string | null;
+	mooredLamp:      string | null;
+	adriftBoat:      string | null;
+	adriftWake:      string | null;
+	maroonedPalm:    string | null;
+	portAnchor:      string | null;
+	signalFlare:     string | null;
+	compassRoseStar: string | null;
+	sailTent:        string | null;
+}
+
 interface Props {
 	hobbies:     Hobby[];
 	suggestions: string[];
@@ -90,9 +111,10 @@ interface Props {
 	catPages?:   Record<string, boolean>;
 	catSpots?:   Record<string, boolean>;
 	catDesigns?: FigureheadDesign[];
+	bolted:      DioramaCarvings;
 }
 
-export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, catSpots, catDesigns }: Props) {
+export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, catSpots, catDesigns, bolted }: Props) {
 	const [openIdx, setOpenIdx] = useState<number | null>(null);
 	const [closing, setClosing] = useState(false);
 	const [hoverIdx, setHoverIdx] = useState<number | null>(null);
@@ -223,7 +245,7 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 						{/* compass rose */}
 						<div data-hide-mobile style={{ position: 'absolute', left: 'calc(12% - 52px)', top: 'calc(18.3% - 52px)', width: '104px', height: '104px' }}>
 							<div style={{ position: 'absolute', left: '50%', top: '50%', width: '104px', height: '104px', border: '1px dashed rgba(240,217,168,.4)', borderRadius: '50%', animation: 'compassPulse 6s ease-in-out infinite' }} />
-							<svg width="104" height="104" viewBox="0 0 104 104" fill="none" style={{ position: 'absolute', inset: 0 }}>
+							<BoltedSvg svg={bolted.chartRose} spot="chart-rose" width={104} height={104} viewBox="0 0 104 104" style={{ position: 'absolute', inset: 0 }}>
 								<circle cx="52" cy="52" r="34" stroke="rgba(147,160,232,.35)" strokeWidth="1" />
 								<g opacity=".9">
 									<path d="M52 8 L58 52 L52 46 L46 52 Z" fill="#f0d9a8" />
@@ -238,7 +260,7 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 									<path d="M52 52 L30 30 L50 46 Z" fill="#6a76c8" />
 								</g>
 								<circle cx="52" cy="52" r="3.4" fill="#f0d9a8" />
-							</svg>
+							</BoltedSvg>
 							<span style={{ position: 'absolute', left: '50%', top: '-3px', transform: 'translateX(-50%)', fontFamily: "'IBM Plex Mono', monospace", fontSize: '9px', color: '#f0d9a8', letterSpacing: '.1em' }}>N</span>
 						</div>
 
@@ -247,7 +269,7 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 
 						{/* here be dragons */}
 						<div data-hide-mobile style={{ position: 'absolute', right: '3%', bottom: '12%', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '5px', opacity: .55, pointerEvents: 'none' }}>
-							<svg width="72" height="26" viewBox="0 0 72 26" fill="none" style={{ animation: 'serpent 7s ease-in-out infinite' }}><path d="M2 16 q7 -12 14 0 t14 0 t14 0 t14 0" stroke="#6a76c8" strokeWidth="1.6" fill="none" strokeLinecap="round" /><circle cx="66" cy="9" r="2.4" fill="#6a76c8" /><path d="M69 8 l4 -3 M69 10 l4 2" stroke="#6a76c8" strokeWidth="1.2" strokeLinecap="round" /></svg>
+							<BoltedSvg svg={bolted.seaSerpent} spot="sea-serpent" width={72} height={26} viewBox="0 0 72 26" style={{ animation: 'serpent 7s ease-in-out infinite' }}><path d="M2 16 q7 -12 14 0 t14 0 t14 0 t14 0" stroke="#6a76c8" strokeWidth="1.6" fill="none" strokeLinecap="round" /><circle cx="66" cy="9" r="2.4" fill="#6a76c8" /><path d="M69 8 l4 -3 M69 10 l4 2" stroke="#6a76c8" strokeWidth="1.2" strokeLinecap="round" /></BoltedSvg>
 							<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '9.5px', letterSpacing: '.14em', color: 'rgba(147,160,232,.5)', fontStyle: 'italic' }}>here be dragons · &amp; unfinished hobbies</span>
 						</div>
 
@@ -305,7 +327,7 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 								>
 									<div style={{ position: 'relative', width: '64px', height: '56px', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
 										{hobby.seasons && <span style={{ position: 'absolute', left: '-1px', top: '-3px', fontFamily: "'IBM Plex Mono', monospace", fontSize: '8.5px', letterSpacing: '.04em', color: 'rgba(147,160,232,.5)', pointerEvents: 'none', zIndex: 1 }}>{hobby.seasons}</span>}
-										{markGlyph(hobby.state)}
+										{markGlyph(hobby.state, bolted)}
 										{flaredNow[hobby.name] && <div style={{ position: 'absolute', left: '50%', top: '28%', width: '32px', height: '32px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: 'radial-gradient(circle,rgba(255,106,82,.55),transparent 68%)', filter: 'blur(1px)', animation: 'flareGlowPulse 3s ease-in-out infinite', pointerEvents: 'none' }} />}
 										<div style={{ position: 'absolute', left: '50%', bottom: '-5px', transform: 'translateX(-50%)', width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(147,160,232,.95)', boxShadow: '0 0 6px 1px rgba(147,160,232,.5)', pointerEvents: 'none' }} />
 									</div>
@@ -409,7 +431,7 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 								</div>
 								<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', borderTop: '1.5px dashed rgba(110,100,75,.3)', paddingTop: '12px' }}>
 									<span className="shipslog__flare-btn" onClick={sendFlare} style={{ position: 'relative', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: '#7d7357', padding: '7px 15px', border: '1.5px dashed rgba(110,100,75,.5)', borderRadius: '999px', userSelect: 'none', transition: 'all .2s' }}>
-										<svg width="13" height="15" viewBox="0 0 13 15" fill="none"><path d="M6.5 14 V6" stroke="#8a6d3b" strokeWidth="1.3" strokeLinecap="round" /><path d="M6.5 1 L8 4.5 L6.5 3.5 L5 4.5 Z" fill="#d64535" /><circle cx="6.5" cy="2" r="1.4" fill="#ff6a52" /></svg>
+										<BoltedSvg svg={bolted.signalFlare} spot="signal-flare" width={13} height={15} viewBox="0 0 13 15"><path d="M6.5 14 V6" stroke="#8a6d3b" strokeWidth="1.3" strokeLinecap="round" /><path d="M6.5 1 L8 4.5 L6.5 3.5 L5 4.5 Z" fill="#d64535" /><circle cx="6.5" cy="2" r="1.4" fill="#ff6a52" /></BoltedSvg>
 										send up a flare
 									</span>
 									<span className="shipslog__flare-line" style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', color: '#a39876' }}>{flareLine}</span>
@@ -430,8 +452,8 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 					<div style={{ position: 'absolute', left: '-1.5px', bottom: 0, width: '3px', height: '42px', borderRadius: '2px', background: 'linear-gradient(180deg,#ff6a52,rgba(255,106,82,0))', boxShadow: '0 0 12px 3px rgba(255,106,82,.75)', animation: 'flareRise 2.4s ease-out both' }} />
 					<div style={{ position: 'absolute', bottom: '220px', left: 0, transform: 'translateX(-50%)', animation: 'flareBloom 2.4s ease-out both' }}>
 						<div style={{ position: 'absolute', left: '50%', top: '50%', width: '130px', height: '130px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: 'radial-gradient(circle,rgba(255,106,82,.6),rgba(255,72,52,.16) 45%,transparent 70%)', filter: 'blur(2px)' }} />
-						<svg width="32" height="32" viewBox="0 0 30 30" fill="none" style={{ position: 'relative' }}><path d="M15 0 L17 13 L15 11 L13 13 Z M15 30 L13 17 L15 19 L17 17 Z M0 15 L13 13 L11 15 L13 17 Z M30 15 L17 17 L19 15 L17 13 Z" fill="#ff6a52" /><circle cx="15" cy="15" r="3" fill="#fff" /></svg>
-						<svg width="24" height="15" viewBox="0 0 22 14" style={{ position: 'absolute', left: '50%', top: '-15px', transform: 'translateX(-50%)', opacity: .85 }}><path d="M2 12 Q11 -6 20 12" fill="none" stroke="rgba(255,106,82,.75)" strokeWidth="1.4" /><path d="M11 1 V12 M2 12 l9 -3 M20 12 l-9 -3" stroke="rgba(255,106,82,.5)" strokeWidth="1" /></svg>
+						<BoltedSvg svg={bolted.compassRoseStar} spot="compass-rose-star" width={32} height={32} viewBox="0 0 30 30" style={{ position: 'relative' }}><path d="M15 0 L17 13 L15 11 L13 13 Z M15 30 L13 17 L15 19 L17 17 Z M0 15 L13 13 L11 15 L13 17 Z M30 15 L17 17 L19 15 L17 13 Z" fill="#ff6a52" /><circle cx="15" cy="15" r="3" fill="#fff" /></BoltedSvg>
+						<BoltedSvg svg={bolted.sailTent} spot="sail-tent" width={24} height={15} viewBox="0 0 22 14" style={{ position: 'absolute', left: '50%', top: '-15px', transform: 'translateX(-50%)', opacity: .85 }}><path d="M2 12 Q11 -6 20 12" fill="none" stroke="rgba(255,106,82,.75)" strokeWidth="1.4" /><path d="M11 1 V12 M2 12 l9 -3 M20 12 l-9 -3" stroke="rgba(255,106,82,.5)" strokeWidth="1" /></BoltedSvg>
 					</div>
 				</div>
 			)}
@@ -462,13 +484,17 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 
 // One mark glyph per state, transcribed from Hobbies.dc.html: the moored lamp on
 // its jetty with a buoy, the adrift boat over its wake, the marooned palm on a
-// sandbar, the port buoy with pennants flying, the smudged ink-spill.
-function markGlyph(state: HobbyState): ReactElement | null {
+// sandbar, the port buoy with pennants flying, the smudged ink-spill. Each
+// glyph's svg is a carving spot; the jetties/buoys/pennants around it are CSS,
+// carved in place. The moored flame's pulse and the wake's fade stay page-side:
+// the fallback keeps its inline animation, a bolted carving pulses only where
+// it tags data-carving-anchor (the rules in ShipsLog.css).
+function markGlyph(state: HobbyState, bolted: DioramaCarvings): ReactElement | null {
 	switch (state) {
 		case 'moored':
 			return (
 				<div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-					<svg width="30" height="34" viewBox="0 0 26 30" fill="none" style={{ position: 'relative', zIndex: 2 }}><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style={{ animation: 'lampPulse 4s ease-in-out infinite' }} /><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" strokeWidth="1.4" /><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" strokeWidth="1.4" /></svg>
+					<BoltedSvg svg={bolted.mooredLamp} spot="moored-lamp" width={30} height={34} viewBox="0 0 26 30" style={{ position: 'relative', zIndex: 2 }}><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style={{ animation: 'lampPulse 4s ease-in-out infinite' }} /><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" strokeWidth="1.4" /><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" strokeWidth="1.4" /></BoltedSvg>
 					<div style={{ width: '44px', height: '9px', marginTop: '-2px', borderRadius: '60% 70% 0 0 / 100% 100% 0 0', background: 'linear-gradient(180deg,#2a3358,#141a34)' }} />
 					<div style={{ position: 'absolute', right: '-6px', bottom: '2px', width: '9px', height: '11px', background: '#c05a4a', borderRadius: '50% 50% 45% 45%', animation: 'buoyBob 3s ease-in-out infinite' }} />
 				</div>
@@ -476,14 +502,14 @@ function markGlyph(state: HobbyState): ReactElement | null {
 		case 'adrift':
 			return (
 				<div style={{ position: 'relative' }}>
-					<svg width="52" height="16" viewBox="0 0 60 16" fill="none" style={{ position: 'absolute', right: '22px', top: '12px', animation: 'wakePulse 3s ease-in-out infinite' }}><path d="M2 8 q7 -6 14 0 t14 0 t14 0 t14 0" stroke="rgba(240,217,168,.5)" strokeWidth="1.4" fill="none" strokeDasharray="1 5" strokeLinecap="round" /></svg>
-					<svg width="34" height="28" viewBox="0 0 30 24" fill="none" style={{ position: 'relative', zIndex: 2, animation: 'boatDrift 5s ease-in-out infinite' }}><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8" /><path d="M15 15 V3" stroke="#5f6ec4" strokeWidth="1.5" /><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8" /></svg>
+					<BoltedSvg svg={bolted.adriftWake} spot="adrift-wake" width={52} height={16} viewBox="0 0 60 16" style={bolted.adriftWake ? { position: 'absolute', right: '22px', top: '12px' } : { position: 'absolute', right: '22px', top: '12px', animation: 'wakePulse 3s ease-in-out infinite' }}><path d="M2 8 q7 -6 14 0 t14 0 t14 0 t14 0" stroke="rgba(240,217,168,.5)" strokeWidth="1.4" fill="none" strokeDasharray="1 5" strokeLinecap="round" /></BoltedSvg>
+					<BoltedSvg svg={bolted.adriftBoat} spot="adrift-boat" width={34} height={28} viewBox="0 0 30 24" style={{ position: 'relative', zIndex: 2, animation: 'boatDrift 5s ease-in-out infinite' }}><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8" /><path d="M15 15 V3" stroke="#5f6ec4" strokeWidth="1.5" /><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8" /></BoltedSvg>
 				</div>
 			);
 		case 'marooned':
 			return (
 				<div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-					<svg width="30" height="30" viewBox="0 0 30 30" fill="none" style={{ position: 'absolute', left: '6px', bottom: '8px', transformOrigin: '14px 26px', animation: 'palmSway 6s ease-in-out infinite' }}><path d="M14 28 q-2 -12 1 -20" stroke="#8a7142" strokeWidth="2" fill="none" strokeLinecap="round" /><path d="M15 8 q-8 -3 -13 1 M15 8 q8 -3 13 1 M15 8 q-5 -6 -12 -6 M15 8 q5 -6 12 -6" stroke="#5f8a5f" strokeWidth="1.8" fill="none" strokeLinecap="round" /></svg>
+					<BoltedSvg svg={bolted.maroonedPalm} spot="marooned-palm" width={30} height={30} viewBox="0 0 30 30" style={{ position: 'absolute', left: '6px', bottom: '8px', transformOrigin: '14px 26px', animation: 'palmSway 6s ease-in-out infinite' }}><path d="M14 28 q-2 -12 1 -20" stroke="#8a7142" strokeWidth="2" fill="none" strokeLinecap="round" /><path d="M15 8 q-8 -3 -13 1 M15 8 q8 -3 13 1 M15 8 q-5 -6 -12 -6 M15 8 q5 -6 12 -6" stroke="#5f8a5f" strokeWidth="1.8" fill="none" strokeLinecap="round" /></BoltedSvg>
 					<div style={{ width: '52px', height: '12px', borderRadius: '50% 50% 40% 40%', background: 'linear-gradient(180deg,#6a5a38,#3a3020)' }} />
 				</div>
 			);
@@ -493,7 +519,7 @@ function markGlyph(state: HobbyState): ReactElement | null {
 					<div style={{ position: 'absolute', left: '14px', bottom: '20px', width: '1.5px', height: '20px', background: '#8a93c4' }} />
 					<div style={{ position: 'absolute', left: '15px', top: '-2px', width: '16px', height: '8px', background: '#6fca97', clipPath: 'polygon(0 0,100% 0,80% 50%,100% 100%,0 100%)', animation: 'pennantWave 3.5s ease-in-out infinite', transformOrigin: 'left' }} />
 					<div style={{ position: 'absolute', left: '15px', top: '8px', width: '12px', height: '6px', background: '#f0d9a8', clipPath: 'polygon(0 0,100% 0,75% 50%,100% 100%,0 100%)', animation: 'pennantWave 3.5s ease-in-out .4s infinite', transformOrigin: 'left' }} />
-					<svg width="26" height="30" viewBox="0 0 26 30" fill="none" style={{ position: 'relative', zIndex: 2 }}><circle cx="13" cy="5" r="3" stroke="#93a0e8" strokeWidth="1.6" /><path d="M13 8 V26" stroke="#93a0e8" strokeWidth="1.6" /><path d="M6 15 H20" stroke="#93a0e8" strokeWidth="1.6" /><path d="M5 22 q8 7 16 0" stroke="#93a0e8" strokeWidth="1.6" fill="none" strokeLinecap="round" /></svg>
+					<BoltedSvg svg={bolted.portAnchor} spot="port-anchor" width={26} height={30} viewBox="0 0 26 30" style={{ position: 'relative', zIndex: 2 }}><circle cx="13" cy="5" r="3" stroke="#93a0e8" strokeWidth="1.6" /><path d="M13 8 V26" stroke="#93a0e8" strokeWidth="1.6" /><path d="M6 15 H20" stroke="#93a0e8" strokeWidth="1.6" /><path d="M5 22 q8 7 16 0" stroke="#93a0e8" strokeWidth="1.6" fill="none" strokeLinecap="round" /></BoltedSvg>
 				</div>
 			);
 		case 'inkspill':
