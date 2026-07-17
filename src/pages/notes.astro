@@ -5,11 +5,12 @@
 // island, which resolves each note's doodle by id.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NotesList from '../components/islands/NotesList';
-import { getNotes, getProjects, getKeeperProfile, getSiteCopy, getFigurehead, getDoodles, getCarvings } from '../lib/api';
+import { getNotes, getProjects, getHobbies, getKeeperProfile, getSiteCopy, getFigurehead, getDoodles, getCarvings } from '../lib/api';
 import { boltedSvg } from '../lib/carvings';
 
 const notes = await getNotes();
 const projects = await getProjects();
+const hobbies = await getHobbies();
 const keeper = await getKeeperProfile();
 const copy = await getSiteCopy();
 const catDesigns = await getFigurehead();
@@ -27,7 +28,7 @@ const towerSvg = boltedSvg('tower-stub', await getCarvings());
 	</section>
 
 	<section class="list">
-		<NotesList client:load notes={notes} doodles={doodles} projects={projects} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} towerSvg={towerSvg} />
+		<NotesList client:load notes={notes} doodles={doodles} projects={projects} hobbies={hobbies} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} towerSvg={towerSvg} />
 	</section>
 </BaseLayout>
 

@@ -2,7 +2,7 @@
 // journal-entry overlay itself is JournalEntryOverlay, shared with the home
 // journal strip (design: The Keeper's Journal).
 import { useState } from 'react';
-import type { Doodle, FigureheadDesign, Note, Project } from '../../lib/api';
+import type { Doodle, FigureheadDesign, Hobby, Note, Project } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
 import JournalEntryOverlay from './JournalEntryOverlay';
 import LightEntryOverlay from './LightEntryOverlay';
@@ -12,6 +12,7 @@ interface Props {
 	notes:       Note[];
 	doodles:     Doodle[];
 	projects:    Project[]; // resolves each note's "found in" ties via project.noteIds
+	hobbies:     Hobby[];   // resolves each note's bearing ties via hobby.noteIds (the ◈ chart links)
 	signoff:     string;
 	catEnabled:  boolean;
 	catPages?:   Record<string, boolean>;
@@ -20,7 +21,7 @@ interface Props {
 	towerSvg?:   string | null; // tower-stub carving, resolved build-time by notes.astro; forwarded to the stepped-into light
 }
 
-export default function NotesList({ notes, doodles, projects, signoff, catEnabled, catPages, catSpots, catDesigns, towerSvg }: Props) {
+export default function NotesList({ notes, doodles, projects, hobbies, signoff, catEnabled, catPages, catSpots, catDesigns, towerSvg }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 	const [lightId, setLightId] = useState<string | null>(null);
 
@@ -48,6 +49,7 @@ export default function NotesList({ notes, doodles, projects, signoff, catEnable
 	const open = openId === null ? null : notes.find((note) => note.id === openId) ?? null;
 	const openDoodle = open ? doodleFor(open.doodleId) : null;
 	const foundIn = open ? projects.filter((project) => (project.noteIds ?? []).includes(open.id)) : [];
+	const foundHobbies = open ? hobbies.filter((hobby) => (hobby.noteIds ?? []).includes(open.id)) : [];
 	const openLight = lightId === null ? null : projects.find((project) => project.id === lightId) ?? null;
 
 	// Zero-to-five spelled, then digits; singular only at one, and past five the
@@ -122,6 +124,7 @@ export default function NotesList({ notes, doodles, projects, signoff, catEnable
 					doodle={openDoodle}
 					signoff={signoff}
 					foundIn={foundIn}
+					foundHobbies={foundHobbies}
 					onStepInto={stepInto}
 					catHere={catHere}
 					catDesigns={catDesigns}

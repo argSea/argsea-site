@@ -10,12 +10,13 @@
 // resolved build-time by hobbies.astro); the memorial trio and the computed
 // line-work are deliberately not spots.
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactElement } from 'react';
-import type { Coord, FigureheadDesign, Hobby, HobbyState } from '../../lib/api';
+import type { Coord, Doodle, FigureheadDesign, Hobby, HobbyState, Note } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
 import { sightFlare, sightVisit } from '../../lib/sightings';
 import { useEscapeKey } from './useEscapeKey';
 import BoltedSvg from './BoltedSvg';
 import HarborCat from './HarborCat';
+import JournalEntryOverlay from './JournalEntryOverlay';
 import './ShipsLog.css';
 
 const CLOSE_MS = 220;
@@ -107,6 +108,9 @@ export interface DioramaCarvings {
 interface Props {
 	hobbies:     Hobby[];
 	suggestions: string[];
+	notes:       Note[]; // the full journal, so a bearing's noteIds resolve to real entries
+	doodles:     Doodle[];
+	signoff:     string;
 	catEnabled:  boolean;
 	catPages?:   Record<string, boolean>;
 	catSpots?:   Record<string, boolean>;
@@ -114,9 +118,10 @@ interface Props {
 	bolted:      DioramaCarvings;
 }
 
-export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, catSpots, catDesigns, bolted }: Props) {
+export default function ShipsLog({ hobbies, suggestions, notes, doodles, signoff, catEnabled, catPages, catSpots, catDesigns, bolted }: Props) {
 	const [openIdx, setOpenIdx] = useState<number | null>(null);
 	const [closing, setClosing] = useState(false);
+	const [noteId, setNoteId] = useState<string | null>(null);
 	const [hoverIdx, setHoverIdx] = useState<number | null>(null);
 	const [nextIdx, setNextIdx] = useState(0);
 	const [flares, setFlares] = useState<Record<string, number>>({});
@@ -138,6 +143,22 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 			// a corrupt or blocked store just means no flare tally remembered
 		}
 	}, []);
+
+	// The ?bearing= contract: a journal entry's ◈ link lands here with the
+	// hobby's name, and the bearing card opens itself on arrival (matched
+	// case-insensitively, transcribed from Hobbies.dc.html). A name the chart
+	// doesn't know just leaves the page as-is.
+	useEffect(() => {
+		const wanted = new URLSearchParams(window.location.search).get('bearing');
+		if (!wanted) {
+			return;
+		}
+		const index = hobbies.findIndex((hobby) => hobby.name.toLowerCase() === wanted.toLowerCase());
+		if (index >= 0) {
+			setOpenIdx(index);
+			setClosing(false);
+		}
+	}, [hobbies]);
 
 	useEffect(() => () => { clearTimeout(closeTimer.current); clearTimeout(fireTimer.current); }, []);
 
@@ -208,6 +229,14 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 	const open = openIdx === null ? null : hobbies[openIdx];
 	const flareCount = open ? (flares[open.name] ?? 0) : 0;
 	const flareLine = flareCount > 0 ? 'flare away · the keeper will see it' : 'send one up to root for this one';
+
+	// A bearing's tied journal entries, resolved by stable id (mirrors a light's
+	// noteIds, never title matching); the card lists them and a click pulls the
+	// entry up over the still-open bearing card (the pin's "logged in the journal").
+	const openNoteIds = open?.noteIds ?? [];
+	const bearingNotes = open ? notes.filter((note) => openNoteIds.includes(note.id)) : [];
+	const openNote = noteId === null ? null : notes.find((note) => note.id === noteId) ?? null;
+	const openNoteDoodle = openNote ? doodles.find((doodle) => doodle.id === openNote.doodleId) ?? null : null;
 
 	return (
 		<>
@@ -429,6 +458,16 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 									<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase' }}>what still floats</span><span>{open.floats}</span>
 									<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase' }}>odds of return</span><span style={{ color: '#6a5a2a' }}>{open.odds}</span>
 								</div>
+								{bearingNotes.length > 0 && (
+									<div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', borderTop: '1.5px dashed rgba(110,100,75,.3)', paddingTop: '12px' }}>
+										<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase', flex: 'none' }}>logged in the journal</span>
+										<div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
+											{bearingNotes.map((note) => (
+												<button key={note.id} type="button" title="read the entry" className="shipslog__note-link" onClick={() => setNoteId(note.id)} style={{ fontFamily: "'Newsreader', serif", fontSize: '15px', fontStyle: 'italic', color: '#6b6390', lineHeight: 1.45, cursor: 'pointer', transition: 'color .2s', background: 'none', border: 'none', padding: 0, textAlign: 'left' }}>✷ {note.title} →</button>
+											))}
+										</div>
+									</div>
+								)}
 								<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', borderTop: '1.5px dashed rgba(110,100,75,.3)', paddingTop: '12px' }}>
 									<span className="shipslog__flare-btn" onClick={sendFlare} style={{ position: 'relative', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: '#7d7357', padding: '7px 15px', border: '1.5px dashed rgba(110,100,75,.5)', borderRadius: '999px', userSelect: 'none', transition: 'all .2s' }}>
 										<BoltedSvg svg={bolted.signalFlare} spot="signal-flare" width={13} height={15} viewBox="0 0 13 15"><path d="M6.5 14 V6" stroke="#8a6d3b" strokeWidth="1.3" strokeLinecap="round" /><path d="M6.5 1 L8 4.5 L6.5 3.5 L5 4.5 Z" fill="#d64535" /><circle cx="6.5" cy="2" r="1.4" fill="#ff6a52" /></BoltedSvg>
@@ -477,6 +516,17 @@ export default function ShipsLog({ hobbies, suggestions, catEnabled, catPages, c
 						</div>
 					</div>
 				</div>
+			)}
+
+			{/* a journal entry, pulled up from a bearing card; closing returns to the still-open card */}
+			{openNote && (
+				<JournalEntryOverlay
+					note={openNote}
+					doodle={openNoteDoodle}
+					signoff={signoff}
+					closeLabel="back to the bearing ✕"
+					onClose={() => setNoteId(null)}
+				/>
 			)}
 		</>
 	);

@@ -6,7 +6,7 @@
 // caller's own one-cat pick landed on this overlay spot.
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import type { Doodle, FigureheadDesign, Note, Project } from '../../lib/api';
+import type { Doodle, FigureheadDesign, Hobby, Note, Project } from '../../lib/api';
 import { sightRead } from '../../lib/sightings';
 import { useEscapeKey } from './useEscapeKey';
 import HarborCat from './HarborCat';
@@ -17,10 +17,12 @@ interface Props {
 	note:        Note;
 	doodle:      Doodle | null;
 	signoff:     string;
-	foundIn?:    Project[]; // the lights that tie this note via their own noteIds; [] or absent hides the block entirely
+	foundIn?:     Project[]; // the lights that tie this note via their own noteIds; [] or absent hides the block entirely
+	foundHobbies?: Hobby[]; // the bearings that tie this note via their own noteIds; rendered in the same "found in" list, marked ◈
 	onStepInto?: (project: Project) => void; // step into the tower: close this entry, open the light in place. Absent falls back to the plain /projects link
 	catHere?:    boolean;
 	catDesigns?: FigureheadDesign[];
+	closeLabel?: string; // the close pill's text; the hobbies page reads "back to the bearing ✕" since closing returns to the still-open bearing card
 	onClose:     () => void;
 }
 
@@ -32,7 +34,7 @@ function reducedMotion(): boolean {
 	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-export default function JournalEntryOverlay({ note, doodle, signoff, foundIn = [], onStepInto, catHere = false, catDesigns, onClose }: Props) {
+export default function JournalEntryOverlay({ note, doodle, signoff, foundIn = [], foundHobbies = [], onStepInto, catHere = false, catDesigns, closeLabel = 'close ✕', onClose }: Props) {
 	const [closing, setClosing] = useState(false);
 	const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -70,14 +72,14 @@ export default function JournalEntryOverlay({ note, doodle, signoff, foundIn = [
 				<div className="overlay-card letter">
 					<div className="overlay-head">
 						<span className="overlay-kicker">Journal entry · {note.date}</span>
-						<button className="pill-close" onClick={requestClose}>close ✕</button>
+						<button className="pill-close" onClick={requestClose}>{closeLabel}</button>
 					</div>
 					<div className="letter__content">
 						<div className="letter__conditions">{note.conditions}</div>
 						<div className="letter__title">{note.title}</div>
 						{/* body is sanitized HTML from the API, rendered as-is by contract */}
 						<div className="letter__body" dangerouslySetInnerHTML={{ __html: note.body }} />
-						{foundIn.length > 0 && (
+						{(foundIn.length > 0 || foundHobbies.length > 0) && (
 							<div className="letter__found-in">
 								<span className="letter__found-in-label">found in</span>
 								<div className="letter__found-in-links">
@@ -85,6 +87,12 @@ export default function JournalEntryOverlay({ note, doodle, signoff, foundIn = [
 										onStepInto
 											? <button key={project.id} type="button" title="step into the tower" className="letter__found-in-link" onClick={() => onStepInto(project)}>✷ {project.title} →</button>
 											: <a key={project.id} href="/projects" title="a light on the coast · the full list" className="letter__found-in-link">✷ {project.title} →</a>
+									))}
+									{/* Hobbies hold notes too; their bearing cards live on the wandering
+									    chart, a different page, so these always navigate (the ?bearing=
+									    contract) rather than stepping in place. */}
+									{foundHobbies.map((hobby) => (
+										<a key={hobby.id} href={`/hobbies?bearing=${encodeURIComponent(hobby.name)}`} title="see its bearing on the wandering chart" className="letter__found-in-link">◈ {hobby.name} →</a>
 									))}
 								</div>
 							</div>
