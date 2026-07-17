@@ -47,7 +47,6 @@ a:hover{color:#e8ebfa}
       <a href="Projects.dc.html" style="color:#93a0e8">projects</a>
       <a href="Hobbies.dc.html" style="color:#93a0e8">hobbies</a>
       <a href="Notes.dc.html" style="color:#e8ebfa;border-bottom:2px solid #f0d9a8;padding-bottom:2px">notes</a>
-      <a href="Contact.dc.html" style="color:#93a0e8">contact</a>
       <a href="#" style="color:#93a0e8">resume ↗</a>
     </div>
     <a data-mob-resume href="#" style="display:none;align-items:center;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:13px">resume ↗</a>
@@ -146,7 +145,7 @@ a:hover{color:#e8ebfa}
               <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#8a7f63;text-transform:uppercase;flex:none">found in</span>
               <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
                 <sc-for list="{{ open.lightLinks }}" as="lk" hint-placeholder-count="1">
-                  <span onClick="{{ lk.onOpen }}" title="step into the tower" style="font-size:15px;font-style:italic;color:#6b6390;line-height:1.45;cursor:pointer;transition:color .2s" style-hover="color:#8a6d3b">✷ {{ lk.title }} →</span>
+                  <span onClick="{{ lk.onOpen }}" title="{{ lk.hint }}" style="font-size:15px;font-style:italic;color:#6b6390;line-height:1.45;cursor:pointer;transition:color .2s" style-hover="color:#8a6d3b">{{ lk.mark }} {{ lk.title }} →</span>
                 </sc-for>
               </div>
             </div>
@@ -209,10 +208,6 @@ a:hover{color:#e8ebfa}
       <svg width="19" height="22" viewBox="0 0 20 22" fill="none"><rect x="4" y="3" width="12" height="16" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect><path d="M7 7 h6 M7 10 h6 M7 13 h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg>
       <span style="font-size:9.5px">notes</span>
     </a>
-    <a href="Contact.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
-      <svg width="19" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="6" width="16" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect><path d="M3.5 7 L11 12 L18.5 7" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"></path></svg>
-      <span style="font-size:9.5px">contact</span>
-    </a>
   </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;marginalia&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Journal&quot;}, &quot;weatherNotes&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Journal&quot;}}">
@@ -255,11 +250,18 @@ class Component extends DCLogic {
       doodleQueue: openN.doodle === 'queue',
       lightLinks: (() => {
         const L = (window.ARGSEA_DATA && window.ARGSEA_DATA.projects) || [];
+        const H = (window.ARGSEA_DATA && window.ARGSEA_DATA.hobbies) || [];
         const hits = L.filter((p) => (p.notes || []).includes(openN.title)).map((p) => ({
-          title: p.title,
+          title: p.title, mark: '\u2737', hint: 'step into the tower',
           onOpen: () => this.setState({ openIdx: null, lightTitle: p.title, lightClosing: false }),
         }));
-        return hits.length ? hits : null;
+        // hobbies hold notes too; their bearing cards live on the wandering chart
+        const hh = H.filter((hb) => (hb.notes || []).includes(openN.title)).map((hb) => ({
+          title: hb.name, mark: '\u25c8', hint: 'see its bearing on the wandering chart',
+          onOpen: () => { location.href = 'Hobbies.dc.html?bearing=' + encodeURIComponent(hb.name); },
+        }));
+        const all = hits.concat(hh);
+        return all.length ? all : null;
       })(),
     } : null;
     const L2 = (window.ARGSEA_DATA && window.ARGSEA_DATA.projects) || [];

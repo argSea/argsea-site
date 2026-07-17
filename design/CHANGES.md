@@ -1,6 +1,6 @@
 # CHANGES.md · portfolio evolution review round
 
-A record of everything changed since reviewing the shared "Portfolio Evolution" doc. Newest work last; latest session is §12.
+A record of everything changed since reviewing the shared "Portfolio Evolution" doc. Newest work last; latest session is §14.
 
 ## 1. Takeaways adopted from the shared doc (translated into our style)
 - **Evidence over voice**: real numbers now live on the site, attached to the things they describe, never as floating stat strips.
@@ -104,6 +104,17 @@ A record of everything changed since reviewing the shared "Portfolio Evolution" 
   - Log rows stack at ≤600 (pill, then title, then bearing prose full-width, then odds), fixing one-word-per-line prose and the odds column clipping off the right edge. The prose column's `flex: 1 1 300px` was reset on mobile so it stops reserving 300px of height once the row goes vertical.
   - Chart drops the fixed `height: 600px` mobile override for `aspect-ratio: 5/6` (capped 520px), so it shrinks with width and keeps the plotted constellation's proportions instead of stretching into a portrait.
   - Nav icon: the retired graveyard headstone was swapped for a compass rose (echoing the chart's own rose), updated across all seven pages for a consistent bottom tab bar.
+
+## 14. This session · the split watch home + the light-list register
+- **Hello rebuilt as the split watch**: hero and letter fuse into one first viewport (the tagline flows into the dateline), the watch card chrome is retired, the seal signs the letter bottom-right (now on mobile too), the bearings strip wraps instead of truncating.
+- **The rack**: two operator prints (`watch-postcard`, `watch-postcard-2`), the second tucked smaller below the first; captions stamp from the save. The cat perches on the first print and carries the ten-poke finale.
+- **The wave strip promoted to coast wayfinding**: four beacons (no. 002 · flagship, no. 004, no. 006, the chart) anchor down the page; arriving flares the entry's lamp once.
+- **Selected work is the light-list register**: ruled ledger entries, no cards. Real notation (Fl W 8s / Oc W 6s / F W) with period-true lamp rhythm (`flashBloom` / `occultDip`; F W never blinks; 45% floor so lit never reads dead), hover beam sweep, per-entry snapshots that collapse cleanly when a light has no image, and a "corrected to" line from the latest journal date.
+- **Chart + log share one side-by-side band** (collapses to one column under 900).
+- **The Gull Post**: poke the watch cat ten times and the page phases to paper, then the morning edition arrives (`Hello Gazette.dc.html`, delivered by seabird, payment expected on the spot). Listed in smuggler's cove.
+- **Hobbies externalized to `site-data.js`**; hobbies ↔ journal cross-links land (the `?bearing=` contract, ◈ mark on hobby links, journal overlay on the chart page). The contact nav cut finally reaches Hobbies and Notes.
+- **Admin**: the watch desk grows two hooks on the rack; the office brand line reads the keeper's name.
+- **Sync-backs at the bank**: the contact band restored (the ruling stands), `/resume.pdf` restored on both nav links, the writing-desk strings re-amended (third export regression of that ruling), and the gazette phase wired to the cat's finale instead of a hard cut.
 
 ## 11. Open items / known state
 - Flagship numbers (29 services, ~2M/mo, timelines) still unconfirmed by the keeper.
