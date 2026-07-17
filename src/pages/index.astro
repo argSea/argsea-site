@@ -43,6 +43,10 @@ const featuredTwo = (featuredExplicit.length > 0 ? featuredExplicit : nonFlagshi
 // getNotes() sorts newest-first; cap at three so a growing journal never
 // crowds the strip below the mantel
 const journalPreview = allNotes.slice(0, 3);
+
+// The register head's "corrected to" line: a real light list is corrected to
+// the date of its newest change, so the newest journal entry's date stands in.
+const correctedTo = allNotes[0]?.date ?? 'jul 2026';
 const journalDoodles = await getDoodles();
 const copy = await getSiteCopy();
 const keeper = await getKeeperProfile();
@@ -70,7 +74,11 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 const watch = await getWatch();
 const watchKept = watch.letter !== '';
 const watchParagraphs = watch.letter.split(/\n\s*\n/).map((block) => block.trim()).filter((block) => block !== '');
+// The rack's two hooks: the first print and, tucked smaller below it, an
+// optional second. Each hook is bare when its media id is empty; the second
+// handles an absent field (an API predating the two-hook rack) identically.
 const watchPostcard = watch.postcardMediaId !== '';
+const watchPostcard2 = watch.postcard2MediaId !== '';
 
 // "kept 15 jul" / "from the season · jul 2026", lowercase, no leading zero;
 // UTC so every build formats the record the same. A keptAt that doesn't
@@ -212,7 +220,7 @@ const hobbyPills = wandering.map((hobby) => ({
 					</div>
 				)}
 			</div>
-			{/* the postcard rack · one real photo from the season, swapped whenever the watch is */}
+			{/* the rack · two hooks: the season's print hangs big, an optional second tucks in smaller below it */}
 			{watchPostcard && (
 				<div class="watch__postcard">
 					<div class="watch__postcard-frame">
@@ -221,14 +229,22 @@ const hobbyPills = wandering.map((hobby) => ({
 						</div>
 						<span class="watch__postcard-caption">{seasonCaption}</span>
 					</div>
+					{watchPostcard2 && (
+						<div class="watch__postcard-frame watch__postcard-frame--second">
+							<div class="watch__postcard-photo watch__postcard-photo--second">
+								<img src={mediaUrl(watch.postcard2MediaId)} alt="a second photo from the season" />
+							</div>
+							<span class="watch__postcard-caption watch__postcard-caption--second">also from the season · the keeper liked it</span>
+						</div>
+					)}
 				</div>
 			)}
 		</section>
 	)}
 
-	<WaveDivider projects={projects} proverbs={proverbs} />
+	<WaveDivider projects={projects} proverbs={proverbs} flagship={flagship} featured={featuredTwo} />
 
-	<!-- selected work: the flagship card, then up to two featured cards -->
+	<!-- selected work: the light-list register (ruled rows, never cards) -->
 	<section class="postcards">
 		<div class="row-head">
 			<span class="section-head-cluster">
@@ -237,11 +253,12 @@ const hobbyPills = wandering.map((hobby) => ({
 			</span>
 			<a href="/projects" class="mono-link">the whole coast →</a>
 		</div>
-		<HomeLights client:load flagship={flagship} featured={featuredTwo} notes={allNotes} doodles={journalDoodles} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} towerSvg={towerSvg} />
+		<HomeLights client:load flagship={flagship} featured={featuredTwo} notes={allNotes} doodles={journalDoodles} signoff={keeper.signoff} correctedTo={correctedTo} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} towerSvg={towerSvg} />
 	</section>
 
-	<!-- hobbies preview: on-watch hobbies fill the mantel, the wandering ones the ship's log chart -->
-	<section class="hobbies-preview">
+	<!-- the chart and the log, side by side (one column under 900px): doorways, not exhibits -->
+	<section id="chart-log" class="chart-log">
+		<div class="chart-log__chart">
 		<div class="row-head">
 			<span class="section-head-cluster">
 				<span class="section-label">Hobbies</span>
@@ -306,10 +323,11 @@ const hobbyPills = wandering.map((hobby) => ({
 			<span class="mono-comment">// the chart only fills in. that's fine.</span>
 			<NextHobbyChip client:load values={suggestions.map((s) => s.value)} variant="round" />
 		</div>
-	</section>
+		</div>
 
-	<JournalStrip notes={journalPreview} doodles={journalDoodles} />
-	<JournalStripDirector client:idle notes={journalPreview} allNotes={allNotes} doodles={journalDoodles} projects={projects} signoff={keeper.signoff} towerSvg={towerSvg} />
+		<JournalStrip notes={journalPreview} doodles={journalDoodles} />
+	</section>
+	<JournalStripDirector client:idle notes={journalPreview} allNotes={allNotes} doodles={journalDoodles} projects={projects} hobbies={hobbies} signoff={keeper.signoff} towerSvg={towerSvg} />
 
 	<!-- contact band -->
 	<section class="contact">
@@ -332,7 +350,7 @@ const hobbyPills = wandering.map((hobby) => ({
 	/* The mock's per-section shells: every home band caps at 1480px and
 	   centers, so an ultrawide screen stops flinging the sections apart
 	   (JournalStrip.astro and the shared nav carry their own). */
-	.hero, .watch, .postcards, .hobbies-preview, .contact {
+	.hero, .watch, .postcards, .chart-log, .contact {
 		width: 100%;
 		max-width: 1480px;
 		margin: 0 auto;
@@ -562,11 +580,36 @@ const hobbyPills = wandering.map((hobby) => ({
 		max-width: 516px;
 		min-width: 250px;
 		display: flex;
-		align-items: flex-start;
+		flex-direction: column;
+		gap: 22px;
+		align-items: stretch;
 		justify-content: center;
 		position: relative;
 		z-index: 2;
 		animation: fadeUp .7s ease .4s both;
+	}
+
+	/* The rack's second hook: tucked smaller and set to the right, its own
+	   opposite tilt, sitting below the first print (Hello.dc.html's rack). */
+	.watch__postcard-frame--second {
+		width: 74%;
+		align-self: flex-end;
+		padding: 7px 7px 11px;
+		box-shadow: 0 12px 26px rgba(0, 0, 0, .55);
+		transform: rotate(-2deg);
+	}
+
+	.watch__postcard-frame--second:hover {
+		transform: rotate(-.6deg) translateY(-3px);
+	}
+
+	.watch__postcard-photo--second {
+		aspect-ratio: 3 / 2;
+	}
+
+	.watch__postcard-caption--second {
+		font-size: 10.5px;
+		color: var(--periwinkle-deep);
 	}
 
 	/* Resting tilt is a base transform: reduced-motion strips the hover lift, keeps the pose */
@@ -660,17 +703,43 @@ const hobbyPills = wandering.map((hobby) => ({
 		gap: 18px;
 	}
 
-	/* --- hobbies preview --- */
-	.hobbies-preview {
-		padding: clamp(28px, 5vw, 44px) var(--gutter) clamp(24px, 4vw, 32px);
+	/* --- the chart + log band: two doorways side by side, one column under 900 --- */
+	.chart-log {
+		padding: clamp(28px, 5vw, 44px) var(--gutter) clamp(36px, 6vw, 56px);
+		display: grid;
+		grid-template-columns: 1fr 1.15fr;
+		gap: 26px;
+		align-items: start;
+	}
+
+	@media (max-width: 900px) {
+		.chart-log {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* The chart column: the hobbies preview, now a band cell rather than its
+	   own full-width section (the band carries the shell and padding). */
+	.chart-log__chart {
+		min-width: 0;
 		display: flex;
 		flex-direction: column;
 		gap: 16px;
 	}
 
+	/* JournalStrip.astro carries its own 1480 shell + gutter padding for when
+	   it stood alone; inside the band the grid cell already places it, so strip
+	   that shell back off (a :global reach, since it's a child component's
+	   scoped element). */
+	.chart-log :global(.journal-strip) {
+		max-width: none;
+		padding: 0;
+		gap: 12px;
+	}
+
 	.hobbies-preview__grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 		gap: 22px;
 		align-items: stretch;
 	}
