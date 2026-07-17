@@ -149,6 +149,7 @@ export interface Hobby {
 	odds:      string;        // "odds of return", on the row and the card
 	tags?:     string[];      // the home strip's currently-learning side labels ("plex · htpc"); unused on the chart
 	order:     number;        // the keeper's manual sort key
+	noteIds:   string[] | null; // journal entries tucked into this bearing, resolved at build time by stable id (mirrors Project.noteIds, never title matching); null on a pre-contract document, guard accordingly
 }
 
 export interface Note {
@@ -184,25 +185,27 @@ export interface WatchBearing {
 // the perched cat's lines. An empty letter is the wire's "no current watch":
 // the front door collapses the whole section rather than render an empty box.
 export interface Watch {
-	id:              string;
-	letter:          string;   // plain text; blank lines split paragraphs
-	rotation:        string;   // the italic "out of the rotation" line; '' = none
-	bearings:        WatchBearing[];
-	postcardMediaId: string;   // media name for the season's photo; '' = no postcard
-	quips:           string[]; // the watch panel cat's lines
-	keptAt:          string;   // RFC3339; renders "kept {d mmm}" and "from the season · {mmm yyyy}"
+	id:               string;
+	letter:           string;   // plain text; blank lines split paragraphs
+	rotation:         string;   // the italic "out of the rotation" line; '' = none
+	bearings:         WatchBearing[];
+	postcardMediaId:  string;   // media name for the season's first print; '' = the first hook bare
+	postcard2MediaId: string;   // media name for the rack's second print; '' = the second hook bare, same guard as the first
+	quips:            string[]; // the watch panel cat's lines
+	keptAt:           string;   // RFC3339; renders "kept {d mmm}" and "from the season · {mmm yyyy}"
 }
 
 // The empty watch: what no record, an unreachable API, and the fixtures build
 // all collapse to, so every source agrees on the one collapse signal.
 const EMPTY_WATCH: Watch = {
-	id:              '',
-	letter:          '',
-	rotation:        '',
-	bearings:        [],
-	postcardMediaId: '',
-	quips:           [],
-	keptAt:          '',
+	id:               '',
+	letter:           '',
+	rotation:         '',
+	bearings:         [],
+	postcardMediaId:  '',
+	postcard2MediaId: '',
+	quips:            [],
+	keptAt:           '',
 };
 
 // The smuggler's cove master switches: which easter eggs are live. Absent on
@@ -418,8 +421,11 @@ class ApiSource implements ContentSource {
 			}
 			// An API from before the empty-holds fix marshals a never-kept
 			// watch's nil slices as null; a kept letter with null holds would
-			// break the build at bearings.map, so normalize on arrival.
-			return { ...doc, bearings: doc.bearings ?? [], quips: doc.quips ?? [] };
+			// break the build at bearings.map, so normalize on arrival. The
+			// second-print field may not exist yet on an API predating the
+			// two-hook rack; absent reads exactly like an emptied string, the
+			// second hook bare, same as the first print's own guard.
+			return { ...doc, bearings: doc.bearings ?? [], quips: doc.quips ?? [], postcard2MediaId: doc.postcard2MediaId ?? '' };
 		} catch {
 			return EMPTY_WATCH;
 		}
