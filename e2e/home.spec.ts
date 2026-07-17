@@ -1,21 +1,23 @@
-// Homepage (fixtures build): the mantel is the flagship card plus the
-// featured trio's other two, a card opens the shared Light List entry, and
-// the contact surfaces render the keeper fixture.
+// Homepage (fixtures build): selected work is the light-list register (ruled
+// rows, never cards) with the flagship first, a row opens the shared Light
+// List entry, the coast beacons wayfind down to a row, the ten-poke cat cues
+// the Gull Post, and the contact surfaces render the keeper fixture.
 import { test, expect } from '@playwright/test';
 
-// The fixture mantel: the flagship first, then the two other projects
+// The fixture register: the flagship first, then the two other projects
 // flagged featured, in order
-const MANTEL_TITLES = ['The Great Un-monolithing', 'Newsroom plumbing', '100k good mornings'];
+const REGISTER_TITLES = ['The Great Un-monolithing', 'Newsroom plumbing', '100k good mornings'];
 
-test('the mantel shows the flagship card plus the featured trio’s other two', async ({ page }) => {
+test('the register shows the flagship row plus the featured trio’s other two', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.locator('.home-lights .home-lights__title')).toHaveText(MANTEL_TITLES);
-	await expect(page.locator('.home-lights__flagship-pill')).toHaveText('flagship');
+	await expect(page.locator('.home-register .home-register__title')).toHaveText(REGISTER_TITLES);
+	// The flagship row carries the "lit" seal rather than a card's flagship pill
+	await expect(page.locator('.home-register__row--flagship .home-register__seal')).toContainText('lit');
 });
 
-test('the homepage lamp card opens the Light List entry', async ({ page }) => {
+test('the homepage register row opens the Light List entry', async ({ page }) => {
 	await page.goto('/');
-	await page.locator('.home-lights .card-wrap').first().click();
+	await page.locator('.home-register .home-register__row').first().click();
 
 	const overlay = page.locator('.overlay-card');
 	await expect(overlay).toBeVisible();
@@ -41,22 +43,36 @@ test('the journal strip shows the newest notes and links out to /notes', async (
 	await expect(rows.first()).toHaveAttribute('href', '/notes');
 });
 
-test('the flagship card carries its facts, capped at four in a 2x2 grid', async ({ page }) => {
+test('the flagship row carries its facts, capped at four in a 2x2 grid', async ({ page }) => {
 	await page.goto('/');
-	const facts = page.locator('.home-lights__facts .home-lights__facts-row');
+	const facts = page.locator('.home-register__facts .home-register__facts-row');
 	await expect(facts).toHaveCount(4);
-	await expect(facts.first().locator('.home-lights__facts-label')).toHaveText('ownership');
+	await expect(facts.first().locator('.home-register__facts-label')).toHaveText('ownership');
 });
 
-test('the flagship card carries the characteristic code and status', async ({ page }) => {
+test('the register head carries the corrected-to line and the flagship its notation', async ({ page }) => {
 	await page.goto('/');
-	const char = page.locator('.home-lights__flagship .home-lights__char');
-	await expect(char).toHaveText('Fl W 8s · lit');
+	// corrected to the newest journal entry's date (jun 2026)
+	await expect(page.locator('.home-register__head-label')).toContainText('corrected to jun 2026');
+	// the flagship lamp column shows the real characteristic code, no "· lit" suffix (that lives in the seal)
+	await expect(page.locator('.home-register__row--flagship .home-register__notation')).toHaveText('Fl W 8s');
+});
+
+test('the coast beacons wayfind: the flagship beacon scrolls to no. 002 and flares its lamp', async ({ page }) => {
+	await page.goto('/');
+	const beacon = page.locator('.wave-wayfinder[data-wf-target="light-002"]');
+	await expect(beacon).toHaveText(/no\. 002 · flagship/);
+	await beacon.click();
+	// the row it points at exists and carries the arrival hooks the flare toggles
+	const row = page.locator('#light-002');
+	await expect(row).toHaveCount(1);
+	await expect(row.locator('[data-lamp]')).toHaveCount(1);
+	await expect(row.locator('[data-num]')).toHaveCount(1);
 });
 
 test('the home mount\'s overlay carries the coast link; the projects mount does not', async ({ page }) => {
 	await page.goto('/');
-	await page.locator('.home-lights .card-wrap').first().click();
+	await page.locator('.home-register .home-register__row').first().click();
 
 	const overlay = page.locator('.overlay-card');
 	const coastLink = overlay.locator('.light-entry__coastlink-link');
@@ -86,10 +102,10 @@ test('the ship\'s log preview pills read lowercase name and state', async ({ pag
 	await expect(pills.first()).toHaveText('piano · adrift');
 });
 
-test('the flagship polaroid ships a real print, not a broken glyph', async ({ page }) => {
+test('the flagship snapshot ships a real print, not a broken glyph', async ({ page }) => {
 	await page.goto('/');
 
-	const img = page.locator('.home-lights__polaroid img');
+	const img = page.locator('.home-register__snapshot img');
 	await expect(img).toHaveAttribute('src', '/media/images/first-screenshot.svg');
 	await expect
 		.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth))
@@ -110,8 +126,8 @@ test('the home journal overlay steps into the tower', async ({ page }) => {
 		await expect(page.locator('.overlay-card.letter')).toBeVisible({ timeout: 500 });
 	}).toPass();
 
-	const towerLink = page.locator('.overlay-card.letter .letter__found-in-link');
-	await expect(towerLink).toHaveAttribute('title', 'step into the tower');
+	const towerLink = page.locator('.overlay-card.letter .letter__found-in-link[title="step into the tower"]');
+	await expect(towerLink).toBeVisible();
 	await towerLink.click();
 
 	await expect(page.locator('.overlay-card.letter')).toHaveCount(0);

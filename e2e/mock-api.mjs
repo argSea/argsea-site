@@ -31,6 +31,26 @@ const MOCK_KEEPER = {
 	signoff:  '- the mock keeper',
 };
 
+// A kept watch so the mock builds render the split-watch section (the fixtures
+// build ships EMPTY_WATCH, proving the collapse; only a live/mock API ever
+// serves a kept one). Both hooks of the rack carry a print, so the specs can
+// prove the second print (postcard2MediaId) renders below the first, and the
+// watch cat is present for the ten-poke Gull Post finale. The prints point at
+// committed test prints (e2e/test-prints, served by serve-dist.mjs).
+const MOCK_WATCH = {
+	id:               'mock-watch',
+	letter:           'Most of my time right now goes to the ArcXP migration.\n\nDad the rest of the time, which is most of the time.',
+	rotation:         'Out of the rotation on purpose: conference talks and the piano.',
+	bearings:         [
+		{ verb: 'wrangling', kind: 'none', targetId: '', name: 'The ArcXP migration' },
+		{ verb: 'logging', kind: 'note', targetId: '', name: 'the journal' },
+	],
+	postcardMediaId:  'station-photo.svg',
+	postcard2MediaId: 'queue-depth.svg',
+	quips:            ['he says the migration is going fine. he is lying.', 'the lab grew again last night. i heard it.'],
+	keptAt:           '2026-07-15T12:00:00Z',
+};
+
 // The featured cutoff is pinned to the original six fixture projects (4-6):
 // later slices appended the dark "old publishing stack" light (order 7) and
 // two tinkering lights (order 8-9) for the quick/morse timelines, and all
@@ -105,6 +125,14 @@ const carvings = fixture('carvings').concat(mode === 'fallback' ? [{
 	boltedTo:  ['notes-letter'],
 	createdAt: '2026-07-16T00:00:00Z',
 	updatedAt: '2026-07-16T00:00:00Z',
+}, {
+	id:        'mock-carving-gull-plank',
+	name:      'Mock plank',
+	svg:       '<svg width="46" height="44" viewBox="0 0 46 44" fill="none"><rect x="8" y="14" width="30" height="12" fill="#8a6d3b"></rect></svg>',
+	builtin:   false,
+	boltedTo:  ['delivery-gull'],
+	createdAt: '2026-07-17T00:00:00Z',
+	updatedAt: '2026-07-17T00:00:00Z',
 }] : []);
 
 const routes = {
@@ -113,6 +141,7 @@ const routes = {
 	'/1/hobby':                      fixture('hobbies'),
 	'/1/note':                       fixture('notes'),
 	'/1/copy':                       fixture('siteCopy'),
+	'/1/watch':                      MOCK_WATCH,
 	'/1/user/mock-keeper/profile':   MOCK_KEEPER,
 	// Nothing published: both mock builds prove the cat's built-in fallback,
 	// while the fixtures build renders through the v1-seed shape path

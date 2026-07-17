@@ -59,14 +59,18 @@ test('an entry tied to a light shows "found in", linking back to it', async ({ p
 	await expect(link).toHaveText('✷ The Great Un-monolithing →');
 });
 
-test('an untied entry gets no "found in" block', async ({ page }) => {
+test('an entry tied to a hobby shows the ◈ chart link out to its bearing', async ({ page }) => {
 	await page.goto('/notes');
-	// row 1, "CachyOS, three months in", ties to no project
+	// row 1, "CachyOS, three months in", ties to no light but to the home lab
+	// bearing (hobby.noteIds), so its "found in" carries only the ◈ chart link
 	await page.locator('.note-row').nth(DOODLED_ROW).click();
 
 	const letter = page.locator('.overlay-card.letter');
 	await expect(letter).toBeVisible();
-	await expect(letter.locator('.letter__found-in')).toHaveCount(0);
+	const links = letter.locator('.letter__found-in-link');
+	await expect(links).toHaveCount(1);
+	await expect(links.first()).toHaveText('◈ The home lab →');
+	await expect(links.first()).toHaveAttribute('href', '/hobbies?bearing=The%20home%20lab');
 });
 
 test('reduced motion keeps the journal tilt', async ({ page }) => {
