@@ -70,6 +70,21 @@ test('the coast beacons wayfind: the flagship beacon scrolls to no. 002 and flar
 	await expect(row.locator('[data-num]')).toHaveCount(1);
 });
 
+test('the wayfinder dots wear the mock\'s own tiers: flagship big, featured smaller, the chart periwinkle', async ({ page }) => {
+	await page.goto('/');
+	const dotStyle = (target: string) => page
+		.locator(`.wave-wayfinder[data-wf-target="${target}"] .wave-wayfinder__dot`)
+		.evaluate((el) => {
+			const s = getComputedStyle(el);
+			return { width: s.width, background: s.backgroundColor };
+		});
+
+	// flagship: 7px white; featured: 6px white; the chart: 6px #5f6ec4
+	expect(await dotStyle('light-002')).toEqual({ width: '7px', background: 'rgb(255, 255, 255)' });
+	expect(await dotStyle('light-004')).toEqual({ width: '6px', background: 'rgb(255, 255, 255)' });
+	expect(await dotStyle('chart-log')).toEqual({ width: '6px', background: 'rgb(95, 110, 196)' });
+});
+
 test('the home mount\'s overlay carries the coast link; the projects mount does not', async ({ page }) => {
 	await page.goto('/');
 	await page.locator('.home-register .home-register__row').first().click();

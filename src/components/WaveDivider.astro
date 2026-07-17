@@ -37,6 +37,7 @@ interface Wayfinder {
 	label:    string;
 	left:     string;
 	anim:     string; // a light background dot's own characteristic, so the anchor's dot echoes the row it points to
+	kind:     'flagship' | 'featured' | 'chart'; // the mock differentiates the dots: flagship big and bright, featured smaller and softer, the chart periwinkle
 }
 
 function clampWfPeriod(period: number): number {
@@ -63,9 +64,9 @@ function wfAnim(project: Project | null): string {
 const WF_LEFTS = ['20%', '45%', '63%', '82%'];
 
 const wayfinders: Wayfinder[] = [
-	flagship && { targetId: `light-${registryNo(flagship.order)}`, label: `no. ${registryNo(flagship.order)} · flagship`, left: WF_LEFTS[0], anim: wfAnim(flagship) },
-	...featured.slice(0, 2).map((project, index) => ({ targetId: `light-${registryNo(project.order)}`, label: `no. ${registryNo(project.order)}`, left: WF_LEFTS[index + 1], anim: wfAnim(project) })),
-	{ targetId: 'chart-log', label: 'the chart', left: WF_LEFTS[3], anim: 'none' },
+	flagship && { targetId: `light-${registryNo(flagship.order)}`, label: `no. ${registryNo(flagship.order)} · flagship`, left: WF_LEFTS[0], anim: wfAnim(flagship), kind: 'flagship' as const },
+	...featured.slice(0, 2).map((project, index) => ({ targetId: `light-${registryNo(project.order)}`, label: `no. ${registryNo(project.order)}`, left: WF_LEFTS[index + 1], anim: wfAnim(project), kind: 'featured' as const })),
+	{ targetId: 'chart-log', label: 'the chart', left: WF_LEFTS[3], anim: 'none', kind: 'chart' as const },
 ].filter((wf): wf is Wayfinder => Boolean(wf));
 
 const carvings = await getCarvings();
@@ -129,7 +130,7 @@ const beacons: Beacon[] = projects.map((project, index) => {
 	<!-- coast wayfinding: anchors down the coast to their register row (or the chart+log band) -->
 	{wayfinders.map((wf) => (
 		<a href={`#${wf.targetId}`} class="wave-wayfinder" data-wf-target={wf.targetId} title={`down the coast to ${wf.label}`} style={`left:${wf.left}`}>
-			<span class="wave-wayfinder__dot" style={`animation:${wf.anim}`}></span>
+			<span class:list={['wave-wayfinder__dot', `wave-wayfinder__dot--${wf.kind}`]} style={`animation:${wf.anim}`}></span>
 			<span class="wave-wayfinder__label">{wf.label}</span>
 		</a>
 	))}
@@ -246,14 +247,34 @@ const beacons: Beacon[] = projects.map((project, index) => {
 		transform: translateX(-50%);
 	}
 
+	/* The mock differentiates the dots: the flagship's biggest and brightest,
+	   the featured ones smaller and softer, the chart's periwinkle (its target
+	   is a band, not a light), each transcribed from Hello.dc.html verbatim. */
 	.wave-wayfinder__dot {
-		width: 7px;
-		height: 7px;
 		border-radius: 50%;
-		background: #fff;
-		box-shadow: 0 0 10px 3px rgba(246, 236, 207, .85);
 		display: inline-block;
 		flex: none;
+	}
+
+	.wave-wayfinder__dot--flagship {
+		width: 7px;
+		height: 7px;
+		background: #fff;
+		box-shadow: 0 0 10px 3px rgba(246, 236, 207, .85);
+	}
+
+	.wave-wayfinder__dot--featured {
+		width: 6px;
+		height: 6px;
+		background: #fff;
+		box-shadow: 0 0 8px 2.5px rgba(246, 236, 207, .6);
+	}
+
+	.wave-wayfinder__dot--chart {
+		width: 6px;
+		height: 6px;
+		background: #5f6ec4;
+		box-shadow: 0 0 8px 2px rgba(147, 160, 232, .5);
 	}
 
 	.wave-wayfinder__label {
