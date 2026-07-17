@@ -109,6 +109,16 @@ class Component extends DCLogic {
     const ctx = this.sets[this.props.context] ? this.props.context : 'header';
     const custom = this.props.quips ? String(this.props.quips).split('|').map((s) => s.trim()).filter(Boolean) : null;
     const pool = (custom || this.sets[ctx]).filter((q) => q !== this.state.say);
+    const n = (this.state.pokes || 0) + 1;
+    // ten pokes and the cat delivers the finale line, then whatever the host has planned happens
+    if (this.props.finale && n >= (this.props.finaleAt ?? 10)) {
+      let fside = this.props.bubble;
+      if (fside !== 'left' && fside !== 'right') fside = 'right';
+      this.setState({ say: String(this.props.finale), side: fside, pokes: 0, big: true });
+      this.t = setTimeout(() => this.setState({ say: null, big: false }), 5200);
+      if (this.props.onFinale) this.f = setTimeout(() => this.props.onFinale(), 1500);
+      return;
+    }
     // pick the bubble side: honor the prop, else flip left when the cat sits near the right edge
     let side = this.props.bubble;
     if (side !== 'left' && side !== 'right') {
@@ -117,16 +127,19 @@ class Component extends DCLogic {
         side = r && (window.innerWidth - r.right) < 220 ? 'left' : 'right';
       } catch (err) { side = 'right'; }
     }
-    this.setState({ say: pool[Math.floor(Math.random() * pool.length)], side });
+    this.setState({ say: pool[Math.floor(Math.random() * pool.length)], side, pokes: n, big: false });
     this.t = setTimeout(() => this.setState({ say: null }), 2600);
   }
 
-  componentWillUnmount() { clearTimeout(this.t); }
+  componentWillUnmount() { clearTimeout(this.t); clearTimeout(this.f); }
 
   renderVals() {
     const left = (this.state.side || this.props.bubble) === 'left';
     const bubbleStyle = {
-      position: 'absolute', top: '14px', whiteSpace: 'nowrap',
+      position: 'absolute', top: '14px',
+      whiteSpace: this.state.big ? 'normal' : 'nowrap',
+      width: this.state.big ? '218px' : undefined,
+      lineHeight: this.state.big ? '1.5' : undefined,
       [left ? 'right' : 'left']: 'calc(100% + 8px)',
       background: '#1c2036', border: '1px solid rgba(150,160,220,.4)',
       borderRadius: left ? '11px 11px 2px 11px' : '11px 11px 11px 2px',

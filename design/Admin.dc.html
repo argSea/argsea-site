@@ -94,7 +94,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
       <div style="display:flex;align-items:center;gap:11px;padding:0 6px 18px">
         <svg width="24" height="28" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
         <div style="display:flex;flex-direction:column">
-          <span style="font-family:'Gloock',serif;font-size:17px;color:#e8ebfa">argsea</span>
+          <span style="font-family:'Gloock',serif;font-size:17px;color:#e8ebfa">{{ keeperName }}</span>
           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">lighthouse keeper</span>
         </div>
       </div>
@@ -140,7 +140,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
           <div style="display:flex;align-items:center;gap:9px">
             <svg width="20" height="24" viewBox="0 0 26 30" fill="none" style="transform:rotate(-4deg)"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>
             <div style="display:flex;flex-direction:column;line-height:1.1">
-              <span style="font-family:'Gloock',serif;font-size:15px;color:#e8ebfa">argsea</span>
+              <span style="font-family:'Gloock',serif;font-size:15px;color:#e8ebfa">{{ keeperName }}</span>
               <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase">lighthouse keeper</span>
             </div>
           </div>
@@ -771,16 +771,17 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                   </sc-if>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:10px">
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the postcard · from the darkroom</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the postcards · from the darkroom · two hooks on the rack</span>
                   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px">
                     <sc-for list="{{ watchPhotos }}" as="ph" hint-placeholder-count="6">
                       <div onClick="{{ ph.onChoose }}" style="cursor:pointer;display:flex;flex-direction:column;gap:4px">
                         <div style="{{ ph.frameStyle }}"></div>
                         <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#a5aed4;word-break:break-all">{{ ph.name }}</span>
+                        <sc-if value="{{ ph.pick }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:#f0d9a8;text-transform:uppercase">{{ ph.pick }}</span></sc-if>
                       </div>
                     </sc-for>
                   </div>
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.6">// pick a print, tap it again to take it back down. the caption stamps itself from the save date. new prints develop in the darkroom tab.</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.6">// pick up to two prints: the first hangs big, the second tucks in below it. tap one again to take it down. captions stamp themselves from the save date. new prints develop in the darkroom tab.</span>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:10px">
                   <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">the cat's remarks</span>
@@ -832,6 +833,12 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                   <div style="align-self:flex-end;width:200px;display:flex;flex-direction:column;gap:7px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:7px 7px 10px;box-shadow:0 8px 20px rgba(0,0,0,.45);transform:rotate(1.6deg)">
                     <div style="{{ watchPhotoStyle }}"></div>
                     <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#93a0e8;text-align:center">from the season · jul 2026</span>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ watchPhoto2On }}" hint-placeholder-val="{{ false }}">
+                  <div style="align-self:flex-end;width:156px;margin-top:-2px;display:flex;flex-direction:column;gap:6px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:6px 6px 9px;box-shadow:0 8px 18px rgba(0,0,0,.45);transform:rotate(-2deg)">
+                    <div style="{{ watchPhoto2Style }}"></div>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#5f6ec4;text-align:center">also from the season · the keeper liked it</span>
                   </div>
                 </sc-if>
                 <sc-if value="{{ watchEmpty }}" hint-placeholder-val="{{ false }}">
@@ -1882,6 +1889,7 @@ class Component extends DCLogic {
         { label: 'tinkering', name: 'The home lab', source: 'hobby', target: 'The home lab' },
       ],
       photo: null,
+      photo2: null,
       quips: [
         'he says the migration is going fine. he is lying.',
         'dad the rest of the time. the cat the rest of that.',
@@ -2036,7 +2044,7 @@ class Component extends DCLogic {
     },
     edit: null, confirmDel: null, peek: null, flareList: false, changesSinceDeploy: 3,
     catSay: null, proverbIdx: 0,
-    eggs: { bottle: true, cat: true, lights: true },
+    eggs: { bottle: true, cat: true, lights: true, gullpost: true },
     catLocs: { postcards: true, notes: true, p404: true },
     deploying: false, deployPct: 0, lastDeploy: 'yesterday, 9:12 pm',
     toast: null,
@@ -2165,6 +2173,8 @@ class Component extends DCLogic {
       blurb: 'The lighthouse cat, out on its rounds. It perches on postcards and notes when they open · and heckles the shipwreck from the 404 placard.', status: 'live' },
     { id: 'lights', name: 'The light list', where: 'the 404 wreck report',
       blurb: 'Every wreck report lists a last known position · the real coordinates of a real lighthouse. Click them and the light introduces itself.', status: 'live' },
+    { id: 'gullpost', name: 'The Gull Post', where: 'homepage · the watch cat, poked ten times',
+      blurb: 'Poke the watch cat ten times and it hollers EXTRA! EXTRA! · the whole site phases into the morning edition, delivered by seabird, payment expected on the spot.', status: 'live' },
   ];
 
   catLocMeta = [
@@ -3043,6 +3053,15 @@ class Component extends DCLogic {
   // the watch desk · sources a bearing can point at; href is the public page
   watchHrefs = { light: 'Projects.dc.html', hobby: 'Hobbies.dc.html', note: 'Notes.dc.html' };
   setWatch(patch) { this.setState((st) => ({ watch: { ...st.watch, ...patch } })); }
+  // two hooks on the rack: first empty hook takes the print; picking a hung print takes it down
+  choosePrint(name) {
+    const w = this.state.watch;
+    if (w.photo === name) this.setWatch({ photo: w.photo2, photo2: null });
+    else if (w.photo2 === name) this.setWatch({ photo2: null });
+    else if (!w.photo) this.setWatch({ photo: name });
+    else if (!w.photo2) this.setWatch({ photo2: name });
+    else this.setWatch({ photo2: name });
+  }
   setBearing(i, patch) { this.setState((st) => ({ watch: { ...st.watch, bearings: st.watch.bearings.map((b, j) => (j === i ? { ...b, ...patch } : b)) } })); }
 
   watchVals() {
@@ -3072,11 +3091,14 @@ class Component extends DCLogic {
       addBearing: () => this.setState((st) => (st.watch.bearings.length >= 3 ? null : { watch: { ...st.watch, bearings: [...st.watch.bearings, { label: 'minding', name: 'a new thread', source: 'free' }] } })),
       watchPhotos: s.media.map((m) => ({
         name: m.name,
-        frameStyle: { width: '100%', height: '58px', borderRadius: '7px', background: this.mediaBg(m.name), border: w.photo === m.name ? '2px solid #f0d9a8' : '1px solid rgba(150,160,220,.25)', cursor: 'pointer', transition: 'border-color .18s', boxSizing: 'border-box' },
-        onChoose: () => this.setWatch({ photo: this.state.watch.photo === m.name ? null : m.name }),
+        pick: w.photo === m.name ? '❀ first hook' : (w.photo2 === m.name ? '❀ second hook' : null),
+        frameStyle: { width: '100%', height: '58px', borderRadius: '7px', background: this.mediaBg(m.name), border: (w.photo === m.name || w.photo2 === m.name) ? '2px solid #f0d9a8' : '1px solid rgba(150,160,220,.25)', cursor: 'pointer', transition: 'border-color .18s', boxSizing: 'border-box' },
+        onChoose: () => this.choosePrint(m.name),
       })),
       watchPhotoOn: !!w.photo,
       watchPhotoStyle: w.photo ? { width: '100%', height: '92px', background: this.mediaBg(w.photo) } : null,
+      watchPhoto2On: !!w.photo2,
+      watchPhoto2Style: w.photo2 ? { width: '100%', height: '70px', background: this.mediaBg(w.photo2) } : null,
       watchParas: (w.letter || '').split(/\n\s*\n/).filter(Boolean).map((t) => ({ t })),
       watchRotationOn: !!(w.rotation || '').trim(),
       watchEmpty: !(w.letter || '').trim() && !w.bearings.length,
@@ -3088,7 +3110,7 @@ class Component extends DCLogic {
         this.setState({ watchFlash: 'kept · the front door reads this now' });
         clearTimeout(this._wf); this._wf = setTimeout(() => this.setState({ watchFlash: null }), 2600);
       },
-      clearWatch: () => this.setState((st) => ({ watch: { ...st.watch, letter: '', rotation: '', bearings: [], photo: null } })),
+      clearWatch: () => this.setState((st) => ({ watch: { ...st.watch, letter: '', rotation: '', bearings: [], photo: null, photo2: null } })),
       watchFlash: s.watchFlash,
       // the cat's remarks · these travel with the watch record, so they can needle the current letter
       watchQuips: (w.quips || []).map((q, i) => ({

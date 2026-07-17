@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+html{background:#e7e0cd}
+body{margin:0;background:#ece5d2;font-family:'Newsreader',serif;color:#20233c}
+a{color:#8a6d3b;text-decoration:none}
+a:hover{color:#20233c}
+image-slot{display:block;width:100%;height:100%;color:#8a7f63}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;justify-content:center;padding:clamp(10px,3vw,36px);box-sizing:border-box">
+  <div style="width:min(1180px,100%);background:#f1ecdd;box-shadow:0 20px 60px rgba(32,35,60,.25);padding:clamp(20px,4vw,48px) clamp(18px,4vw,52px);box-sizing:border-box;display:flex;flex-direction:column;gap:0">
+
+    <!-- folio line -->
+    <div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid rgba(32,35,60,.55);padding-bottom:7px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#5c5644">vol. XXXIX · harbor edition</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#5c5644">friday, july 17, 2026</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#5c5644">wx: light steady · no incidents</span>
+    </div>
+
+    <!-- masthead -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:26px 0 18px;border-bottom:3px double rgba(32,35,60,.75);position:relative">
+      <!-- the delivery gull, cap and all · payment expected on the spot -->
+      <svg title="the delivery gull · it has not been paid" width="46" height="44" viewBox="0 0 46 44" fill="none" stroke="rgba(32,35,60,.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:6%;bottom:-3px">
+        <path d="M14 41 v-5 M20 41 v-5" stroke-width="1.4"></path>
+        <path d="M11 36 C8 30 9 23 15 20 C22 16.5 30 19 31 26 C31.8 32 27 36 20 36 Z" fill="#f1ecdd"></path>
+        <path d="M17 24 C22 21 28 23 29 28 C26 30 19 30 16 27 Z" fill="rgba(32,35,60,.18)" stroke="none"></path>
+        <path d="M15 20 C14 14 18 10 23 10 C27 10 30 13 30 17" fill="#f1ecdd"></path>
+        <path d="M30 16.5 L36 18 L30 19.5" fill="#c9a96a" stroke="rgba(32,35,60,.85)"></path>
+        <circle cx="25.5" cy="15" r="1.1" fill="rgba(32,35,60,.85)" stroke="none"></circle>
+        <path d="M16.5 11.5 C17 7.5 21 5.5 25 6.5 C28 7.2 29.5 9.5 29.5 11.5 L31.5 11.5 C32.2 11.5 32.2 12.8 31.5 12.8 L18 12.8 Z" fill="rgba(32,35,60,.75)" stroke="none"></path>
+      </svg>
+      <div style="font-family:'Gloock',serif;font-size:clamp(40px,7vw,74px);line-height:1;letter-spacing:.01em;text-align:center">The Gull Post</div>
+      <div style="font-size:15px;font-style:italic;color:#5c5644;text-align:center">all the lights fit to keep · delivered by seabird, payment expected on the spot · price: one flare</div>
+    </div>
+
+    <!-- section nav -->
+    <div style="display:flex;justify-content:center;gap:clamp(14px,3vw,34px);flex-wrap:wrap;padding:9px 0;border-bottom:1px solid rgba(32,35,60,.55)">
+      <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase">The Light List</a>
+      <a href="Notes.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase">The Journal</a>
+      <a href="Hobbies.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase">The Wandering Chart</a>
+      <a href="Contact.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase">Harbor Contact</a>
+    </div>
+
+    <!-- front page: lead + rail -->
+    <div style="display:grid;grid-template-columns:minmax(0,2.6fr) minmax(0,1fr);gap:0;border-bottom:1px solid rgba(32,35,60,.55)">
+
+      <!-- lead story -->
+      <div style="padding:22px 26px 24px 0;border-right:1px solid rgba(32,35,60,.35);display:flex;flex-direction:column;gap:14px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8a6d3b">the light list · no. 002 · flagship</span>
+        <div style="font-family:'Gloock',serif;font-size:clamp(28px,4.6vw,46px);line-height:1.08;text-wrap:balance">Giant Monolith Quietly Dismantled; the Paper Never Misses a Day</div>
+        <div style="font-size:19px;font-style:italic;line-height:1.45;color:#494e70;text-wrap:pretty">29 small, well-behaved services now stand where one enormous application once feared nothing. Readers, by design, noticed nothing at all.</div>
+        <div style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;border-top:1px solid rgba(32,35,60,.25);border-bottom:1px solid rgba(32,35,60,.25);padding:6px 0">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#5c5644">By the Keeper</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8a7f63">reporting from inside the cluster · est. 2024, ongoing</span>
+        </div>
+        <div style="display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap">
+          <div style="flex:1.2 1 300px;min-width:0;display:flex;flex-direction:column;gap:14px">
+            <div style="font-size:16.5px;line-height:1.65;text-wrap:pretty">The old system was one enormous application that did everything and feared nothing, least of all the keeper's weekends. It was taken apart piece by piece: a message queue in the middle, 29 services around it, Kubernetes herding the containers.</div>
+            <div style="font-size:16.5px;line-height:1.65;text-wrap:pretty">The success metric was silence. No reader ever noticed a thing. The paper published every single day while the engine was swapped mid-flight. The old stack was decommissioned in 2025, capability by capability, until one night there was nothing left to turn off.</div>
+            <div style="font-size:15px;font-style:italic;color:#494e70">Moral: the best migrations are the boring ones.</div>
+            <a href="CaseStudy.dc.html?light=the-great-un-monolithing" style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.06em">continued in the full log → page 002</a>
+          </div>
+          <div style="flex:1 1 240px;max-width:340px;display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div style="width:100%;aspect-ratio:3/2;overflow:hidden;background:#ddd5c0;border:1px solid rgba(32,35,60,.35)">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="proj-the-great-un-monolithing-img-first-screenshot" shape="rect" placeholder="the first screenshot · drop it here" style="display:block;width:100%;height:100%" hint-size="100%,200px"></x-import>
+              </div>
+              <span style="font-size:13px;font-style:italic;color:#5c5644;line-height:1.45">The first screenshot, as archived at the station. The queue, not pictured, is the product.</span>
+            </div>
+            <div style="border:1px solid rgba(32,35,60,.45);padding:14px 16px;display:flex;flex-direction:column;gap:9px;background:rgba(32,35,60,.04)">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5c5644;border-bottom:1px solid rgba(32,35,60,.3);padding-bottom:7px">by the numbers</span>
+              <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a6d3b">ownership</span><span style="font-size:14.5px;line-height:1.4">design to operations, solo</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a6d3b">scale</span><span style="font-size:14.5px;line-height:1.4">29 services · ~2M visits a month</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a6d3b">constraint</span><span style="font-size:14.5px;line-height:1.4">the paper came out every day, mid-migration</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a6d3b">result</span><span style="font-size:14.5px;line-height:1.4">the old stack went dark in 2025</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- right rail -->
+      <div style="padding:22px 0 24px 24px;display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5c5644;border-bottom:2px solid rgba(32,35,60,.7);padding-bottom:6px">from the keeper's journal</span>
+          <a href="Notes.dc.html" style="display:flex;flex-direction:column;gap:3px;color:inherit">
+            <span style="font-family:'Gloock',serif;font-size:17.5px;line-height:1.25;color:#20233c">What re-architecting taught me about not architecting</span>
+            <span style="font-size:13.5px;font-style:italic;color:#5c5644">jun 2026 · sometimes the best system design is the meeting where you talk everyone out of a new system.</span>
+          </a>
+          <a href="Notes.dc.html" style="display:flex;flex-direction:column;gap:3px;color:inherit;border-top:1px dotted rgba(32,35,60,.4);padding-top:10px">
+            <span style="font-family:'Gloock',serif;font-size:17.5px;line-height:1.25;color:#20233c">CachyOS, three months in</span>
+            <span style="font-size:13.5px;font-style:italic;color:#5c5644">apr 2026 · a review from someone who will absolutely distro-hop again and lie about it.</span>
+          </a>
+          <a href="Notes.dc.html" style="display:flex;flex-direction:column;gap:3px;color:inherit;border-top:1px dotted rgba(32,35,60,.4);padding-top:10px">
+            <span style="font-family:'Gloock',serif;font-size:17.5px;line-height:1.25;color:#20233c">The queue is the product</span>
+            <span style="font-size:13.5px;font-style:italic;color:#5c5644">feb 2026 · notes on message queues after a decade of them quietly running the news.</span>
+          </a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5c5644;border-bottom:2px solid rgba(32,35,60,.7);padding-bottom:6px">notices · the current watch</span>
+          <div style="font-size:14.5px;line-height:1.6">The keeper is presently <span style="font-style:italic">wrangling the ArcXP migration</span> (in flight, no page yet), <a href="Notes.dc.html" style="font-style:italic">logging in the journal</a>, and <a href="Hobbies.dc.html" style="font-style:italic">tinkering with the home lab</a>. The light remains lit. The lighthouse cat was unavailable for comment.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5c5644;border-bottom:2px solid rgba(32,35,60,.7);padding-bottom:6px">classified · hobbies</span>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.7;color:#3b3f5e">PIANO, adrift. Answers to no one. Reward if returned. · MUSIC THEORY, marooned, last seen near the circle of fifths. · GAME DEV, made port 2020, retired undefeated. · RUNNING, bearing smudged, ink never dried.</div>
+          <a href="Hobbies.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em">the full wandering chart →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- below the fold: two stories -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0;border-bottom:1px solid rgba(32,35,60,.55)">
+      <div style="padding:20px 26px 24px 0;border-right:1px solid rgba(32,35,60,.35);display:flex;flex-direction:column;gap:11px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8a6d3b">the light list · no. 004 · est. 2016</span>
+        <div style="font-family:'Gloock',serif;font-size:clamp(22px,3vw,28px);line-height:1.15;text-wrap:balance">City's Hidden Plumbing Holds, Again; Nobody Notices, Which Is the Point</div>
+        <div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+          <div style="flex:none;width:150px;display:flex;flex-direction:column;gap:5px">
+            <div style="width:100%;aspect-ratio:4/3;overflow:hidden;background:#ddd5c0;border:1px solid rgba(32,35,60,.35)">
+              <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="proj-newsroom-plumbing-img-station-photo" shape="rect" placeholder="drop here" style="display:block;width:100%;height:100%" hint-size="100%,110px"></x-import>
+            </div>
+            <span style="font-size:12px;font-style:italic;color:#5c5644;line-height:1.4">The pipes beneath the newsroom.</span>
+          </div>
+          <div style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:10px">
+            <div style="font-size:15.5px;line-height:1.6;text-wrap:pretty">Reporters write, editors edit, and somewhere between done and published lives an entire hidden city of pipes: APIs, storage, caching. A good chunk of that city was designed and built by the keeper, and it runs on deadlines that do not move for anybody.</div>
+            <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em">see the light →</a>
+          </div>
+        </div>
+      </div>
+      <div style="padding:20px 0 24px 26px;display:flex;flex-direction:column;gap:11px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8a6d3b">the light list · no. 006 · est. 2018</span>
+        <div style="font-family:'Gloock',serif;font-size:clamp(22px,3vw,28px);line-height:1.15;text-wrap:balance">Newsletter Beats Sunrise Into 100,000 Inboxes; Cron Job Credits Ambition</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:15.5px;line-height:1.6;text-wrap:pretty">Every morning, before coffee exists, an automated system assembles the day's news and delivers it to over 100,000 inboxes. It has done this more reliably than anyone gets out of bed. The fun part was making it boring: retries, queues, monitoring, and a healthy paranoia about 4am.</div>
+          <div style="font-size:14px;font-style:italic;color:#494e70">Moral: automation is just kindness to your future self, scheduled.</div>
+          <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em">see the light →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- foot folio -->
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:12px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a7f63">the gull post · printed at the lighthouse</span>
+      <span style="font-size:13px;font-style:italic;color:#8a7f63">corrections are logged in the journal, where they belong</span>
+      <a href="Hello.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase">back to the standing edition →</a>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
