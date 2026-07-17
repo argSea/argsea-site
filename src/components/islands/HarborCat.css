@@ -84,6 +84,13 @@
 	border-radius: 11px 11px 2px 11px;
 }
 
+/* The ten-poke finale: wraps and lingers instead of the usual clipped one-liner */
+.harbor-cat__bubble--big {
+	white-space: normal;
+	width: 218px;
+	line-height: 1.5;
+}
+
 @keyframes catSettle {
 	from { opacity: 0; transform: translateY(10px); }
 	to   { opacity: 1; transform: none; }

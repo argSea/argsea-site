@@ -9,3 +9,32 @@
 	height: 62px;
 	z-index: 3;
 }
+
+/* The ten-poke finale: the page phases to paper before the Gull Post loads
+   (Hello.dc.html's gazettePhase). No inline opacity outside the animation, so
+   reduced motion's animation:none leaves this at its default full opacity
+   instead of stuck invisible. */
+.watch-cat__gazette-phase {
+	position: fixed;
+	inset: 0;
+	z-index: 200;
+	background: #e7e0cd;
+	animation: watchCatGazettePhase 1s ease both;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.watch-cat__gazette-line {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	letter-spacing: .18em;
+	color: #8a6d3b;
+	text-transform: uppercase;
+}
+
+@keyframes watchCatGazettePhase {
+	0%   { opacity: 0; }
+	55%  { opacity: 1; }
+	100% { opacity: 1; }
+}
