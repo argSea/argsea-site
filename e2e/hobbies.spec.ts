@@ -131,6 +131,34 @@ test('the memorial mark keeps the real Flannan light running: Fl(2) W 30s', asyn
 		.toBe(true);
 });
 
+test('a ?bearing= query opens that hobby\'s bearing card on load', async ({ page }) => {
+	await page.goto('/hobbies?bearing=The%20home%20lab');
+	const card = page.locator('.shipslog__bearing');
+	await expect(card).toBeVisible();
+	await expect(card.locator('.shipslog__bearing-name')).toHaveText('The home lab');
+});
+
+test('a bearing card pulls up its tied journal entry, and back again', async ({ page }) => {
+	// The home lab bearing ties the CachyOS entry (hobby.noteIds); the card
+	// lists it under "logged in the journal" and pulls it up in place.
+	await page.goto('/hobbies?bearing=The%20home%20lab');
+	const card = page.locator('.shipslog__bearing');
+	await expect(card).toBeVisible();
+
+	const noteLink = card.locator('.shipslog__note-link');
+	await expect(noteLink).toHaveText('✷ CachyOS, three months in →');
+	await noteLink.click();
+
+	const letter = page.locator('.overlay-card.letter');
+	await expect(letter).toBeVisible();
+	await expect(letter.locator('.letter__title')).toHaveText('CachyOS, three months in');
+	// closing the entry returns to the still-open bearing card
+	await expect(letter.locator('.pill-close')).toHaveText('back to the bearing ✕');
+	await letter.locator('.pill-close').click();
+	await expect(page.locator('.overlay-card.letter')).toHaveCount(0);
+	await expect(card).toBeVisible();
+});
+
 test('reduced motion stills the chart', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/hobbies');

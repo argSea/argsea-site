@@ -107,6 +107,15 @@ test('a bolted carving reaches the tab bar below the phone line: the notes lette
 	await expect(letter.locator('rect')).toHaveCount(0);
 });
 
+test('a bolted carving reaches the Gull Post: the delivery gull swaps to the carved plank', async ({ page }) => {
+	await page.goto(`${FALLBACK_BUILD}/gazette`);
+	const gull = page.locator('.gazette__gull');
+	await expect(gull).toHaveAttribute('data-bolted', 'delivery-gull');
+	// the mock plank is a lone rect; the built-in gull is paths + a circle, never a rect
+	await expect(gull.locator('rect')).toHaveCount(1);
+	await expect(gull.locator('circle')).toHaveCount(0);
+});
+
 test('the fixtures build bolts nothing: every promoted spot renders its built-in art', async ({ page }) => {
 	// baseURL serves the fixtures build; its carvings all carry boltedTo null
 	await page.goto('/');
@@ -122,4 +131,13 @@ test('the fixtures build bolts nothing: every promoted spot renders its built-in
 	const buoy = page.locator('.buoy svg');
 	expect(await buoy.getAttribute('data-bolted')).toBeNull();
 	await expect(buoy.locator('ellipse')).toHaveCount(1);
+
+	// The Gull Post's delivery gull falls back to its built-in, byte-identical
+	// to the fixture: paths plus the eye circle, no bolt, never a plank rect.
+	await page.goto('/gazette');
+	const gull = page.locator('.gazette__gull');
+	expect(await gull.getAttribute('data-bolted')).toBeNull();
+	await expect(gull.locator('circle')).toHaveCount(1);
+	await expect(gull.locator('rect')).toHaveCount(0);
+	await expect(gull.locator('path')).toHaveCount(6);
 });

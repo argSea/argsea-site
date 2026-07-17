@@ -38,7 +38,9 @@ export type CarvingSpot =
 	| 'buoy'
 	// the phone-line tab bar (the hello tab rides lighthouse-logo)
 	| 'compass'
-	| 'notes-letter';
+	| 'notes-letter'
+	// the Gull Post
+	| 'delivery-gull';
 
 // A bolted carving's animateable light element: the lighthouse-logo's pulsing
 // flame, the tower-stub's beacon core, or any of the promote wave's lamps

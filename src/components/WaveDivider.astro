@@ -10,18 +10,64 @@
 // wave-line/boat/bottle/boat-wake are all carving spots here; BottleBoat is
 // an island, so its bolted markup is resolved here (build-time only) and
 // passed down as props rather than fetched inside it.
+//
+// The strip is also the coast's wayfinding (split-watch round, promoted from
+// decoration by ruling): up to four clickable anchors sit on top of the
+// decorative beacons and scroll straight down to the register row (or the
+// chart+log band) they name. Plain build-time markup + one small vanilla
+// <script>, same idiom as the projects page's mousemove parallax: nothing
+// here needs React state, just a DOM id to scroll to and a class to toggle.
 import BottleBoat from './islands/BottleBoat';
 import { getCarvings } from '../lib/api';
 import type { Project } from '../lib/api';
-import { DEFAULT_LIGHT } from '../lib/lightChar';
+import { DEFAULT_LIGHT, registryNo } from '../lib/lightChar';
 import { boltedSvg, svgBackground } from '../lib/carvings';
 
 interface Props {
 	projects?: Project[];
 	proverbs?: string[];
+	flagship?: Project | null; // the register's flagship + featured rows, so the wayfinding anchors know their real registry numbers
+	featured?: Project[];
 }
 
-const { projects = [], proverbs = [] } = Astro.props;
+const { projects = [], proverbs = [], flagship = null, featured = [] } = Astro.props;
+
+interface Wayfinder {
+	targetId: string;
+	label:    string;
+	left:     string;
+	anim:     string; // a light background dot's own characteristic, so the anchor's dot echoes the row it points to
+	kind:     'flagship' | 'featured' | 'chart'; // the mock differentiates the dots: flagship big and bright, featured smaller and softer, the chart periwinkle
+}
+
+function clampWfPeriod(period: number): number {
+	return Math.min(6, Math.max(3, period || 4));
+}
+
+const WF_CHAR_ANIM: Record<string, string> = { flash: 'flashChar', occult: 'occultChar', iso: 'isoChar', quick: 'flashChar', veryquick: 'flashChar', morse: 'flashChar' };
+
+function wfAnim(project: Project | null): string {
+	if (!project) {
+		return 'none';
+	}
+	const light = project.light ?? DEFAULT_LIGHT;
+	if (light.extinguished || light.kind === 'fixed') {
+		return 'none';
+	}
+	const dur = clampWfPeriod(light.period);
+	return `${WF_CHAR_ANIM[light.kind] ?? 'flashChar'} ${dur}s ease-in-out infinite`;
+}
+
+// Left offsets verbatim from Hello.dc.html's own four anchors (flagship,
+// two featured, the chart); the register's real registry numbers (gapped,
+// src/lib/lightChar.ts's registryNo) drive the label and the scroll target.
+const WF_LEFTS = ['20%', '45%', '63%', '82%'];
+
+const wayfinders: Wayfinder[] = [
+	flagship && { targetId: `light-${registryNo(flagship.order)}`, label: `no. ${registryNo(flagship.order)} · flagship`, left: WF_LEFTS[0], anim: wfAnim(flagship), kind: 'flagship' as const },
+	...featured.slice(0, 2).map((project, index) => ({ targetId: `light-${registryNo(project.order)}`, label: `no. ${registryNo(project.order)}`, left: WF_LEFTS[index + 1], anim: wfAnim(project), kind: 'featured' as const })),
+	{ targetId: 'chart-log', label: 'the chart', left: WF_LEFTS[3], anim: 'none', kind: 'chart' as const },
+].filter((wf): wf is Wayfinder => Boolean(wf));
 
 const carvings = await getCarvings();
 const waveLineSvg = boltedSvg('wave-line', carvings);
@@ -80,7 +126,53 @@ const beacons: Beacon[] = projects.map((project, index) => {
 	{proverbs.length > 0
 		? <BottleBoat client:load proverbs={proverbs} boatSvg={boatSvg} bottleSvg={bottleSvg} wakeSvg={wakeSvg} />
 		: <BottleBoat proverbs={[]} boatSvg={boatSvg} bottleSvg={bottleSvg} wakeSvg={wakeSvg} />}
+
+	<!-- coast wayfinding: anchors down the coast to their register row (or the chart+log band) -->
+	{wayfinders.map((wf) => (
+		<a href={`#${wf.targetId}`} class="wave-wayfinder" data-wf-target={wf.targetId} title={`down the coast to ${wf.label}`} style={`left:${wf.left}`}>
+			<span class:list={['wave-wayfinder__dot', `wave-wayfinder__dot--${wf.kind}`]} style={`animation:${wf.anim}`}></span>
+			<span class="wave-wayfinder__label">{wf.label}</span>
+		</a>
+	))}
 </div>
+
+<script>
+	// Coast wayfinding: click-scroll to the target row/band, then flare its
+	// lamp and brighten its numeral once (Hello.dc.html's anchorTo). Plain DOM,
+	// no framework: the targets live in a separate React island (HomeLights)
+	// and a sibling Astro section, so a shared id is the only contract needed.
+	document.querySelectorAll<HTMLAnchorElement>('.wave-wayfinder').forEach((anchor) => {
+		anchor.addEventListener('click', (event) => {
+			event.preventDefault();
+			const id = anchor.dataset.wfTarget;
+			const el = id ? document.getElementById(id) : null;
+			if (!el) {
+				return;
+			}
+			const y = el.getBoundingClientRect().top + window.scrollY - 90;
+			const from = window.scrollY;
+			window.scrollTo({ top: y, behavior: 'smooth' });
+			// Some embeds ignore smooth scrolling; verify progress and fall back to instant.
+			setTimeout(() => {
+				if (Math.abs(window.scrollY - from) < 4 && Math.abs(y - from) > 8) {
+					window.scrollTo(0, y);
+				}
+			}, 120);
+			setTimeout(() => {
+				const lamp = el.querySelector('[data-lamp]');
+				const num = el.querySelector('[data-num]');
+				if (lamp) {
+					lamp.classList.add('home-register__arrival');
+					setTimeout(() => lamp.classList.remove('home-register__arrival'), 950);
+				}
+				if (num) {
+					num.classList.add('home-register__arrival');
+					setTimeout(() => num.classList.remove('home-register__arrival'), 1200);
+				}
+			}, 650);
+		});
+	});
+</script>
 
 <style>
 	.wave {
@@ -138,5 +230,57 @@ const beacons: Beacon[] = projects.map((project, index) => {
 		0%, 42%   { opacity: 1; }
 		54%, 96%  { opacity: .12; }
 		100%      { opacity: .12; }
+	}
+
+	/* Coast wayfinding: real anchors sitting on top of the decorative beacon
+	   strip, one per register row plus the chart+log band. */
+	.wave-wayfinder {
+		position: absolute;
+		top: 23px;
+		display: flex;
+		align-items: center;
+		gap: 7px;
+		cursor: pointer;
+		z-index: 2;
+		padding: 4px 6px;
+		margin: -4px -6px;
+		transform: translateX(-50%);
+	}
+
+	/* The mock differentiates the dots: the flagship's biggest and brightest,
+	   the featured ones smaller and softer, the chart's periwinkle (its target
+	   is a band, not a light), each transcribed from Hello.dc.html verbatim. */
+	.wave-wayfinder__dot {
+		border-radius: 50%;
+		display: inline-block;
+		flex: none;
+	}
+
+	.wave-wayfinder__dot--flagship {
+		width: 7px;
+		height: 7px;
+		background: #fff;
+		box-shadow: 0 0 10px 3px rgba(246, 236, 207, .85);
+	}
+
+	.wave-wayfinder__dot--featured {
+		width: 6px;
+		height: 6px;
+		background: #fff;
+		box-shadow: 0 0 8px 2.5px rgba(246, 236, 207, .6);
+	}
+
+	.wave-wayfinder__dot--chart {
+		width: 6px;
+		height: 6px;
+		background: #5f6ec4;
+		box-shadow: 0 0 8px 2px rgba(147, 160, 232, .5);
+	}
+
+	.wave-wayfinder__label {
+		font-family: var(--font-mono);
+		font-size: 9.5px;
+		letter-spacing: .1em;
+		color: var(--periwinkle-deep);
 	}
 </style>

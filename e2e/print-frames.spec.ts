@@ -11,10 +11,10 @@ test('the flagship polaroid renders the empty paper frame when its print 404s', 
 	await page.route('**/media/images/first-screenshot.svg', (route) => route.fulfill({ status: 404, body: 'not found' }));
 	await page.goto('/');
 
-	const frame = page.locator('.home-lights__flagship .polaroid-frame');
+	const frame = page.locator('.home-register__snapshot .polaroid-frame');
 	await expect(frame).toHaveClass(/polaroid-frame--empty/);
 	await expect(frame.locator('img')).toHaveCount(0);
-	await expect(page.locator('.home-lights__polaroid-caption')).toContainText('from the station archive');
+	await expect(page.locator('.home-register__snapshot-caption')).toContainText('from the station archive');
 });
 
 test('the case-study figure renders the empty paper frame when its print 404s', async ({ page }) => {

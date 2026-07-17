@@ -6,7 +6,7 @@
 // the strip's container, so the rows themselves stay server-rendered HTML
 // rather than hydrating one island per row.
 import { useEffect, useState } from 'react';
-import type { Doodle, Note, Project } from '../../lib/api';
+import type { Doodle, Hobby, Note, Project } from '../../lib/api';
 import JournalEntryOverlay from './JournalEntryOverlay';
 import LightEntryOverlay from './LightEntryOverlay';
 
@@ -15,11 +15,12 @@ interface Props {
 	allNotes: Note[]; // the full journal, so a stepped-into light resolves its own "notes found here"
 	doodles:  Doodle[];
 	projects: Project[]; // resolves each note's "found in" ties via project.noteIds
+	hobbies:  Hobby[]; // resolves each note's bearing ties via hobby.noteIds (the ◈ chart links)
 	signoff:  string;
 	towerSvg?: string | null; // tower-stub carving, resolved build-time by index.astro; forwarded to the stepped-into light
 }
 
-export default function JournalStripDirector({ notes, allNotes, doodles, projects, signoff, towerSvg }: Props) {
+export default function JournalStripDirector({ notes, allNotes, doodles, projects, hobbies, signoff, towerSvg }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 	const [lightId, setLightId] = useState<string | null>(null);
 
@@ -58,11 +59,12 @@ export default function JournalStripDirector({ notes, allNotes, doodles, project
 	const open = openId === null ? null : notes.find((note) => note.id === openId) ?? null;
 	const openDoodle = open ? doodles.find((doodle) => doodle.id === open.doodleId) ?? null : null;
 	const foundIn = open ? projects.filter((project) => (project.noteIds ?? []).includes(open.id)) : [];
+	const foundHobbies = open ? hobbies.filter((hobby) => (hobby.noteIds ?? []).includes(open.id)) : [];
 	const openLight = lightId === null ? null : projects.find((project) => project.id === lightId) ?? null;
 
 	return (
 		<>
-			{open && <JournalEntryOverlay note={open} doodle={openDoodle} signoff={signoff} foundIn={foundIn} onStepInto={stepInto} onClose={close} />}
+			{open && <JournalEntryOverlay note={open} doodle={openDoodle} signoff={signoff} foundIn={foundIn} foundHobbies={foundHobbies} onStepInto={stepInto} onClose={close} />}
 			{openLight && <LightEntryOverlay project={openLight} notes={allNotes} doodles={doodles} signoff={signoff} towerSvg={towerSvg} coastLink onClose={closeLight} />}
 		</>
 	);

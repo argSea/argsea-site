@@ -12,7 +12,8 @@
     "floats": "everything. that is the whole point.",
     "odds": "in port indefinitely",
     "tags": ["plex", "htpc"],
-    "order": 1
+    "order": 1,
+    "noteIds": ["fixture-note-2"]
   },
   {
     "id": "fixture-hobby-2",
@@ -28,7 +29,8 @@
     "floats": "one shaky recording the family still requests",
     "odds": "likely · pending a child’s curiosity",
     "tags": ["music"],
-    "order": 2
+    "order": 2,
+    "noteIds": []
   },
   {
     "id": "fixture-hobby-3",
@@ -44,7 +46,8 @@
     "floats": "annotated chord charts, still in a drawer",
     "odds": "rises with every tide the piano does",
     "tags": ["music", "theory"],
-    "order": 3
+    "order": 3,
+    "noteIds": []
   },
   {
     "id": "fixture-hobby-4",
@@ -60,7 +63,8 @@
     "floats": "Meo Wave Race, complete and undefeated · see light no. 008",
     "odds": "slim · the logbook is already perfect",
     "tags": ["c", "cs50"],
-    "order": 4
+    "order": 4,
+    "noteIds": []
   },
   {
     "id": "fixture-hobby-5",
@@ -76,7 +80,8 @@
     "floats": "the shoes. the shoes remain.",
     "odds": "spring keeps promising a fair wind",
     "tags": ["cardio"],
-    "order": 5
+    "order": 5,
+    "noteIds": []
   },
   {
     "id": "fixture-hobby-6",
@@ -91,6 +96,7 @@
     "floats": "a half-built workbench and good intentions",
     "odds": "uncharted, but afloat",
     "tags": ["woodworking"],
-    "order": 6
+    "order": 6,
+    "noteIds": []
   }
 ]

@@ -10,13 +10,13 @@ test('the two small cards follow the featured flag, not list position', async ({
 	await page.goto(`${FEATURED_BUILD}/`);
 	// the flagship (order 1) always leads; the mock's featured flag (order
 	// 4-6) picks the other two, capped at two, never by title matching
-	await expect(page.locator('.home-lights .home-lights__title'))
+	await expect(page.locator('.home-register .home-register__title'))
 		.toHaveText(['The Great Un-monolithing', 'Meo Wave Race', 'This website']);
 });
 
 test('with nothing else featured the two small cards fall back to the next two by order', async ({ page }) => {
 	await page.goto(`${FALLBACK_BUILD}/`);
-	await expect(page.locator('.home-lights .home-lights__title'))
+	await expect(page.locator('.home-register .home-register__title'))
 		.toHaveText(['The Great Un-monolithing', 'Newsroom plumbing', '100k good mornings']);
 });
 

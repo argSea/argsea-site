@@ -38,6 +38,9 @@ interface Props {
 	bubbleSide?: 'left' | 'right';         // forces which way the quip opens; absent → measured fresh on each poke
 	quips?:      string[];                 // a custom pool that fully replaces the context's default quips
 	designs?:    FigureheadDesign[];       // published figurehead designs; the pose's design replaces its built-in SVG
+	finale?:     string;                   // the ten-poke line; poking finaleAt times shows this instead of a random quip and fires onFinale
+	finaleAt?:   number;                   // pokes needed to trigger the finale; default 10
+	onFinale?:   () => void;               // fired once the finale bubble has had a moment to land, then the poke count resets
 }
 
 // A bubble opening within this many px of the right edge would run off
@@ -92,21 +95,24 @@ function designShapes(shapes: FigureheadShape[]) {
 	});
 }
 
-export default function HarborCat({ pose, context, bubbleSide, quips, designs }: Props) {
+export default function HarborCat({ pose, context, bubbleSide, quips, designs, finale, finaleAt = 10, onFinale }: Props) {
 	const [say, setSay] = useState<string | null>(null);
+	// The finale bubble wraps and lingers instead of the usual one-liner
+	// (Hello.dc.html's `big` flag); it also drives the wider bubble width below.
+	const [big, setBig] = useState(false);
+	const pokes = useRef(0);
 	// Before the first poke there's no bubble to see, so this only matters as
 	// the fallback renderVals() would also fall to: whatever bubbleSide asks
 	// for, or 'right'. The real answer is measured fresh on each poke below.
 	const [side, setSide] = useState<'left' | 'right'>(bubbleSide === 'left' ? 'left' : 'right');
 	const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+	const finaleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 	const rootRef = useRef<HTMLDivElement>(null);
 
-	useEffect(() => () => clearTimeout(timer.current), []);
+	useEffect(() => () => { clearTimeout(timer.current); clearTimeout(finaleTimer.current); }, []);
 
 	const poke = () => {
 		clearTimeout(timer.current);
-		const set = quips && quips.length > 0 ? quips : (QUIPS[context] ?? QUIPS.header);
-		const pool = set.filter((quip) => quip !== say);
 
 		// bubbleSide, when it names a real side, forces it and skips measuring
 		// (the director already measured the anchor for a static perch); an
@@ -117,7 +123,28 @@ export default function HarborCat({ pose, context, bubbleSide, quips, designs }:
 			nextSide = rect && (window.innerWidth - rect.right) < EDGE_THRESHOLD ? 'left' : 'right';
 		}
 
+		// The finaleAt-th poke delivers the finale line instead of a random quip,
+		// then hands off to the caller (the ten-poke Gull Post finale); the count
+		// resets so the cat can be poked into another finale later.
+		pokes.current += 1;
+		if (finale && pokes.current >= finaleAt) {
+			pokes.current = 0;
+			setSide(nextSide);
+			setBig(true);
+			setSay(finale);
+			clearTimeout(finaleTimer.current);
+			timer.current = setTimeout(() => { setSay(null); setBig(false); }, 5200);
+			if (onFinale) {
+				finaleTimer.current = setTimeout(onFinale, 1500);
+			}
+			return;
+		}
+
+		const set = quips && quips.length > 0 ? quips : (QUIPS[context] ?? QUIPS.header);
+		const pool = set.filter((quip) => quip !== say);
+
 		setSide(nextSide);
+		setBig(false);
 		setSay(pool[Math.floor(Math.random() * pool.length)]);
 		timer.current = setTimeout(() => setSay(null), 2600);
 	};
@@ -136,7 +163,7 @@ export default function HarborCat({ pose, context, bubbleSide, quips, designs }:
 	return (
 		<div ref={rootRef} className={`harbor-cat harbor-cat--${pose} harbor-cat--${context}${side === 'left' ? ' harbor-cat--bubble-left' : ''}`}>
 			{/* keyed by quip so a re-poke restarts the pop-in */}
-			{say && <div key={say} className="harbor-cat__bubble">{say}</div>}
+			{say && <div key={say} className={`harbor-cat__bubble${big ? ' harbor-cat__bubble--big' : ''}`}>{say}</div>}
 			{design ? (
 				<svg
 					className="harbor-cat__svg"

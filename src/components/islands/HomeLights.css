@@ -1,73 +1,325 @@
-/* "Selected work" on the homepage: the flagship card sits full-width above a
-   two-up grid of smaller featured cards. (.card-wrap, the clickable
-   lift-on-hover wrapper, is shared: see global.css.) */
+/* "Selected work" on the homepage: the light-list register (split-watch
+   round). Ruled ledger rows in one bordered spine, never cards; the flagship
+   row is taller (fact rows, snapshot, journal-entry chips), the featured rows
+   below it plainer. */
 
-.home-lights {
+.home-register {
+	position: relative;
+	border: 1px solid var(--border-card);
+	border-radius: 4px;
+	background: linear-gradient(160deg, #181c31, #141830);
+	box-shadow: 0 10px 24px rgba(0, 0, 0, .35);
+	padding-left: clamp(12px, 2vw, 26px);
+}
+
+/* The ledger's dashed spine, running the height of the register behind every row */
+.home-register::before {
+	content: '';
+	position: absolute;
+	left: clamp(12px, 2vw, 26px);
+	top: 0;
+	bottom: 0;
+	border-left: 1.5px dashed rgba(240, 217, 168, .3);
+}
+
+.home-register__head {
+	padding: 12px 26px 10px;
+	border-bottom: 1px solid rgba(150, 160, 220, .16);
+}
+
+.home-register__head-label {
+	font-family: var(--font-mono);
+	font-size: 10px;
+	letter-spacing: .16em;
+	color: var(--periwinkle-deep);
+	text-transform: uppercase;
+}
+
+/* --- a ledger row --- */
+
+.home-register__row {
+	position: relative;
+	display: flex;
+	gap: 22px;
+	padding: 20px 26px;
+	border-bottom: 1px solid rgba(150, 160, 220, .14);
+	flex-wrap: wrap;
+	align-items: center;
+	cursor: pointer;
+	transition: background .25s;
+}
+
+.home-register__row:last-child {
+	border-bottom: none;
+}
+
+.home-register__row:hover,
+.home-register__row:focus-visible {
+	background: rgba(240, 217, 168, .03);
+}
+
+.home-register__row--flagship {
+	padding: 24px 26px 22px;
+	align-items: flex-start;
+}
+
+/* The hover beam sweep: a soft diagonal wash that sweeps left to right */
+.home-register__beam {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.home-register__beam::before {
+	content: '';
+	position: absolute;
+	left: 40px;
+	top: 0;
+	bottom: 0;
+	width: 26%;
+	background: linear-gradient(100deg, rgba(246, 236, 207, .13), transparent 72%);
+	opacity: 0;
+}
+
+.home-register__row:hover .home-register__beam::before {
+	animation: homeRegisterBeamSweep 1.1s ease both;
+}
+
+@keyframes homeRegisterBeamSweep {
+	0%   { opacity: 0; transform: translateX(0); }
+	12%  { opacity: .5; }
+	100% { opacity: 0; transform: translateX(340%); }
+}
+
+/* --- lamp column --- */
+
+.home-register__lampcol {
+	flex: none;
+	width: 64px;
 	display: flex;
 	flex-direction: column;
-	gap: 22px;
+	align-items: center;
+	gap: 8px;
+	padding-top: 4px;
 }
 
-.home-lights__featured {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-	gap: 22px;
-	align-items: stretch;
+.home-register__row:not(.home-register__row--flagship) .home-register__lampcol {
+	gap: 7px;
+	padding-top: 0;
 }
 
-/* --- shared header-row vocabulary: no./dot+char/est., both card sizes --- */
+.home-register__lamp {
+	position: relative;
+	width: 22px;
+	height: 22px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
 
-.home-lights__no {
+.home-register__lamp--sm {
+	width: 20px;
+	height: 20px;
+}
+
+.home-register__halo {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 38px;
+	height: 38px;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	filter: blur(3px);
+	pointer-events: none;
+}
+
+.home-register__halo--sm {
+	width: 30px;
+	height: 30px;
+}
+
+/* A fixed, lit lamp breathes its halo instead of sitting fully static
+   (ruling 5), same convention as the coast/projects-register lamps. */
+.home-register__halo--breathe {
+	animation: haloBreath 5s ease-in-out infinite;
+}
+
+.home-register__core {
+	position: relative;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	flex: none;
+}
+
+.home-register__core--sm {
+	width: 6px;
+	height: 6px;
+}
+
+/* Arrival flare: the coast's wayfinding beacons trigger this once on landing
+   (WaveDivider.astro's anchor script toggles the class, [data-lamp] is the
+   element it targets). */
+[data-lamp].home-register__arrival {
+	animation: homeRegisterArrivalFlare .9s ease 1;
+}
+
+@keyframes homeRegisterArrivalFlare {
+	0%, 100% { transform: scale(1); }
+	35%      { transform: scale(1.65); }
+}
+
+.home-register__notation {
 	font-family: var(--font-mono);
-	font-size: 11px;
+	font-size: 10px;
+	letter-spacing: .06em;
+	color: rgb(246, 236, 207);
+	opacity: .85;
+	white-space: nowrap;
+}
+
+.home-register__notation--sm {
+	font-size: 10px;
+}
+
+.home-register__no {
+	font-family: var(--font-display);
+	font-size: 19px;
+	color: #2c3358;
+	line-height: 1;
+	transition: color .4s;
+}
+
+.home-register__no--flagship {
+	font-size: 22px;
+}
+
+[data-num].home-register__arrival {
+	color: var(--periwinkle);
+}
+
+/* --- info column --- */
+
+.home-register__info {
+	flex: 1 1 280px;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+}
+
+.home-register__row--flagship .home-register__info {
+	flex: 1.6 1 340px;
+	gap: 11px;
+}
+
+.home-register__title-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.home-register__title {
+	font-family: var(--font-display);
+	font-size: 21px;
+	color: var(--text-head);
+}
+
+.home-register__title--flagship {
+	font-size: clamp(24px, 3.5vw, 28px);
+	color: var(--text-strong);
+	line-height: 1.12;
+}
+
+.home-register__est {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
 	letter-spacing: .12em;
 	color: var(--periwinkle-deep);
 	text-transform: uppercase;
 }
 
-.home-lights__dot-row {
-	display: inline-flex;
-	align-items: center;
-	gap: 7px;
-}
-
-.home-lights__dot {
-	display: inline-block;
+/* The flagship's "entered into the list" seal: a dashed ring holding "lit / est. <year>" */
+.home-register__seal {
+	position: relative;
+	width: 58px;
+	height: 58px;
 	flex: none;
-	width: 6px;
-	height: 6px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	transform: rotate(-8deg);
 	border-radius: 50%;
-}
-
-.home-lights__dot--sm {
-	width: 5px;
-	height: 5px;
-}
-
-/* The flagship/featured dot and characteristic text glow the design's own
-   warm cream regardless of the project's real light color (Hello.dc.html
-   does this consistently for this card vocabulary; the wave beacons and the
-   coast/register look the color up per project instead). */
-.home-lights__char {
+	border: 1.5px dashed rgba(240, 217, 168, .45);
 	font-family: var(--font-mono);
-	font-size: 11.5px;
-	letter-spacing: .08em;
-	opacity: .85;
+	font-size: 10px;
+	letter-spacing: .1em;
+	color: var(--gold);
+	text-transform: uppercase;
+	line-height: 1.5;
 }
 
-.home-lights__char--sm {
-	font-size: 11px;
+.home-register__seal-est {
+	font-size: 7.5px;
+	color: #c9a96a;
 }
 
-/* --- shared chip vocabulary --- */
+.home-register__desc {
+	font-size: 16px;
+	line-height: 1.6;
+	color: var(--text-body);
+	text-wrap: pretty;
+}
 
-.home-lights__chips {
+.home-register__desc--sm {
+	font-size: 15.5px;
+	line-height: 1.55;
+}
+
+/* --- fact rows: flagship only, capped at 4 (2x2) --- */
+
+.home-register__facts {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 11px 26px;
+	border-top: 1px dotted rgba(150, 160, 220, .25);
+	border-bottom: 1px dotted rgba(150, 160, 220, .25);
+	padding: 12px 0;
+}
+
+.home-register__facts-row {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.home-register__facts-label {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	letter-spacing: .14em;
+	color: var(--periwinkle-deep);
+	text-transform: uppercase;
+}
+
+.home-register__facts-value {
+	font-size: 14.5px;
+	color: #c8cef0;
+	line-height: 1.45;
+}
+
+/* --- chips --- */
+
+.home-register__chips {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 7px;
 }
 
-.home-lights__chip {
+.home-register__chip {
 	font-family: var(--font-mono);
 	font-size: 11px;
 	color: var(--text-body);
@@ -76,120 +328,30 @@
 	padding: 4px 10px;
 }
 
-.home-lights__chips--sm {
-	gap: 6px;
-}
-
-.home-lights__chip--sm {
-	font-size: 10.5px;
-	padding: 3px 9px;
-}
-
-/* --- the flagship card --- */
-
-.home-lights__flagship-wrap {
-	display: block;
-}
-
-.home-lights__flagship {
-	position: relative;
-	box-sizing: border-box;
-	background: var(--card);
-	border: 1px solid var(--border-card);
-	border-radius: 12px;
-	padding: 30px 30px 26px;
-	box-shadow: 0 10px 24px rgba(0, 0, 0, .35);
-	display: flex;
-	flex-wrap: wrap;
-	gap: 20px 40px;
-	align-items: flex-start;
-}
-
-.home-lights__flagship-text {
-	flex: 1.5 1 340px;
-	min-width: 0;
-	display: flex;
-	flex-direction: column;
-	gap: 13px;
-}
-
-.home-lights__flagship-head {
-	display: flex;
-	align-items: center;
-	gap: 13px;
+.home-register__chips--sm {
+	display: inline-flex;
+	gap: 10px;
 	flex-wrap: wrap;
 }
 
-.home-lights__flagship-pill {
+.home-register__chip--sm {
 	font-family: var(--font-mono);
-	font-size: 10px;
-	letter-spacing: .16em;
-	color: var(--gold);
-	text-transform: uppercase;
-	padding: 2px 9px;
-	border: 1px solid rgba(240, 217, 168, .45);
-	border-radius: 999px;
-	background: rgba(240, 217, 168, .08);
-}
-
-/* Compound selector, not just .home-lights__flagship-title: the flagship
-   title also carries the shared .home-lights__title class (so a single
-   locator can list all three card titles in DOM order), and this needs to
-   outrank that shared rule's own font-size regardless of source order. */
-.home-lights__title.home-lights__flagship-title {
-	font-family: var(--font-display);
-	font-size: clamp(25px, 4vw, 32px);
-	color: var(--text-strong);
-	line-height: 1.12;
-}
-
-.home-lights__flagship-desc {
-	font-size: 16px;
-	line-height: 1.6;
+	font-size: 10.5px;
 	color: var(--text-body);
-	text-wrap: pretty;
-}
-
-.home-lights__facts {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 13px 28px;
-	border-top: 1px solid rgba(150, 160, 220, .16);
-	border-bottom: 1px solid rgba(150, 160, 220, .16);
-	padding: 15px 0;
-	margin: 3px 0;
-}
-
-.home-lights__facts-row {
-	display: flex;
-	flex-direction: column;
-	gap: 3px;
-}
-
-.home-lights__facts-label {
-	font-family: var(--font-mono);
-	font-size: 10.5px;
-	letter-spacing: .14em;
-	color: var(--periwinkle-deep);
-	text-transform: uppercase;
-}
-
-.home-lights__facts-value {
-	font-size: 15px;
-	color: #c8cef0;
-	line-height: 1.45;
+	border: none;
+	padding: 0;
 }
 
 /* --- notes found here: the journal-entry chips, flagship only --- */
 
-.home-lights__notes {
+.home-register__notes {
 	display: flex;
 	align-items: baseline;
 	gap: 10px;
 	flex-wrap: wrap;
 }
 
-.home-lights__notes-label {
+.home-register__notes-label {
 	font-family: var(--font-mono);
 	font-size: 10.5px;
 	letter-spacing: .14em;
@@ -198,13 +360,13 @@
 	flex: none;
 }
 
-.home-lights__notes-chips {
+.home-register__notes-chips {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 7px;
 }
 
-.home-lights__notes-chip {
+.home-register__notes-chip {
 	font-family: var(--font-mono);
 	font-size: 11px;
 	color: var(--periwinkle);
@@ -213,143 +375,156 @@
 	padding: 4px 10px;
 }
 
-.home-lights__flagship-foot {
+.home-register__notes-line {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: var(--periwinkle-deep);
+}
+
+/* --- flagship foot / featured foot row --- */
+
+.home-register__foot {
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
 	gap: 14px;
 	flex-wrap: wrap;
-	margin-top: 2px;
 }
 
-.home-lights__moral {
+.home-register__moral {
 	font-size: 14.5px;
 	font-style: italic;
 	color: var(--text-quip);
 }
 
-.home-lights__caselink {
+.home-register__caselink {
 	font-family: var(--font-mono);
 	font-size: 13px;
 	color: var(--gold);
 	white-space: nowrap;
 }
 
-/* --- the flagship's polaroid: the first image, from the station archive --- */
+.home-register__foot-row {
+	display: flex;
+	align-items: baseline;
+	gap: 12px;
+	flex-wrap: wrap;
+}
 
-.home-lights__polaroid {
-	flex: 1 1 250px;
-	max-width: 390px;
-	align-self: stretch;
+.home-register__rule {
+	flex: 1;
+	border-bottom: 1px dotted rgba(150, 160, 220, .3);
+	min-width: 40px;
+	transform: translateY(-3px);
+}
+
+.home-register__read {
+	font-family: var(--font-mono);
+	font-size: 12.5px;
+	color: var(--gold);
+}
+
+/* A featured row's optional moral, set off past a dashed rule like the mock */
+.home-register__aside {
+	flex: 0 1 200px;
+	margin-left: auto;
+	align-self: center;
+	border-left: 1.5px dashed rgba(150, 160, 220, .22);
+	padding-left: 22px;
+}
+
+.home-register__moral--aside {
+	font-size: 14px;
+	line-height: 1.55;
+	text-wrap: pretty;
+}
+
+/* --- the flagship's snapshot: the first image, from the station archive --- */
+
+.home-register__snapshot {
+	flex: 1 1 220px;
+	max-width: 330px;
+	align-self: center;
+	position: relative;
+	margin-right: -40px;
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
 	cursor: default;
 }
 
-.polaroid-frame {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	background: #fdfcf8;
-	padding: 6px 6px 20px;
-	box-shadow: 0 8px 22px rgba(0, 0, 0, .45);
-	transform: rotate(-1.2deg);
+.home-register__polaroid {
+	aspect-ratio: 3 / 2;
 }
 
-.polaroid-frame img {
-	flex: 1;
-	min-height: 240px;
-	width: 100%;
-	box-sizing: border-box;
-	object-fit: cover;
-	background: #e6e2d6;
+.home-register__polaroid img {
+	min-height: 0;
 }
 
-/* --- empty paper frame: no image name, or the print failed to load. The
-   frame's own cream background already reads as blank paper; the paper slot
-   below just holds the img's box so nothing collapses or shifts. --- */
-.polaroid-frame__paper {
-	flex: 1;
-	min-height: 240px;
-	width: 100%;
-	box-sizing: border-box;
-}
-
-.home-lights__polaroid-caption {
+.home-register__snapshot-caption {
 	font-family: var(--font-mono);
-	font-size: 11px;
+	font-size: 10.5px;
 	color: var(--periwinkle-deep);
 	text-align: center;
 }
 
-/* --- the two featured cards --- */
+/* A featured row's smaller snapshot: a plain thumbnail, no polaroid frame */
+.home-register__thumb {
+	flex: none;
+	width: 112px;
+	aspect-ratio: 3 / 2;
+	overflow: hidden;
+	background: #1e2440;
+	border: 1px solid rgba(150, 160, 220, .22);
+	box-shadow: 0 8px 18px rgba(0, 0, 0, .5);
+}
 
-.home-lights__card {
-	position: relative;
+.home-register__thumb img {
+	display: block;
+	width: 100%;
 	height: 100%;
-	box-sizing: border-box;
-	background: var(--card);
-	border: 1px solid var(--border-card);
-	border-radius: 12px;
-	padding: 26px 24px;
+	object-fit: cover;
+}
+
+/* --- shared polaroid frame (also used by the watch rack) --- */
+
+.polaroid-frame {
+	flex: 1;
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
-	box-shadow: 0 10px 24px rgba(0, 0, 0, .35);
+	background: #252b49;
+	border: 1px solid rgba(150, 160, 220, .22);
+	padding: 8px 8px 12px;
+	box-shadow: 0 12px 28px rgba(0, 0, 0, .55);
+	transform: rotate(1.6deg);
 }
 
-.home-lights__card--bob-b { animation: homeLightsBobB 8s ease-in-out .5s infinite; }
-.home-lights__card--bob-c { animation: homeLightsBobC 6.5s ease-in-out 1s infinite; }
-
-@keyframes homeLightsBobB {
-	0%, 100% { transform: rotate(.7deg) translateY(0); }
-	50%      { transform: rotate(.2deg) translateY(-5px); }
+.polaroid-frame img {
+	flex: 1;
+	width: 100%;
+	box-sizing: border-box;
+	object-fit: cover;
+	background: #1e2440;
 }
 
-@keyframes homeLightsBobC {
-	0%, 100% { transform: rotate(-.5deg) translateY(0); }
-	50%      { transform: rotate(-1deg) translateY(-3px); }
+/* Empty paper: no image name, or the print failed to load. The frame's own
+   fill already reads as blank; the paper slot just holds the box so nothing
+   collapses or shifts. */
+.polaroid-frame__paper {
+	flex: 1;
+	width: 100%;
+	box-sizing: border-box;
+	aspect-ratio: 3 / 2;
 }
 
-.home-lights__card-head {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	flex-wrap: wrap;
+.home-register__thumb--empty img,
+.home-register__thumb-paper {
+	width: 100%;
+	height: 100%;
 }
 
-.home-lights__title {
-	font-family: var(--font-display);
-	font-size: 21px;
-	color: var(--text-head);
-}
-
-.home-lights__desc {
-	font-size: 15.5px;
-	line-height: 1.55;
-	color: var(--text-body);
-	text-wrap: pretty;
-}
-
-.home-lights__card-foot {
-	margin-top: auto;
-	padding-top: 4px;
-	display: flex;
-	align-items: baseline;
-	justify-content: space-between;
-	gap: 10px;
-	flex-wrap: wrap;
-}
-
-.home-lights__read {
-	font-family: var(--font-mono);
-	font-size: 12.5px;
-	color: var(--gold);
-}
-
-.home-lights__notes-line {
-	font-family: var(--font-mono);
-	font-size: 11px;
-	color: var(--periwinkle-deep);
+@media (max-width: 900px) {
+	.home-register__row--flagship .home-register__snapshot {
+		margin-right: 0;
+	}
 }

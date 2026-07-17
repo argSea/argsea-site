@@ -1,0 +1,701 @@
+---
+// The Gull Post: the easter-egg morning edition, reached by poking the watch
+// cat ten times (WatchCat phases the page to paper, then navigates here). Its
+// own paper stock, nav, and footer, not the site's dark shell, so it stands
+// alone rather than under BaseLayout. Design canon: design/Hello Gazette.dc.html,
+// transcribed verbatim; the wiring covers the routing, the folio's date/wx,
+// the lead's facts and print, and the rail's journal rows.
+//
+// The folio date is the build date and the folio wx is the latest journal
+// entry's conditions (the cross-repo pin); the delivery gull is the
+// delivery-gull carving spot, its fixture the byte-identical builtin fallback.
+// The fonts and the shared tokens come in the same order every other page
+// takes them (BaseLayout: fonts, then global.css), so this standalone page
+// joins the shared CSS graph the same way rather than perturbing its chunk
+// order; the page's own is:global below then repaints the body to paper. The
+// dark-theme chrome (nav, footer, cat) simply isn't rendered here.
+import '@fontsource/gloock';
+import '@fontsource-variable/newsreader/standard.css';
+import '@fontsource-variable/newsreader/standard-italic.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../styles/global.css';
+
+import { getProjects, getNotes, getKeeperProfile, getCarvings } from '../lib/api';
+import { boltedSvg, innerMarkup } from '../lib/carvings';
+import { registryNo } from '../lib/lightChar';
+import { mediaUrl } from '../lib/media';
+
+const projects = await getProjects();
+const allNotes = await getNotes();
+const keeper = await getKeeperProfile();
+
+// The lead is the flagship; the two below-fold stories are the featured pair
+// in list order, falling back to the next two by order, exactly as the home
+// register resolves them, so the folio never runs a story short.
+const flagship = projects.find((project) => project.flagship) ?? null;
+const nonFlagship = projects.filter((project) => project.id !== flagship?.id);
+const featuredExplicit = nonFlagship.filter((project) => project.featured);
+const [second, third] = (featuredExplicit.length > 0 ? featuredExplicit : nonFlagship).slice(0, 2);
+
+// The three newest journal entries fill the rail; each row is a title + its
+// date-stamped dek, single-sourced from the journal so it can't drift.
+const railNotes = allNotes.slice(0, 3);
+
+// The lead's fact grid comes straight off the flagship's own facts (capped at
+// four, the mock's own "by the numbers" count).
+const leadFacts = (flagship?.facts ?? []).slice(0, 4);
+const leadImage = flagship?.images && flagship.images.length > 0 ? flagship.images[0] : flagship?.image ?? null;
+
+// The full-log route when the flagship has a published log, else the coast.
+const leadHref = flagship?.hasLog ? `/projects/${flagship.slug}` : '/projects';
+
+// Folio date = build date; folio wx = the latest journal entry's conditions.
+const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+const now = new Date();
+const folioDate = `${WEEKDAYS[now.getDay()]}, ${MONTHS[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+const folioWx = `wx: ${allNotes[0]?.conditions ?? 'light steady · no incidents'}`;
+
+// The delivery gull carving; its fixture svg is the byte-identical fallback.
+const gullSvg = boltedSvg('delivery-gull', await getCarvings());
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<title>The Gull Post · argsea.com</title>
+	</head>
+	<body>
+		<div class="gazette">
+			<div class="gazette__sheet">
+
+				<!-- folio line -->
+				<div class="gazette__folio">
+					<span class="gazette__folio-item">vol. XXXIX · harbor edition</span>
+					<span class="gazette__folio-item">{folioDate}</span>
+					<span class="gazette__folio-item">{folioWx}</span>
+				</div>
+
+				<!-- masthead -->
+				<div class="gazette__masthead">
+					<!-- the delivery gull, cap and all · payment expected on the spot -->
+					<svg class="gazette__gull" width="46" height="44" viewBox="0 0 46 44" fill="none" stroke="rgba(32,35,60,.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-bolted={gullSvg ? 'delivery-gull' : undefined}>
+						{gullSvg ? (
+							<Fragment set:html={innerMarkup(gullSvg)} />
+						) : (
+							<>
+								<path d="M14 41 v-5 M20 41 v-5" stroke-width="1.4"></path>
+								<path d="M11 36 C8 30 9 23 15 20 C22 16.5 30 19 31 26 C31.8 32 27 36 20 36 Z" fill="#f1ecdd"></path>
+								<path d="M17 24 C22 21 28 23 29 28 C26 30 19 30 16 27 Z" fill="rgba(32,35,60,.18)" stroke="none"></path>
+								<path d="M15 20 C14 14 18 10 23 10 C27 10 30 13 30 17" fill="#f1ecdd"></path>
+								<path d="M30 16.5 L36 18 L30 19.5" fill="#c9a96a" stroke="rgba(32,35,60,.85)"></path>
+								<circle cx="25.5" cy="15" r="1.1" fill="rgba(32,35,60,.85)" stroke="none"></circle>
+								<path d="M16.5 11.5 C17 7.5 21 5.5 25 6.5 C28 7.2 29.5 9.5 29.5 11.5 L31.5 11.5 C32.2 11.5 32.2 12.8 31.5 12.8 L18 12.8 Z" fill="rgba(32,35,60,.75)" stroke="none"></path>
+							</>
+						)}
+					</svg>
+					<div class="gazette__title">The Gull Post</div>
+					<div class="gazette__strap">all the lights fit to keep · delivered by seabird, payment expected on the spot · price: one flare</div>
+				</div>
+
+				<!-- section nav -->
+				<div class="gazette__nav">
+					<a href="/projects" class="gazette__nav-link">The Light List</a>
+					<a href="/notes" class="gazette__nav-link">The Journal</a>
+					<a href="/hobbies" class="gazette__nav-link">The Wandering Chart</a>
+					<a href={`mailto:${keeper.email}`} class="gazette__nav-link">Harbor Contact</a>
+				</div>
+
+				<!-- front page: lead + rail -->
+				<div class="gazette__front">
+
+					<!-- lead story -->
+					<div class="gazette__lead">
+						<span class="gazette__kicker">the light list · no. {flagship ? registryNo(flagship.order) : '002'} · flagship</span>
+						<div class="gazette__headline">Giant Monolith Quietly Dismantled; the Paper Never Misses a Day</div>
+						<div class="gazette__dek">29 small, well-behaved services now stand where one enormous application once feared nothing. Readers, by design, noticed nothing at all.</div>
+						<div class="gazette__byline">
+							<span class="gazette__byline-by">By the Keeper</span>
+							<span class="gazette__byline-meta">reporting from inside the cluster · est. {flagship?.firstLit ?? '2024'}, ongoing</span>
+						</div>
+						<div class="gazette__lead-cols">
+							<div class="gazette__lead-body">
+								<div class="gazette__para">The old system was one enormous application that did everything and feared nothing, least of all the keeper's weekends. It was taken apart piece by piece: a message queue in the middle, 29 services around it, Kubernetes herding the containers.</div>
+								<div class="gazette__para">The success metric was silence. No reader ever noticed a thing. The paper published every single day while the engine was swapped mid-flight. The old stack was decommissioned in 2025, capability by capability, until one night there was nothing left to turn off.</div>
+								<div class="gazette__moral">Moral: the best migrations are the boring ones.</div>
+								<a href={leadHref} class="gazette__jump">continued in the full log → page {flagship ? registryNo(flagship.order) : '002'}</a>
+							</div>
+							<div class="gazette__lead-aside">
+								<div class="gazette__figure">
+									<div class="gazette__figure-frame">
+										{leadImage
+											? <img src={mediaUrl(leadImage)} alt="the first screenshot, from the station archive" />
+											: <div class="gazette__figure-paper" aria-hidden="true"></div>}
+									</div>
+									<span class="gazette__figure-caption">The first screenshot, as archived at the station. The queue, not pictured, is the product.</span>
+								</div>
+								<div class="gazette__numbers">
+									<span class="gazette__numbers-head">by the numbers</span>
+									{leadFacts.map((fact) => (
+										<div class="gazette__numbers-row">
+											<span class="gazette__numbers-label">{fact.heading}</span>
+											<span class="gazette__numbers-value">{fact.fact}</span>
+										</div>
+									))}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- right rail -->
+					<div class="gazette__rail">
+						<div class="gazette__rail-block">
+							<span class="gazette__rail-head">from the keeper's journal</span>
+							{railNotes.map((note, index) => (
+								<a href="/notes" class:list={['gazette__rail-item', { 'gazette__rail-item--ruled': index > 0 }]}>
+									<span class="gazette__rail-title">{note.title}</span>
+									<span class="gazette__rail-dek">{note.date} · {note.teaser}</span>
+								</a>
+							))}
+						</div>
+						<div class="gazette__rail-block">
+							<span class="gazette__rail-head">notices · the current watch</span>
+							<div class="gazette__notice">The keeper is presently <span class="gazette__notice-em">wrangling the ArcXP migration</span> (in flight, no page yet), <a href="/notes" class="gazette__notice-link">logging in the journal</a>, and <a href="/hobbies" class="gazette__notice-link">tinkering with the home lab</a>. The light remains lit. The lighthouse cat was unavailable for comment.</div>
+						</div>
+						<div class="gazette__rail-block">
+							<span class="gazette__rail-head">classified · hobbies</span>
+							<div class="gazette__classified">PIANO, adrift. Answers to no one. Reward if returned. · MUSIC THEORY, marooned, last seen near the circle of fifths. · GAME DEV, made port 2020, retired undefeated. · RUNNING, bearing smudged, ink never dried.</div>
+							<a href="/hobbies" class="gazette__rail-more">the full wandering chart →</a>
+						</div>
+					</div>
+				</div>
+
+				<!-- below the fold: two stories -->
+				<div class="gazette__below">
+					<div class="gazette__story gazette__story--ruled">
+						<span class="gazette__kicker">the light list · no. {second ? registryNo(second.order) : '004'} · est. {second?.firstLit ?? '2016'}</span>
+						<div class="gazette__subhead">City's Hidden Plumbing Holds, Again; Nobody Notices, Which Is the Point</div>
+						<div class="gazette__story-body">
+							<div class="gazette__story-figure">
+								<div class="gazette__story-figure-frame">
+									{second?.images && second.images.length > 0
+										? <img src={mediaUrl(second.images[0])} alt="the pipes beneath the newsroom" />
+										: <div class="gazette__figure-paper" aria-hidden="true"></div>}
+								</div>
+								<span class="gazette__figure-caption">The pipes beneath the newsroom.</span>
+							</div>
+							<div class="gazette__story-text">
+								<div class="gazette__para gazette__para--sm">Reporters write, editors edit, and somewhere between done and published lives an entire hidden city of pipes: APIs, storage, caching. A good chunk of that city was designed and built by the keeper, and it runs on deadlines that do not move for anybody.</div>
+								<a href="/projects" class="gazette__jump">see the light →</a>
+							</div>
+						</div>
+					</div>
+					<div class="gazette__story">
+						<span class="gazette__kicker">the light list · no. {third ? registryNo(third.order) : '006'} · est. {third?.firstLit ?? '2018'}</span>
+						<div class="gazette__subhead">Newsletter Beats Sunrise Into 100,000 Inboxes; Cron Job Credits Ambition</div>
+						<div class="gazette__story-textonly">
+							<div class="gazette__para gazette__para--sm">Every morning, before coffee exists, an automated system assembles the day's news and delivers it to over 100,000 inboxes. It has done this more reliably than anyone gets out of bed. The fun part was making it boring: retries, queues, monitoring, and a healthy paranoia about 4am.</div>
+							<div class="gazette__moral gazette__moral--sm">Moral: automation is just kindness to your future self, scheduled.</div>
+							<a href="/projects" class="gazette__jump">see the light →</a>
+						</div>
+					</div>
+				</div>
+
+				<!-- foot folio -->
+				<div class="gazette__foot">
+					<span class="gazette__foot-item">the gull post · printed at the lighthouse</span>
+					<span class="gazette__foot-note">corrections are logged in the journal, where they belong</span>
+					<a href="/" class="gazette__foot-back">back to the standing edition →</a>
+				</div>
+
+			</div>
+		</div>
+	</body>
+</html>
+
+<style is:global>
+	html {
+		background: #e7e0cd;
+	}
+
+	body {
+		margin: 0;
+		background: #ece5d2;
+		font-family: 'Newsreader Variable', 'Newsreader', serif;
+		color: #20233c;
+	}
+
+	.gazette a {
+		color: #8a6d3b;
+		text-decoration: none;
+	}
+
+	.gazette a:hover {
+		color: #20233c;
+	}
+</style>
+
+<style>
+	.gazette {
+		min-height: 100vh;
+		display: flex;
+		justify-content: center;
+		padding: clamp(10px, 3vw, 36px);
+		box-sizing: border-box;
+	}
+
+	.gazette__sheet {
+		width: min(1180px, 100%);
+		background: #f1ecdd;
+		box-shadow: 0 20px 60px rgba(32, 35, 60, .25);
+		padding: clamp(20px, 4vw, 48px) clamp(18px, 4vw, 52px);
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* folio line */
+	.gazette__folio {
+		display: flex;
+		justify-content: space-between;
+		gap: 14px;
+		flex-wrap: wrap;
+		border-bottom: 1px solid rgba(32, 35, 60, .55);
+		padding-bottom: 7px;
+	}
+
+	.gazette__folio-item {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 11px;
+		letter-spacing: .12em;
+		text-transform: uppercase;
+		color: #5c5644;
+	}
+
+	/* masthead */
+	.gazette__masthead {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 6px;
+		padding: 26px 0 18px;
+		border-bottom: 3px double rgba(32, 35, 60, .75);
+		position: relative;
+	}
+
+	.gazette__gull {
+		position: absolute;
+		right: 6%;
+		bottom: -3px;
+	}
+
+	.gazette__title {
+		font-family: 'Gloock', serif;
+		font-size: clamp(40px, 7vw, 74px);
+		line-height: 1;
+		letter-spacing: .01em;
+		text-align: center;
+	}
+
+	.gazette__strap {
+		font-size: 15px;
+		font-style: italic;
+		color: #5c5644;
+		text-align: center;
+	}
+
+	/* section nav */
+	.gazette__nav {
+		display: flex;
+		justify-content: center;
+		gap: clamp(14px, 3vw, 34px);
+		flex-wrap: wrap;
+		padding: 9px 0;
+		border-bottom: 1px solid rgba(32, 35, 60, .55);
+	}
+
+	.gazette__nav-link {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 11.5px;
+		letter-spacing: .14em;
+		text-transform: uppercase;
+	}
+
+	/* front page grid */
+	.gazette__front {
+		display: grid;
+		grid-template-columns: minmax(0, 2.6fr) minmax(0, 1fr);
+		border-bottom: 1px solid rgba(32, 35, 60, .55);
+	}
+
+	.gazette__lead {
+		padding: 22px 26px 24px 0;
+		border-right: 1px solid rgba(32, 35, 60, .35);
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.gazette__kicker {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 11px;
+		letter-spacing: .16em;
+		text-transform: uppercase;
+		color: #8a6d3b;
+	}
+
+	.gazette__headline {
+		font-family: 'Gloock', serif;
+		font-size: clamp(28px, 4.6vw, 46px);
+		line-height: 1.08;
+		text-wrap: balance;
+	}
+
+	.gazette__dek {
+		font-size: 19px;
+		font-style: italic;
+		line-height: 1.45;
+		color: #494e70;
+		text-wrap: pretty;
+	}
+
+	.gazette__byline {
+		display: flex;
+		gap: 12px;
+		align-items: baseline;
+		flex-wrap: wrap;
+		border-top: 1px solid rgba(32, 35, 60, .25);
+		border-bottom: 1px solid rgba(32, 35, 60, .25);
+		padding: 6px 0;
+	}
+
+	.gazette__byline-by {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 11.5px;
+		letter-spacing: .1em;
+		text-transform: uppercase;
+		color: #5c5644;
+	}
+
+	.gazette__byline-meta {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 11.5px;
+		color: #8a7f63;
+	}
+
+	.gazette__lead-cols {
+		display: flex;
+		gap: 26px;
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.gazette__lead-body {
+		flex: 1.2 1 300px;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.gazette__para {
+		font-size: 16.5px;
+		line-height: 1.65;
+		text-wrap: pretty;
+	}
+
+	.gazette__para--sm {
+		font-size: 15.5px;
+		line-height: 1.6;
+	}
+
+	.gazette__moral {
+		font-size: 15px;
+		font-style: italic;
+		color: #494e70;
+	}
+
+	.gazette__moral--sm {
+		font-size: 14px;
+	}
+
+	.gazette__jump {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 12.5px;
+		letter-spacing: .06em;
+	}
+
+	.gazette__lead-aside {
+		flex: 1 1 240px;
+		max-width: 340px;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.gazette__figure {
+		display: flex;
+		flex-direction: column;
+		gap: 7px;
+	}
+
+	.gazette__figure-frame {
+		width: 100%;
+		aspect-ratio: 3 / 2;
+		overflow: hidden;
+		background: #ddd5c0;
+		border: 1px solid rgba(32, 35, 60, .35);
+	}
+
+	.gazette__figure-frame img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.gazette__figure-paper {
+		width: 100%;
+		height: 100%;
+	}
+
+	.gazette__figure-caption {
+		font-size: 13px;
+		font-style: italic;
+		color: #5c5644;
+		line-height: 1.45;
+	}
+
+	.gazette__numbers {
+		border: 1px solid rgba(32, 35, 60, .45);
+		padding: 14px 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 9px;
+		background: rgba(32, 35, 60, .04);
+	}
+
+	.gazette__numbers-head {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 11px;
+		letter-spacing: .16em;
+		text-transform: uppercase;
+		color: #5c5644;
+		border-bottom: 1px solid rgba(32, 35, 60, .3);
+		padding-bottom: 7px;
+	}
+
+	.gazette__numbers-row {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.gazette__numbers-label {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 10.5px;
+		letter-spacing: .12em;
+		text-transform: uppercase;
+		color: #8a6d3b;
+	}
+
+	.gazette__numbers-value {
+		font-size: 14.5px;
+		line-height: 1.4;
+	}
+
+	/* right rail */
+	.gazette__rail {
+		padding: 22px 0 24px 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.gazette__rail-block {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.gazette__rail-head {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 11px;
+		letter-spacing: .16em;
+		text-transform: uppercase;
+		color: #5c5644;
+		border-bottom: 2px solid rgba(32, 35, 60, .7);
+		padding-bottom: 6px;
+	}
+
+	.gazette__rail-item {
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+		color: inherit;
+	}
+
+	.gazette__rail-item--ruled {
+		border-top: 1px dotted rgba(32, 35, 60, .4);
+		padding-top: 10px;
+	}
+
+	.gazette__rail-title {
+		font-family: 'Gloock', serif;
+		font-size: 17.5px;
+		line-height: 1.25;
+		color: #20233c;
+	}
+
+	.gazette__rail-dek {
+		font-size: 13.5px;
+		font-style: italic;
+		color: #5c5644;
+	}
+
+	.gazette__notice {
+		font-size: 14.5px;
+		line-height: 1.6;
+	}
+
+	.gazette__notice-em {
+		font-style: italic;
+	}
+
+	.gazette__notice-link {
+		font-style: italic;
+	}
+
+	.gazette__classified {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 12px;
+		line-height: 1.7;
+		color: #3b3f5e;
+	}
+
+	.gazette__rail-more {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 12px;
+		letter-spacing: .06em;
+	}
+
+	/* below the fold */
+	.gazette__below {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		border-bottom: 1px solid rgba(32, 35, 60, .55);
+	}
+
+	.gazette__story {
+		padding: 20px 0 24px 26px;
+		display: flex;
+		flex-direction: column;
+		gap: 11px;
+	}
+
+	.gazette__story--ruled {
+		padding: 20px 26px 24px 0;
+		border-right: 1px solid rgba(32, 35, 60, .35);
+	}
+
+	.gazette__subhead {
+		font-family: 'Gloock', serif;
+		font-size: clamp(22px, 3vw, 28px);
+		line-height: 1.15;
+		text-wrap: balance;
+	}
+
+	.gazette__story-body {
+		display: flex;
+		gap: 18px;
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.gazette__story-figure {
+		flex: none;
+		width: 150px;
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+	}
+
+	.gazette__story-figure-frame {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		background: #ddd5c0;
+		border: 1px solid rgba(32, 35, 60, .35);
+	}
+
+	.gazette__story-figure-frame img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.gazette__story-text {
+		flex: 1 1 220px;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.gazette__story-textonly {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	/* foot folio */
+	.gazette__foot {
+		display: flex;
+		justify-content: space-between;
+		gap: 12px;
+		flex-wrap: wrap;
+		padding-top: 12px;
+	}
+
+	.gazette__foot-item {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 11px;
+		letter-spacing: .12em;
+		text-transform: uppercase;
+		color: #8a7f63;
+	}
+
+	.gazette__foot-note {
+		font-size: 13px;
+		font-style: italic;
+		color: #8a7f63;
+	}
+
+	.gazette__foot-back {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 11px;
+		letter-spacing: .12em;
+		text-transform: uppercase;
+	}
+
+	/* the front page collapses to one column on a narrow screen */
+	@media (max-width: 720px) {
+		.gazette__front {
+			grid-template-columns: 1fr;
+		}
+
+		.gazette__lead {
+			padding: 22px 0 24px;
+			border-right: none;
+			border-bottom: 1px solid rgba(32, 35, 60, .35);
+		}
+
+		.gazette__rail {
+			padding: 22px 0 24px;
+		}
+	}
+</style>
