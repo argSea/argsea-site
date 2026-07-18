@@ -589,29 +589,6 @@ const hobbyPills = wandering.map((hobby) => ({
 		animation: fadeUp .7s ease .4s both;
 	}
 
-	/* The rack's second hook: tucked smaller and set to the right, its own
-	   opposite tilt, sitting below the first print (Hello.dc.html's rack). */
-	.watch__postcard-frame--second {
-		width: 74%;
-		align-self: flex-end;
-		padding: 7px 7px 11px;
-		box-shadow: 0 12px 26px rgba(0, 0, 0, .55);
-		transform: rotate(-2deg);
-	}
-
-	.watch__postcard-frame--second:hover {
-		transform: rotate(-.6deg) translateY(-3px);
-	}
-
-	.watch__postcard-photo--second {
-		aspect-ratio: 3 / 2;
-	}
-
-	.watch__postcard-caption--second {
-		font-size: 10.5px;
-		color: var(--periwinkle-deep);
-	}
-
 	/* Resting tilt is a base transform: reduced-motion strips the hover lift, keeps the pose */
 	.watch__postcard-frame {
 		width: 100%;
@@ -649,6 +626,31 @@ const hobbyPills = wandering.map((hobby) => ({
 		font-size: 11px;
 		color: var(--periwinkle);
 		text-align: center;
+	}
+
+	/* The rack's second hook: tucked smaller and set to the right, its own
+	   opposite tilt, sitting below the first print (Hello.dc.html's rack).
+	   These share specificity with the base rules above, so they must stay
+	   after them or the cascade flattens the second print to full size. */
+	.watch__postcard-frame--second {
+		width: 74%;
+		align-self: flex-end;
+		padding: 7px 7px 11px;
+		box-shadow: 0 12px 26px rgba(0, 0, 0, .55);
+		transform: rotate(-2deg);
+	}
+
+	.watch__postcard-frame--second:hover {
+		transform: rotate(-.6deg) translateY(-3px);
+	}
+
+	.watch__postcard-photo--second {
+		aspect-ratio: 3 / 2;
+	}
+
+	.watch__postcard-caption--second {
+		font-size: 10.5px;
+		color: var(--periwinkle-deep);
 	}
 
 	/* the postcard straddles the hero/watch seam only when it actually sits beside the panel */
