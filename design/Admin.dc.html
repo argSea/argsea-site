@@ -892,7 +892,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                   </div>
                   <form onSubmit="{{ addBenchItem }}" style="display:flex;gap:10px;margin:0;flex-wrap:wrap">
                     <input type="text" value="{{ benchItemText }}" onChange="{{ onBenchItemText }}" placeholder="a tool that earned the shelf..." style="flex:1 1 200px;background:#0f1322;border:1px solid rgba(150,160,220,.25);border-radius:999px;padding:10px 16px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-                    <button type="submit" style="padding:10px 18px;background:#93a0e8;color:#151830;border:none;border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;cursor:pointer;box-shadow:2px 2px 0 rgba(240,217,168,.85);transition:transform .2s" style-hover="transform:translateY(-1px)">+ add</button>
+                    <button type="submit" style="padding:10px 18px;background:#93a0e8;color:#151830;border:none;border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;cursor:pointer;box-shadow:2px 2px 0 rgba(240,217,168,.85);transition:transform .2s" style-hover="transform:translateY(-1px)">+ into the drawer</button>
                   </form>
                   <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4">// a tool earns its drawer by paging me at least once.</span>
                 </div>
@@ -3179,6 +3179,7 @@ class Component extends DCLogic {
           const left = st.bench.filter((cat) => cat.id !== sel.id);
           return { bench: left, benchArm: null, benchSel: left.length ? left[0].id : null };
         });
+        this.showToast('🪓 the drawer went overboard.');
       },
       scrapLabel: sel && s.benchArm === sel.id ? 'sure? it all goes overboard' : 'scrap this drawer',
       scrapHot: !!sel && s.benchArm === sel.id,
