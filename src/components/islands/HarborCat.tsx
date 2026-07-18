@@ -12,9 +12,9 @@ import './HarborCat.css';
 export type { CatContext } from '../../lib/catSpots';
 
 // One quip set per context (approved copy from the HarborCat and Hobbies mocks;
-// the ledger, watch, and manifest sets are new keeper drafts awaiting the
-// voice pass); a poke never repeats the quip currently on screen. An unknown
-// context falls back to the roaming header set.
+// the ledger, watch, and manifest sets ratified at the voice pass
+// (2026-07-17)); a poke never repeats the quip currently on screen. An
+// unknown context falls back to the roaming header set.
 const QUIPS: Record<CatContext, string[]> = {
 	postcard:  ['mrrp.', 'i sat on this one first.', 'read it to me.', 'this entry is mine now.', 'i approve. mostly.', 'the archive tastes fine.', 'you opened it, i inspected it.'],
 	note:      ['mrrp.', 'i walked across the keyboard during this one.', 'typo on line two. i left it.', 'read it to me.', 'i supervised this draft.', 'nap first. then read.', 'i have read it. no comment.'],
@@ -22,7 +22,7 @@ const QUIPS: Record<CatContext, string[]> = {
 	header:    ['mrrp.', 'this is my page now.', 'you may look. briefly.', 'i live up here.', 'the lighthouse sent me.', 'mind the tail.'],
 	hero:      ['mrrp.', 'yes, that is the guy.', 'he does keep the lights on. i supervise.', 'hire him. i vouch. mostly.', 'the boxes-and-arrows are mine.'],
 	manifest:  ['mrrp.', 'you forgot to list me.', 'i am also a tool. i sit at the end of the line.', 'inventory looks fine. i counted.', 'one shelf now. easier to patrol.', 'the queue is mine now.'],
-	ledger:    ['mrrp.', 'the compass points at me. correct.', 'i smudged the ink. it needed it.', 'none of them sank. i checked the chart twice.', 'sea room held. i am sitting in it.'],
+	ledger:    ['mrrp.', 'the compass points at me. correct.', 'i smudged the ink. it needed it.', 'every ship accounted for. i counted twice.', 'sea room held. i am sitting in it.'],
 	chart:     ['a sail, off the north point. maybe.', 'i keep watch for the ones that drift back.', 'none of them sank. i checked.', 'the boat always comes back. eventually.', 'one sail is overdue. i am counting.'],
 	watch:     ['mrrp.', 'i keep this watch too. from up here.', 'the log is current. i checked.', 'he writes it down. i live it.', 'nothing to report. the good kind.'],
 	contact:   ['mrrp.', 'say hi. or do not. i will know.', 'he answers email. i answer to no one.', 'the light is on.'],
