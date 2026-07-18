@@ -25,6 +25,14 @@ test('a kept watch renders the letter and the two-print rack', async ({ page }) 
 	await expect(frames.nth(1)).toHaveClass(/watch__postcard-frame--second/);
 	await expect(frames.nth(1).locator('img')).toHaveAttribute('src', '/media/images/queue-depth.svg');
 	await expect(frames.nth(1).locator('.watch__postcard-caption')).toHaveText('also from the season · the keeper liked it');
+
+	// the second print tucks in smaller: its modifier shares specificity with
+	// the base frame rule, so a source-order slip flattens it to full size
+	// silently. Pin the computed relation, not the class.
+	const widths = await frames.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().width));
+	expect(widths[1]).toBeLessThan(widths[0] * 0.8);
+	const tilts = await frames.evaluateAll((els) => els.map((el) => getComputedStyle(el).transform));
+	expect(tilts[1]).not.toBe(tilts[0]);
 });
 
 test('reduced motion stills every register lamp at full opacity', async ({ page }) => {
