@@ -607,9 +607,12 @@ const hobbyPills = wandering.map((hobby) => ({
 		transform: rotate(.4deg) translateY(-3px);
 	}
 
+	/* A print hangs at the photo's own shape: no fixed ratio, no cover crop.
+	   The mock wrappers carry 4/3 and 3/2 placeholder boxes, but the design
+	   tool renders a filled slot at natural aspect (a portrait print hangs
+	   tall, a panorama hangs as a strip), and that render is the contract. */
 	.watch__postcard-photo {
 		width: 100%;
-		aspect-ratio: 4 / 3;
 		overflow: hidden;
 		background: #1e2440;
 	}
@@ -617,8 +620,7 @@ const hobbyPills = wandering.map((hobby) => ({
 	.watch__postcard-photo img {
 		display: block;
 		width: 100%;
-		height: 100%;
-		object-fit: cover;
+		height: auto;
 	}
 
 	.watch__postcard-caption {
@@ -642,10 +644,6 @@ const hobbyPills = wandering.map((hobby) => ({
 
 	.watch__postcard-frame--second:hover {
 		transform: rotate(-.6deg) translateY(-3px);
-	}
-
-	.watch__postcard-photo--second {
-		aspect-ratio: 3 / 2;
 	}
 
 	.watch__postcard-caption--second {

@@ -33,6 +33,19 @@ test('a kept watch renders the letter and the two-print rack', async ({ page }) 
 	expect(widths[1]).toBeLessThan(widths[0] * 0.8);
 	const tilts = await frames.evaluateAll((els) => els.map((el) => getComputedStyle(el).transform));
 	expect(tilts[1]).not.toBe(tilts[0]);
+
+	// each print hangs at the photo's own shape: a fixed-ratio box would
+	// cover-crop anything that isn't 4/3 or 3/2 (a panorama renders as a
+	// zoomed crop). Pin rendered aspect to natural aspect on both hooks.
+	// offsetWidth/Height, not getBoundingClientRect: the frame's tilt would
+	// skew the bounding box and smear the ratio
+	const shapes = await frames.locator('img').evaluateAll((els) =>
+		els.map((el) => {
+			const img = el as HTMLImageElement;
+			return { drawn: img.offsetWidth / img.offsetHeight, natural: img.naturalWidth / img.naturalHeight };
+		}),
+	);
+	for (const s of shapes) expect(s.drawn).toBeCloseTo(s.natural, 1);
 });
 
 test('reduced motion stills every register lamp at full opacity', async ({ page }) => {
