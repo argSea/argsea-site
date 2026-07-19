@@ -1,7 +1,8 @@
 ---
-// Hello: hero (kicker + headline, the morse-HI seal), the current watch
-// (build-time /1/watch: the letter, the TL;DR bearings, the season's
-// postcard; an empty letter collapses the whole section), wave-with-boat
+// Hello: the split watch (the old hero fused into the letter column: eyebrow
+// + headline, then the current watch off build-time /1/watch: the letter, the
+// morse-HI seal signing it, the TL;DR bearings, the rack's prints beside; an
+// empty letter collapses the letter block, never the headline), wave-with-boat
 // (and its coast-in-miniature beacons), the flagship + featured cards,
 // hobbies preview, journal strip, contact band, and the stores ledge riding
 // just above the footer. The dictionary lives in the shared Footer now, read
@@ -106,13 +107,9 @@ const bearingHref = (bearing: WatchBearing): string | null => {
 	return null;
 };
 
-// The mock's own trim: the strip is a single clipped line on desktop, so a
-// runaway bearing name ends on an ellipsis instead of vanishing mid-word.
-const trimName = (name: string) => name.length > 24 ? `${name.slice(0, 23).trimEnd()}…` : name;
-
 const bearings = watch.bearings.map((bearing) => ({
 	verb: bearing.verb,
-	name: trimName(bearing.name),
+	name: bearing.name,
 	href: bearingHref(bearing),
 }));
 
@@ -159,88 +156,81 @@ const hobbyPills = wandering.map((hobby) => ({
 }));
 ---
 <BaseLayout title="Justin Smith · argsea.com" active="hello" quipKey="quipHello">
-	<!-- hero -->
-	<section class="hero">
-		<div class="firefly ff-1"></div>
-		<div class="firefly ff-2"></div>
-		<div class="firefly ff-3"></div>
-		<div class="firefly ff-4"></div>
-		<!-- the seal: the light stamped into the postmark · it blinks hi in morse -->
-		<div class="postmark-circle" title="···· ··">
-			<svg width="34" height="38" viewBox="0 0 18 20" fill="none" stroke="#93a0e8" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-bolted={sealSvg ? 'morse-seal' : undefined}>
-				{sealSvg ? (
-					<Fragment set:html={innerMarkup(sealSvg)} />
-				) : (
-					<>
-						<path class="postmark-circle__lamp" d="M9 2 L12 6 L6 6 Z" fill="#93a0e8" stroke="none"></path>
-						<path d="M7 6 L6 15 M11 6 L12 15 M7 9.5 h4"></path>
-						<path d="M4 17 q5 -3 10 0"></path>
-					</>
-				)}
-			</svg>
-		</div>
-		<div class="hero__copy">
+	<!-- the watch · the split viewport (Hello.dc.html): the hero is fused into
+	     the letter column, so the eyebrow, headline, letter, and rack share one
+	     grid. No watch kept collapses the letter block, never the headline. -->
+	<section class:list={['watch', { 'watch--postcarded': watchKept && watchPostcard }]}>
+		<div class="watch__panel">
 			<div class="section-label fade-up fade-up--1">{keeper.title} · {keeper.location}</div>
-			<h1 class="hero__headline fade-up fade-up--2">{copy.heroHeadline}</h1>
-		</div>
-	</section>
-
-	<!-- the current watch · what the keeper is focused on now -->
-	{watchKept && (
-		<section class:list={['watch', { 'watch--postcarded': watchPostcard }]}>
-			<div class="watch__panel">
-				<div class="watch__head">
-					<span class="watch__head-cluster">
-						<span class="watch__kicker"><span class="watch__lamp"></span>Now</span>
-						<span class="watch__aside">the current watch</span>
-					</span>
-					{/* the cat, posted in the header gap between the kicker and the dateline */}
-					<span class="watch__cat-host">
-						{copy.eggs.cat && <WatchCat client:idle quips={watch.quips} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />}
-					</span>
-					{keptLine && <span class="watch__dateline">{keptLine}</span>}
-				</div>
-				<div class="watch__letter">
-					{watchParagraphs.map((paragraph) => (
-						<p class="watch__para">{paragraph}</p>
-					))}
-					{watch.rotation && <p class="watch__rotation">{watch.rotation}</p>}
-				</div>
-				{bearings.length > 0 && (
-					<div class="watch__bearings">
-						{bearings.map((bearing, index) => (
-							<span class="watch__bearing">
-								{index > 0 && <span class="watch__bearing-sep">·</span>}
-								<span class="watch__bearing-verb">{bearing.verb}</span>
-								{bearing.href
-									? <a href={bearing.href} class="watch__bearing-name">{bearing.name}</a>
-									: <span class="watch__bearing-name watch__bearing-name--plain">{bearing.name}</span>}
-							</span>
+			<h1 class="watch__headline fade-up fade-up--2">{copy.heroHeadline}</h1>
+			{watchKept && (
+				<>
+					<div class="watch__head fade-up fade-up--3">
+						<span class="watch__head-cluster">
+							<span class="watch__kicker"><span class="watch__lamp"></span>Now</span>
+							<span class="watch__aside">the current watch</span>
+						</span>
+						{keptLine && <span class="watch__dateline">{keptLine}</span>}
+					</div>
+					<div class="watch__letter">
+						{watchParagraphs.map((paragraph) => (
+							<p class="watch__para">{paragraph}</p>
 						))}
+						{watch.rotation && <p class="watch__rotation">{watch.rotation}</p>}
+					</div>
+					<!-- the seal, signing the letter · it blinks hi in morse -->
+					<div class="watch__seal" title="···· ··">
+						<svg width="32" height="36" viewBox="0 0 18 20" fill="none" stroke="#93a0e8" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-bolted={sealSvg ? 'morse-seal' : undefined}>
+							{sealSvg ? (
+								<Fragment set:html={innerMarkup(sealSvg)} />
+							) : (
+								<>
+									<path class="watch__seal-lamp" d="M9 2 L12 6 L6 6 Z" fill="#93a0e8" stroke="none"></path>
+									<path d="M7 6 L6 15 M11 6 L12 15 M7 9.5 h4"></path>
+									<path d="M4 17 q5 -3 10 0"></path>
+								</>
+							)}
+						</svg>
+					</div>
+					{bearings.length > 0 && (
+						<div class="watch__bearings">
+							{bearings.map((bearing, index) => (
+								<span class="watch__bearing">
+									{index > 0 && <span class="watch__bearing-sep">·</span>}
+									<span class="watch__bearing-verb">{bearing.verb}</span>
+									{bearing.href
+										? <a href={bearing.href} class="watch__bearing-name">{bearing.name}</a>
+										: <span class="watch__bearing-name watch__bearing-name--plain">{bearing.name}</span>}
+								</span>
+							))}
+						</div>
+					)}
+				</>
+			)}
+		</div>
+		{/* the rack · two hooks: the season's print hangs big, an optional second tucks in smaller below it; the cat perches on the first frame */}
+		{watchKept && watchPostcard && (
+			<div class="watch__postcard">
+				<div class="watch__postcard-frame">
+					{copy.eggs.cat && <WatchCat client:idle quips={watch.quips} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />}
+					<span class="watch__postcard-tack" aria-hidden="true"></span>
+					<div class="watch__postcard-photo">
+						<img src={mediaUrl(watch.postcardMediaId)} alt="a photo from the season" />
+					</div>
+					<span class="watch__postcard-caption">{seasonCaption}</span>
+				</div>
+				{watchPostcard2 && (
+					<div class="watch__postcard-frame watch__postcard-frame--second">
+						<span class="watch__postcard-tack watch__postcard-tack--second" aria-hidden="true"></span>
+						<div class="watch__postcard-photo watch__postcard-photo--second">
+							<img src={mediaUrl(watch.postcard2MediaId)} alt="a second photo from the season" />
+						</div>
+						<span class="watch__postcard-caption watch__postcard-caption--second">also from the season · the keeper liked it</span>
 					</div>
 				)}
 			</div>
-			{/* the rack · two hooks: the season's print hangs big, an optional second tucks in smaller below it */}
-			{watchPostcard && (
-				<div class="watch__postcard">
-					<div class="watch__postcard-frame">
-						<div class="watch__postcard-photo">
-							<img src={mediaUrl(watch.postcardMediaId)} alt="a photo from the season" />
-						</div>
-						<span class="watch__postcard-caption">{seasonCaption}</span>
-					</div>
-					{watchPostcard2 && (
-						<div class="watch__postcard-frame watch__postcard-frame--second">
-							<div class="watch__postcard-photo watch__postcard-photo--second">
-								<img src={mediaUrl(watch.postcard2MediaId)} alt="a second photo from the season" />
-							</div>
-							<span class="watch__postcard-caption watch__postcard-caption--second">also from the season · the keeper liked it</span>
-						</div>
-					)}
-				</div>
-			)}
-		</section>
-	)}
+		)}
+	</section>
 
 	<WaveDivider projects={projects} proverbs={proverbs} flagship={flagship} featured={featuredTwo} />
 
@@ -350,112 +340,43 @@ const hobbyPills = wandering.map((hobby) => ({
 	/* The mock's per-section shells: every home band caps at 1480px and
 	   centers, so an ultrawide screen stops flinging the sections apart
 	   (JournalStrip.astro and the shared nav carry their own). */
-	.hero, .watch, .postcards, .chart-log, .contact {
+	.watch, .postcards, .chart-log, .contact {
 		width: 100%;
 		max-width: 1480px;
 		margin: 0 auto;
 		box-sizing: border-box;
 	}
 
-	/* --- hero --- */
-	.hero {
-		position: relative;
-		padding: clamp(48px, 7vw, 76px) var(--gutter) clamp(30px, 5vw, 44px);
-		overflow: hidden;
-	}
-
-	.ff-1 { right: 14%; top: 90px;  width: 5px; height: 5px; background: var(--gold);       box-shadow: 0 0 14px 4px rgba(240, 217, 168, .4);  animation: drift 11s ease-in-out infinite; }
-	.ff-2 { right: 32%; top: 220px; width: 4px; height: 4px; background: var(--periwinkle); box-shadow: 0 0 12px 3px rgba(147, 160, 232, .35); animation: drift 14s ease-in-out 2s infinite; }
-	.ff-3 { right: 9%;  top: 320px; width: 4px; height: 4px; background: var(--gold);       box-shadow: 0 0 12px 3px rgba(240, 217, 168, .3);  animation: drift 9s ease-in-out 1s infinite; }
-	.ff-4 { left: 8%; bottom: 60px; width: 4px; height: 4px; background: var(--periwinkle); box-shadow: 0 0 12px 3px rgba(147, 160, 232, .3);  animation: drift 13s ease-in-out 3s infinite; }
-
-	/* Resting tilt is a base transform: reduced-motion strips the sway, keeps the pose */
-	.postmark-circle {
-		position: absolute;
-		right: clamp(24px, 6vw, 72px);
-		top: 64px;
-		width: 92px;
-		height: 92px;
-		border: 1.5px dashed rgba(147, 160, 232, .4);
-		border-radius: 50%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 3px;
-		transform: rotate(12deg);
-		animation: postmarkSway 9s ease-in-out infinite;
-	}
-
-	.postmark-circle__lamp {
-		animation: morseHi 4s linear infinite;
-	}
-
-	@keyframes postmarkSway {
-		0%, 100% { transform: rotate(9deg); }
-		50%      { transform: rotate(15deg); }
-	}
-
-	/* HI in morse (···· ··): the seal's lamp blinks the greeting on a 4s loop */
-	@keyframes morseHi {
-		0%, 4.9%   { opacity: 1; }
-		5%, 9.9%   { opacity: .12; }
-		10%, 14.9% { opacity: 1; }
-		15%, 19.9% { opacity: .12; }
-		20%, 24.9% { opacity: 1; }
-		25%, 29.9% { opacity: .12; }
-		30%, 34.9% { opacity: 1; }
-		35%, 49.9% { opacity: .12; }
-		50%, 54.9% { opacity: 1; }
-		55%, 59.9% { opacity: .12; }
-		60%, 64.9% { opacity: 1; }
-		65%, 100%  { opacity: .12; }
-	}
-
-	@media (max-width: 600px) {
-		.postmark-circle { display: none; }
-	}
-
-	.hero__copy {
-		display: flex;
-		flex-direction: column;
-		gap: 24px;
-		max-width: 720px;
-	}
-
-	.hero__headline {
-		margin: 0;
-		font-family: var(--font-display);
-		font-weight: 400;
-		font-size: clamp(34px, 6.5vw, 58px);
-		line-height: 1.1;
-		color: var(--text-strong);
-		text-wrap: balance;
-	}
-
-	/* --- the current watch --- */
+	/* --- the watch · the split viewport --- */
 	.watch {
 		position: relative;
-		padding: 0 var(--gutter) clamp(36px, 6vw, 56px);
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		gap: 26px;
-		align-items: stretch;
+		display: grid;
+		grid-template-columns: 1.35fr 1fr;
+		gap: clamp(26px, 4vw, 48px);
+		padding: clamp(36px, 6vw, 64px) var(--gutter) clamp(30px, 5vw, 48px);
+	}
+
+	/* A bare rack (no print kept) leaves no second column behind: the letter
+	   takes the whole width instead of leaning against an empty track. */
+	.watch:not(.watch--postcarded) {
+		grid-template-columns: 1fr;
 	}
 
 	.watch__panel {
-		position: relative;
-		flex: 1 1 440px;
-		max-width: 660px;
-		background: linear-gradient(160deg, #161a2e, #12162a);
-		border: 1px solid var(--border-card);
-		border-radius: 14px;
-		padding: clamp(24px, 4vw, 34px) clamp(22px, 4vw, 36px);
+		min-width: 0;
 		display: flex;
 		flex-direction: column;
 		gap: 18px;
-		animation: fadeUp .7s ease .3s both;
+	}
+
+	.watch__headline {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-size: clamp(32px, 5vw, 50px);
+		line-height: 1.1;
+		color: var(--text-strong);
+		text-wrap: balance;
 	}
 
 	.watch__head {
@@ -464,6 +385,8 @@ const hobbyPills = wandering.map((hobby) => ({
 		justify-content: space-between;
 		flex-wrap: wrap;
 		gap: 8px 16px;
+		border-top: 1px solid rgba(150, 160, 220, .14);
+		padding-top: 16px;
 	}
 
 	.watch__head-cluster {
@@ -499,15 +422,6 @@ const hobbyPills = wandering.map((hobby) => ({
 		font-style: italic;
 	}
 
-	/* The cat's perch: the flexible gap between the kicker and the dateline
-	   (WatchCat.tsx mounts into it when the page's one-cat pick lands here) */
-	.watch__cat-host {
-		flex: 1 1 0;
-		min-width: 0;
-		position: relative;
-		align-self: stretch;
-	}
-
 	.watch__dateline {
 		font-family: var(--font-mono);
 		font-size: 11.5px;
@@ -518,6 +432,7 @@ const hobbyPills = wandering.map((hobby) => ({
 		display: flex;
 		flex-direction: column;
 		gap: 14px;
+		animation: fadeUp .7s ease .3s both;
 	}
 
 	.watch__para {
@@ -538,10 +453,49 @@ const hobbyPills = wandering.map((hobby) => ({
 		text-wrap: pretty;
 	}
 
-	/* One clipped line on desktop; the mid-width query below lets it wrap */
+	/* Resting tilt is a base transform: reduced-motion strips the sway, keeps the pose */
+	.watch__seal {
+		align-self: flex-end;
+		width: 84px;
+		height: 84px;
+		border: 1.5px dashed rgba(147, 160, 232, .4);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: -6px 4px 0 0;
+		transform: rotate(12deg);
+		animation: postmarkSway 9s ease-in-out infinite;
+	}
+
+	.watch__seal-lamp {
+		animation: morseHi 4s linear infinite;
+	}
+
+	@keyframes postmarkSway {
+		0%, 100% { transform: rotate(9deg); }
+		50%      { transform: rotate(15deg); }
+	}
+
+	/* HI in morse (···· ··): the seal's lamp blinks the greeting on a 4s loop */
+	@keyframes morseHi {
+		0%, 4.9%   { opacity: 1; }
+		5%, 9.9%   { opacity: .12; }
+		10%, 14.9% { opacity: 1; }
+		15%, 19.9% { opacity: .12; }
+		20%, 24.9% { opacity: 1; }
+		25%, 29.9% { opacity: .12; }
+		30%, 34.9% { opacity: 1; }
+		35%, 49.9% { opacity: .12; }
+		50%, 54.9% { opacity: 1; }
+		55%, 59.9% { opacity: .12; }
+		60%, 64.9% { opacity: 1; }
+		65%, 100%  { opacity: .12; }
+	}
+
 	.watch__bearings {
 		display: flex;
-		flex-wrap: nowrap;
+		flex-wrap: wrap;
 		align-items: baseline;
 		gap: 7px 12px;
 		border-top: 1px solid rgba(150, 160, 220, .14);
@@ -549,8 +503,6 @@ const hobbyPills = wandering.map((hobby) => ({
 		font-family: var(--font-mono);
 		font-size: 11px;
 		line-height: 1.7;
-		white-space: nowrap;
-		overflow: hidden;
 	}
 
 	.watch__bearing {
@@ -575,17 +527,17 @@ const hobbyPills = wandering.map((hobby) => ({
 		color: #d6dcf4;
 	}
 
+	/* The rack column: the grid track sizes it (1fr of the split), never a
+	   flex basis of its own. */
 	.watch__postcard {
-		flex: 1 1 300px;
-		max-width: 516px;
-		min-width: 250px;
+		min-width: 0;
 		display: flex;
 		flex-direction: column;
 		gap: 22px;
-		align-items: stretch;
 		justify-content: center;
 		position: relative;
 		z-index: 2;
+		padding-top: 10px;
 		animation: fadeUp .7s ease .4s both;
 	}
 
@@ -598,13 +550,28 @@ const hobbyPills = wandering.map((hobby) => ({
 		background: #252b49;
 		border: 1px solid rgba(150, 160, 220, .22);
 		padding: 9px 9px 14px;
-		box-shadow: 0 10px 26px rgba(0, 0, 0, .5);
+		box-shadow: 0 14px 30px rgba(0, 0, 0, .55);
 		transform: rotate(1.6deg);
 		transition: transform .25s;
+		position: relative;
 	}
 
 	.watch__postcard-frame:hover {
-		transform: rotate(.4deg) translateY(-3px);
+		transform: rotate(.5deg) translateY(-3px);
+	}
+
+	/* the brass tack each print hangs from */
+	.watch__postcard-tack {
+		position: absolute;
+		left: 50%;
+		top: -7px;
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: radial-gradient(circle at 35% 35%, #f6ecd0, #b09a5f);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, .6);
+		transform: translateX(-50%);
+		z-index: 2;
 	}
 
 	/* A print hangs at the photo's own shape: no fixed ratio, no cover crop.
@@ -637,6 +604,7 @@ const hobbyPills = wandering.map((hobby) => ({
 	.watch__postcard-frame--second {
 		width: 74%;
 		align-self: flex-end;
+		gap: 8px;
 		padding: 7px 7px 11px;
 		box-shadow: 0 12px 26px rgba(0, 0, 0, .55);
 		transform: rotate(-2deg);
@@ -646,12 +614,18 @@ const hobbyPills = wandering.map((hobby) => ({
 		transform: rotate(-.6deg) translateY(-3px);
 	}
 
+	.watch__postcard-tack--second {
+		top: -6px;
+		width: 9px;
+		height: 9px;
+	}
+
 	.watch__postcard-caption--second {
 		font-size: 10.5px;
 		color: var(--periwinkle-deep);
 	}
 
-	/* the postcard straddles the hero/watch seam only when it actually sits beside the panel */
+	/* the postcard straddles the seam toward the nav only when it actually sits beside the letter */
 	@media (min-width: 940px) {
 		.watch__postcard {
 			margin-top: -60px;
@@ -661,26 +635,20 @@ const hobbyPills = wandering.map((hobby) => ({
 	/* mid widths: the postcard rides beside the letter, shrinking with the room */
 	@media (min-width: 601px) and (max-width: 939px) {
 		.watch__postcard {
-			flex: 0 0 auto;
 			width: clamp(120px, 21vw, 250px);
-			min-width: 0;
 			margin-top: -34px;
-		}
-
-		.watch__panel {
-			min-width: 0;
-		}
-
-		.watch__bearings {
-			white-space: normal;
-			flex-wrap: wrap;
-			overflow: visible;
 		}
 	}
 
-	/* phone: small enough to sit on the card itself (the panel's extra bottom
-	   padding makes the room, and only when there is a postcard to seat) */
+	/* phone: small enough to sit on the letter itself (the panel's extra bottom
+	   padding makes the room, and only when there is a postcard to seat). The
+	   mock's phone rules went stale with the fusion (they aim at a panel attr
+	   the mock no longer has), so this keeps the pre-fusion seating instead. */
 	@media (max-width: 600px) {
+		.watch {
+			grid-template-columns: 1fr;
+		}
+
 		.watch__postcard {
 			position: absolute;
 			right: 26px;

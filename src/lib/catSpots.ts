@@ -38,7 +38,9 @@ export interface CatSpot {
 // overlay last, so a seeded Math.random can pin a known spot.
 export const CATALOG: CatSpot[] = [
 	{ id: 'hello.header',    page: 'hello',    pose: 'lying',   context: 'header',    overlay: false, menuGated: true, anchor: { selector: '.site-nav .links a.active', edge: 'top', align: 'center', dy: 16 } },
-	{ id: 'hello.hero',      page: 'hello',    pose: 'perched', context: 'hero',      overlay: false, anchor: { selector: '.hero__headline',            edge: 'top',    align: 'left'   } },
+	// The id stays frozen (admin contract) though the hero fused into the
+	// watch; the perch rode the headline to its new class.
+	{ id: 'hello.hero',      page: 'hello',    pose: 'perched', context: 'hero',      overlay: false, anchor: { selector: '.watch__headline',           edge: 'top',    align: 'left'   } },
 	// Anchorless: the watch panel's own mount (WatchCat.tsx) renders this pick
 	// with the record's quips, so the director stands down the way it does for
 	// overlay spots. An empty watch (no section built) leaves the pick catless
