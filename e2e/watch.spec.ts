@@ -45,6 +45,12 @@ test('a kept watch renders the fused letter and the two-print rack', async ({ pa
 	const frames = watch.locator('.watch__postcard-frame');
 	await expect(frames).toHaveCount(2);
 	await expect(watch.locator('.watch__postcard-tack')).toHaveCount(2);
+
+	// the frame's border box stays inside the rack track: a width on the frame
+	// would add the padding and border on top of the stretch and hang the
+	// prints past the mock's seat
+	const rackWidth = await watch.locator('.watch__postcard').evaluate((el) => el.clientWidth);
+	expect(await frames.nth(0).evaluate((el) => el.offsetWidth)).toBeLessThanOrEqual(rackWidth + 1);
 	await expect(frames.nth(0).locator('img')).toHaveAttribute('src', '/media/images/station-photo.svg');
 	await expect(frames.nth(1)).toHaveClass(/watch__postcard-frame--second/);
 	await expect(frames.nth(1).locator('img')).toHaveAttribute('src', '/media/images/queue-depth.svg');
@@ -70,6 +76,16 @@ test('a kept watch renders the fused letter and the two-print rack', async ({ pa
 		}),
 	);
 	for (const s of shapes) expect(s.drawn).toBeCloseTo(s.natural, 1);
+});
+
+test('at phone width the seated rack stands in for the seal', async ({ page }) => {
+	await page.setViewportSize({ width: 390, height: 844 });
+	await page.goto(`${FEATURED_BUILD}/`);
+
+	// the rack seats on the letter's tail and would bury the signature, so the
+	// seal stands down the way the pre-fusion canon hid it at phone width
+	await expect(page.locator('.watch__postcard')).toBeVisible();
+	await expect(page.locator('.watch__seal')).toBeHidden();
 });
 
 test('reduced motion stills every register lamp at full opacity', async ({ page }) => {

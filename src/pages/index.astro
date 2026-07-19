@@ -541,9 +541,11 @@ const hobbyPills = wandering.map((hobby) => ({
 		animation: fadeUp .7s ease .4s both;
 	}
 
-	/* Resting tilt is a base transform: reduced-motion strips the hover lift, keeps the pose */
+	/* Resting tilt is a base transform: reduced-motion strips the hover lift,
+	   keeps the pose. No width: the column stretch sizes the frame's border
+	   box to the track exactly; width: 100% would add the padding and border
+	   back on top and hang the prints 20px past the mock's seat. */
 	.watch__postcard-frame {
-		width: 100%;
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
@@ -661,6 +663,12 @@ const hobbyPills = wandering.map((hobby) => ({
 		.watch--postcarded .watch__panel {
 			padding-bottom: 118px;
 		}
+
+		/* The seated rack climbs over the letter's tail and would bury the
+		   signature; the pre-fusion canon also hid the seal at phone width. */
+		.watch--postcarded .watch__seal {
+			display: none;
+		}
 	}
 
 	/* --- postcards preview --- */
@@ -707,7 +715,7 @@ const hobbyPills = wandering.map((hobby) => ({
 
 	.hobbies-preview__grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 		gap: 22px;
 		align-items: stretch;
 	}
