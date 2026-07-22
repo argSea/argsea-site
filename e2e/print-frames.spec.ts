@@ -1,20 +1,19 @@
-// Every print surface (the flagship polaroid, the overlay's main print and
-// decorative thumbs, a case-study figure) renders the empty paper frame
-// instead of a broken glyph, on either of its two triggers: no image name at
-// all, or a name whose fetch fails (a print struck from the darkroom after a
-// project cited it). Frame class/state is the assertion here, never
-// naturalWidth: that's the other specs' job, proving the loaded path against
-// the e2e test prints.
+// Every print surface (the flagship shot, the overlay's main print and
+// decorative thumbs, a case-study figure) renders empty instead of a broken
+// glyph, on either of its two triggers: no image name at all, or a name
+// whose fetch fails (a print struck from the darkroom after a project cited
+// it). Frame class/state is the assertion here, never naturalWidth: that's
+// the other specs' job, proving the loaded path against the e2e test prints.
 import { test, expect } from '@playwright/test';
 
-test('the flagship polaroid renders the empty paper frame when its print 404s', async ({ page }) => {
+test('the flagship shot renders empty when its print 404s', async ({ page }) => {
 	await page.route('**/media/images/first-screenshot.svg', (route) => route.fulfill({ status: 404, body: 'not found' }));
 	await page.goto('/');
 
-	const frame = page.locator('.home-register__snapshot .polaroid-frame');
-	await expect(frame).toHaveClass(/polaroid-frame--empty/);
-	await expect(frame.locator('img')).toHaveCount(0);
-	await expect(page.locator('.home-register__snapshot-caption')).toContainText('from the station archive');
+	const shot = page.locator('.flagship .shot').first();
+	await expect(shot).toHaveClass(/shot--empty/);
+	await expect(shot.locator('img')).toHaveCount(0);
+	await expect(shot.locator('.archive')).toContainText('from the station archive');
 });
 
 test('the case-study figure renders the empty paper frame when its print 404s', async ({ page }) => {

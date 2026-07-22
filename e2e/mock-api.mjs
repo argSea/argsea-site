@@ -133,6 +133,14 @@ const carvings = fixture('carvings').concat(mode === 'fallback' ? [{
 	boltedTo:  ['delivery-gull'],
 	createdAt: '2026-07-17T00:00:00Z',
 	updatedAt: '2026-07-17T00:00:00Z',
+}, {
+	id:        'mock-carving-hero-doodle-plank',
+	name:      'Mock plank',
+	svg:       '<svg width="72" height="86" viewBox="0 0 72 86" fill="none"><rect x="20" y="20" width="32" height="46" fill="#e78787"></rect></svg>',
+	builtin:   false,
+	boltedTo:  ['hero-doodle'],
+	createdAt: '2026-07-22T00:00:00Z',
+	updatedAt: '2026-07-22T00:00:00Z',
 }] : []);
 
 const routes = {

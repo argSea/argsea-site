@@ -1,14 +1,9 @@
-// The Gull Post (design/Hello Gazette.dc.html): the easter-egg morning edition
-// reached by poking the watch cat ten times. The page stands alone on its own
-// paper stock; these specs prove it renders straight, that the finale on the
-// home cat phases the wash and navigates here, and that the folio's date and wx
-// are wired (build date, latest journal entry's conditions).
+// The Gull Post (design/Hello Gazette.dc.html): the morning edition reached
+// from the hello page's passing gull. The page stands alone on its own paper
+// stock; these specs prove it renders straight, that the gull link lands
+// here, and that the folio's date and wx are wired (build date, latest
+// journal entry's conditions).
 import { test, expect } from '@playwright/test';
-
-// The mock builds serve a kept watch (/1/watch), so the split-watch section
-// and its cat render there; the fixtures build ships EMPTY_WATCH and never
-// shows the cat, so the finale can only be driven against a mock build.
-const FEATURED_BUILD = 'http://127.0.0.1:4822';
 
 test('the Gull Post renders its masthead, nav, and delivery gull', async ({ page }) => {
 	await page.goto('/gazette');
@@ -46,23 +41,17 @@ test('the lead story is the flagship, the below-fold stories the featured pair',
 	await expect(kickers.nth(1)).toContainText('no. 006');
 });
 
-test('poking the watch cat ten times phases the page and lands on the Gull Post', async ({ page }) => {
-	// force the page's one-cat pick onto hello.watch (index 2 of the 7 enabled
-	// hello spots), so the watch cat mounts and owns the finale
-	await page.addInitScript(() => { Math.random = () => 0.3; });
-	await page.goto(`${FEATURED_BUILD}/`);
-
-	const cat = page.locator('.watch-cat-mount .harbor-cat__svg');
-	await expect(cat).toBeVisible();
-
-	// ten pokes: the tenth swaps the quip for the finale bubble, then the page
-	// phases to paper and navigates
-	for (let i = 0; i < 10; i++) {
-		await cat.click();
-	}
-
-	// the gazette wash appears, then the route becomes /gazette
-	await expect(page.locator('.watch-cat__gazette-phase')).toBeVisible({ timeout: 4000 });
-	await expect(page).toHaveURL(/\/gazette\/?$/, { timeout: 6000 });
+// The keeper's landing (design/Hello.dc.html) dropped the season postcard
+// rack the watch cat used to perch on, so the ten-poke finale it drove has no
+// home there anymore; the canon's own entry point is the passing gull, a
+// plain link straight to the Gull Post.
+test('the passing gull on the hello page links straight to the Gull Post', async ({ page }) => {
+	await page.goto('/');
+	const gull = page.locator('#gull-mark');
+	await expect(gull).toHaveAttribute('href', '/gazette');
+	// it sits off-screen and unclickable until it roosts; the link itself is
+	// real either way, so dispatch straight past the visibility check
+	await gull.dispatchEvent('click');
+	await expect(page).toHaveURL(/\/gazette\/?$/);
 	await expect(page.locator('.gazette__title')).toHaveText('The Gull Post');
 });

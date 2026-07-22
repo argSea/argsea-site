@@ -29,6 +29,10 @@
 	--periwinkle:       #93a0e8;
 	--periwinkle-deep:  #5f6ec4;
 	--gold:             #f0d9a8;
+	/* The keeper's landing (design/Hello.dc.html): the one new color, and it
+	   may only ever appear as a light source (cursor lamp, boat lantern,
+	   active nav, focus). If it's bright, it glows. */
+	--lamp:             #ffd166;
 	--btn-text-dark:    #151830;
 	--btn-text-gold:    #1b2033;
 	--border-card:      rgba(150, 160, 220, .2);

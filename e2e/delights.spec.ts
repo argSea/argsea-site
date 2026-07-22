@@ -1,5 +1,5 @@
 // Delights layer (fixtures build): the light-list coordinate flip and the
-// resident cat on the 404, plus the message in a bottle on the homepage wave.
+// resident cat on the 404, plus the message in a bottle the sea footer sends.
 // The cat is one-per-page-view now (a client pick across the spot catalog),
 // so the cat specs seed Math.random to pin a known spot (the catalog lists each
 // page's header first and its overlay last).
@@ -74,18 +74,23 @@ test('the wreck cat bubble stays on screen at 390px', async ({ page }) => {
 	expect(box.x + box.width).toBeLessThanOrEqual(390);
 });
 
-test('poking the boat drops a bottled proverb, tap releases it', async ({ page }) => {
+test('the sea drops a bottled proverb on its own schedule, tap releases it', async ({ page }) => {
+	await page.clock.install();
 	await page.goto('/');
-	// The boat never stops sailing, so a real click would wait forever for it
-	// to hold still; dispatch the click at wherever it is right now
-	await page.locator('.boat-track').dispatchEvent('click');
+	// the sea's own schedule (BottleBoat's auto mode), not a poke; fast-forward
+	// past the first drop rather than waiting on it for real. The bottle keeps
+	// drifting the whole time (a real CSS animation, untouched by the fake
+	// clock), so it never sits still for a real click; dispatch it instead,
+	// same idiom the never-stops-sailing boat specs already use.
+	await page.clock.fastForward(45000);
+	await page.locator('.bottle-drift__glass-wrap').first().dispatchEvent('click');
 
 	const note = page.locator('.bottle-note');
 	await expect(note).toBeVisible();
 	const proverb = await note.locator('.bottle-note__proverb').textContent();
 	expect(siteCopy.bottleProverbs).toContain(proverb);
 
-	await note.click();
+	await note.dispatchEvent('click');
 	await expect(note).toHaveCount(0);
 });
 
