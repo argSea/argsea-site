@@ -3,17 +3,22 @@
 // cat ten times (WatchCat phases the page to paper, then navigates here). Its
 // own paper stock, nav, and footer, not the site's dark shell, so it stands
 // alone rather than under BaseLayout. Design canon: design/Hello Gazette.dc.html,
-// transcribed verbatim; the wiring covers the routing, the folio's date/wx,
-// the lead's facts and print, and the rail's journal rows.
+// transcribed verbatim, including its renderVals derivations: the lead is the
+// flagship (its own gazette block, falling back to title/shortDesc/body for a
+// light that never made the paper), the below-fold pair is the next two lit
+// non-flagship lights in list order, the rail is the newest three notes, the
+// notices line and classifieds come off the hobbies register, and the filler
+// ad ports the copy singleton's dictionary verbatim.
 //
 // The folio date is the build date and the folio wx is the latest journal
-// entry's conditions (the cross-repo pin); the delivery gull is the
-// delivery-gull carving spot, its fixture the byte-identical builtin fallback.
-// The fonts and the shared tokens come in the same order every other page
-// takes them (BaseLayout: fonts, then global.css), so this standalone page
-// joins the shared CSS graph the same way rather than perturbing its chunk
-// order; the page's own is:global below then repaints the body to paper. The
-// dark-theme chrome (nav, footer, cat) simply isn't rendered here.
+// entry's conditions (the cross-repo pin, not the mock's own "wx" field); the
+// delivery gull is the delivery-gull carving spot, its fixture the
+// byte-identical builtin fallback. The fonts and the shared tokens come in
+// the same order every other page takes them (BaseLayout: fonts, then
+// global.css), so this standalone page joins the shared CSS graph the same
+// way rather than perturbing its chunk order; the page's own is:global below
+// then repaints the body to paper. The dark-theme chrome (nav, footer, cat)
+// simply isn't rendered here.
 import '@fontsource/gloock';
 import '@fontsource-variable/newsreader/standard.css';
 import '@fontsource-variable/newsreader/standard-italic.css';
@@ -21,7 +26,7 @@ import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 
-import { getProjects, getNotes, getKeeperProfile, getCarvings } from '../lib/api';
+import { getProjects, getNotes, getKeeperProfile, getCarvings, getHobbies, getSiteCopy, type Project } from '../lib/api';
 import { boltedSvg, innerMarkup } from '../lib/carvings';
 import { registryNo } from '../lib/lightChar';
 import { mediaUrl } from '../lib/media';
@@ -29,26 +34,81 @@ import { mediaUrl } from '../lib/media';
 const projects = await getProjects();
 const allNotes = await getNotes();
 const keeper = await getKeeperProfile();
+const hobbies = await getHobbies();
+const copy = await getSiteCopy();
 
-// The lead is the flagship; the two below-fold stories are the featured pair
-// in list order, falling back to the next two by order, exactly as the home
-// register resolves them, so the folio never runs a story short.
+// A light still burns if it was never assigned one (null defaults to a
+// burning fixed white) or its own light carries no extinguished year.
+const isLit = (project: Project) => !project.light || !project.light.extinguished;
+
+// The lead is the flagship; the two below-fold stories are the next two
+// lights still lit, in list order, so a retired light never runs twice.
 const flagship = projects.find((project) => project.flagship) ?? null;
-const nonFlagship = projects.filter((project) => project.id !== flagship?.id);
-const featuredExplicit = nonFlagship.filter((project) => project.featured);
-const [second, third] = (featuredExplicit.length > 0 ? featuredExplicit : nonFlagship).slice(0, 2);
+const litNonFlagship = projects.filter((project) => project.id !== flagship?.id && isLit(project));
+const [second, third] = litNonFlagship.slice(0, 2);
 
-// The three newest journal entries fill the rail; each row is a title + its
-// date-stamped dek, single-sourced from the journal so it can't drift.
-const railNotes = allNotes.slice(0, 3);
+// Each story's first picture: the gallery leads, the legacy single photo is
+// the last resort. The site's real image machinery, not the mock's slots.
+const firstImage = (project: Project | null | undefined) =>
+	(project?.images && project.images.length > 0 ? project.images[0] : project?.image) ?? null;
 
-// The lead's fact grid comes straight off the flagship's own facts (capped at
-// four, the mock's own "by the numbers" count).
+// The lead's gazette block; a flagship that never made the paper falls back
+// to its own title/short desc/body, the fallback order the mock names.
+const leadHeadline = flagship?.gazette?.headline ?? flagship?.title ?? '';
+const leadDeck = flagship?.gazette?.deck ?? flagship?.shortDesc ?? '';
+const leadDateline = flagship?.gazette?.dateline ?? 'from the station';
+const leadOngoing = flagship ? isLit(flagship) : false;
+const leadHasGazette = !!flagship?.gazette;
+const leadP1 = flagship?.gazette?.p1 ?? '';
+const leadP2 = flagship?.gazette?.p2 ?? '';
+const leadCaption = flagship?.gazette?.caption ?? '';
 const leadFacts = (flagship?.facts ?? []).slice(0, 4);
-const leadImage = flagship?.images && flagship.images.length > 0 ? flagship.images[0] : flagship?.image ?? null;
+const leadImage = firstImage(flagship);
 
 // The full-log route when the flagship has a published log, else the coast.
 const leadHref = flagship?.hasLog ? `/projects/${flagship.slug}` : '/projects';
+
+// The below-fold pair carries only a headline and a first paragraph, same
+// fallback rule as the lead, minus the deck/dateline/facts the lead alone runs.
+const secondHeadline = second?.gazette?.headline ?? second?.title ?? '';
+const secondHasGazette = !!second?.gazette;
+const secondP1 = second?.gazette?.p1 ?? '';
+const secondCaption = second?.gazette?.caption ?? '';
+const secondImage = firstImage(second);
+
+const thirdHeadline = third?.gazette?.headline ?? third?.title ?? '';
+const thirdHasGazette = !!third?.gazette;
+const thirdP1 = third?.gazette?.p1 ?? '';
+const thirdCaption = third?.gazette?.caption ?? '';
+const thirdImage = firstImage(third);
+
+// The three newest journal entries fill the rail; each row is a title + its
+// date-stamped dek, teaser lowercased into the sub-line, single-sourced from
+// the journal so it can't drift.
+const lowerFirst = (value: string) => value.charAt(0).toLowerCase() + value.slice(1);
+const railNotes = allNotes.slice(0, 3).map((note) => ({
+	title: note.title,
+	sub: `${note.date} · ${lowerFirst(note.teaser)}`,
+}));
+
+// The notices line and the classifieds both come off the hobbies register:
+// the classifieds sell the first clause of what each non-moored one left
+// behind, the notice names whichever hobby is chasing the highest gauge.
+const STATE_LABELS: Record<string, string> = { moored: 'moored', adrift: 'adrift', marooned: 'marooned', port: 'made port', inkspill: 'bearing smudged' };
+const classifieds = hobbies
+	.filter((hobby) => hobby.state !== 'moored')
+	.map((hobby) => `${hobby.name.toUpperCase()}, ${STATE_LABELS[hobby.state] ?? hobby.state}. ${hobby.floats.split(' · ')[0]}`)
+	.join(' · ');
+const rankedByGauge = hobbies.filter((hobby) => hobby.gauge != null).sort((a, b) => (b.gauge ?? 0) - (a.gauge ?? 0));
+const tinker = rankedByGauge[0]?.name.toLowerCase() ?? 'the home lab';
+const presently = copy.gazette?.presently || 'keeping the light';
+const vol = copy.gazette?.vol || 'vol. XXXIX · harbor edition';
+
+// The filler ad ports the argsea dictionary verbatim off the copy singleton,
+// the same source and "argc" mono treatment as the footer's own dictionary line.
+const dictSegments = copy.dict
+	.split(/\b(argc)\b/)
+	.map((text) => ({ text, isArgc: text === 'argc' }));
 
 // Folio date = build date; folio wx = the latest journal entry's conditions.
 const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -74,7 +134,7 @@ const gullSvg = boltedSvg('delivery-gull', await getCarvings());
 
 				<!-- folio line -->
 				<div class="gazette__folio">
-					<span class="gazette__folio-item">vol. XXXIX · harbor edition</span>
+					<span class="gazette__folio-item">{vol}</span>
 					<span class="gazette__folio-item">{folioDate}</span>
 					<span class="gazette__folio-item">{folioWx}</span>
 				</div>
@@ -109,100 +169,134 @@ const gullSvg = boltedSvg('delivery-gull', await getCarvings());
 					<a href={`mailto:${keeper.email}`} class="gazette__nav-link">Harbor Contact</a>
 				</div>
 
-				<!-- front page: lead + rail -->
-				<div class="gazette__front">
+				{flagship && (
+					<>
+					<!-- front page: lead + rail -->
+					<div class="gazette__front">
 
-					<!-- lead story -->
-					<div class="gazette__lead">
-						<span class="gazette__kicker">the light list · no. {flagship ? registryNo(flagship.order) : '002'} · flagship</span>
-						<div class="gazette__headline">Giant Monolith Quietly Dismantled; the Paper Never Misses a Day</div>
-						<div class="gazette__dek">29 small, well-behaved services now stand where one enormous application once feared nothing. Readers, by design, noticed nothing at all.</div>
-						<div class="gazette__byline">
-							<span class="gazette__byline-by">By the Keeper</span>
-							<span class="gazette__byline-meta">reporting from inside the cluster · est. {flagship?.firstLit ?? '2024'}, ongoing</span>
-						</div>
-						<div class="gazette__lead-cols">
-							<div class="gazette__lead-body">
-								<div class="gazette__para">The old system was one enormous application that did everything and feared nothing, least of all the keeper's weekends. It was taken apart piece by piece: a message queue in the middle, 29 services around it, Kubernetes herding the containers.</div>
-								<div class="gazette__para">The success metric was silence. No reader ever noticed a thing. The paper published every single day while the engine was swapped mid-flight. The old stack was decommissioned in 2025, capability by capability, until one night there was nothing left to turn off.</div>
-								<div class="gazette__moral">Moral: the best migrations are the boring ones.</div>
-								<a href={leadHref} class="gazette__jump">continued in the full log → page {flagship ? registryNo(flagship.order) : '002'}</a>
+						<!-- lead story -->
+						<div class="gazette__lead">
+							<span class="gazette__kicker">the light list · no. {registryNo(flagship.order)} · flagship</span>
+							<div class="gazette__headline">{leadHeadline}</div>
+							<div class="gazette__dek">{leadDeck}</div>
+							<div class="gazette__byline">
+								<span class="gazette__byline-by">By the Keeper</span>
+								<span class="gazette__byline-meta">reporting {leadDateline} · est. {flagship.firstLit}{leadOngoing ? ', ongoing' : ''}</span>
 							</div>
-							<div class="gazette__lead-aside">
-								<div class="gazette__figure">
-									<div class="gazette__figure-frame">
-										{leadImage
-											? <img src={mediaUrl(leadImage)} alt="the first screenshot, from the station archive" />
+							<div class="gazette__lead-cols">
+								<div class="gazette__lead-body">
+									{leadHasGazette ? (
+										<>
+										<div class="gazette__para">{leadP1}</div>
+										{leadP2 && <div class="gazette__para">{leadP2}</div>}
+										</>
+									) : (
+										<div class="gazette__para" set:html={flagship.body} />
+									)}
+									{flagship.moral && <div class="gazette__moral">{flagship.moral}</div>}
+									<a href={leadHref} class="gazette__jump">continued in the full log → page {registryNo(flagship.order)}</a>
+								</div>
+								<div class="gazette__lead-aside">
+									<div class="gazette__figure">
+										<div class="gazette__figure-frame">
+											{leadImage
+												? <img src={mediaUrl(leadImage)} alt={flagship.title} />
+												: <div class="gazette__figure-paper" aria-hidden="true"></div>}
+										</div>
+										<span class="gazette__figure-caption">{leadCaption}</span>
+									</div>
+									<div class="gazette__numbers">
+										<span class="gazette__numbers-head">by the numbers</span>
+										{leadFacts.map((fact) => (
+											<div class="gazette__numbers-row">
+												<span class="gazette__numbers-label">{fact.heading}</span>
+												<span class="gazette__numbers-value">{fact.fact}</span>
+											</div>
+										))}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- right rail -->
+						<div class="gazette__rail">
+							<div class="gazette__rail-block">
+								<span class="gazette__rail-head">from the keeper's journal</span>
+								{railNotes.map((note, index) => (
+									<a href="/notes" class:list={['gazette__rail-item', { 'gazette__rail-item--ruled': index > 0 }]}>
+										<span class="gazette__rail-title">{note.title}</span>
+										<span class="gazette__rail-dek">{note.sub}</span>
+									</a>
+								))}
+							</div>
+							<div class="gazette__rail-block">
+								<span class="gazette__rail-head">notices · the current watch</span>
+								<div class="gazette__notice">The keeper is presently <span class="gazette__notice-em">{presently}</span>, <a href="/notes" class="gazette__notice-link">logging in the journal</a>, and <a href="/hobbies" class="gazette__notice-link">tinkering with {tinker}</a>. The light remains lit. The lighthouse cat was unavailable for comment.</div>
+							</div>
+							<div class="gazette__rail-block">
+								<span class="gazette__rail-head">classified · hobbies</span>
+								<div class="gazette__classified">{classifieds}</div>
+								<a href="/hobbies" class="gazette__rail-more">the full wandering chart →</a>
+							</div>
+							<!-- filler ad · the argsea dictionary, verbatim off the copy singleton -->
+							<div class="gazette__ad">
+								<span class="gazette__ad-label">advertisement · run every edition, unpaid</span>
+								<div class="gazette__ad-copy">
+									<span class="gazette__ad-word">argsea</span>
+									<span class="gazette__ad-pron">/ˈɑːrɡ·siː/ · noun</span>
+									{dictSegments.map((segment) => (segment.isArgc ? <span class="gazette__ad-argc">{segment.text}</span> : segment.text))}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- below the fold: the next two lit lights -->
+					<div class="gazette__below">
+						<div class="gazette__story gazette__story--ruled">
+							<span class="gazette__kicker">the light list · no. {second ? registryNo(second.order) : '004'} · est. {second?.firstLit ?? '2016'}</span>
+							<div class="gazette__subhead">{secondHeadline}</div>
+							<div class="gazette__story-body">
+								<div class="gazette__story-figure">
+									<div class="gazette__story-figure-frame">
+										{secondImage
+											? <img src={mediaUrl(secondImage)} alt={second?.title ?? ''} />
 											: <div class="gazette__figure-paper" aria-hidden="true"></div>}
 									</div>
-									<span class="gazette__figure-caption">The first screenshot, as archived at the station. The queue, not pictured, is the product.</span>
+									<span class="gazette__figure-caption">{secondCaption}</span>
 								</div>
-								<div class="gazette__numbers">
-									<span class="gazette__numbers-head">by the numbers</span>
-									{leadFacts.map((fact) => (
-										<div class="gazette__numbers-row">
-											<span class="gazette__numbers-label">{fact.heading}</span>
-											<span class="gazette__numbers-value">{fact.fact}</span>
-										</div>
-									))}
+								<div class="gazette__story-text">
+									{secondHasGazette
+										? <div class="gazette__para gazette__para--sm">{secondP1}</div>
+										: <div class="gazette__para gazette__para--sm" set:html={second?.body ?? ''} />}
+									{second?.moral && <div class="gazette__moral gazette__moral--sm">{second.moral}</div>}
+									<a href="/projects" class="gazette__jump">see the light →</a>
+								</div>
+							</div>
+						</div>
+						<div class="gazette__story">
+							<span class="gazette__kicker">the light list · no. {third ? registryNo(third.order) : '006'} · est. {third?.firstLit ?? '2018'}</span>
+							<div class="gazette__subhead">{thirdHeadline}</div>
+							<div class="gazette__story-body">
+								<div class="gazette__story-figure">
+									<div class="gazette__story-figure-frame">
+										{thirdImage
+											? <img src={mediaUrl(thirdImage)} alt={third?.title ?? ''} />
+											: <div class="gazette__figure-paper" aria-hidden="true"></div>}
+									</div>
+									<span class="gazette__figure-caption">{thirdCaption}</span>
+								</div>
+								<div class="gazette__story-text">
+									{thirdHasGazette
+										? <div class="gazette__para gazette__para--sm">{thirdP1}</div>
+										: <div class="gazette__para gazette__para--sm" set:html={third?.body ?? ''} />}
+									{third?.moral && <div class="gazette__moral gazette__moral--sm">{third.moral}</div>}
+									<a href="/projects" class="gazette__jump">see the light →</a>
 								</div>
 							</div>
 						</div>
 					</div>
-
-					<!-- right rail -->
-					<div class="gazette__rail">
-						<div class="gazette__rail-block">
-							<span class="gazette__rail-head">from the keeper's journal</span>
-							{railNotes.map((note, index) => (
-								<a href="/notes" class:list={['gazette__rail-item', { 'gazette__rail-item--ruled': index > 0 }]}>
-									<span class="gazette__rail-title">{note.title}</span>
-									<span class="gazette__rail-dek">{note.date} · {note.teaser}</span>
-								</a>
-							))}
-						</div>
-						<div class="gazette__rail-block">
-							<span class="gazette__rail-head">notices · the current watch</span>
-							<div class="gazette__notice">The keeper is presently <span class="gazette__notice-em">wrangling the ArcXP migration</span> (in flight, no page yet), <a href="/notes" class="gazette__notice-link">logging in the journal</a>, and <a href="/hobbies" class="gazette__notice-link">tinkering with the home lab</a>. The light remains lit. The lighthouse cat was unavailable for comment.</div>
-						</div>
-						<div class="gazette__rail-block">
-							<span class="gazette__rail-head">classified · hobbies</span>
-							<div class="gazette__classified">PIANO, adrift. Answers to no one. Reward if returned. · MUSIC THEORY, marooned, last seen near the circle of fifths. · GAME DEV, made port 2020, retired undefeated. · RUNNING, bearing smudged, ink never dried.</div>
-							<a href="/hobbies" class="gazette__rail-more">the full wandering chart →</a>
-						</div>
-					</div>
-				</div>
-
-				<!-- below the fold: two stories -->
-				<div class="gazette__below">
-					<div class="gazette__story gazette__story--ruled">
-						<span class="gazette__kicker">the light list · no. {second ? registryNo(second.order) : '004'} · est. {second?.firstLit ?? '2016'}</span>
-						<div class="gazette__subhead">City's Hidden Plumbing Holds, Again; Nobody Notices, Which Is the Point</div>
-						<div class="gazette__story-body">
-							<div class="gazette__story-figure">
-								<div class="gazette__story-figure-frame">
-									{second?.images && second.images.length > 0
-										? <img src={mediaUrl(second.images[0])} alt="the pipes beneath the newsroom" />
-										: <div class="gazette__figure-paper" aria-hidden="true"></div>}
-								</div>
-								<span class="gazette__figure-caption">The pipes beneath the newsroom.</span>
-							</div>
-							<div class="gazette__story-text">
-								<div class="gazette__para gazette__para--sm">Reporters write, editors edit, and somewhere between done and published lives an entire hidden city of pipes: APIs, storage, caching. A good chunk of that city was designed and built by the keeper, and it runs on deadlines that do not move for anybody.</div>
-								<a href="/projects" class="gazette__jump">see the light →</a>
-							</div>
-						</div>
-					</div>
-					<div class="gazette__story">
-						<span class="gazette__kicker">the light list · no. {third ? registryNo(third.order) : '006'} · est. {third?.firstLit ?? '2018'}</span>
-						<div class="gazette__subhead">Newsletter Beats Sunrise Into 100,000 Inboxes; Cron Job Credits Ambition</div>
-						<div class="gazette__story-textonly">
-							<div class="gazette__para gazette__para--sm">Every morning, before coffee exists, an automated system assembles the day's news and delivers it to over 100,000 inboxes. It has done this more reliably than anyone gets out of bed. The fun part was making it boring: retries, queues, monitoring, and a healthy paranoia about 4am.</div>
-							<div class="gazette__moral gazette__moral--sm">Moral: automation is just kindness to your future self, scheduled.</div>
-							<a href="/projects" class="gazette__jump">see the light →</a>
-						</div>
-					</div>
-				</div>
+					</>
+				)}
 
 				<!-- foot folio -->
 				<div class="gazette__foot">
@@ -582,6 +676,51 @@ const gullSvg = boltedSvg('delivery-gull', await getCarvings());
 		letter-spacing: .06em;
 	}
 
+	/* filler ad */
+	.gazette__ad {
+		border: 1px solid rgba(32, 35, 60, .45);
+		padding: 12px 14px;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		background: rgba(32, 35, 60, .03);
+	}
+
+	.gazette__ad-label {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 9.5px;
+		letter-spacing: .2em;
+		text-transform: uppercase;
+		color: #8a7f63;
+	}
+
+	.gazette__ad-copy {
+		font-size: 13px;
+		line-height: 1.6;
+		font-style: italic;
+		color: #494e70;
+	}
+
+	.gazette__ad-word {
+		font-family: 'Gloock', serif;
+		font-style: normal;
+		font-size: 14px;
+		color: #20233c;
+	}
+
+	.gazette__ad-pron {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 10px;
+		font-style: normal;
+		color: #5c5644;
+	}
+
+	.gazette__ad-argc {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 11.5px;
+		font-style: normal;
+	}
+
 	/* below the fold */
 	.gazette__below {
 		display: grid;
@@ -641,12 +780,6 @@ const gullSvg = boltedSvg('delivery-gull', await getCarvings());
 	.gazette__story-text {
 		flex: 1 1 220px;
 		min-width: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	.gazette__story-textonly {
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
