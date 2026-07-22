@@ -152,20 +152,13 @@
 	color: #8a6d3b;
 }
 
-/* Sign-off (left) and doodle marginalia (right) share one row, like the mock */
+/* The doodle marginalia's own row, right-aligned */
 .letter__signrow {
 	display: flex;
 	align-items: flex-start;
-	justify-content: space-between;
+	justify-content: flex-end;
 	gap: 24px;
 	flex-wrap: wrap;
-}
-
-.letter__signature {
-	font-family: var(--font-mono);
-	font-size: 13px;
-	color: #8a7f63;
-	margin-top: 8px;
 }
 
 /* The doodle + its handwritten caption, tilted like something scrawled in the

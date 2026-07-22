@@ -16,12 +16,13 @@ import { getSiteCopy, getFigurehead, type QuipField } from '../lib/api';
 import type { CatPage } from '../lib/catSpots';
 
 interface Props {
-	title:   string;
-	active:  'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
-	quipKey: QuipField;
+	title:      string;
+	active:     'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
+	quipKey:    QuipField;
+	nightWatch?: boolean; // the footer's night watch definition; every page but the 404
 }
 
-const { title, active, quipKey } = Astro.props;
+const { title, active, quipKey, nightWatch = false } = Astro.props;
 
 // The footer quip is per-page "signal flags" copy from the SiteCopy singleton
 const copy = await getSiteCopy();
@@ -47,7 +48,7 @@ const catPage: CatPage = active === 'none' ? 'p404' : active;
 		<div class="page">
 			<Nav active={active} />
 			<slot />
-			<Footer quip={copy[quipKey]} />
+			<Footer quip={copy[quipKey]} nightWatch={nightWatch} />
 		</div>
 		{/* Body-level, not inside .page: the projects page makes .page its own
 		    z-index:0 stacking context, which would trap a fixed bar under the

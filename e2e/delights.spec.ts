@@ -191,3 +191,15 @@ test('reduced motion keeps the wreck grounded at its listing tilt', async ({ pag
 	// The tilt is a base transform, so the kill-switch must not right the boat
 	expect(await wreck.evaluate((element) => getComputedStyle(element).transform)).not.toBe('none');
 });
+
+test('the shallows carry the faint-stars layer, masked to fade toward the water', async ({ page }) => {
+	await page.goto('/404.html');
+	const stars = page.locator('.stars');
+	await expect(stars).toBeAttached();
+	expect(await stars.evaluate((element) => getComputedStyle(element).maskImage || getComputedStyle(element).webkitMaskImage)).toContain('linear-gradient');
+});
+
+test('the 404 footer carries no night watch definition', async ({ page }) => {
+	await page.goto('/404.html');
+	await expect(page.locator('.definition')).toHaveCount(0);
+});

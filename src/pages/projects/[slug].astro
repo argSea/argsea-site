@@ -94,7 +94,11 @@ const body = numberHeadings(blocks.filter((block) => !headerBlocks.has(block)));
 
 const CALLOUT_LABEL = { note: 'note', warning: 'heads up', 'dead-end': 'dead end' } as const;
 ---
-<BaseLayout title={`${project.title} · case study · Justin Smith`} active="projects" quipKey="quipProjects">
+<BaseLayout title={`${project.title} · case study · Justin Smith`} active="projects" quipKey="quipProjects" nightWatch>
+	<div class="cs-stars" aria-hidden="true">
+		<div class="cs-stars__specks"></div>
+		<div class="cs-stars__glow"></div>
+	</div>
 	{body.length > 0 ? (
 		<article class="cs">
 			<div class="cs-header">
@@ -304,6 +308,45 @@ const CALLOUT_LABEL = { note: 'note', warning: 'heads up', 'dead-end': 'dead end
 </style>
 
 <style>
+	/* night over the log: a bounded star layer behind the header (design/CaseStudy.dc.html) */
+	.cs-stars {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		height: 460px;
+		pointer-events: none;
+		overflow: hidden;
+		z-index: -1;
+	}
+
+	.cs-stars__specks {
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(1.4px 1.4px at 10% 20%, rgba(255, 255, 255, .45), transparent),
+			radial-gradient(1px 1px at 24% 8%, rgba(255, 255, 255, .32), transparent),
+			radial-gradient(1.2px 1.2px at 38% 30%, rgba(232, 235, 250, .38), transparent),
+			radial-gradient(1px 1px at 52% 14%, rgba(255, 255, 255, .28), transparent),
+			radial-gradient(1.4px 1.4px at 64% 34%, rgba(240, 217, 168, .35), transparent),
+			radial-gradient(1px 1px at 74% 8%, rgba(255, 255, 255, .3), transparent),
+			radial-gradient(1.2px 1.2px at 86% 26%, rgba(232, 235, 250, .4), transparent),
+			radial-gradient(1px 1px at 95% 14%, rgba(255, 255, 255, .32), transparent);
+		mask-image: linear-gradient(180deg, black 45%, transparent 95%);
+		-webkit-mask-image: linear-gradient(180deg, black 45%, transparent 95%);
+	}
+
+	.cs-stars__glow {
+		position: absolute;
+		right: -8%;
+		top: 20px;
+		width: 44%;
+		height: 120px;
+		background: radial-gradient(50% 50% at 50% 50%, rgba(147, 160, 232, .07), transparent 70%);
+		filter: blur(8px);
+		transform: rotate(-5deg);
+	}
+
 	.cs {
 		padding: clamp(40px, 7vw, 64px) var(--gutter) clamp(48px, 8vw, 80px);
 		display: flex;

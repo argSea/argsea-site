@@ -1,6 +1,5 @@
 // The Keeper's Journal (fixtures build): a note's doodle (if any) only ever
-// appears in the open entry, beside its handwritten caption; the sign-off is
-// the keeper's.
+// appears in the open entry, beside its handwritten caption.
 import { test, expect } from '@playwright/test';
 
 // Rows run newest-first: the re-architecting note (row 0) and CachyOS (row 1)
@@ -42,10 +41,12 @@ test('an undoodled note gets no marginalia in the entry', async ({ page }) => {
 	await expect(letter.locator('.letter__marginalia')).toHaveCount(0);
 });
 
-test('the entry signs off with the keeper fixture', async ({ page }) => {
+test('the entry carries no auto-sig; the keeper signs his own content', async ({ page }) => {
 	await page.goto('/notes');
 	await page.locator('.note-row').first().click();
-	await expect(page.locator('.letter__signature')).toHaveText('- j');
+	// the keeper signs his own work (2026-07-22 ruling): no component sig,
+	// the signature is whatever the note's own content ends with
+	await expect(page.locator('.letter__signature')).toHaveCount(0);
 });
 
 test('an entry tied to a light shows "found in", linking back to it', async ({ page }) => {
@@ -86,6 +87,13 @@ test('the journal foot line spells the entry count', async ({ page }) => {
 	await page.goto('/notes');
 	// three fixtures: below the bar of five, and plural
 	await expect(page.locator('.journal__footer')).toHaveText('Three entries so far. The bar for "journal" is five. We\'ll see.');
+});
+
+test('the footer carries the night watch definition', async ({ page }) => {
+	await page.goto('/notes');
+	const definition = page.locator('.definition');
+	await expect(definition).toContainText('night watch');
+	await expect(definition).toContainText('this website, most evenings');
 });
 
 test('stepping into the tower from an entry opens the light in place', async ({ page }) => {

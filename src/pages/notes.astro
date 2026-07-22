@@ -1,17 +1,15 @@
 ---
 // The Keeper's Journal: static header; the NotesList island owns the journal
-// spread rows and the journal-entry overlay. The sign-off under each entry is
-// the keeper's, from their profile. Doodles are fetched here and passed to the
-// island, which resolves each note's doodle by id.
+// spread rows and the journal-entry overlay. Doodles are fetched here and
+// passed to the island, which resolves each note's doodle by id.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NotesList from '../components/islands/NotesList';
-import { getNotes, getProjects, getHobbies, getKeeperProfile, getSiteCopy, getFigurehead, getDoodles, getCarvings } from '../lib/api';
+import { getNotes, getProjects, getHobbies, getSiteCopy, getFigurehead, getDoodles, getCarvings } from '../lib/api';
 import { boltedSvg } from '../lib/carvings';
 
 const notes = await getNotes();
 const projects = await getProjects();
 const hobbies = await getHobbies();
-const keeper = await getKeeperProfile();
 const copy = await getSiteCopy();
 const catDesigns = await getFigurehead();
 const doodles = await getDoodles();
@@ -20,7 +18,7 @@ const doodles = await getDoodles();
 // journal entry steps into its light; NotesList can't reach src/lib/api.ts itself.
 const towerSvg = boltedSvg('tower-stub', await getCarvings());
 ---
-<BaseLayout title="Notes · Justin Smith" active="notes" quipKey="quipNotes">
+<BaseLayout title="Notes · Justin Smith" active="notes" quipKey="quipNotes" nightWatch>
 	<section class="head">
 		<span class="head__kicker section-label fade-up fade-up--1">Notes · the other book</span>
 		<h1 class="head__title fade-up fade-up--1">The keeper's journal</h1>
@@ -28,7 +26,7 @@ const towerSvg = boltedSvg('tower-stub', await getCarvings());
 	</section>
 
 	<section class="list">
-		<NotesList client:load notes={notes} doodles={doodles} projects={projects} hobbies={hobbies} signoff={keeper.signoff} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} towerSvg={towerSvg} />
+		<NotesList client:load notes={notes} doodles={doodles} projects={projects} hobbies={hobbies} catEnabled={copy.eggs.cat} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} towerSvg={towerSvg} />
 	</section>
 </BaseLayout>
 

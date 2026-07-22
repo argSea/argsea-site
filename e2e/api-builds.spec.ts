@@ -23,14 +23,14 @@ test('with nothing featured the flagship rows read exactly the same', async ({ p
 		.toHaveText(['the great un-monolithing', 'newsroom plumbing', '100k good mornings']);
 });
 
-test('the sea footer CTA, socials, and sign-off come from the fetched profile', async ({ page }) => {
+test('the sea footer CTA and socials come from the fetched profile; the note overlay carries no auto-sig', async ({ page }) => {
 	await page.goto(`${FEATURED_BUILD}/`);
 	await expect(page.locator('.cta-doors .primary')).toHaveAttribute('href', 'mailto:keeper@example.test');
 	await expect(page.locator('.site-footer .socials a').first()).toHaveAttribute('href', 'https://github.com/mock-keeper');
 
 	await page.goto(`${FEATURED_BUILD}/notes`);
 	await page.locator('.note-row').first().click();
-	await expect(page.locator('.letter__signature')).toHaveText('- the mock keeper');
+	await expect(page.locator('.letter__signature')).toHaveCount(0);
 });
 
 // The mock API serves the checked-in hobbies fixture verbatim over the real

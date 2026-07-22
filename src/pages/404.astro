@@ -23,6 +23,7 @@ const buoySvg = boltedSvg('buoy', carvings);
 ---
 <BaseLayout title="404 · run aground · Justin Smith" active="none" quipKey="quip404">
 	<section class="shallows">
+		<div class="stars" aria-hidden="true"></div>
 		<div class="firefly ff-1"></div>
 		<div class="firefly ff-2"></div>
 		<div class="firefly ff-3"></div>
@@ -124,6 +125,24 @@ const buoySvg = boltedSvg('buoy', carvings);
 		justify-content: flex-end;
 		padding: clamp(40px, 7vw, 72px) var(--gutter) 0;
 		overflow: hidden;
+	}
+
+	/* faint stars: stacked radial-gradient specks with a mask fade (design/404.dc.html) */
+	.stars {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background:
+			radial-gradient(1.4px 1.4px at 10% 16%, rgba(255, 255, 255, .4), transparent),
+			radial-gradient(1px 1px at 26% 30%, rgba(255, 255, 255, .28), transparent),
+			radial-gradient(1.2px 1.2px at 42% 10%, rgba(232, 235, 250, .34), transparent),
+			radial-gradient(1px 1px at 56% 24%, rgba(255, 255, 255, .26), transparent),
+			radial-gradient(1.3px 1.3px at 70% 12%, rgba(240, 217, 168, .3), transparent),
+			radial-gradient(1px 1px at 84% 28%, rgba(232, 235, 250, .32), transparent),
+			radial-gradient(1.2px 1.2px at 94% 8%, rgba(255, 255, 255, .3), transparent);
+		mask-image: linear-gradient(180deg, black 40%, transparent 85%);
+		-webkit-mask-image: linear-gradient(180deg, black 40%, transparent 85%);
 	}
 
 	.ff-1 { left: 16%;  top: 14%; width: 4px; height: 4px; background: var(--gold);       box-shadow: 0 0 12px 3px rgba(240, 217, 168, .3);  animation: drift 12s ease-in-out infinite; }

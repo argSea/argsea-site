@@ -166,16 +166,9 @@
 .light-entry__note-signrow {
 	display: flex;
 	align-items: flex-start;
-	justify-content: space-between;
+	justify-content: flex-end;
 	gap: 24px;
 	flex-wrap: wrap;
-}
-
-.light-entry__note-signature {
-	font-family: var(--font-mono);
-	font-size: 13px;
-	color: #8a7f63;
-	margin-top: 8px;
 }
 
 /* The doodle + its handwritten caption, tilted like something scrawled in the
@@ -404,6 +397,55 @@
 	font-style: italic;
 }
 
+/* --- provenance: a chip naming who lit this beacon (ProjectOverlay.dc.html) --- */
+.light-entry__provenance {
+	display: flex;
+	padding: 4px 0 14px;
+}
+
+.light-entry__chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	border-radius: 4px;
+	padding: 5px 10px;
+}
+
+.light-entry__chip--assist {
+	border: 1px solid rgba(127, 212, 168, .4);
+	background: rgba(127, 212, 168, .06);
+}
+
+.light-entry__chip--hand {
+	border: 1px solid rgba(240, 217, 168, .4);
+	background: rgba(240, 217, 168, .05);
+}
+
+.light-entry__chip-flame {
+	flex: none;
+}
+
+.light-entry__chip--assist .light-entry__chip-flame {
+	color: #7fd4a8;
+}
+
+.light-entry__chip--hand .light-entry__chip-flame {
+	color: #f0d9a8;
+}
+
+.light-entry__chip-text {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+}
+
+.light-entry__chip--assist .light-entry__chip-text {
+	color: #a9e5c5;
+}
+
+.light-entry__chip--hand .light-entry__chip-text {
+	color: #e8d9b0;
+}
+
 /* --- the details column's link row: full log (caseStudy) + coast (home only) --- */
 .light-entry__links {
 	display: flex;
@@ -534,7 +576,7 @@
 	text-align: center;
 }
 
-/* --- the final row: moral (left) + signoff (right), one bordered line --- */
+/* --- the final row: the project's moral, one bordered line --- */
 .light-entry__final {
 	display: flex;
 	align-items: baseline;
@@ -548,13 +590,6 @@
 .light-entry__moral {
 	font-size: 15px;
 	color: var(--text-quip);
-	font-style: italic;
-}
-
-.light-entry__signoff {
-	font-family: var(--font-mono);
-	font-size: 13px;
-	color: var(--periwinkle-deep);
 	font-style: italic;
 }
 

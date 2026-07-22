@@ -199,10 +199,11 @@ test('the retranscribed overlay: head line, notes above facts, decorative thumbs
 	// tags sit at the bottom of the photo column, not in the final row
 	await expect(overlay.locator('.light-entry__right .light-entry__tags')).toBeVisible();
 
-	// the final row is moral (left) + signoff (right), one bordered row
+	// the final row carries the project's moral, one bordered row; the keeper
+	// signs his own work (2026-07-22 ruling), no auto-sig on his behalf
 	const final = overlay.locator('.light-entry__final');
 	await expect(final.locator('.light-entry__moral')).toBeVisible();
-	await expect(final.locator('.light-entry__signoff')).toHaveText('- j, the keeper');
+	await expect(final.locator('.light-entry__signoff')).toHaveCount(0);
 
 	// on the projects page (not the home mount) there's no coast link
 	await expect(overlay.locator('.light-entry__coastlink-link')).toHaveCount(0);
@@ -235,7 +236,8 @@ test('a chip pulls its note out of the log, credits it, and tucks back', async (
 	const paper = backdrop.locator('.light-entry__note-paper');
 	await expect(paper).toBeVisible();
 	await expect(paper.locator('.light-entry__note-credit')).toHaveText('found tucked into the log of The Great Un-monolithing');
-	await expect(paper.locator('.light-entry__note-signature')).toHaveText('- j, keeper');
+	// no auto-sig on the pulled note either
+	await expect(paper.locator('.light-entry__note-signature')).toHaveCount(0);
 	// the dark log is gone while the paper is out, never a second scroll layer
 	await expect(backdrop.locator('.overlay-card.light-entry')).toHaveCount(0);
 
@@ -274,4 +276,34 @@ test('reduced motion stills the pulled-out paper', async ({ page }) => {
 test('the footer no longer renders the argsea dictionary', async ({ page }) => {
 	await page.goto('/projects');
 	await expect(page.locator('.site-footer__dict')).toHaveCount(0);
+});
+
+test('the footer carries the night watch definition', async ({ page }) => {
+	await page.goto('/projects');
+	const definition = page.locator('.definition');
+	await expect(definition).toContainText('night watch');
+	await expect(definition).toContainText('this website, most evenings');
+});
+
+test('the provenance chip names the harness for an assisted light, and reads "by hand" for one without', async ({ page }) => {
+	await page.goto('/projects');
+
+	// "This website" (fixture-project-4) carries the fixture assist
+	const assisted = projects.find((project) => project.title === 'This website')!;
+	await page.locator(`#light-row-${assisted.id}`).click();
+	const assistedChip = page.locator('.overlay-card .light-entry__chip');
+	await expect(assistedChip).toHaveClass(/light-entry__chip--assist/);
+	await expect(assistedChip.locator('.light-entry__chip-text')).toHaveText(
+		`this beacon was lit with the help of AI (${[assisted.assist!.harness, assisted.assist!.model].filter(Boolean).join(', ').toLowerCase()})`,
+	);
+	await page.keyboard.press('Escape');
+	await expect(page.locator('.overlay-card')).toHaveCount(0);
+
+	// the flagship (fixture-project-1) carries no assist
+	const byHand = projects.find((project) => project.id === 'fixture-project-1')!;
+	expect(byHand.assist).toBeUndefined();
+	await page.locator(`#light-row-${byHand.id}`).click();
+	const handChip = page.locator('.overlay-card .light-entry__chip');
+	await expect(handChip).toHaveClass(/light-entry__chip--hand/);
+	await expect(handChip.locator('.light-entry__chip-text')).toHaveText('this beacon was lit by hand');
 });
