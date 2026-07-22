@@ -122,6 +122,10 @@ image-slot{display:block;width:100%;height:100%}
               </sc-for>
             </div>
           </sc-if>
+          <div style="display:flex;padding:4px 0 14px">
+            <sc-if value="{{ ov.assistAI }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(127,212,168,.4);border-radius:4px;padding:5px 10px;background:rgba(127,212,168,.06)"><svg width="10" height="13" viewBox="0 0 10 13" fill="none" style="flex:none"><path d="M5 1 C6.8 3.2 8 4.8 8 7 a3 3 0 1 1 -6 0 C2 4.8 3.2 3.2 5 1 Z" fill="#7fd4a8" opacity=".9"></path><path d="M2 12 h6" stroke="#7fd4a8" stroke-width="1.2" stroke-linecap="round"></path></svg><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#a9e5c5">{{ ov.assistLine }}</span></span></sc-if>
+            <sc-if value="{{ ov.assistHand }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(240,217,168,.4);border-radius:4px;padding:5px 10px;background:rgba(240,217,168,.05)"><svg width="10" height="13" viewBox="0 0 10 13" fill="none" style="flex:none"><path d="M5 1 C6.8 3.2 8 4.8 8 7 a3 3 0 1 1 -6 0 C2 4.8 3.2 3.2 5 1 Z" fill="#f0d9a8" opacity=".9"></path><path d="M2 12 h6" stroke="#f0d9a8" stroke-width="1.2" stroke-linecap="round"></path></svg><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#e8d9b0">{{ ov.assistLine }}</span></span></sc-if>
+          </div>
           <div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start;border-top:1px solid rgba(150,160,220,.14);padding-top:18px">
             <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
               <div style="font-size:16.5px;line-height:1.7;color:#c8cef0">{{ ov.details1 }}</div>
@@ -278,6 +282,10 @@ class Component extends DCLogic {
         return p.facts ? Object.entries(p.facts).map(([k, v]) => ({ k, v })) : null;
       })(),
       caseHref: p.caseStudy ? 'CaseStudy.dc.html?light=' + this.slug(p.title) : null,
+      assistAI: !!p.assist, assistHand: !p.assist,
+      assistLine: p.assist
+        ? 'this beacon was lit with the help of AI (' + [p.assist.harness, p.assist.model].filter(Boolean).join(', ').toLowerCase() + ')'
+        : 'this beacon was lit by hand',
       slotId: (p.images && p.images[0]) ? 'proj-' + this.slug(p.title) + '-img-' + (typeof p.images[0] === 'string' ? p.images[0] : p.images[0].key) : 'proj-' + this.slug(p.title),
       thumbs: (() => {
         const keys = (p.images || []).slice(1).map((k) => (typeof k === 'string' ? k : k.key)).filter(Boolean);

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&amp;family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b0e1a;font-family:'Newsreader',serif}
+a{color:#93a0e8;text-decoration:none}
+a:hover{color:#f0d9a8}
+@keyframes lampPulse{0%,100%{opacity:1}50%{opacity:.55}}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(150,160,220,.12);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px 'IBM Plex Mono',monospace;padding:3px 7px;background:#f0d9a8;color:#1b2033;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 'IBM Plex Mono',monospace;color:#c8cef0}
+.dv-opts{display:flex;flex-wrap:wrap;gap:34px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px 'IBM Plex Mono',monospace;padding:3px 7px;background:rgba(150,160,220,.18);color:#c8cef0;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11.5px/1.3 'IBM Plex Mono',monospace;color:#7a83ad;max-width:375px}
+.dv-card{max-width:100%;background:linear-gradient(180deg,#11131f,#131628);border:1px solid rgba(150,160,220,.22);border-radius:14px;box-shadow:0 18px 44px rgba(0,0,0,.5);overflow:hidden;color:#dde1f0}
+.dv-opt:target .dv-oid{background:#f0d9a8;color:#1b2033}
+.dv-next{margin:26px 0 0;font:12px/1.6 'IBM Plex Mono',monospace;color:#5f6ec4;max-width:900px}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t3">
+<div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname"><a class="dv-oid" href="#2a">2a</a> without the postcard header · plain masthead, both photos ride the swipe rail</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="3a">
+<div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a>Masthead + full letter first, both season photos in the rail after it, full coast, register from <a class="dv-oid" href="#1c">1c</a></div>
+<div class="dv-card" style="width:375px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 8px">
+    <span style="display:flex;align-items:center;gap:9px"><svg width="18" height="21" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg><span style="font-family:'Gloock',serif;font-size:16px;color:#e8ebfa">Justin Smith</span></span>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#93a0e8">resume ↗</span>
+  </div>
+  <!-- the full letter -->
+  <div style="display:flex;flex-direction:column;gap:13px;padding:18px 20px 4px">
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Senior software engineer · Pittsburgh PA</span>
+    <span style="font-family:'Gloock',serif;font-size:30px;line-height:1.12;color:#f0f2fc;text-wrap:balance">I help keep the lights on behind the news.</span>
+    <span style="display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid rgba(150,160,220,.14);padding-top:12px"><span style="display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#f0d9a8;text-transform:uppercase"><span style="width:6px;height:6px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 8px 2px rgba(240,217,168,.55);animation:lampPulse 4s ease-in-out infinite"></span>Now</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">kept 15 jul</span></span>
+    <span style="font-size:15.5px;line-height:1.65;color:#a5aed4;font-weight:300;text-wrap:pretty">Most of my time right now goes to the ArcXP migration: moving the newsroom onto its new stack while the paper keeps publishing, the kind of work nobody notices unless it goes wrong.</span>
+    <span style="font-size:15.5px;line-height:1.65;color:#a5aed4;font-weight:300;text-wrap:pretty">The un-monolithing that cleared the way is finally written up, and the home lab keeps growing past what any household could plausibly need. I am trying to write things down while they are still true. Dad the rest of the time, which is most of the time.</span>
+    <span style="font-size:14px;font-style:italic;color:#9aa3c9;line-height:1.6;text-wrap:pretty">Out of the rotation on purpose: conference talks, one more framework, and the piano. Not abandoned, just set down where I can see them.</span>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;line-height:1.7;color:#8a93c4">wrangling <span style="color:#d6dcf4">The ArcXP migration</span> · logging <span style="color:#f0d9a8">What re-architecting taught me…</span> · tinkering <span style="color:#f0d9a8">The home lab</span></span>
+  </div>
+  <!-- photo swipe rail -->
+  <div style="position:relative;padding:26px 0 4px 20px;overflow:hidden">
+    <div style="display:flex;gap:16px;align-items:flex-start">
+      <div style="flex:none;width:218px;display:flex;flex-direction:column;gap:8px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:8px 8px 11px;box-shadow:0 12px 26px rgba(0,0,0,.55);transform:rotate(1.2deg);position:relative;margin-top:8px">
+        <span style="position:absolute;left:50%;top:-6px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f6ecd0,#b09a5f);box-shadow:0 2px 4px rgba(0,0,0,.6);transform:translateX(-50%)"></span>
+        <span style="position:absolute;top:-44px;right:16px;width:44px;height:52px;z-index:3"><dc-import name="HarborCat" pose="perched" bubble="left" hint-size="44px,52px" style="width:44px;height:52px"></dc-import></span>
+        <div style="width:100%;aspect-ratio:4/3;background:#1e2440;border:1.5px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;text-align:center;padding:0 14px">a photo from right now</span></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#93a0e8;text-align:center">from the season · jul 2026</span>
+      </div>
+      <div style="flex:none;width:190px;display:flex;flex-direction:column;gap:7px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:7px 7px 10px;box-shadow:0 10px 22px rgba(0,0,0,.5);transform:rotate(-1.8deg);position:relative;margin-top:16px">
+        <span style="position:absolute;left:50%;top:-6px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f6ecd0,#b09a5f);box-shadow:0 2px 4px rgba(0,0,0,.6);transform:translateX(-50%)"></span>
+        <div style="width:100%;aspect-ratio:3/2;background:#1e2440;border:1.5px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;text-align:center;padding:0 12px">a second one</span></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#5f6ec4;text-align:center">the keeper liked it</span>
+      </div>
+    </div>
+    <span style="display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;padding:12px 0 0 2px">swipe · the watch desk drawer →</span>
+  </div>
+  <!-- full coast -->
+  <div style="position:relative;height:48px;margin-top:12px;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x top">
+    <svg width="24" height="19" viewBox="0 0 30 24" fill="none" style="position:absolute;left:12%;top:-13px"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>
+    <div style="position:absolute;left:0;right:0;top:20px;display:flex;justify-content:space-evenly">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 10px 3px rgba(246,236,207,.85);animation:lampPulse 8s linear infinite;flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:#5f6ec4">no. 002</span></span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6);flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:#5f6ec4">no. 004</span></span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6);animation:lampPulse 6s linear infinite;flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:#5f6ec4">no. 006</span></span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#5f6ec4;box-shadow:0 0 8px 2px rgba(147,160,232,.5);flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:#5f6ec4">the chart</span></span>
+    </div>
+  </div>
+  <!-- selected work · 1c register -->
+  <div style="display:flex;flex-direction:column;gap:12px;padding:14px 16px 8px">
+    <span style="display:flex;align-items:baseline;justify-content:space-between;padding:0 4px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Selected work</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8">the whole coast →</span></span>
+    <div style="border:1px solid rgba(150,160,220,.2);border-radius:4px;background:linear-gradient(160deg,#181c31,#141830)">
+      <div style="padding:10px 16px;border-bottom:1px solid rgba(150,160,220,.16)"><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;color:#5f6ec4;text-transform:uppercase">light list · argsea coast · corrected to jul 2026</span></div>
+      <div style="padding:16px;border-bottom:1px solid rgba(150,160,220,.14);display:flex;flex-direction:column;gap:10px">
+        <span style="display:flex;align-items:center;gap:10px"><span style="width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 12px 4px rgba(246,236,207,.7);animation:lampPulse 8s linear infinite;flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgb(246,236,207)">Fl W 8s</span><span style="flex:1"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;color:#f0d9a8;text-transform:uppercase;border:1px dashed rgba(240,217,168,.45);border-radius:999px;padding:3px 9px">lit · est. 2024</span></span>
+        <span style="display:flex;gap:12px;align-items:flex-start">
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><span style="font-family:'Gloock',serif;font-size:21px;line-height:1.15;color:#f0f2fc">The Great Un-monolithing</span><span style="font-size:14px;line-height:1.55;color:#a5aed4;text-wrap:pretty">One giant app became many small services. Readers never noticed. That was the point.</span></span>
+          <span style="flex:none;width:86px;display:flex;flex-direction:column;gap:5px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:5px 5px 7px;box-shadow:0 8px 18px rgba(0,0,0,.5);transform:rotate(1.6deg)"><span style="width:100%;aspect-ratio:3/2;background:#1e2440;border:1px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#5f6ec4">photo</span></span></span>
+        </span>
+        <span style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap"><span style="font-size:13.5px;font-style:italic;color:#8f9be0">Moral: the best migrations are the boring ones.</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;white-space:nowrap">full log →</span></span>
+      </div>
+      <div style="padding:14px 16px;border-bottom:1px solid rgba(150,160,220,.14);display:flex;gap:12px;align-items:baseline">
+        <span style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:none;width:44px"><span style="width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6)"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgb(246,236,207)">F W</span></span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font-family:'Gloock',serif;font-size:17px;color:#eef0fb">Newsroom plumbing</span><span style="font-size:13.5px;line-height:1.5;color:#a5aed4">A publishing workflow a real paper runs on, every day.</span></span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8;flex:none">read →</span>
+      </div>
+      <div style="padding:14px 16px;display:flex;gap:12px;align-items:baseline">
+        <span style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:none;width:44px"><span style="width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6);animation:lampPulse 6s linear infinite"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgb(246,236,207)">Oc W 6s</span></span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font-family:'Gloock',serif;font-size:17px;color:#eef0fb">100k good mornings</span><span style="font-size:13.5px;line-height:1.5;color:#a5aed4">A newsletter that beats the sunrise into six figures of inboxes.</span></span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8;flex:none">read →</span>
+      </div>
+    </div>
+  </div>
+  <div style="padding:14px 20px 22px;text-align:center;background:linear-gradient(180deg,transparent,rgba(11,14,26,.9))"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4">· hobbies &amp; below · unchanged ·</span></div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "wire <a class="dv-oid" href="#3a">3a</a> into the live page" · "photos before the letter" · "shorter letter with an unfold"</p>
+</section>
+
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">The mix: <a class="dv-oid" href="#1b">1b</a> header · full letter · photo swipe after it · full coast · register from <a class="dv-oid" href="#1c">1c</a></span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a">
+<div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Postcard header, the whole watch letter, the swipe rail below the letter, the coast with all four bearings, work restacked per <a class="dv-oid" href="#1c">1c</a></div>
+<div class="dv-card" style="width:375px">
+  <!-- postcard header (1b) -->
+  <div style="position:relative;height:212px;background:#1e2440">
+    <div style="position:absolute;inset:10px;border:1.5px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4;text-align:center;padding:0 30px">a photo from right now · drop it here · it becomes the header</span></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,14,26,.72),transparent 34%,transparent 62%,rgba(17,19,31,.94))"></div>
+    <div style="position:absolute;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;padding:14px 20px">
+      <span style="display:flex;align-items:center;gap:9px"><svg width="18" height="21" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg><span style="font-family:'Gloock',serif;font-size:16px;color:#f0f2fc;text-shadow:0 2px 8px rgba(0,0,0,.6)">Justin Smith</span></span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2">resume ↗</span>
+    </div>
+    <span style="position:absolute;left:14px;bottom:10px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:#93a0e8;background:rgba(17,19,31,.75);border:1px solid rgba(150,160,220,.25);border-radius:4px;padding:4px 9px">from the season · jul 2026</span>
+    <span style="position:absolute;right:22px;bottom:-4px;width:42px;height:50px;z-index:3"><dc-import name="HarborCat" pose="perched" bubble="left" hint-size="42px,50px" style="width:42px;height:50px"></dc-import></span>
+  </div>
+  <!-- the full letter -->
+  <div style="display:flex;flex-direction:column;gap:13px;padding:20px 20px 4px">
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Senior software engineer · Pittsburgh PA</span>
+    <span style="font-family:'Gloock',serif;font-size:30px;line-height:1.12;color:#f0f2fc;text-wrap:balance">I help keep the lights on behind the news.</span>
+    <span style="display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid rgba(150,160,220,.14);padding-top:12px"><span style="display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#f0d9a8;text-transform:uppercase"><span style="width:6px;height:6px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 8px 2px rgba(240,217,168,.55);animation:lampPulse 4s ease-in-out infinite"></span>Now</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">kept 15 jul</span></span>
+    <span style="font-size:15.5px;line-height:1.65;color:#a5aed4;font-weight:300;text-wrap:pretty">Most of my time right now goes to the ArcXP migration: moving the newsroom onto its new stack while the paper keeps publishing, the kind of work nobody notices unless it goes wrong.</span>
+    <span style="font-size:15.5px;line-height:1.65;color:#a5aed4;font-weight:300;text-wrap:pretty">The un-monolithing that cleared the way is finally written up, and the home lab keeps growing past what any household could plausibly need. I am trying to write things down while they are still true. Dad the rest of the time, which is most of the time.</span>
+    <span style="font-size:14px;font-style:italic;color:#9aa3c9;line-height:1.6;text-wrap:pretty">Out of the rotation on purpose: conference talks, one more framework, and the piano. Not abandoned, just set down where I can see them.</span>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;line-height:1.7;color:#8a93c4">wrangling <span style="color:#d6dcf4">The ArcXP migration</span> · logging <span style="color:#f0d9a8">What re-architecting taught me…</span> · tinkering <span style="color:#f0d9a8">The home lab</span></span>
+  </div>
+  <!-- photo swipe rail, after the letter -->
+  <div style="position:relative;padding:26px 0 4px 20px;overflow:hidden">
+    <div style="display:flex;gap:16px;align-items:flex-start">
+      <div style="flex:none;width:218px;display:flex;flex-direction:column;gap:8px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:8px 8px 11px;box-shadow:0 12px 26px rgba(0,0,0,.55);transform:rotate(1.2deg);position:relative;margin-top:6px">
+        <span style="position:absolute;left:50%;top:-6px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f6ecd0,#b09a5f);box-shadow:0 2px 4px rgba(0,0,0,.6);transform:translateX(-50%)"></span>
+        <div style="width:100%;aspect-ratio:3/2;background:#1e2440;border:1.5px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;text-align:center;padding:0 14px">a second one · whatever the season kept</span></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#93a0e8;text-align:center">also from the season · the keeper liked it</span>
+      </div>
+      <div style="flex:none;width:190px;display:flex;flex-direction:column;gap:7px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:7px 7px 10px;box-shadow:0 10px 22px rgba(0,0,0,.5);transform:rotate(-1.8deg);position:relative;margin-top:14px">
+        <span style="position:absolute;left:50%;top:-6px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f6ecd0,#b09a5f);box-shadow:0 2px 4px rgba(0,0,0,.6);transform:translateX(-50%)"></span>
+        <div style="width:100%;aspect-ratio:3/2;background:#1e2440;border:1.5px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;text-align:center;padding:0 12px">room in the drawer</span></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#5f6ec4;text-align:center">for whatever comes next</span>
+      </div>
+    </div>
+    <span style="display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;padding:12px 0 0 2px">swipe · the watch desk drawer →</span>
+  </div>
+  <!-- full coast -->
+  <div style="position:relative;height:48px;margin-top:12px;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x top">
+    <svg width="24" height="19" viewBox="0 0 30 24" fill="none" style="position:absolute;left:12%;top:-13px"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>
+    <div style="position:absolute;left:0;right:0;top:20px;display:flex;justify-content:space-evenly">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 10px 3px rgba(246,236,207,.85);animation:lampPulse 8s linear infinite;flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:#5f6ec4">no. 002</span></span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6);flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:#5f6ec4">no. 004</span></span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6);animation:lampPulse 6s linear infinite;flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:#5f6ec4">no. 006</span></span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#5f6ec4;box-shadow:0 0 8px 2px rgba(147,160,232,.5);flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:#5f6ec4">the chart</span></span>
+    </div>
+  </div>
+  <!-- selected work · 1c register -->
+  <div style="display:flex;flex-direction:column;gap:12px;padding:14px 16px 8px">
+    <span style="display:flex;align-items:baseline;justify-content:space-between;padding:0 4px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Selected work</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8">the whole coast →</span></span>
+    <div style="border:1px solid rgba(150,160,220,.2);border-radius:4px;background:linear-gradient(160deg,#181c31,#141830)">
+      <div style="padding:10px 16px;border-bottom:1px solid rgba(150,160,220,.16)"><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;color:#5f6ec4;text-transform:uppercase">light list · argsea coast · corrected to jul 2026</span></div>
+      <div style="padding:16px;border-bottom:1px solid rgba(150,160,220,.14);display:flex;flex-direction:column;gap:10px">
+        <span style="display:flex;align-items:center;gap:10px"><span style="width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 12px 4px rgba(246,236,207,.7);animation:lampPulse 8s linear infinite;flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgb(246,236,207)">Fl W 8s</span><span style="flex:1"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;color:#f0d9a8;text-transform:uppercase;border:1px dashed rgba(240,217,168,.45);border-radius:999px;padding:3px 9px">lit · est. 2024</span></span>
+        <span style="display:flex;gap:12px;align-items:flex-start">
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><span style="font-family:'Gloock',serif;font-size:21px;line-height:1.15;color:#f0f2fc">The Great Un-monolithing</span><span style="font-size:14px;line-height:1.55;color:#a5aed4;text-wrap:pretty">One giant app became many small services. Readers never noticed. That was the point.</span></span>
+          <span style="flex:none;width:86px;display:flex;flex-direction:column;gap:5px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:5px 5px 7px;box-shadow:0 8px 18px rgba(0,0,0,.5);transform:rotate(1.6deg)"><span style="width:100%;aspect-ratio:3/2;background:#1e2440;border:1px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#5f6ec4">photo</span></span></span>
+        </span>
+        <span style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap"><span style="font-size:13.5px;font-style:italic;color:#8f9be0">Moral: the best migrations are the boring ones.</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;white-space:nowrap">full log →</span></span>
+      </div>
+      <div style="padding:14px 16px;border-bottom:1px solid rgba(150,160,220,.14);display:flex;gap:12px;align-items:baseline">
+        <span style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:none;width:44px"><span style="width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6)"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgb(246,236,207)">F W</span></span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font-family:'Gloock',serif;font-size:17px;color:#eef0fb">Newsroom plumbing</span><span style="font-size:13.5px;line-height:1.5;color:#a5aed4">A publishing workflow a real paper runs on, every day.</span></span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8;flex:none">read →</span>
+      </div>
+      <div style="padding:14px 16px;display:flex;gap:12px;align-items:baseline">
+        <span style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:none;width:44px"><span style="width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6);animation:lampPulse 6s linear infinite"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgb(246,236,207)">Oc W 6s</span></span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font-family:'Gloock',serif;font-size:17px;color:#eef0fb">100k good mornings</span><span style="font-size:13.5px;line-height:1.5;color:#a5aed4">A newsletter that beats the sunrise into six figures of inboxes.</span></span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8;flex:none">read →</span>
+      </div>
+    </div>
+  </div>
+  <div style="padding:14px 20px 22px;text-align:center;background:linear-gradient(180deg,transparent,rgba(11,14,26,.9))"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4">· hobbies &amp; below · unchanged ·</span></div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "wire <a class="dv-oid" href="#2a">2a</a> into the live page" · "the swipe rail with only one spare card" · "tweak the header height"</p>
+</section>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">The phone tier above hobbies · three ways to seat the letter, the photos, the coast, and the register</span></div>
+<div class="dv-opts">
+
+<!-- ============ 1a · film strip ============ -->
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Film strip · the letter stays first, photos become a swipe rail under it, coast beacons become a 2x2 index</div>
+<div class="dv-card" style="width:375px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 8px">
+    <span style="display:flex;align-items:center;gap:9px"><svg width="18" height="21" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg><span style="font-family:'Gloock',serif;font-size:16px;color:#e8ebfa">Justin Smith</span></span>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#93a0e8">resume ↗</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:13px;padding:18px 20px 6px">
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Senior software engineer · Pittsburgh PA</span>
+    <span style="font-family:'Gloock',serif;font-size:30px;line-height:1.12;color:#f0f2fc;text-wrap:balance">I help keep the lights on behind the news.</span>
+    <span style="display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid rgba(150,160,220,.14);padding-top:12px"><span style="display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#f0d9a8;text-transform:uppercase"><span style="width:6px;height:6px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 8px 2px rgba(240,217,168,.55);animation:lampPulse 4s ease-in-out infinite"></span>Now</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">kept 15 jul</span></span>
+    <span style="font-size:15.5px;line-height:1.65;color:#a5aed4;font-weight:300;text-wrap:pretty">Most of my time right now goes to the ArcXP migration: moving the newsroom onto its new stack while the paper keeps publishing, the kind of work nobody notices unless it goes wrong.</span>
+    <span style="font-size:14px;font-style:italic;color:#9aa3c9;line-height:1.6">The rest: the home lab, writing things down while they are still true, and dad the rest of the time. <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-style:normal;color:#f0d9a8">the full letter ↓</span></span>
+  </div>
+  <!-- film strip -->
+  <div style="position:relative;padding:22px 0 6px 20px;overflow:hidden">
+    <div style="display:flex;gap:16px;align-items:flex-start">
+      <div style="flex:none;width:218px;display:flex;flex-direction:column;gap:8px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:8px 8px 11px;box-shadow:0 12px 26px rgba(0,0,0,.55);transform:rotate(1.2deg);position:relative;margin-top:8px">
+        <span style="position:absolute;left:50%;top:-6px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f6ecd0,#b09a5f);box-shadow:0 2px 4px rgba(0,0,0,.6);transform:translateX(-50%)"></span>
+        <span style="position:absolute;top:-44px;right:16px;width:44px;height:52px;z-index:3"><dc-import name="HarborCat" pose="perched" bubble="left" hint-size="44px,52px" style="width:44px;height:52px"></dc-import></span>
+        <div style="width:100%;aspect-ratio:4/3;background:#1e2440;border:1.5px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;text-align:center;padding:0 14px">a photo from right now</span></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#93a0e8;text-align:center">from the season · jul 2026</span>
+      </div>
+      <div style="flex:none;width:190px;display:flex;flex-direction:column;gap:7px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:7px 7px 10px;box-shadow:0 10px 22px rgba(0,0,0,.5);transform:rotate(-1.8deg);position:relative;margin-top:16px">
+        <span style="position:absolute;left:50%;top:-6px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f6ecd0,#b09a5f);box-shadow:0 2px 4px rgba(0,0,0,.6);transform:translateX(-50%)"></span>
+        <div style="width:100%;aspect-ratio:3/2;background:#1e2440;border:1.5px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;text-align:center;padding:0 12px">a second one</span></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#5f6ec4;text-align:center">the keeper liked it</span>
+      </div>
+    </div>
+    <span style="display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4;padding:12px 0 0 2px">swipe · the watch desk drawer →</span>
+  </div>
+  <!-- wave + beacon index -->
+  <div style="height:34px;margin-top:10px;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x top"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;padding:2px 20px 20px">
+    <span style="display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 10px 3px rgba(246,236,207,.85);animation:lampPulse 8s linear infinite;flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;color:#8a93c4">no. 002 · flagship</span></span>
+    <span style="display:flex;align-items:center;gap:7px"><span style="width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6);flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;color:#8a93c4">no. 004</span></span>
+    <span style="display:flex;align-items:center;gap:7px"><span style="width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6);animation:lampPulse 6s linear infinite;flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;color:#8a93c4">no. 006</span></span>
+    <span style="display:flex;align-items:center;gap:7px"><span style="width:6px;height:6px;border-radius:50%;background:#5f6ec4;box-shadow:0 0 8px 2px rgba(147,160,232,.5);flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;color:#8a93c4">the chart ↓</span></span>
+  </div>
+  <!-- register -->
+  <div style="display:flex;flex-direction:column;gap:12px;padding:6px 16px 8px">
+    <span style="display:flex;align-items:baseline;justify-content:space-between;padding:0 4px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Selected work</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8">the whole coast →</span></span>
+    <div style="border:1px solid rgba(150,160,220,.2);border-radius:4px;background:linear-gradient(160deg,#181c31,#141830)">
+      <div style="padding:10px 16px;border-bottom:1px solid rgba(150,160,220,.16)"><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;color:#5f6ec4;text-transform:uppercase">light list · argsea coast · corrected to jul 2026</span></div>
+      <div style="padding:16px;border-bottom:1px solid rgba(150,160,220,.14);display:flex;flex-direction:column;gap:10px">
+        <span style="display:flex;align-items:center;gap:10px"><span style="width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 12px 4px rgba(246,236,207,.7);animation:lampPulse 8s linear infinite;flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgb(246,236,207)">Fl W 8s</span><span style="flex:1"></span><span style="font-family:'Gloock',serif;font-size:19px;color:#2c3358">002</span></span>
+        <span style="font-family:'Gloock',serif;font-size:22px;line-height:1.15;color:#f0f2fc">The Great Un-monolithing</span>
+        <span style="font-size:14.5px;line-height:1.55;color:#a5aed4;text-wrap:pretty">One giant app became many small, well-behaved services. Readers never noticed. That was the point.</span>
+        <div style="width:100%;display:flex;flex-direction:column;gap:7px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:7px 7px 10px;box-shadow:0 10px 22px rgba(0,0,0,.5);transform:rotate(.8deg);box-sizing:border-box">
+          <div style="width:100%;aspect-ratio:2/1;background:#1e2440;border:1.5px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4">the first screenshot</span></div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#5f6ec4;text-align:center">from the station archive · no. 002</span>
+        </div>
+        <span style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap"><span style="font-size:13.5px;font-style:italic;color:#8f9be0">Moral: the best migrations are the boring ones.</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;white-space:nowrap">full log →</span></span>
+      </div>
+      <div style="padding:14px 16px;display:flex;gap:12px;align-items:baseline">
+        <span style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:none;width:44px"><span style="width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6)"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgb(246,236,207)">F W</span></span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font-family:'Gloock',serif;font-size:17px;color:#eef0fb">Newsroom plumbing</span><span style="font-size:13.5px;line-height:1.5;color:#a5aed4">A publishing workflow a real paper runs on, every day.</span></span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8;flex:none">read →</span>
+      </div>
+    </div>
+  </div>
+  <div style="padding:14px 20px 22px;text-align:center;background:linear-gradient(180deg,transparent,rgba(11,14,26,.9))"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4">· hobbies &amp; below · unchanged ·</span></div>
+</div>
+</div>
+
+<!-- ============ 1b · postcard header ============ -->
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Postcard header · photo no. 1 goes full-bleed on top, coast becomes a scroll rail, register compresses to an index</div>
+<div class="dv-card" style="width:375px">
+  <div style="position:relative;height:212px;background:#1e2440">
+    <div style="position:absolute;inset:10px;border:1.5px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4;text-align:center;padding:0 30px">a photo from right now · drop it here · it becomes the header</span></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,14,26,.72),transparent 34%,transparent 62%,rgba(17,19,31,.94))"></div>
+    <div style="position:absolute;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;padding:14px 20px">
+      <span style="display:flex;align-items:center;gap:9px"><svg width="18" height="21" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg><span style="font-family:'Gloock',serif;font-size:16px;color:#f0f2fc;text-shadow:0 2px 8px rgba(0,0,0,.6)">Justin Smith</span></span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c3cbf2">resume ↗</span>
+    </div>
+    <span style="position:absolute;left:14px;bottom:10px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:#93a0e8;background:rgba(17,19,31,.75);border:1px solid rgba(150,160,220,.25);border-radius:4px;padding:4px 9px">from the season · jul 2026</span>
+    <span style="position:absolute;right:22px;bottom:-4px;width:42px;height:50px;z-index:3"><dc-import name="HarborCat" pose="perched" bubble="left" hint-size="42px,50px" style="width:42px;height:50px"></dc-import></span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:13px;padding:20px 20px 8px">
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Senior software engineer · Pittsburgh PA</span>
+    <span style="font-family:'Gloock',serif;font-size:30px;line-height:1.12;color:#f0f2fc;text-wrap:balance">I help keep the lights on behind the news.</span>
+    <span style="display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid rgba(150,160,220,.14);padding-top:12px"><span style="display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#f0d9a8;text-transform:uppercase"><span style="width:6px;height:6px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 8px 2px rgba(240,217,168,.55);animation:lampPulse 4s ease-in-out infinite"></span>Now</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">kept 15 jul</span></span>
+    <span style="font-size:15.5px;line-height:1.65;color:#a5aed4;font-weight:300;text-wrap:pretty">Most of my time right now goes to the ArcXP migration: moving the newsroom onto its new stack while the paper keeps publishing, the kind of work nobody notices unless it goes wrong.</span>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4">the second photo rides with the journal ↓</span>
+  </div>
+  <!-- coast rail -->
+  <div style="position:relative;margin-top:8px">
+    <div style="height:26px;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x top"></div>
+    <div style="display:flex;gap:9px;padding:2px 20px 6px;overflow:hidden">
+      <span style="flex:none;display:flex;align-items:center;gap:7px;border:1px solid rgba(150,160,220,.28);border-radius:999px;padding:5px 12px"><span style="width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 10px 3px rgba(246,236,207,.85);animation:lampPulse 8s linear infinite"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8a93c4">no. 002 · flagship</span></span>
+      <span style="flex:none;display:flex;align-items:center;gap:7px;border:1px solid rgba(150,160,220,.28);border-radius:999px;padding:5px 12px"><span style="width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6)"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8a93c4">no. 004</span></span>
+      <span style="flex:none;display:flex;align-items:center;gap:7px;border:1px solid rgba(150,160,220,.28);border-radius:999px;padding:5px 12px"><span style="width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6);animation:lampPulse 6s linear infinite"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8a93c4">no. 006</span></span>
+      <span style="flex:none;display:flex;align-items:center;gap:7px;border:1px solid rgba(150,160,220,.28);border-radius:999px;padding:5px 12px"><span style="width:6px;height:6px;border-radius:50%;background:#5f6ec4"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8a93c4">the chart</span></span>
+    </div>
+  </div>
+  <!-- register as index -->
+  <div style="display:flex;flex-direction:column;gap:12px;padding:12px 16px 8px">
+    <span style="display:flex;align-items:baseline;justify-content:space-between;padding:0 4px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Selected work</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8">the whole coast →</span></span>
+    <div style="border:1px solid rgba(150,160,220,.2);border-radius:4px;background:linear-gradient(160deg,#181c31,#141830)">
+      <div style="padding:10px 16px;border-bottom:1px solid rgba(150,160,220,.16)"><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;color:#5f6ec4;text-transform:uppercase">light list · argsea coast · tap a light to step inside</span></div>
+      <div style="padding:14px 16px;border-bottom:1px solid rgba(150,160,220,.14);display:flex;gap:12px;align-items:center">
+        <span style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:none;width:44px"><span style="width:13px;height:13px;border-radius:50%;background:#fff;box-shadow:0 0 12px 4px rgba(246,236,207,.7);animation:lampPulse 8s linear infinite"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:rgb(246,236,207)">Fl W 8s</span></span>
+        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><span style="font-family:'Gloock',serif;font-size:17.5px;color:#f0f2fc">The Great Un-monolithing</span><span style="font-size:13px;font-style:italic;color:#8f9be0">the best migrations are the boring ones</span></span>
+        <span style="flex:none;width:52px;aspect-ratio:1;background:#1e2440;border:1px solid rgba(150,160,220,.25);display:flex;align-items:center;justify-content:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#5f6ec4">photo</span></span>
+      </div>
+      <div style="padding:13px 16px;border-bottom:1px solid rgba(150,160,220,.14);display:flex;gap:12px;align-items:center">
+        <span style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:none;width:44px"><span style="width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6)"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:rgb(246,236,207)">F W</span></span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-family:'Gloock',serif;font-size:16px;color:#eef0fb">Newsroom plumbing</span><span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase">est. 2016</span></span>
+        <span style="font-family:'Gloock',serif;font-size:16px;color:#2c3358;flex:none">004</span>
+      </div>
+      <div style="padding:13px 16px;display:flex;gap:12px;align-items:center">
+        <span style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:none;width:44px"><span style="width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6);animation:lampPulse 6s linear infinite"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:rgb(246,236,207)">Oc W 6s</span></span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-family:'Gloock',serif;font-size:16px;color:#eef0fb">100k good mornings</span><span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:#5f6ec4;text-transform:uppercase">est. 2018</span></span>
+        <span style="font-family:'Gloock',serif;font-size:16px;color:#2c3358;flex:none">006</span>
+      </div>
+    </div>
+  </div>
+  <div style="padding:14px 20px 22px;text-align:center;background:linear-gradient(180deg,transparent,rgba(11,14,26,.9))"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4">· hobbies &amp; below · unchanged ·</span></div>
+</div>
+</div>
+
+<!-- ============ 1c · work first ============ -->
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Work first · the letter folds to a pinned note, the register leads, photos land as a two-up desk at the end</div>
+<div class="dv-card" style="width:375px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 8px">
+    <span style="display:flex;align-items:center;gap:9px"><svg width="18" height="21" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation:lampPulse 5s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg><span style="font-family:'Gloock',serif;font-size:16px;color:#e8ebfa">Justin Smith</span></span>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#93a0e8">resume ↗</span>
+  </div>
+  <div style="padding:16px 20px 4px;display:flex;flex-direction:column;gap:12px">
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Senior software engineer · Pittsburgh PA</span>
+    <span style="font-family:'Gloock',serif;font-size:30px;line-height:1.12;color:#f0f2fc;text-wrap:balance">I help keep the lights on behind the news.</span>
+    <div style="position:relative;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:14px 16px;box-shadow:0 10px 24px rgba(0,0,0,.5);transform:rotate(-.6deg);display:flex;flex-direction:column;gap:8px">
+      <span style="position:absolute;left:50%;top:-6px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f6ecd0,#b09a5f);box-shadow:0 2px 4px rgba(0,0,0,.6);transform:translateX(-50%)"></span>
+      <span style="display:flex;align-items:baseline;justify-content:space-between"><span style="display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#f0d9a8;text-transform:uppercase"><span style="width:6px;height:6px;border-radius:50%;background:#f0d9a8;box-shadow:0 0 8px 2px rgba(240,217,168,.55);animation:lampPulse 4s ease-in-out infinite"></span>Now</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4">kept 15 jul</span></span>
+      <span style="font-size:14px;line-height:1.6;color:#a5aed4;font-style:italic;text-wrap:pretty">The ArcXP migration, the home lab, writing things down while they are still true. Dad the rest of the time.</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#f0d9a8">unfold the full letter ↓</span>
+    </div>
+  </div>
+  <div style="height:30px;margin-top:12px;background:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2253%22%20height=%2218%22%3E%3Cpath%20d=%22M0%209%20Q%2013.25%200,%2026.5%209%20T%2053%209%22%20stroke=%22rgba(147,160,232,0.3)%22%20stroke-width=%221.5%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x top"></div>
+  <div style="display:flex;flex-direction:column;gap:12px;padding:0 16px 8px">
+    <span style="display:flex;align-items:baseline;justify-content:space-between;padding:0 4px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">Selected work</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8">the whole coast →</span></span>
+    <div style="border:1px solid rgba(150,160,220,.2);border-radius:4px;background:linear-gradient(160deg,#181c31,#141830)">
+      <div style="padding:16px;border-bottom:1px solid rgba(150,160,220,.14);display:flex;flex-direction:column;gap:10px">
+        <span style="display:flex;align-items:center;gap:10px"><span style="width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 12px 4px rgba(246,236,207,.7);animation:lampPulse 8s linear infinite;flex:none"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgb(246,236,207)">Fl W 8s</span><span style="flex:1"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;color:#f0d9a8;text-transform:uppercase;border:1px dashed rgba(240,217,168,.45);border-radius:999px;padding:3px 9px">lit · est. 2024</span></span>
+        <span style="display:flex;gap:12px;align-items:flex-start">
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><span style="font-family:'Gloock',serif;font-size:21px;line-height:1.15;color:#f0f2fc">The Great Un-monolithing</span><span style="font-size:14px;line-height:1.55;color:#a5aed4;text-wrap:pretty">One giant app became many small services. Readers never noticed. That was the point.</span></span>
+          <span style="flex:none;width:86px;display:flex;flex-direction:column;gap:5px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:5px 5px 7px;box-shadow:0 8px 18px rgba(0,0,0,.5);transform:rotate(1.6deg)"><span style="width:100%;aspect-ratio:3/2;background:#1e2440;border:1px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#5f6ec4">photo</span></span></span>
+        </span>
+        <span style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap"><span style="font-size:13.5px;font-style:italic;color:#8f9be0">Moral: the best migrations are the boring ones.</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#f0d9a8;white-space:nowrap">full log →</span></span>
+      </div>
+      <div style="padding:14px 16px;border-bottom:1px solid rgba(150,160,220,.14);display:flex;gap:12px;align-items:baseline">
+        <span style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:none;width:44px"><span style="width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6)"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgb(246,236,207)">F W</span></span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font-family:'Gloock',serif;font-size:17px;color:#eef0fb">Newsroom plumbing</span><span style="font-size:13.5px;line-height:1.5;color:#a5aed4">A publishing workflow a real paper runs on, every day.</span></span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8;flex:none">read →</span>
+      </div>
+      <div style="padding:14px 16px;display:flex;gap:12px;align-items:baseline">
+        <span style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:none;width:44px"><span style="width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2.5px rgba(246,236,207,.6);animation:lampPulse 6s linear infinite"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgb(246,236,207)">Oc W 6s</span></span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font-family:'Gloock',serif;font-size:17px;color:#eef0fb">100k good mornings</span><span style="font-size:13.5px;line-height:1.5;color:#a5aed4">A newsletter that beats the sunrise into six figures of inboxes.</span></span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#f0d9a8;flex:none">read →</span>
+      </div>
+    </div>
+  </div>
+  <!-- the watch desk -->
+  <div style="display:flex;flex-direction:column;gap:12px;padding:14px 20px 8px">
+    <span style="display:flex;align-items:baseline;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#93a0e8;text-transform:uppercase">The watch desk</span><span style="font-size:13px;color:#5f6ec4;font-style:italic">two from the season</span></span>
+    <div style="position:relative;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="position:relative;display:flex;flex-direction:column;gap:6px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:6px 6px 9px;box-shadow:0 10px 22px rgba(0,0,0,.5);transform:rotate(1.2deg)">
+        <span style="position:absolute;top:-44px;right:10px;width:42px;height:50px;z-index:3"><dc-import name="HarborCat" pose="perched" bubble="left" hint-size="42px,50px" style="width:42px;height:50px"></dc-import></span>
+        <div style="width:100%;aspect-ratio:4/3;background:#1e2440;border:1.5px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#5f6ec4;text-align:center;padding:0 10px">a photo from right now</span></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#93a0e8;text-align:center">jul 2026</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;background:#252b49;border:1px solid rgba(150,160,220,.22);padding:6px 6px 9px;box-shadow:0 10px 22px rgba(0,0,0,.5);transform:rotate(-1.4deg);margin-top:10px">
+        <div style="width:100%;aspect-ratio:4/3;background:#1e2440;border:1.5px dashed rgba(150,160,220,.3);display:flex;align-items:center;justify-content:center;box-sizing:border-box"><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#5f6ec4;text-align:center;padding:0 10px">a second one</span></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#5f6ec4;text-align:center">the keeper liked it</span>
+      </div>
+    </div>
+  </div>
+  <div style="padding:14px 20px 22px;text-align:center;background:linear-gradient(180deg,transparent,rgba(11,14,26,.9))"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5f6ec4">· hobbies &amp; below · unchanged ·</span></div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "wire <a class="dv-oid" href="#1a">1a</a> into the live page" · "<a class="dv-oid" href="#1b">1b</a> but keep the morals visible" · "mix: <a class="dv-oid" href="#1b">1b</a> header with the <a class="dv-oid" href="#1a">1a</a> register" · "new directions"</p>
+</section>
+</x-dc>
+</body>
+</html>

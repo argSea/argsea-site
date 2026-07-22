@@ -360,6 +360,10 @@ h1,h2,h3,p{margin:0}
   letter-spacing:.08em}
 
 .sea{position:relative;height:190px;overflow:hidden}
+.sea-social{position:absolute;right:clamp(18px,4vw,42px);bottom:22px;z-index:6;display:flex;gap:15px;pointer-events:auto}
+.sea-social a{display:flex;color:rgba(203,211,245,.68);transition:color .2s ease,transform .2s ease;filter:drop-shadow(0 1px 5px rgba(0,0,0,.5))}
+.sea-social a:hover{color:var(--gold);transform:translateY(-2px)}
+.sea-social svg{display:block;width:22px;height:22px}
 .swell{position:absolute;left:0;width:200%;bottom:0;animation:drift var(--sp,26s) linear infinite}
 .swell svg{display:block;width:50%;height:auto;float:left}
 .swell.back{bottom:64px;opacity:.7;--sp:44s}
@@ -480,15 +484,14 @@ h1,h2,h3,p{margin:0}
   <section class="hero">
     <div>
       <div class="role rv" style="margin-top:0">Senior Software Engineer. Dad. Keeper.</div>
-      <h1 class="rv" style="--d:.08s;margin-top:18px;font-size:clamp(34px,4.4vw,58px)">I help keep the lights on behind the news.</h1>
+      <h1 class="rv" style="--d:.08s;margin-top:18px;font-size:clamp(28px,3.4vw,40px);line-height:1.12">I help keep the lights on<br>behind the news.</h1>
       <p class="pitch rv" style="--d:.16s">
-        Backend systems that stay up while everyone else sleeps. After hours I
-        build my own terminal, argue with a water shader, and read big universes
-        to a small human.
+        Backend systems that stay up while everyone else sleeps: the quiet
+        infrastructure that keeps the news online when traffic spikes and the
+        pagers go off.
       </p>
       <div class="doors rv" style="--d:.24s">
         <a href="resume.pdf" target="_blank" rel="noopener">resume ↗</a>
-        <a href="Contact.dc.html">say hello</a>
         <a href="TheChart.dc.html">set sail</a>
       </div>
     </div>
@@ -506,22 +509,16 @@ h1,h2,h3,p{margin:0}
         <path d="M8 16 L20 20 M64 16 L52 20" stroke="#ffd166" stroke-width="1.2" stroke-linecap="round" opacity=".5" style="animation:morseHi 4s linear infinite"></path>
       </svg>
       <div class="now-head">
-        <span class="tick">Now · the current watch</span>
+        <span class="tick">A note from the keeper</span>
         <span class="kept">kept 18 jul</span>
       </div>
       <div class="letter">
-        <p>This is my first one of these. Instead of a portfolio site with a blog, I decided
-        on just a site. About me. My work/personal projects. My hobbies, notes and whatever
-        else I decide to add next.</p>
         <p>Lying next to my son as he sleepily listens to our light up nose sucker that plays
         "twinkle twinkle little star". It doesn't get much better.</p>
         <p>My goals? Just be a good dad. Raise my kids to be kind. And hopefully have a few
-        less meetings at work.</p>
+        less meetings at work. Running's on hold, for now: it's too freaking hot.</p>
         <p class="sig">- j, the keeper</p>
-        <p class="aband">Abandoned: running, for now. too freaking hot</p>
       </div>
-      <div class="chips">saying goodbye <b>My K8s Cluster</b> · missing <b>Music theory</b> ·
-        celebrating <b>This website</b></div>
     </aside>
   </section>
 
@@ -642,14 +639,12 @@ h1,h2,h3,p{margin:0}
     <p class="cta-sub rv" style="--d:.12s">Work, questions, or just a wave from a passing ship.
     I read everything that reaches the tower.</p>
     <div class="cta-doors rv" style="--d:.18s">
-      <a class="primary" href="Contact.dc.html">say hello →</a>
+      <a class="primary" href="mailto:hello@argsea.com">say hello →</a>
       <a class="ghost" href="Projects.dc.html">see the work first</a>
     </div>
-    <div class="cta-aside rv" style="--d:.24s">or write direct: <a href="mailto:hello@argsea.com">hello@argsea.com</a></div>
     <div class="row rv" style="--d:.28s">
       <a href="Hello.dc.html">hello</a><a href="Projects.dc.html">projects</a><a href="Hobbies.dc.html">hobbies</a>
-      <a href="Notes.dc.html">notes</a><a href="resume.pdf" target="_blank" rel="noopener">resume ↗</a><a href="Contact.dc.html">contact</a>
-      <a href="#">github</a><a href="#">linkedin</a>
+      <a href="Notes.dc.html">notes</a><a href="resume.pdf" target="_blank" rel="noopener">resume ↗</a>
     </div>
     <div class="colo rv" style="--d:.32s">© 2026 · built on the night watch · all well</div>
   </div>
@@ -687,6 +682,10 @@ h1,h2,h3,p{margin:0}
     <div class="swell front">
       <svg viewBox="0 0 900 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 50 Q112 26 225 50 T450 50 T675 50 T900 50 L900 100 L0 100 Z" fill="#131628"></path><path d="M0 50 Q112 26 225 50 T450 50 T675 50 T900 50" stroke="rgba(223,232,245,.45)" stroke-width="2.2" stroke-dasharray="11 7" fill="none"></path></svg>
       <svg viewBox="0 0 900 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 50 Q112 26 225 50 T450 50 T675 50 T900 50 L900 100 L0 100 Z" fill="#131628"></path><path d="M0 50 Q112 26 225 50 T450 50 T675 50 T900 50" stroke="rgba(223,232,245,.45)" stroke-width="2.2" stroke-dasharray="11 7" fill="none"></path></svg>
+    </div>
+    <div class="sea-social" aria-label="find me elsewhere">
+      <a href="#" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.05-.02-2.06-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.62-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.01 2.9-.01 3.29 0 .32.22.7.83.58A12.01 12.01 0 0 0 24 12.5C24 5.87 18.63.5 12 .5z"></path></svg></a>
+      <a href="#" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"></path></svg></a>
     </div>
   </div>
 </footer>
