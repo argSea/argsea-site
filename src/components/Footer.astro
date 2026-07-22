@@ -1,32 +1,35 @@
 ---
-// The site-wide footer: a right stack of socials over copyright + a per-page
-// quip. The argsea dictionary one-liner retired to the Gull Post's filler ad
-// (ratified 2026-07-21); the SiteCopy singleton still carries the `dict`
-// field for that ad, the footer just no longer renders it. The socials come
-// from the keeper's profile; a cleared field drops its link rather than
-// shipping a dead href.
-//
-// The night watch definition is an optional left-side block; canon carries it
-// on every footer page except the 404 (Hobbies, Notes, Projects, CaseStudy).
+// The site-wide footer: a left definition block over a right stack of socials
+// and the colophon. The definition is the argsea entry itself (operator
+// ruling 2026-07-22: people should understand the domain name), rendered from
+// the copy singleton's `dict` field, passed down as a prop from BaseLayout
+// (it already holds `copy`) rather than fetched here; the "argc" mono
+// treatment mirrors gazette.astro's own dictSegments split, this footer being
+// the ad's sibling. It renders on every BaseLayout page, including the 404.
+// The socials come from the keeper's profile; a cleared field drops its link
+// rather than shipping a dead href.
 import { getKeeperProfile } from '../lib/api';
 
 interface Props {
-	quip:       string;
-	nightWatch?: boolean;
+	quip: string;
+	dict: string;
 }
 
-const { quip, nightWatch = false } = Astro.props;
+const { quip, dict } = Astro.props;
 const keeper = await getKeeperProfile();
 
 // The profile stores socials as host paths ("github.com/argsea"); links need a scheme
 const withScheme = (link: string) => /^https?:\/\//.test(link) ? link : `https://${link}`;
+
+// mirrors gazette.astro's own dictSegments split
+const dictSegments = dict
+	.split(/\b(argc)\b/)
+	.map((text) => ({ text, isArgc: text === 'argc' }));
 ---
-<footer class={nightWatch ? 'site-footer site-footer--split' : 'site-footer'}>
-	{nightWatch && (
-		<div class="definition">
-			<span class="definition__word">night watch</span> <span class="definition__ipa">/ˈnaɪt·wɒtʃ/ · noun</span> &nbsp;1. the hours nobody reads the news &nbsp;2. the shift that keeps it printable &nbsp;3. a sea of water, or of stars &nbsp;4. this website, most evenings
-		</div>
-	)}
+<footer class="site-footer">
+	<div class="definition">
+		<span class="definition__word">argsea</span> <span class="definition__ipa">/ˈɑːrɡ·siː/ · noun</span> &nbsp;{dictSegments.map((segment) => (segment.isArgc ? <span class="definition__argc">{segment.text}</span> : segment.text))}
+	</div>
 	<div class="site-footer__right">
 		<div class="socials">
 			{keeper.github && <a href={withScheme(keeper.github)}>github</a>}
@@ -34,8 +37,7 @@ const withScheme = (link: string) => /^https?:\/\//.test(link) ? link : `https:/
 			{keeper.email && <a href={`mailto:${keeper.email}`}>email</a>}
 		</div>
 		<div class="site-footer__meta">
-			<span class="copyright">© 2026 · the lighthouse</span>
-			<span class="quip">{quip}</span>
+			<span class="copyright">© 2026 · {quip}</span>
 		</div>
 	</div>
 </footer>
@@ -45,15 +47,11 @@ const withScheme = (link: string) => /^https?:\/\//.test(link) ? link : `https:/
 		margin-top: auto;
 		display: flex;
 		align-items: center;
-		justify-content: flex-end;
+		justify-content: space-between;
 		flex-wrap: wrap;
 		gap: 16px 28px;
 		padding: 20px var(--gutter) 24px;
 		border-top: 1px solid rgba(150, 160, 220, .07);
-	}
-
-	.site-footer--split {
-		justify-content: space-between;
 	}
 
 	.definition {
@@ -78,6 +76,12 @@ const withScheme = (link: string) => /^https?:\/\//.test(link) ? link : `https:/
 		font-size: 10px;
 		font-style: normal;
 		color: var(--periwinkle-deep);
+	}
+
+	.definition__argc {
+		font-family: var(--font-mono);
+		font-style: normal;
+		font-size: 10px;
 	}
 
 	.site-footer__right {
@@ -110,11 +114,5 @@ const withScheme = (link: string) => /^https?:\/\//.test(link) ? link : `https:/
 		font-family: var(--font-mono);
 		font-size: 10.5px;
 		color: var(--periwinkle-deep);
-	}
-
-	.quip {
-		font-size: 12.5px;
-		color: var(--text-quip);
-		font-style: italic;
 	}
 </style>

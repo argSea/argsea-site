@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import type { Doodle, FigureheadDesign, Hobby, Note, Project } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
+import DoodleSvg from './DoodleSvg';
 import JournalEntryOverlay from './JournalEntryOverlay';
 import LightEntryOverlay from './LightEntryOverlay';
 import './NotesList.css';
@@ -73,33 +74,45 @@ export default function NotesList({ notes, doodles, projects, hobbies, catEnable
 				</div>
 
 				<div className="journal__rows">
-					{notes.map((note) => (
-						<div
-							key={note.id}
-							className="note-row"
-							role="button"
-							tabIndex={0}
-							onClick={() => openNote(note.id)}
-							onKeyDown={(event) => {
-								if (event.key === 'Enter' || event.key === ' ') {
-									event.preventDefault();
-									openNote(note.id);
-								}
-							}}
-						>
-							<span className="note-row__dateline">
-								<span className="note-row__date">{note.date}</span>
-								<span className="note-row__conditions">{note.conditions}</span>
-							</span>
-							<span className="note-row__middle">
-								<span className="note-row__titlerow">
-									<span className="note-row__title">{note.title}</span>
-									<span className="note-row__read">read →</span>
+					{notes.map((note) => {
+						const doodle = doodleFor(note.doodleId);
+						return (
+							<div
+								key={note.id}
+								className="note-row"
+								role="button"
+								tabIndex={0}
+								onClick={() => openNote(note.id)}
+								onKeyDown={(event) => {
+									if (event.key === 'Enter' || event.key === ' ') {
+										event.preventDefault();
+										openNote(note.id);
+									}
+								}}
+							>
+								{/* marginalia: faint until hovered; aria-hidden since the row
+								    itself already carries the accessible name and role, and a
+								    click on it opens the note by bubbling to the row's own
+								    handler, same as clicking anywhere else on the row */}
+								{doodle && (
+									<span className="note-row__doodle" aria-hidden="true">
+										<DoodleSvg doodle={doodle} className="note-row__doodle-svg" />
+									</span>
+								)}
+								<span className="note-row__dateline">
+									<span className="note-row__date">{note.date}</span>
+									<span className="note-row__conditions">{note.conditions}</span>
 								</span>
-								<span className="note-row__teaser">{note.teaser}</span>
-							</span>
-						</div>
-					))}
+								<span className="note-row__middle">
+									<span className="note-row__titlerow">
+										<span className="note-row__title">{note.title}</span>
+										<span className="note-row__read">read →</span>
+									</span>
+									<span className="note-row__teaser">{note.teaser}</span>
+								</span>
+							</div>
+						);
+					})}
 				</div>
 
 				<div className="journal__foot">

@@ -3,7 +3,17 @@
 // uncharted hobby rides the log but never the chart, the Flannan memorial keeps
 // its real Fl(2) light, the bearing card reads a hobby's last log and sends up a
 // flare, and reduced motion stills the whole thing.
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
+import type { SiteCopy } from '../src/lib/api';
+
+// Read (not import) the fixture: a JSON module import would need an import
+// attribute under Node's ESM loader, which the spec transform rejects
+const siteCopy: SiteCopy = JSON.parse(
+	readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'fixtures', 'siteCopy.json'), 'utf8'),
+);
 
 test('the log lists one row per hobby, ordered by the keeper\'s key', async ({ page }) => {
 	await page.goto('/hobbies');
@@ -168,9 +178,9 @@ test('reduced motion stills the chart', async ({ page }) => {
 	expect(await lamp.evaluate((el) => el.getAnimations().length)).toBe(0);
 });
 
-test('the footer carries the night watch definition', async ({ page }) => {
+test('the footer carries the argsea definition', async ({ page }) => {
 	await page.goto('/hobbies');
 	const definition = page.locator('.definition');
-	await expect(definition).toContainText('night watch');
-	await expect(definition).toContainText('this website, most evenings');
+	await expect(definition).toContainText('argsea');
+	await expect(definition).toContainText(siteCopy.dict);
 });

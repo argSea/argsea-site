@@ -14,13 +14,13 @@
 // is off limits to this slice.
 import { useEffect, useRef, useState } from 'react';
 import type { Hobby, Light, Note, Project } from '../../lib/api';
+import { loadFlares, recordFlare } from '../../lib/flares';
 import { DEFAULT_LIGHT, codeFor, timeline, type Timeline } from '../../lib/lightChar';
 import { sightFlare } from '../../lib/sightings';
 import { BERTHS, HOBBY_CODE, HOBBY_DRESSING, HOBBY_ICON, JOURNAL_BERTHS } from './helmBerths';
 import './Helm.css';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const FLARES_KEY = 'argsea-flares'; // same key ShipsLog reads/writes, so a flare tallies once across both pages
 
 /* Mercator: a straight line on the paper is a constant compass course. Pure
    functions of fixed geographic constants, so they're hoisted once rather
@@ -472,18 +472,17 @@ export default function Helm({ projects, hobbies, notes, keeperName, keeperTitle
 		});
 
 		/* signal flares: root for a hobby; the keeper's office reads the tally.
-		   Same localStorage key and shape ShipsLog reads/writes (argsea-flares,
-		   flares[name] += 1), so a flare tallies once whichever page fires it,
-		   plus the same beacon call so the server-side count agrees too. */
-		let flares: Record<string, number> = {};
-		try {
-			flares = JSON.parse(localStorage.getItem(FLARES_KEY) ?? '{}') || {};
-		} catch {
-			// a corrupt or blocked store just means no flare tally remembered
-		}
+		   The shared tally (src/lib/flares.ts) reads and writes the same
+		   id-keyed bucket ShipsLog does, so a flare tallies once whichever page
+		   fires it, plus the same beacon call so the server-side count agrees
+		   too. A mark's own id is a slug of its name (buildMarks above), not the
+		   hobby's real id, so every lookup here resolves through the hobby list. */
+		let flares = loadFlares(hobbies);
+		const hobbyIdFor = (name: string) => hobbies.find((h) => h.name === name)?.id;
 		const flareGlowFor = (id: string) => {
 			const n = nodes[id];
-			if (!n || n.data.group !== 'Hobbies' || !flares[n.data.name]) {
+			const hobbyId = n && n.data.group === 'Hobbies' ? hobbyIdFor(n.data.name) : undefined;
+			if (!hobbyId || !flares[hobbyId]) {
 				return;
 			}
 			if (n.markEl.querySelector('.mk__fg')) {
@@ -495,17 +494,12 @@ export default function Helm({ projects, hobbies, notes, keeperName, keeperTitle
 			flareGlowFor(id);
 		}
 		const fireFlare = (m: Mark) => {
-			flares[m.name] = (flares[m.name] || 0) + 1;
-			try {
-				localStorage.setItem(FLARES_KEY, JSON.stringify(flares));
-			} catch {
-				// storage may be unavailable (private mode, quota); the tally just won't survive a reload
+			const hobbyId = hobbyIdFor(m.name);
+			if (hobbyId) {
+				flares = recordFlare(hobbyId, flares);
+				sightFlare(hobbyId);
 			}
 			flareGlowFor(m.id);
-			const hobby = hobbies.find((h) => h.name === m.name);
-			if (hobby) {
-				sightFlare(hobby.id);
-			}
 			const fl = document.createElement('div');
 			fl.style.cssText = 'position:fixed;left:50%;bottom:9%;transform:translateX(-50%);width:0;height:0;z-index:80;pointer-events:none';
 			fl.innerHTML = `<div style="position:absolute;left:-1.5px;bottom:0;width:3px;height:42px;border-radius:2px;background:linear-gradient(180deg,#ff6a52,rgba(255,106,82,0));box-shadow:0 0 12px 3px rgba(255,106,82,.5);animation:flareRise 2.4s ease-out both"></div>
@@ -593,7 +587,7 @@ export default function Helm({ projects, hobbies, notes, keeperName, keeperTitle
          <span class="sheet__cap">${m.cap}</span>
          ${m.body.map((p) => `<p>${p}</p>`).join('')}
          ${m.meta ? `<dl>${m.meta.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}
-         ${m.group === 'Hobbies' ? `<p style="margin-top:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px"><button class="sheet__flare" id="fireFlare"><svg width="13" height="15" viewBox="0 0 13 15" fill="none"><path d="M6.5 14 V6" stroke="#c6a052" stroke-width="1.3" stroke-linecap="round"/><path d="M6.5 1 L8 4.5 L6.5 3.5 L5 4.5 Z" fill="#ff6a52"/></svg>send up a flare</button><span class="sheet__flareline" id="flareLine">${flares[m.name] ? 'flare away · the keeper will see it' : 'send one up to root for this one'}</span></p>` : ''}
+         ${m.group === 'Hobbies' ? `<p style="margin-top:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px"><button class="sheet__flare" id="fireFlare"><svg width="13" height="15" viewBox="0 0 13 15" fill="none"><path d="M6.5 14 V6" stroke="#c6a052" stroke-width="1.3" stroke-linecap="round"/><path d="M6.5 1 L8 4.5 L6.5 3.5 L5 4.5 Z" fill="#ff6a52"/></svg>send up a flare</button><span class="sheet__flareline" id="flareLine">${hobbyIdFor(m.name) && flares[hobbyIdFor(m.name)!] ? 'flare away · the keeper will see it' : 'send one up to root for this one'}</span></p>` : ''}
          ${m.memorial ? '<p style="margin-top:18px"><button class="mem__close" id="openMem" style="color:#c9a86a;border-color:rgba(154,123,58,.5)">read the memorial</button></p>' : ''}`;
 			const om = document.getElementById('openMem');
 			if (om) {

@@ -74,15 +74,15 @@ test('the wreck cat bubble stays on screen at 390px', async ({ page }) => {
 	expect(box.x + box.width).toBeLessThanOrEqual(390);
 });
 
-test('the sea drops a bottled proverb on its own schedule, tap releases it', async ({ page }) => {
+test('the sea drops a bottled proverb on its own schedule, a real tap on the note releases it', async ({ page }) => {
 	await page.clock.install();
 	await page.goto('/');
 	// the sea's own schedule (BottleBoat's auto mode), not a poke; fast-forward
-	// past the first drop rather than waiting on it for real. The bottle keeps
-	// drifting the whole time (a real CSS animation, untouched by the fake
-	// clock), so it never sits still for a real click; dispatch it instead,
+	// just past the 4s first drop rather than waiting on it for real. The
+	// glass still drifts at this point (a real CSS animation, untouched by the
+	// fake clock), so it never sits still for a real click; dispatch that one,
 	// same idiom the never-stops-sailing boat specs already use.
-	await page.clock.fastForward(45000);
+	await page.clock.fastForward(4500);
 	await page.locator('.bottle-drift__glass-wrap').first().dispatchEvent('click');
 
 	const note = page.locator('.bottle-note');
@@ -90,7 +90,29 @@ test('the sea drops a bottled proverb on its own schedule, tap releases it', asy
 	const proverb = await note.locator('.bottle-note__proverb').textContent();
 	expect(siteCopy.bottleProverbs).toContain(proverb);
 
-	await note.dispatchEvent('click');
+	// opening pauses the drift (BottleBoat.tsx), so the note now sits still: a
+	// real click proves the note itself is clickable, not just its listener
+	// (the regression: .bottle-drift .bottle-note stayed pointer-events:none)
+	await note.click();
+	await expect(note).toHaveCount(0);
+});
+
+test('the glass toggles an open bottle closed instead of reopening it and resetting the tide', async ({ page }) => {
+	await page.clock.install();
+	await page.goto('/');
+	await page.clock.fastForward(4500);
+	// still drifting near its -40px start, same as the note release test above:
+	// dispatch straight past the stability check rather than wait it out for real
+	const glass = page.locator('.bottle-drift__glass-wrap').first();
+	await glass.dispatchEvent('click');
+
+	const note = page.locator('.bottle-note');
+	await expect(note).toBeVisible();
+
+	// today's bug: a click on the glass while open falls through the inert note
+	// and re-opens, resetting the 12s dismiss timer every time. The fixed
+	// glass-wrap click is a toggle, so this same click now closes it instead.
+	await glass.dispatchEvent('click');
 	await expect(note).toHaveCount(0);
 });
 
@@ -199,7 +221,16 @@ test('the shallows carry the faint-stars layer, masked to fade toward the water'
 	expect(await stars.evaluate((element) => getComputedStyle(element).maskImage || getComputedStyle(element).webkitMaskImage)).toContain('linear-gradient');
 });
 
-test('the 404 footer carries no night watch definition', async ({ page }) => {
+test('the 404 footer carries the argsea definition too', async ({ page }) => {
 	await page.goto('/404.html');
-	await expect(page.locator('.definition')).toHaveCount(0);
+	const definition = page.locator('.definition');
+	await expect(definition).toContainText('argsea');
+	await expect(definition).toContainText(siteCopy.dict);
+});
+
+test('the 404 runs the chart-under-page ambience, and pins the path that ran it aground', async ({ page }) => {
+	await page.goto('/404.html');
+	await expect(page.locator('#window-scape')).toBeAttached();
+	await expect(page.locator('.chart-wreck__kicker')).toHaveText('you ran aground at');
+	await expect(page.locator('.chart-wreck__path')).toHaveText('/404.html');
 });

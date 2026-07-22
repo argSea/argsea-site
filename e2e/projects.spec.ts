@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
-import type { Project } from '../src/lib/api';
+import type { Project, SiteCopy } from '../src/lib/api';
 
 // Read (not import) the fixture: a JSON module import would need an import
 // attribute under Node's ESM loader, which the spec transform rejects
@@ -16,6 +16,9 @@ const projects: Project[] = JSON.parse(
 	readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'fixtures', 'projects.json'), 'utf8'),
 );
 const publishedCount = projects.filter((project) => project.status === 'published').length;
+const siteCopy: SiteCopy = JSON.parse(
+	readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'fixtures', 'siteCopy.json'), 'utf8'),
+);
 
 test('the coast lights one beacon per published project', async ({ page }) => {
 	expect(publishedCount).toBeGreaterThan(0);
@@ -278,11 +281,11 @@ test('the footer no longer renders the argsea dictionary', async ({ page }) => {
 	await expect(page.locator('.site-footer__dict')).toHaveCount(0);
 });
 
-test('the footer carries the night watch definition', async ({ page }) => {
+test('the footer carries the argsea definition', async ({ page }) => {
 	await page.goto('/projects');
 	const definition = page.locator('.definition');
-	await expect(definition).toContainText('night watch');
-	await expect(definition).toContainText('this website, most evenings');
+	await expect(definition).toContainText('argsea');
+	await expect(definition).toContainText(siteCopy.dict);
 });
 
 test('the provenance chip names the harness for an assisted light, and reads "by hand" for one without', async ({ page }) => {

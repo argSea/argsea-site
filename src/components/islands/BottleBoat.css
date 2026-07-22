@@ -177,7 +177,11 @@
 
 /* .bottle-note (the poked note's own classes) sits absolutely inside
    whichever wrapper hosts it; here that's the drifting bottle itself, so it
-   rises above the glass the same way it rises above the poked drop */
+   rises above the glass the same way it rises above the poked drop. The note
+   re-enables pointer-events on top of .bottle-drift's own none, or a tap
+   falls through it onto the glass underneath and reopens the bottle instead
+   of releasing it. */
 .bottle-drift .bottle-note {
 	bottom: 30px;
+	pointer-events: auto;
 }

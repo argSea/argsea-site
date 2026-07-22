@@ -12,6 +12,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactElement } from 'react';
 import type { Coord, Doodle, FigureheadDesign, Hobby, HobbyState, Note } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
+import { loadFlares, recordFlare } from '../../lib/flares';
 import { sightFlare, sightVisit } from '../../lib/sightings';
 import { useEscapeKey } from './useEscapeKey';
 import BoltedSvg from './BoltedSvg';
@@ -20,7 +21,6 @@ import JournalEntryOverlay from './JournalEntryOverlay';
 import './ShipsLog.css';
 
 const CLOSE_MS = 220;
-const FLARES_KEY = 'argsea-flares';
 
 // The chart's projection window and the two fixed marks that aren't hobbies:
 // the memorial's light and the uncharted "next hobby" slot.
@@ -132,16 +132,11 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 
 	const suggestionList = useMemo(() => ['???', ...suggestions], [suggestions]);
 
+	// The shared tally (src/lib/flares.ts) loads and migrates name keys to
+	// hobby.id in one pass; Helm reads and writes the same bucket.
 	useEffect(() => {
-		try {
-			const stored = JSON.parse(localStorage.getItem(FLARES_KEY) ?? '{}');
-			if (stored && typeof stored === 'object') {
-				setFlares(stored);
-			}
-		} catch {
-			// a corrupt or blocked store just means no flare tally remembered
-		}
-	}, []);
+		setFlares(loadFlares(hobbies));
+	}, [hobbies]);
 
 	// The ?bearing= contract: a journal entry's ◈ link lands here with the
 	// hobby's name, and the bearing card opens itself on arrival (matched
@@ -190,20 +185,14 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 			return;
 		}
 		const hobby = hobbies[openIdx];
-		const next = { ...flares, [hobby.name]: (flares[hobby.name] ?? 0) + 1 };
 		clearTimeout(fireTimer.current);
-		setFlares(next);
-		setFlaredNow((current) => ({ ...current, [hobby.name]: true }));
+		setFlares(recordFlare(hobby.id, flares));
+		setFlaredNow((current) => ({ ...current, [hobby.id]: true }));
 		// drop the flare, then raise it fresh next frame so a re-fire restarts it
 		setFlareFiring(false);
 		requestAnimationFrame(() => setFlareFiring(true));
 		fireTimer.current = setTimeout(() => setFlareFiring(false), 2500);
 		sightFlare(hobby.id);
-		try {
-			localStorage.setItem(FLARES_KEY, JSON.stringify(next));
-		} catch {
-			// storage may be unavailable (private mode, quota); the card's line just won't survive a reload
-		}
 	};
 
 	const onHover = (index: number) => setHoverIdx(index);
@@ -226,7 +215,7 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 	const unP = proj(UNCHARTED_COORD);
 
 	const open = openIdx === null ? null : hobbies[openIdx];
-	const flareCount = open ? (flares[open.name] ?? 0) : 0;
+	const flareCount = open ? (flares[open.id] ?? 0) : 0;
 	const flareLine = flareCount > 0 ? 'flare away · the keeper will see it' : 'send one up to root for this one';
 
 	// A bearing's tied journal entries, resolved by stable id (mirrors a light's
@@ -356,7 +345,7 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 									<div style={{ position: 'relative', width: '64px', height: '56px', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
 										{hobby.seasons && <span style={{ position: 'absolute', left: '-1px', top: '-3px', fontFamily: "'IBM Plex Mono', monospace", fontSize: '8.5px', letterSpacing: '.04em', color: 'rgba(147,160,232,.5)', pointerEvents: 'none', zIndex: 1 }}>{hobby.seasons}</span>}
 										{markGlyph(hobby.state, bolted)}
-										{flaredNow[hobby.name] && <div style={{ position: 'absolute', left: '50%', top: '28%', width: '32px', height: '32px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: 'radial-gradient(circle,rgba(255,106,82,.55),transparent 68%)', filter: 'blur(1px)', animation: 'flareGlowPulse 3s ease-in-out infinite', pointerEvents: 'none' }} />}
+										{flaredNow[hobby.id] && <div style={{ position: 'absolute', left: '50%', top: '28%', width: '32px', height: '32px', transform: 'translate(-50%,-50%)', borderRadius: '50%', background: 'radial-gradient(circle,rgba(255,106,82,.55),transparent 68%)', filter: 'blur(1px)', animation: 'flareGlowPulse 3s ease-in-out infinite', pointerEvents: 'none' }} />}
 										<div style={{ position: 'absolute', left: '50%', bottom: '-5px', transform: 'translateX(-50%)', width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(147,160,232,.95)', boxShadow: '0 0 6px 1px rgba(147,160,232,.5)', pointerEvents: 'none' }} />
 									</div>
 									<div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', color: '#dfe3f4', background: 'rgba(14,18,38,.82)', border: '1px solid rgba(150,160,220,.28)', borderRadius: '7px', padding: '3px 10px', whiteSpace: 'nowrap', boxShadow: '0 4px 10px rgba(0,0,0,.4)' }}>{hobby.name}</div>

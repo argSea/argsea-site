@@ -12,17 +12,18 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import TabBar from '../components/TabBar.astro';
 import HarborCatDirector from '../components/islands/HarborCatDirector';
+import WanderingGull from '../components/islands/WanderingGull';
 import { getSiteCopy, getFigurehead, type QuipField } from '../lib/api';
 import type { CatPage } from '../lib/catSpots';
 
 interface Props {
-	title:      string;
-	active:     'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
-	quipKey:    QuipField;
-	nightWatch?: boolean; // the footer's night watch definition; every page but the 404
+	title:   string;
+	active:  'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
+	quipKey: QuipField;
+	gull?:   boolean; // the wandering gull, the gazette door away from home; projects/hobbies/notes only
 }
 
-const { title, active, quipKey, nightWatch = false } = Astro.props;
+const { title, active, quipKey, gull = false } = Astro.props;
 
 // The footer quip is per-page "signal flags" copy from the SiteCopy singleton
 const copy = await getSiteCopy();
@@ -48,13 +49,14 @@ const catPage: CatPage = active === 'none' ? 'p404' : active;
 		<div class="page">
 			<Nav active={active} />
 			<slot />
-			<Footer quip={copy[quipKey]} nightWatch={nightWatch} />
+			<Footer quip={copy[quipKey]} dict={copy.dict} />
 		</div>
 		{/* Body-level, not inside .page: the projects page makes .page its own
 		    z-index:0 stacking context, which would trap a fixed bar under the
 		    body-portaled harbor cat. Kept a sibling so the bar always wins. */}
 		<TabBar active={active} />
 		{copy.eggs.cat && <HarborCatDirector client:idle page={catPage} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />}
+		{gull && <WanderingGull client:idle />}
 	</body>
 </html>
 

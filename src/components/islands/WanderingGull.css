@@ -1,0 +1,32 @@
+/* The wandering gull: fixed at the right margin, above the page's own
+   content but below any overlay (TabBar and the overlay backdrop both sit at
+   z-index:50). */
+
+.wandering-gull {
+	position: fixed;
+	right: 14px;
+	top: 30vh;
+	z-index: 20;
+	display: block;
+	color: rgba(147, 160, 232, .55);
+	animation: gullGlideIn .9s ease both;
+	transition: color .2s ease;
+}
+
+.wandering-gull:hover {
+	color: var(--gold);
+}
+
+.wandering-gull svg {
+	display: block;
+	transition: transform .2s ease;
+}
+
+.wandering-gull:hover svg {
+	transform: rotate(-6deg);
+}
+
+@keyframes gullGlideIn {
+	from { opacity: 0; transform: translateX(50px); }
+	to   { opacity: 1; transform: translateX(0); }
+}

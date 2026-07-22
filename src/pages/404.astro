@@ -6,8 +6,16 @@
 // list egg; the harbor cat heckles from the placard's top edge. Astro emits
 // this as dist/404.html; serving it for unknown routes is nginx config at
 // cutover.
+//
+// A lean adaptation of home's chart-under-page + lamp-reveal ambience
+// (index.astro's inline script) runs underneath: the same paper, the same
+// pointer/touch-hold lamp, trimmed to a viewport-sized chart with no isles,
+// no lighthouse secrets, no gull-on-chart. Its one new mark is the wreck
+// itself, pinned and labeled at runtime with the path that ran it aground.
+// Drifting bottles ride the shallows too (BottleBoat's auto mode).
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LightList from '../components/islands/LightList';
+import BottleBoat from '../components/islands/BottleBoat';
 import { getSiteCopy, getCarvings } from '../lib/api';
 import { boltedSvg, innerMarkup } from '../lib/carvings';
 
@@ -20,9 +28,20 @@ const carvings = await getCarvings();
 const gullSvg = boltedSvg('gull', carvings);
 const routeSvg = boltedSvg('route-line', carvings);
 const buoySvg = boltedSvg('buoy', carvings);
+const bottleSvg = boltedSvg('bottle', carvings);
+
+// The smuggler's cove gate, same rule index.astro reads it by: an emptied
+// proverb list (or the egg off) leaves the sea quiet.
+const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 ---
 <BaseLayout title="404 · run aground · Justin Smith" active="none" quipKey="quip404">
 	<section class="shallows">
+		<canvas id="window-scape" aria-hidden="true"></canvas>
+		<div class="chart-wreck">
+			<span class="chart-wreck__kicker">you ran aground at</span>
+			<span class="chart-wreck__path" id="chart-wreck-path"></span>
+		</div>
+
 		<div class="stars" aria-hidden="true"></div>
 		<div class="firefly ff-1"></div>
 		<div class="firefly ff-2"></div>
@@ -112,8 +131,141 @@ const buoySvg = boltedSvg('buoy', carvings);
 			<div class="chop chop--front"></div>
 			<div class="chop chop--back"></div>
 		</div>
+
+		<BottleBoat client:idle proverbs={proverbs} bottleSvg={bottleSvg} auto={true} />
 	</section>
 </BaseLayout>
+
+<script>
+	// The chart of the shallows, scrolling nowhere: a lean cut of index.astro's
+	// own ambience script. This page never grows past a viewport (no document-
+	// height tracking needed), carries no isles and no invisible-ink secrets,
+	// and adds nothing this page doesn't already have to say: the paper, and
+	// the lamp that reveals it.
+	function initWindow() {
+		const cv = document.getElementById('window-scape') as HTMLCanvasElement | null;
+		if (!cv) return;
+		const ctx = cv.getContext('2d');
+		if (!ctx) return;
+		const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		let W = 0, H = 0, seed = 11;
+		const R = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+		const chart = document.createElement('canvas');
+
+		const paintChart = () => {
+			seed = 11;
+			const w = W, h = H;
+			chart.width = w;
+			chart.height = h;
+			const c = chart.getContext('2d');
+			if (!c) return;
+			c.clearRect(0, 0, w, h);
+			// graticule: the shallows' own patch of chart
+			c.font = '9px ui-monospace,Menlo,monospace';
+			for (let y = 60, mn = 34; y < h && mn >= 0; y += 140, mn -= 4) {
+				c.strokeStyle = 'rgba(147,160,232,.035)';
+				c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke();
+				c.fillStyle = 'rgba(147,160,232,.12)';
+				c.fillText(`57°${mn}′N`, 10, y - 5);
+			}
+			for (let x = 60, mm = 40; x < w; x += 160, mm -= 2) {
+				c.strokeStyle = 'rgba(147,160,232,.03)';
+				c.beginPath(); c.moveTo(x, 0); c.lineTo(x, h); c.stroke();
+				c.fillStyle = 'rgba(147,160,232,.1)';
+				c.fillText(`7°${mm}′W`, x + 5, 16);
+			}
+			// soundings, scattered across the paper
+			c.font = '10px ui-monospace,Menlo,monospace';
+			const n = Math.max(30, Math.round((w * h) / 26000));
+			for (let i = 0; i < n; i++) {
+				c.fillStyle = 'rgba(147,160,232,.08)';
+				c.fillText(String(2 + ((R() * 34) | 0)), R() * w, R() * h);
+			}
+			// compass rose
+			const rx = w * .86, ry = h * .8;
+			c.strokeStyle = 'rgba(147,160,232,.06)';
+			c.beginPath(); c.arc(rx, ry, 36, 0, 6.29); c.stroke();
+			c.beginPath(); c.arc(rx, ry, 48, 0, 6.29); c.stroke();
+			for (let i = 0; i < 24; i++) {
+				const th = (i / 24) * Math.PI * 2, l = i % 6 ? 4 : 9;
+				c.beginPath(); c.moveTo(rx + Math.cos(th) * (48 - l), ry + Math.sin(th) * (48 - l));
+				c.lineTo(rx + Math.cos(th) * 48, ry + Math.sin(th) * 48); c.stroke();
+			}
+			c.fillStyle = 'rgba(147,160,232,.08)';
+			c.beginPath(); c.moveTo(rx, ry - 48); c.lineTo(rx - 4, ry - 32); c.lineTo(rx + 4, ry - 32); c.closePath(); c.fill();
+			c.fillText('N', rx - 3, ry - 54);
+		};
+
+		let mx = -999, my = -999, sx = -999, sy = -999;
+		const onMove = (e: PointerEvent) => {
+			if (e.pointerType === 'touch') return;
+			mx = e.clientX; my = e.clientY;
+			if (sx < -500) { sx = mx; sy = my; }
+		};
+		// on touch the lamp is held, not pointed: press half a second, then drag it around
+		let holdT = 0, lampTouch = false, tx0 = 0, ty0 = 0;
+		const douse = () => { mx = my = sx = sy = -999; };
+		const onTouchDown = (e: PointerEvent) => {
+			if (e.pointerType !== 'touch') return;
+			tx0 = e.clientX; ty0 = e.clientY;
+			clearTimeout(holdT);
+			holdT = window.setTimeout(() => { lampTouch = true; mx = sx = tx0; my = sy = ty0; }, 450);
+		};
+		const onTouchMove = (e: PointerEvent) => {
+			if (e.pointerType !== 'touch') return;
+			if (lampTouch) { mx = e.clientX; my = e.clientY; return; }
+			if (Math.abs(e.clientX - tx0) > 12 || Math.abs(e.clientY - ty0) > 12) clearTimeout(holdT);
+		};
+		const onTouchEnd = (e: PointerEvent) => {
+			if (e.pointerType !== 'touch') return;
+			clearTimeout(holdT);
+			if (!lampTouch) return;
+			lampTouch = false;
+			window.setTimeout(() => { if (!lampTouch) douse(); }, 900);
+		};
+		const blockScroll = (e: TouchEvent) => { if (lampTouch) e.preventDefault(); };
+
+		const frame = () => {
+			requestAnimationFrame(frame);
+			sx += (mx - sx) * .12; sy += (my - sy) * .12;
+			ctx.clearRect(0, 0, W, H);
+			ctx.drawImage(chart, 0, 0);
+			if (mx > -500) {
+				// a lamp held over the paper: nearby linework comes up, no invisible
+				// ink underneath it on this page
+				for (const rr of [160, 100, 60]) {
+					ctx.save(); ctx.beginPath(); ctx.arc(sx, sy, rr, 0, 6.29); ctx.clip();
+					ctx.drawImage(chart, 0, 0); ctx.restore();
+				}
+			}
+		};
+		const calmDraw = () => { ctx.clearRect(0, 0, W, H); ctx.drawImage(chart, 0, 0); };
+		const resize = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; paintChart(); calmDraw(); };
+		resize();
+		addEventListener('resize', resize);
+		if (calm) {
+			calmDraw();
+		} else {
+			addEventListener('pointermove', onMove);
+			addEventListener('pointerdown', onTouchDown);
+			addEventListener('pointermove', onTouchMove);
+			addEventListener('pointerup', onTouchEnd);
+			addEventListener('pointercancel', onTouchEnd);
+			addEventListener('touchmove', blockScroll, { passive: false });
+			requestAnimationFrame(frame);
+		}
+	}
+
+	// The wreck pin: the one new mark on this chart, labeled at runtime with
+	// the path that ran the visitor aground.
+	function initWreck() {
+		const label = document.getElementById('chart-wreck-path');
+		if (label) label.textContent = location.pathname;
+	}
+
+	initWindow();
+	initWreck();
+</script>
 
 <style>
 	.shallows {
@@ -125,6 +277,44 @@ const buoySvg = boltedSvg('buoy', carvings);
 		justify-content: flex-end;
 		padding: clamp(40px, 7vw, 72px) var(--gutter) 0;
 		overflow: hidden;
+	}
+
+	/* ---------- ambience: the chart under the shallows ---------- */
+	#window-scape {
+		position: fixed;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
+		pointer-events: none;
+	}
+
+	.chart-wreck {
+		position: fixed;
+		left: 50%;
+		top: 18%;
+		z-index: 1;
+		transform: translateX(-50%);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 3px;
+		text-align: center;
+		pointer-events: none;
+	}
+
+	.chart-wreck__kicker {
+		font-family: var(--font-mono);
+		font-size: 9.5px;
+		letter-spacing: .16em;
+		text-transform: uppercase;
+		color: rgba(147, 160, 232, .4);
+	}
+
+	.chart-wreck__path {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: rgba(240, 217, 168, .55);
 	}
 
 	/* faint stars: stacked radial-gradient specks with a mask fade (design/404.dc.html) */
