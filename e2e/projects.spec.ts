@@ -4,12 +4,24 @@
 // non-matches in place, a beacon click opens that light's entry, and
 // reduced motion holds every lamp static (no Web Animations API animation
 // running), per the hard "every light burns steady" rule.
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
+import type { Project } from '../src/lib/api';
+
+// Read (not import) the fixture: a JSON module import would need an import
+// attribute under Node's ESM loader, which the spec transform rejects
+const projects: Project[] = JSON.parse(
+	readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'fixtures', 'projects.json'), 'utf8'),
+);
+const publishedCount = projects.filter((project) => project.status === 'published').length;
 
 test('the coast lights one beacon per published project', async ({ page }) => {
+	expect(publishedCount).toBeGreaterThan(0);
 	await page.goto('/projects');
-	await expect(page.locator('.coast__pano .beacon')).toHaveCount(9);
-	await expect(page.locator('.register .register__row')).toHaveCount(9);
+	await expect(page.locator('.coast__pano .beacon')).toHaveCount(publishedCount);
+	await expect(page.locator('.register .register__row')).toHaveCount(publishedCount);
 });
 
 test('filtering narrows the register and dims the rest of the coast', async ({ page }) => {
@@ -18,18 +30,18 @@ test('filtering narrows the register and dims the rest of the coast', async ({ p
 	await page.locator('.filter-row .chip', { hasText: 'games' }).click();
 
 	// every row stays mounted; only what matches stays expanded
-	await expect(page.locator('.register .register__row')).toHaveCount(9);
+	await expect(page.locator('.register .register__row')).toHaveCount(publishedCount);
 	const rows = page.locator('.register .register__row:not(.register__row--collapsed)');
 	await expect(rows).toHaveCount(1);
 	await expect(rows.locator('.register__name')).toHaveText('Meo Wave Race');
 
-	// the coast never reflows: all nine beacons stay put, matching or not.
+	// the coast never reflows: every beacon stays put, matching or not.
 	// The opacity fade is a CSS transition, so poll rather than read it once
 	await expect(async () => {
 		const dimmed = await page.locator('.coast__pano .beacon').evaluateAll(
 			(elements) => elements.filter((element) => Number(getComputedStyle(element).opacity) < 0.5).length,
 		);
-		expect(dimmed).toBe(8);
+		expect(dimmed).toBe(publishedCount - 1);
 	}).toPass();
 });
 

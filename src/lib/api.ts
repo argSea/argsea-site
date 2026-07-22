@@ -174,10 +174,8 @@ export interface Note {
 	body:          string;  // sanitized HTML
 	date:          string;  // freeform display string, e.g. "jun 2026"
 	conditions:    string;  // the log-style dek, e.g. "fog inland · desktop suspiciously calm"
-	wx?:           string;  // canon's weather line for the entry; not yet read by any page
 	doodleCaption: string;  // the handwritten quip beside the doodle; "" when there's no doodle
 	doodleId:      string | null;
-	doodle?:       string;  // canon's doodle name for the entry (e.g. "boat", "queue"); not yet read by any page
 	status:        Status;
 	publishedAt:   string;
 	createdAt:     string;
