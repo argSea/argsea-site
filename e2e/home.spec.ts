@@ -10,7 +10,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
-import type { Hobby, Note, Project } from '../src/lib/api';
+import type { Hobby, Note, Project, SiteCopy } from '../src/lib/api';
 
 const fixture = <T,>(name: string): T => JSON.parse(
 	readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'fixtures', `${name}.json`), 'utf8'),
@@ -19,6 +19,7 @@ const fixture = <T,>(name: string): T => JSON.parse(
 const projects = fixture<Project[]>('projects');
 const notes = fixture<Note[]>('notes');
 const hobbies = fixture<Hobby[]>('hobbies');
+const siteCopy = fixture<SiteCopy>('siteCopy');
 
 // The flagship sort: the flagship flag floats first, the rest stay in their
 // already-order-sorted place; the register's real no. is order * 2, gapped.
@@ -139,20 +140,18 @@ test('the sea footer\'s CTA writes to the keeper\'s email; the write-direct asid
 });
 
 // The imported round (design/Hello.dc.html) drops contact and the github/
-// linkedin text links from the row; .sea-social carries the icons instead.
+// linkedin text links from the row; the shared footer strip below the sea
+// carries those now (Footer.astro's own .socials).
 test('the footer link row carries only hello/projects/hobbies/notes/resume', async ({ page }) => {
 	await page.goto('/');
 	await expect(page.locator('.berth .row a')).toHaveText(['hello', 'projects', 'hobbies', 'notes', 'resume ↗']);
 });
 
-test('the sea wears its own social icons, GitHub and LinkedIn, hrefs unset like canon\'s', async ({ page }) => {
+test('the footer carries the argsea definition', async ({ page }) => {
 	await page.goto('/');
-	const social = page.locator('.sea-social a');
-	await expect(social.nth(0)).toHaveAttribute('aria-label', 'GitHub');
-	await expect(social.nth(1)).toHaveAttribute('aria-label', 'LinkedIn');
-	for (const href of await social.evaluateAll((els) => els.map((el) => el.getAttribute('href')))) {
-		expect(href).toBe('#');
-	}
+	const definition = page.locator('.definition');
+	await expect(definition).toContainText('argsea');
+	await expect(definition).toContainText(siteCopy.dict);
 });
 
 test('the tug tows the manifest decoratively: no door, no button role, no pointer', async ({ page }) => {
@@ -167,10 +166,18 @@ test('the tug tows the manifest decoratively: no door, no button role, no pointe
 	await expect(tow.locator('.barge').first().locator('.crate')).toHaveText(['rust', 'python', 'typescript']);
 });
 
-test('every page\'s shared footer reads "the lighthouse", not the old byline', async ({ page }) => {
-	for (const path of ['/', '/projects', '/hobbies', '/notes', '/404.html', `/projects/${flagshipFirst[0].slug}`]) {
+test('every page\'s shared footer colophon reads its own per-page signal flag', async ({ page }) => {
+	const quipByPath: Record<string, string> = {
+		'/':                                        siteCopy.quipHello,
+		'/projects':                                siteCopy.quipProjects,
+		'/hobbies':                                 siteCopy.quipHobbies,
+		'/notes':                                   siteCopy.quipNotes,
+		'/404.html':                                siteCopy.quip404,
+		[`/projects/${flagshipFirst[0].slug}`]:     siteCopy.quipProjects,
+	};
+	for (const [path, quip] of Object.entries(quipByPath)) {
 		await page.goto(path);
-		await expect(page.locator('.copyright')).toHaveText('© 2026 · the lighthouse');
+		await expect(page.locator('.copyright')).toHaveText(`© 2026 · ${quip}`);
 	}
 });
 
@@ -202,7 +209,6 @@ test('the sea sends a bottled proverb on its own schedule, no boat to poke', asy
 
 	const note = page.locator('.bottle-note');
 	await expect(note).toBeVisible();
-	const siteCopy = fixture<{ bottleProverbs: string[] }>('siteCopy');
 	const proverb = await note.locator('.bottle-note__proverb').textContent();
 	expect(siteCopy.bottleProverbs).toContain(proverb);
 

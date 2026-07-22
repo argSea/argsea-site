@@ -69,6 +69,12 @@ export default function BottleBoat({ proverbs, boatSvg = null, bottleSvg = null,
 		autoTimers.current.set(id, setTimeout(() => dismissAuto(id), 12000));
 	};
 
+	// The poked note's own Escape is scoped to it; the sea's own bottles get a
+	// second listener so Escape releases every open one at once
+	useEscapeKey(autoBottles.some((b) => b.open), () => {
+		autoBottles.forEach((b) => { if (b.open) dismissAuto(b.id); });
+	});
+
 	useEffect(() => {
 		if (!auto || proverbs.length === 0 || matchMedia('(prefers-reduced-motion: reduce)').matches) {
 			return;
@@ -168,11 +174,11 @@ export default function BottleBoat({ proverbs, boatSvg = null, bottleSvg = null,
 						className="bottle-drift__glass-wrap"
 						role="button"
 						tabIndex={0}
-						onClick={() => openAuto(b.id)}
+						onClick={() => (b.open ? dismissAuto(b.id) : openAuto(b.id))}
 						onKeyDown={(event) => {
 							if (event.key === 'Enter' || event.key === ' ') {
 								event.preventDefault();
-								openAuto(b.id);
+								b.open ? dismissAuto(b.id) : openAuto(b.id);
 							}
 						}}
 					>

@@ -1,17 +1,41 @@
-// The Keeper's Journal (fixtures build): a note's doodle (if any) only ever
-// appears in the open entry, beside its handwritten caption.
+// The Keeper's Journal (fixtures build): a note's doodle (if any) appears
+// small in the row's own left margin, and beside its handwritten caption once
+// the entry is open.
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
+import type { Doodle, Note, SiteCopy } from '../src/lib/api';
+
+const fixture = <T,>(name: string): T => JSON.parse(
+	readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'fixtures', `${name}.json`), 'utf8'),
+);
+
+const notes = fixture<Note[]>('notes');
+const doodles = fixture<Doodle[]>('doodles');
+const siteCopy = fixture<SiteCopy>('siteCopy');
+const doodledNoteCount = notes.filter((note) => note.doodleId && doodles.some((doodle) => doodle.id === note.doodleId)).length;
 
 // Rows run newest-first: the re-architecting note (row 0) and CachyOS (row 1)
 // carry a doodle; the queue note (row 2) carries none.
 const DOODLED_ROW = 1;
 const UNDOODLED_ROW = 2;
 
-test('rows carry no doodle of their own', async ({ page }) => {
+test('a margin doodle rides only the rows whose note resolves one', async ({ page }) => {
+	expect(doodledNoteCount).toBeGreaterThan(0);
 	await page.goto('/notes');
 	const rows = page.locator('.note-row');
 	await expect(rows).toHaveCount(3);
-	await expect(page.locator('.note-row svg')).toHaveCount(0);
+	await expect(page.locator('.note-row__doodle')).toHaveCount(doodledNoteCount);
+});
+
+test('clicking a margin doodle opens its note, same as clicking the row', async ({ page }) => {
+	await page.goto('/notes');
+	await page.locator('.note-row').nth(DOODLED_ROW).locator('.note-row__doodle').click();
+
+	const letter = page.locator('.overlay-card.letter');
+	await expect(letter).toBeVisible();
+	await expect(letter.locator('.letter__title')).toHaveText('CachyOS, three months in');
 });
 
 test('a row shows its date and conditions line', async ({ page }) => {
@@ -89,11 +113,11 @@ test('the journal foot line spells the entry count', async ({ page }) => {
 	await expect(page.locator('.journal__footer')).toHaveText('Three entries so far. The bar for "journal" is five. We\'ll see.');
 });
 
-test('the footer carries the night watch definition', async ({ page }) => {
+test('the footer carries the argsea definition', async ({ page }) => {
 	await page.goto('/notes');
 	const definition = page.locator('.definition');
-	await expect(definition).toContainText('night watch');
-	await expect(definition).toContainText('this website, most evenings');
+	await expect(definition).toContainText('argsea');
+	await expect(definition).toContainText(siteCopy.dict);
 });
 
 test('stepping into the tower from an entry opens the light in place', async ({ page }) => {
@@ -112,4 +136,11 @@ test('stepping into the tower from an entry opens the light in place', async ({ 
 	const light = page.locator('.overlay-card.light-entry');
 	await expect(light).toBeVisible();
 	await expect(light.locator('.light-entry__title')).toHaveText('The Great Un-monolithing');
+});
+
+test('the #gull hash forces the wandering gull to roost, linking straight to the gazette', async ({ page }) => {
+	await page.goto('/notes#gull');
+	const gull = page.locator('.wandering-gull');
+	await expect(gull).toBeVisible();
+	await expect(gull).toHaveAttribute('href', '/gazette');
 });

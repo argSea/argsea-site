@@ -2,9 +2,19 @@
 // published case log (only the flagship carries one). The log renders from
 // typed blocks: header, numbered sections, facts/outcomes, an amber placeholder
 // chip, and mermaid draws as a pre-rendered static SVG, never a runtime script.
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
+import type { SiteCopy } from '../src/lib/api';
 
 const SLUG = '/projects/the-great-un-monolithing';
+
+// Read (not import) the fixture: a JSON module import would need an import
+// attribute under Node's ESM loader, which the spec transform rejects
+const siteCopy: SiteCopy = JSON.parse(
+	readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'fixtures', 'siteCopy.json'), 'utf8'),
+);
 
 test('the case-study page renders the header, numbered sections, and footer', async ({ page }) => {
 	await page.goto(SLUG);
@@ -79,11 +89,11 @@ test('the archive figure ships a real print, not a broken glyph', async ({ page 
 		.toBeGreaterThan(0);
 });
 
-test('the footer carries the night watch definition', async ({ page }) => {
+test('the footer carries the argsea definition', async ({ page }) => {
 	await page.goto(SLUG);
 	const definition = page.locator('.definition');
-	await expect(definition).toContainText('night watch');
-	await expect(definition).toContainText('this website, most evenings');
+	await expect(definition).toContainText('argsea');
+	await expect(definition).toContainText(siteCopy.dict);
 });
 
 test('night falls over the log: a masked star layer sits behind the header', async ({ page }) => {
