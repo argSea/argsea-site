@@ -254,6 +254,7 @@
       "letter": ""
     },
     "images": null,
+    "assist": { "harness": "Claude Code", "model": "Opus 4.8" },
     "firstLit": "2026",
     "order": 5,
     "wallPos": {

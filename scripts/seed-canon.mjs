@@ -86,11 +86,11 @@ function report(entity, name, action, detail, status) {
 // ---------- projects: match by title, sync content fields, create what's missing ----------
 
 // The brief's shorthand next to the wire's own field name: desc=shortDesc,
-// est=firstLit, details=body; kind/color/period live under light, gazette
-// under its own key. "assist" from the brief maps to no field on the wire
-// (src/lib/api.ts's Project has none), so it's left out here rather than
-// guessed at and flagged back to the integrator instead of invented.
-const PROJECT_FIELDS = ['shortDesc', 'status', 'tags', 'facts', 'moral', 'body', 'firstLit'];
+// est=firstLit, details=body; kind/color/period live under light, gazette and
+// assist under their own keys. assist synced like any other tracked field
+// here (caravan-meta contracts/2026-07-22-canon-fields-wire.md): the fixture
+// is canon, so a project the fixture doesn't assist wins over a DB-side one.
+const PROJECT_FIELDS = ['shortDesc', 'status', 'tags', 'facts', 'moral', 'body', 'firstLit', 'assist'];
 
 function projectDiff(fx, db) {
 	const diff = {};
