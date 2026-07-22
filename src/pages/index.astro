@@ -181,10 +181,12 @@ const chartYears = projects.map((project) => project.firstLit);
 
 			{watchKept && (
 				<aside class="now rv" style="--d:.2s">
-					{/* the now card's own perch (design/Hello.dc.html: pose=perched, bubble=left); the
-					    catalog's hello.watch spot is anchorless by design, so this mount owns the render
-					    the same way an overlay island does, carrying the watch's own quips */}
-					{copy.eggs.cat && <WatchCat client:idle quips={watch.quips} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />}
+					{/* the now card's own perch (design/Hello.dc.html: pose=perched, bubble=left, quips
+					    only); the catalog's hello.watch spot is anchorless by design, so this mount owns
+					    the render the same way an overlay island does, carrying the watch's own quips.
+					    finale stays off: the ten-poke Gull Post finale is retired (2026-07-21 ruling),
+					    the gull link is the paper's one door now. */}
+					{copy.eggs.cat && <WatchCat client:idle quips={watch.quips} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} finale={false} />}
 					<!-- carving spot: hero-doodle -->
 					<svg class="doodle" data-carving="hero-doodle" width="72" height="86" viewBox="0 0 72 86" fill="none" aria-hidden="true" style="top:-77px" data-bolted={heroDoodleSvg ? 'hero-doodle' : undefined}>
 						{heroDoodleSvg ? (

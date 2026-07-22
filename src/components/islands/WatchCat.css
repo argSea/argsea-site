@@ -9,9 +9,11 @@
 }
 
 /* The ten-poke finale: the page phases to paper before the Gull Post loads
-   (Hello.dc.html's gazettePhase). No inline opacity outside the animation, so
-   reduced motion's animation:none leaves this at its default full opacity
-   instead of stuck invisible. */
+   (Hello.dc.html's gazettePhase). Retired 2026-07-21 (WatchCat.tsx's finale
+   prop defaults off), so this rule currently never paints; kept for whichever
+   caller opts back in, rather than deleted along with the wiring. No inline
+   opacity outside the animation, so reduced motion's animation:none leaves
+   this at its default full opacity instead of stuck invisible. */
 .watch-cat__gazette-phase {
 	position: fixed;
 	inset: 0;

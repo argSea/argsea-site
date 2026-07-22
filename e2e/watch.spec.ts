@@ -63,3 +63,26 @@ test('with the eggs on and the watch kept, the cat can perch on the now card', a
 	expect(catBox.y + catBox.height).toBeGreaterThan(nowBox.y);
 	expect(Math.abs(catBox.x - nowBox.x)).toBeLessThan(40);
 });
+
+// The ten-poke Gull Post finale is retired (2026-07-21 ruling, caravan-meta
+// docs/argsea-identity.md: "the Gull Post has one door: the roosting gull").
+// design/Hello.dc.html's now-card cat only ever pops a quip; the gull link
+// (e2e/gazette.spec.ts) is the paper's one door now.
+test('poking the now-card cat past ten never delivers the finale or the paper', async ({ page }) => {
+	await page.addInitScript(() => { Math.random = () => 0.3; });
+	await page.goto(`${FEATURED_BUILD}/`);
+
+	const svg = page.locator('.watch-cat-mount .harbor-cat__svg');
+	await expect(svg).toBeVisible();
+	for (let i = 0; i < 12; i++) {
+		await svg.click();
+	}
+
+	// still a quip bubble, never the finale line or the paper phase
+	const bubble = page.locator('.watch-cat-mount .harbor-cat__bubble');
+	await expect(bubble).toBeVisible();
+	await expect(bubble).not.toHaveClass(/harbor-cat__bubble--big/);
+	await expect(bubble).not.toHaveText('EXTRA! EXTRA! cat poked ten times, refuses to comment. full story in the Gull Post. hold still.');
+	await expect(page.locator('.watch-cat__gazette-phase')).toHaveCount(0);
+	await expect(page).toHaveURL(`${FEATURED_BUILD}/`);
+});
