@@ -33,13 +33,16 @@ const gauged = hobbies.filter((h): h is Hobby & { gauge: number } => h.gauge != 
 const gaugePicks = gauged.slice(0, 2);
 if (gauged.length > 2) gaugePicks.push(gauged[gauged.length - 1]);
 
-test('the hero headline, kicker, and pitch read the copy singleton', async ({ page }) => {
+test('the hero kicker and pitch read the copy singleton; the headline is the canon\'s own static line', async ({ page }) => {
 	await page.goto('/');
 	await expect(page.locator('.hero .role')).toHaveText('Justin Smith · senior software engineer, Pittsburgh PA');
-	await expect(page.locator('.hero h1')).toHaveText('I help keep the lights on behind the news.');
+	await expect(page.locator('.hero h1')).toContainText('I help keep the lights on');
+	await expect(page.locator('.hero h1')).toContainText('behind the news.');
+	await expect(page.locator('.hero h1 br')).toHaveCount(1);
 	await expect(page.locator('.hero .pitch')).toContainText('29 services');
 	await expect(page.locator('.hero .doors a', { hasText: 'set sail' })).toHaveAttribute('href', '/helm');
-	await expect(page.locator('.hero .doors a', { hasText: 'say hello' })).toHaveAttribute('href', 'mailto:hello@argsea.com');
+	// the imported round (design/Hello.dc.html) drops the hero's own "say hello" door
+	await expect(page.locator('.hero .doors a', { hasText: 'say hello' })).toHaveCount(0);
 });
 
 test('the fixtures build ships no watch: the headline stands, the now panel never renders', async ({ page }) => {
@@ -129,10 +132,27 @@ test('the gull post link sits on the page, aimed at /gazette', async ({ page }) 
 	await expect(page.locator('#gull-mark')).toHaveAttribute('href', '/gazette');
 });
 
-test('the sea footer\'s CTA and aside write to the keeper\'s email', async ({ page }) => {
+test('the sea footer\'s CTA writes to the keeper\'s email; the write-direct aside is gone', async ({ page }) => {
 	await page.goto('/');
 	await expect(page.locator('.cta-doors .primary')).toHaveAttribute('href', 'mailto:hello@argsea.com');
-	await expect(page.locator('.cta-aside a')).toHaveAttribute('href', 'mailto:hello@argsea.com');
+	await expect(page.locator('.cta-aside')).toHaveCount(0);
+});
+
+// The imported round (design/Hello.dc.html) drops contact and the github/
+// linkedin text links from the row; .sea-social carries the icons instead.
+test('the footer link row carries only hello/projects/hobbies/notes/resume', async ({ page }) => {
+	await page.goto('/');
+	await expect(page.locator('.berth .row a')).toHaveText(['hello', 'projects', 'hobbies', 'notes', 'resume ↗']);
+});
+
+test('the sea wears its own social icons, GitHub and LinkedIn, hrefs unset like canon\'s', async ({ page }) => {
+	await page.goto('/');
+	const social = page.locator('.sea-social a');
+	await expect(social.nth(0)).toHaveAttribute('aria-label', 'GitHub');
+	await expect(social.nth(1)).toHaveAttribute('aria-label', 'LinkedIn');
+	for (const href of await social.evaluateAll((els) => els.map((el) => el.getAttribute('href')))) {
+		expect(href).toBe('#');
+	}
 });
 
 test('the tug tows the manifest decoratively: no door, no button role, no pointer', async ({ page }) => {
