@@ -1,11 +1,11 @@
 ---
-// The site-wide footer: the argsea dictionary one-liner on the left, a right
-// stack of socials over copyright + a per-page quip. The dictionary line
-// reads from the SiteCopy singleton's `dict` field, never hardcoded, so the
-// keeper can edit the one-liner from the admin like any other copy field. The
-// socials come from the keeper's profile; a cleared field drops its link
-// rather than shipping a dead href.
-import { getKeeperProfile, getSiteCopy } from '../lib/api';
+// The site-wide footer: a right stack of socials over copyright + a per-page
+// quip. The argsea dictionary one-liner retired to the Gull Post's filler ad
+// (ratified 2026-07-21); the SiteCopy singleton still carries the `dict`
+// field for that ad, the footer just no longer renders it. The socials come
+// from the keeper's profile; a cleared field drops its link rather than
+// shipping a dead href.
+import { getKeeperProfile } from '../lib/api';
 
 interface Props {
 	quip: string;
@@ -13,24 +13,11 @@ interface Props {
 
 const { quip } = Astro.props;
 const keeper = await getKeeperProfile();
-const copy = await getSiteCopy();
 
 // The profile stores socials as host paths ("github.com/argsea"); links need a scheme
 const withScheme = (link: string) => /^https?:\/\//.test(link) ? link : `https://${link}`;
-
-// Dictionary presentation: the copy is one plain-text string; the mono
-// treatment lands on the word "argc" (sense 2's own joke), not the sense
-// numbers, per the mock.
-const dictSegments = copy.dict
-	.split(/\b(argc)\b/)
-	.map((text) => ({ text, isArgc: text === 'argc' }));
 ---
 <footer class="site-footer">
-	<div class="site-footer__dict">
-		<span class="site-footer__word">argsea</span>
-		<span class="site-footer__pron">/ˈɑːrɡ·siː/ · noun</span>
-		{dictSegments.map((segment) => segment.isArgc ? <span class="site-footer__argc">{segment.text}</span> : segment.text)}
-	</div>
 	<div class="site-footer__right">
 		<div class="socials">
 			{keeper.github && <a href={withScheme(keeper.github)}>github</a>}
@@ -49,41 +36,11 @@ const dictSegments = copy.dict
 		margin-top: auto;
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: flex-end;
 		flex-wrap: wrap;
 		gap: 16px 28px;
 		padding: 20px var(--gutter) 24px;
 		border-top: 1px solid rgba(150, 160, 220, .07);
-	}
-
-	.site-footer__dict {
-		flex: 1 1 240px;
-		max-width: 400px;
-		font-size: 11px;
-		line-height: 1.55;
-		color: #6b74a0;
-		font-style: italic;
-		text-wrap: pretty;
-	}
-
-	.site-footer__word {
-		font-family: var(--font-display);
-		font-style: normal;
-		font-size: 12.5px;
-		color: var(--text-body);
-	}
-
-	.site-footer__pron {
-		font-family: var(--font-mono);
-		font-style: normal;
-		font-size: 10px;
-		color: var(--periwinkle-deep);
-	}
-
-	.site-footer__argc {
-		font-family: var(--font-mono);
-		font-style: normal;
-		font-size: 11px;
 	}
 
 	.site-footer__right {

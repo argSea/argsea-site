@@ -70,7 +70,7 @@ export default function HomeLights({ flagship, featured, notes, doodles, signoff
 		<>
 			<div className="home-register">
 				<div className="home-register__head">
-					<span className="home-register__head-label">light list · argsea coast · corrected to {correctedTo}</span>
+					<span className="home-register__head-label">light list · home waters · corrected to {correctedTo}</span>
 				</div>
 				{flagship && (
 					<FlagshipRow project={flagship} notes={notesFor(flagship)} onOpen={() => setOpenId(flagship.id)} />

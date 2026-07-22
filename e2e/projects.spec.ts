@@ -179,7 +179,7 @@ test('the retranscribed overlay: head line, notes above facts, decorative thumbs
 	// the old established/district/keeper meta row is gone; the masthead
 	// carries est. and district inline instead
 	await expect(overlay.locator('.light-entry__meta')).toHaveCount(0);
-	await expect(overlay.locator('.light-entry__meta-line')).toContainText('est. 2016 · district argsea');
+	await expect(overlay.locator('.light-entry__meta-line')).toContainText('est. 2016 · home waters');
 
 	// no notes and no case study here: the nudge shows, not a facts-before-notes ordering bug
 	const body = overlay.locator('.light-entry__body');
@@ -269,4 +269,9 @@ test('reduced motion stills the pulled-out paper', async ({ page }) => {
 	const paper = page.locator('.light-entry__note');
 	await expect(paper).toBeVisible();
 	expect(await paper.evaluate((element) => getComputedStyle(element).animationName)).toBe('none');
+});
+
+test('the footer no longer renders the argsea dictionary', async ({ page }) => {
+	await page.goto('/projects');
+	await expect(page.locator('.site-footer__dict')).toHaveCount(0);
 });
