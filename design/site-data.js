@@ -15,6 +15,9 @@
 //   :::facts ... :::      -> label: value rows, rendered as a fact grid
 //   :::outcomes ... :::   -> "big | caption" lines, rendered as outcome cards
 //   ```mermaid ... ```    -> diagram, themed to the site palette
+// Provenance: assist: { harness, model } on a project means keeper + AI together
+// (Me + AI stamps); add only: true for AI-built-solo (AI stamp alone); absent
+// means lit by hand (Me stamp alone). Pages render all three states.
 window.ARGSEA_DATA = {
   // the keeper's journal · single source; Notes and Hello render it, the light
   // overlay reads a note out of the tower's log (project.notes ties by title)
@@ -41,43 +44,57 @@ window.ARGSEA_DATA = {
   // the wandering chart · hobbies, past and adrift (Hobbies renders these).
   // a hobby's `notes` ties it to journal entries by title, same as a project's `notes`;
   // Notes links back to the chart via Hobbies.dc.html?bearing=<name>.
+  // gauge: enthusiasm, self-assessed, suspiciously precise. Homepage bars only.
   hobbies: [
-    { name: 'The home lab', service: '2021 · present', state: 'moored', coord: { lat: 58.22, lon: -7.50 }, seasons: '5', notes: ['CachyOS, three months in'],
+    { name: 'The home lab', gauge: 94, service: '2021 · present', state: 'moored', coord: { lat: 58.22, lon: -7.50 }, seasons: '5', notes: ['CachyOS, three months in'],
       bearing: 'Moored in the lee of Eilean Mòr, in sight of the keepers’ light. Never left the harbor.',
       lastLog: '"All lamps green. One tweak from perfect. Will fix tonight." · every log entry, verbatim, since 2021.',
       offCourse: 'It never went off course. It is moored where I can watch it from the lamp room.',
       floats: 'everything. that is the whole point.',
       odds: 'in port indefinitely' },
-    { name: 'Piano', service: '2023 · 2024', state: 'adrift', coord: { lat: 58.42, lon: -7.12 }, from: { lat: 58.24, lon: -7.44 }, seasons: '2',
+    { name: 'Piano', gauge: 38, service: '2023 · 2024', state: 'adrift', coord: { lat: 58.42, lon: -7.12 }, from: { lat: 58.24, lon: -7.44 }, seasons: '2',
       bearing: 'Last seen drifting off the north point, sails slack, no hand at the tiller.',
       lastLog: '"Got through the piece with both hands tonight. Good enough." · final entry, unsigned.',
       offCourse: 'Slipped its mooring the night it was "good enough" and drifted out on the tide.',
       floats: 'one shaky recording the family still requests',
       odds: 'likely · pending a child\u2019s curiosity' },
-    { name: 'Music theory', service: '2023 · 2024', state: 'marooned', coord: { lat: 58.06, lon: -7.20 }, from: { lat: 58.28, lon: -7.30 }, seasons: '2',
+    { name: 'Music theory', gauge: 51, service: '2023 · 2024', state: 'marooned', coord: { lat: 58.06, lon: -7.20 }, from: { lat: 58.28, lon: -7.30 }, seasons: '2',
       bearing: 'Marooned on a small isle, the same sandbar the piano washed up on.',
       lastLog: '"The circle of fifths is just modular arithmetic wearing a cape." · margin note, underlined twice.',
       offCourse: 'Went overboard the same night as piano; the two washed up together.',
       floats: 'annotated chord charts, still in a drawer',
       odds: 'rises with every tide the piano does' },
-    { name: 'Game dev', service: '2020', state: 'port', coord: { lat: 58.20, lon: -6.75 }, from: { lat: 58.02, lon: -6.60 }, seasons: '1',
+    { name: 'Game dev', gauge: 88, service: '2020', state: 'port', coord: { lat: 58.20, lon: -6.75 }, from: { lat: 58.02, lon: -6.60 }, seasons: '1',
       bearing: 'Moored in a safe harbor, colors still flying. Came in on purpose.',
       lastLog: '"Shipped. The cat is the boat. No further business." · last entry, signed with a flourish.',
       offCourse: 'Reached port, dropped anchor by choice, and ran the pennants up.',
       floats: 'Meo Wave Race, complete and undefeated · see light no. 008',
       odds: 'slim · the logbook is already perfect' },
-    { name: 'Running', service: 'one summer', state: 'inkspill', coord: { lat: 57.92, lon: -7.02 }, from: { lat: 58.06, lon: -7.10 }, seasons: '\u00bc',
+    { name: 'Running', gauge: 12, service: 'one summer', state: 'inkspill', coord: { lat: 57.92, lon: -7.02 }, from: { lat: 58.06, lon: -7.10 }, seasons: '\u00bc',
       bearing: 'Coordinates smudged. An ink-well tipped across this one and never dried.',
       lastLog: '"5k tomorrow, then every morning after." · only entry.',
       offCourse: 'An ink-well tipped over the chart and blotted the bearing to an unreadable smudge.',
       floats: 'the shoes. the shoes remain.',
       odds: 'spring keeps promising a fair wind' },
   ],
+  // the gull post · front-page dressing only the gazette wears; stories pull from projects/journal
+  gazette: {
+    vol: 'vol. XXXIX · harbor edition',
+    presently: 'wrangling the ArcXP migration (in flight, no page yet)',
+  },
   projects: [
     { title: 'The Great Un-monolithing', cat: 'backend', color: 'white', kind: 'flash', period: 8, est: '2024', status: 'lit', flagship: true,
       desc: 'One giant app became many small, well-behaved services. Readers never noticed. That was the point.',
       tags: ['kubernetes', 'python', 'rabbitmq'],
       images: ['first-screenshot'],
+      gazette: {
+        headline: 'Giant Monolith Quietly Dismantled; the Paper Never Misses a Day',
+        deck: '29 small, well-behaved services now stand where one enormous application once feared nothing. Readers, by design, noticed nothing at all.',
+        dateline: 'from inside the cluster',
+        p1: 'The old system was one enormous application that did everything and feared nothing, least of all the keeper\'s weekends. It was taken apart piece by piece: a message queue in the middle, 29 services around it, Kubernetes herding the containers.',
+        p2: 'The success metric was silence. No reader ever noticed a thing. The paper published every single day while the engine was swapped mid-flight. The old stack was decommissioned in 2025, capability by capability, until one night there was nothing left to turn off.',
+        caption: 'The first screenshot, as archived at the station. The queue, not pictured, is the product.',
+      },
       facts: [
         { k: 'ownership', v: 'design to operations, solo' },
         { k: 'scale', v: '29 services · ~2M visits a month' },
@@ -155,6 +172,11 @@ window.ARGSEA_DATA = {
       desc: 'A publishing workflow a real paper runs on, every day, deadlines and all.',
       tags: ['rest', 'mongodb', 'nginx'],
       images: ['station-photo'],
+      gazette: {
+        headline: "City's Hidden Plumbing Holds, Again; Nobody Notices, Which Is the Point",
+        p1: 'Reporters write, editors edit, and somewhere between done and published lives an entire hidden city of pipes: APIs, storage, caching. A good chunk of that city was designed and built by the keeper, and it runs on deadlines that do not move for anybody.',
+        caption: 'The pipes beneath the newsroom.',
+      },
       facts: [
         { k: 'role', v: 'APIs, storage, caching · design and build' },
         { k: 'tenure', v: 'core plumbing since 2016' },
@@ -168,6 +190,10 @@ window.ARGSEA_DATA = {
     { title: '100k good mornings', cat: 'backend', color: 'white', kind: 'occult', period: 6, est: '2018', status: 'lit',
       desc: 'An automated newsletter that beats the sunrise into six figures of inboxes.',
       tags: ['php', 'redis', 'linux'],
+      gazette: {
+        headline: 'Newsletter Beats Sunrise Into 100,000 Inboxes; Cron Job Credits Ambition',
+        p1: "Every morning, before coffee exists, an automated system assembles the day's news and delivers it to over 100,000 inboxes. It has done this more reliably than anyone gets out of bed. The fun part was making it boring: retries, queues, monitoring, and a healthy paranoia about 4am.",
+      },
       facts: [
         { k: 'audience', v: '100,000+ inboxes, every morning' },
         { k: 'schedule', v: 'assembled and delivered before sunrise' },
@@ -193,6 +219,7 @@ window.ARGSEA_DATA = {
     { title: 'This website', cat: 'this website', color: 'white', kind: 'iso', period: 3, est: '2026', status: 'lit',
       desc: "The light you're standing in. Its characteristic changes without notice, by order of the keeper.",
       tags: ['meta', 'html', 'whimsy'],
+      assist: { harness: 'Claude Code', model: 'Opus 4.8' },
       facts: [
         { k: 'version', v: 'v2 of n, n unbounded' },
         { k: 'stack', v: 'html, css, one lighthouse' },
@@ -226,5 +253,17 @@ window.ARGSEA_DATA = {
       details1: 'The monolith itself deserves an honest entry: it ran a real newspaper for the better part of a decade, and it never asked permission to page me. Every system on this coast exists because this one existed first.',
       details2: 'It was decommissioned in 2025, capability by capability, until one night there was nothing left to turn off. No wake. The queue drained, the DNS flipped, and the coast got quieter.',
       moral: 'Moral: a good platform is measured by what it lets you turn off.' },
+    // appended after the old stack on purpose: register numbers are positional, earlier lights keep theirs
+    { title: 'Janus', cat: 'tinkering', color: 'green', kind: 'iso', period: 3, est: '2026', status: 'lit',
+      desc: 'A GPU terminal with a split personality, named for the two-faced god of doorways.',
+      tags: ['rust', 'wgpu', 'swash'],
+      facts: [
+        { k: 'stack', v: 'rust · wgpu · swash' },
+        { k: 'status', v: 'lit, and daily-driven' },
+        { k: 'why', v: 'I live in terminals. I may as well build the house.' },
+      ],
+      details1: 'A GPU terminal emulator with two faces: one workspace for the newsroom, one for home, one window between them. Named for the god of doorways, because it is one.',
+      details2: 'Rust underneath, wgpu doing the drawing, swash shaping the glyphs. It renders the very logs the rest of this coast writes.',
+      moral: 'Moral: build the room you live in.' },
   ],
 };
