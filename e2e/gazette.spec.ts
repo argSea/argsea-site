@@ -131,27 +131,6 @@ test('the filler ad ports the argsea dictionary verbatim, the only place the wor
 	expect(pageText.match(/argsea/g)).toHaveLength(1);
 });
 
-test('poking the watch cat ten times phases the page and lands on the Gull Post', async ({ page }) => {
-	// force the page's one-cat pick onto hello.watch (index 2 of the 7 enabled
-	// hello spots), so the watch cat mounts and owns the finale
-	await page.addInitScript(() => { Math.random = () => 0.3; });
-	await page.goto(`${FEATURED_BUILD}/`);
-
-	const cat = page.locator('.watch-cat-mount .harbor-cat__svg');
-	await expect(cat).toBeVisible();
-
-	// ten pokes: the tenth swaps the quip for the finale bubble, then the page
-	// phases to paper and navigates
-	for (let i = 0; i < 10; i++) {
-		await cat.click();
-	}
-
-	// the gazette wash appears, then the route becomes /gazette
-	await expect(page.locator('.watch-cat__gazette-phase')).toBeVisible({ timeout: 4000 });
-	await expect(page).toHaveURL(/\/gazette\/?$/, { timeout: 6000 });
-	await expect(page.locator('.gazette__title')).toHaveText('The Gull Post');
-});
-
 // The keeper's landing dropped the ten-poke finale; the canon's own entry
 // point is the passing gull, a plain link straight to the Gull Post.
 test('the passing gull on the hello page links straight to the Gull Post', async ({ page }) => {
