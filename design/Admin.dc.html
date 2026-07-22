@@ -711,18 +711,6 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                     <input type="text" data-key="signoff" value="{{ keeper.signoff }}" onChange="{{ setKeeper }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#93a0e8;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
                   </label>
                 </div>
-                <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">the gull post · masthead</span>
-                  <label style="display:flex;flex-direction:column;gap:6px">
-                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">volume line</span>
-                    <input type="text" data-key="vol" value="{{ gazette.vol }}" onChange="{{ setGazette }}" placeholder="vol. XXXIX · harbor edition" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-                  </label>
-                  <label style="display:flex;flex-direction:column;gap:6px">
-                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">notices · the keeper is presently...</span>
-                    <textarea data-key="presently" value="{{ gazette.presently }}" onChange="{{ setGazette }}" rows="2" placeholder="wrangling the ArcXP migration (in flight, no page yet)" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
-                  </label>
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// the paper reads its folio and notices from here. each story is dressed on its own light.</span>
-                </div>
                 <div style="background:rgba(240,217,168,.06);border:1.5px dashed rgba(240,217,168,.4);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:8px;transform:rotate(-.3deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
                   <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">how the office sees you</span>
                   <span style="font-size:15.5px;color:#dde1f0;line-height:1.6">"{{ greeting }}, <span style="color:#f0d9a8">{{ keeperName }}</span>."</span>
@@ -1253,34 +1241,6 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
               </div>
               <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#7fd4a8;font-style:italic">shows on the light as: this beacon was lit with the help of AI ({{ assistPreview }})</span>
             </sc-if>
-          </div>
-          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">the gull post · how the paper runs this story</span>
-            <label style="display:flex;flex-direction:column;gap:6px">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">headline</span>
-              <input type="text" data-field="gzHeadline" value="{{ draft.gzHeadline }}" onChange="{{ setField }}" placeholder="Giant Monolith Quietly Dismantled; the Paper Never Misses a Day" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#f0f2fc;font-family:'Gloock',serif;font-size:16px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-            </label>
-            <label style="display:flex;flex-direction:column;gap:6px">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">deck · the italic line under the headline</span>
-              <textarea data-field="gzDeck" value="{{ draft.gzDeck }}" onChange="{{ setField }}" rows="2" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
-            </label>
-            <label style="display:flex;flex-direction:column;gap:6px">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">dateline · reporting ...</span>
-              <input type="text" data-field="gzDateline" value="{{ draft.gzDateline }}" onChange="{{ setField }}" placeholder="from inside the cluster" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-            </label>
-            <label style="display:flex;flex-direction:column;gap:6px">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">first paragraph · third person, the newsroom's voice</span>
-              <textarea data-field="gzP1" value="{{ draft.gzP1 }}" onChange="{{ setField }}" rows="3" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
-            </label>
-            <label style="display:flex;flex-direction:column;gap:6px">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">second paragraph</span>
-              <textarea data-field="gzP2" value="{{ draft.gzP2 }}" onChange="{{ setField }}" rows="3" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
-            </label>
-            <label style="display:flex;flex-direction:column;gap:6px">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">photo caption</span>
-              <input type="text" data-field="gzCaption" value="{{ draft.gzCaption }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:14px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
-            </label>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// all optional. anything left empty, the paper prints from the register line and the entry instead.</span>
           </div>
           <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
@@ -1984,14 +1944,6 @@ class Component extends DCLogic {
         stamp: { shape: 'rect', motif: 'lighthouse', ink: '#f0d9a8', cents: '3¢' },
         desc: 'One giant app became many small, well-behaved services. Readers never noticed. That was the point.',
         moral: 'Moral: the best migrations are the boring ones.',
-        gazette: {
-          headline: 'Giant Monolith Quietly Dismantled; the Paper Never Misses a Day',
-          deck: '29 small, well-behaved services now stand where one enormous application once feared nothing. Readers, by design, noticed nothing at all.',
-          dateline: 'from inside the cluster',
-          p1: 'The old system was one enormous application that did everything and feared nothing, least of all the keeper\'s weekends. It was taken apart piece by piece: a message queue in the middle, 29 services around it, Kubernetes herding the containers.',
-          p2: 'The success metric was silence. No reader ever noticed a thing. The paper published every single day while the engine was swapped mid-flight. The old stack was decommissioned in 2025, capability by capability, until one night there was nothing left to turn off.',
-          caption: 'The first screenshot, as archived at the station. The queue, not pictured, is the product.',
-        },
         to: 'everyone who reads the news without thinking about queues', from: 'justin, from inside the cluster', year: '2024 - ongoing' },
       { title: 'Newsroom plumbing', cat: 'backend', tags: ['rest','mongodb','nginx'], status: 'published', img: 'newsroom-pipes.jpg',
         stamp: { shape: 'circle', motif: 'text', ink: '#93a0e8', text: 'DAILY SINCE 1786' },
@@ -2116,10 +2068,6 @@ class Component extends DCLogic {
       email: 'hello@argsea.com', github: 'github.com/jsmith-keeper', linkedin: 'linkedin.com/in/jsmith-keeper',
       signoff: '- j',
     },
-    gazette: {
-      vol: 'vol. XXXIX · harbor edition',
-      presently: 'wrangling the ArcXP migration (in flight, no page yet)',
-    },
     edit: null, confirmDel: null, peek: null, flareList: false, changesSinceDeploy: 3,
     catSay: null, proverbIdx: 0,
     eggs: { bottle: true, cat: true, lights: true, gullpost: true },
@@ -2147,7 +2095,7 @@ class Component extends DCLogic {
 
   // every hand-carved svg on the site, and where it hangs
   svgCatalog = [
-    { id: 'lighthouse-logo', name: 'The lighthouse', page: 'every page', where: 'nav, top left · also the contact band', svg: '<svg width="24" height="28" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>' },
+    { id: 'lighthouse-logo', name: 'The lighthouse', page: 'every page', where: 'nav, top left', svg: '<svg width="24" height="28" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path><path d="M6 27 q7 -4 14 0" stroke="#5f6ec4" stroke-width="1.4" fill="none"></path></svg>' },
     { id: 'boat', name: 'The little boat', page: 'hello · projects', where: 'sails the hero wave and drops the mail · also passes the coast offshore', svg: '<svg width="30" height="24" viewBox="0 0 30 24" fill="none"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path></svg>' },
     { id: 'bottle', name: 'Message in a bottle', page: 'hello', where: 'bobs on the wave after the boat drops it', svg: '<svg width="32" height="20" viewBox="0 0 40 24" fill="none"><rect x="6" y="7" width="28" height="11" rx="5.5" fill="rgba(147,160,232,.22)" stroke="#93a0e8" stroke-width="1.3"></rect><rect x="33" y="9.5" width="5" height="6" rx="1.2" fill="#f0d9a8"></rect><path d="M12 10 h14 M12 12.5 h11 M12 15 h13" stroke="#f0d9a8" stroke-width="1" stroke-linecap="round" opacity=".85"></path></svg>' },
     { id: 'tower-stub', name: 'Tower on the horizon', page: 'projects', where: 'every beacon on the coast · the entry overlay lamp', svg: '<svg width="26" height="34" viewBox="0 0 26 34" fill="none"><path d="M13 3 L17 10 L9 10 Z" fill="rgba(150,160,220,.4)"></path><rect x="10" y="10" width="6" height="15" fill="none" stroke="rgba(150,160,220,.45)" stroke-width="1.3"></rect><path d="M10 14 h6 M10 19 h6" stroke="rgba(150,160,220,.34)" stroke-width="1.1"></path><path d="M5 30 q8 -4 16 0" stroke="rgba(150,160,220,.36)" stroke-width="1.3" fill="none"></path></svg>' },
@@ -2155,16 +2103,8 @@ class Component extends DCLogic {
     { id: 'wave-line', name: 'The wave line', page: 'hello', where: 'the shoreline strip under the hero (repeating pattern)', svg: '<svg xmlns="http://www.w3.org/2000/svg" width="53" height="18"><path d="M0 9 Q 13.25 0, 26.5 9 T 53 9" stroke="rgba(147,160,232,0.5)" stroke-width="1.5" fill="none"/></svg>' },
     { id: 'boat-wake', name: 'The boat wake', page: 'hello', where: 'ripples trailing the boat (repeating pattern)', svg: '<svg xmlns="http://www.w3.org/2000/svg" width="53" height="18"><path d="M0 9 Q 13.25 0, 26.5 9 T 53 9" stroke="rgba(240,217,168,0.5)" stroke-width="1.5" fill="none"/></svg>' },
     // journal doodles are not carvings; they live at the marginalia desk
-    { id: 'stamp', name: 'Postage lighthouse', page: 'contact', where: 'the stamp corner of the postcard, postmark rings over it', svg: null, note: 'carved into the postcard itself. bring the whole card to the bench (Contact.dc.html) to re-cut it.' },
     { id: 'wreck', name: 'The wreck', page: '404', where: 'run aground on the shoals, cat heckling from the placard', svg: null, note: 'salvage rights unresolved. edit it where it lies (404.dc.html).' },
     { id: 'harbor-cat', name: 'The harbor cat', page: 'everywhere', where: 'postcards, notes, the wreck placard, this shop', svg: null, note: 'the cat sits for no editor. adjustments by appointment (HarborCat.dc.html), approval unlikely.' },
-    // the 21 jul landing round, freshly carved
-    { id: 'hero-doodle', name: 'The keeper\'s doodle', page: 'hello', where: 'perched on the now card, top corner · the lamp blinks hi in morse', svg: '<svg width="72" height="86" viewBox="0 0 72 86" fill="none" aria-hidden="true" style="top: -77px"><path d="M28 78 C29 60 30 42 31 30 L41 30 C42 44 43 60 44 78" stroke="#93a0e8" stroke-width="1.6" stroke-linecap="round"></path><path d="M29 44 L43 43 M28.5 58 L43.5 57" stroke="#93a0e8" stroke-width="1.4" stroke-linecap="round"></path><path d="M31 30 L29 22 L43 22 L41 30" stroke="#93a0e8" stroke-width="1.6" stroke-linejoin="round"></path><path d="M31 22 L36 13 L41 22" stroke="#93a0e8" stroke-width="1.6" stroke-linejoin="round"></path><circle cx="36" cy="20" r="2.6" fill="#ffd166"></circle><path d="M14 80 Q36 72 58 80" stroke="#5f6ec4" stroke-width="1.6" stroke-linecap="round"></path><path d="M8 16 L20 20 M64 16 L52 20" stroke="#ffd166" stroke-width="1.2" stroke-linecap="round" opacity=".5"></path></svg>' },
-    { id: 'gull-roost', name: 'The roosting gull', page: 'hello', where: 'lands in the page margins now and then · the door to the Gull Post', svg: '<svg width="38" height="26" viewBox="0 0 38 26" fill="none" aria-hidden="true"><path d="M3 14 Q10 6 19 12 Q28 6 35 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"></path><path d="M14 20 q5 -3 10 0" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".5" fill="none"></path></svg>' },
-    { id: 'delivery-gull', name: 'The delivery gull', page: 'the gull post', where: 'perches on the masthead, cap and all · it has not been paid', svg: '<svg width="46" height="44" viewBox="0 0 46 44" fill="none" stroke="rgba(32,35,60,.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 41 v-5 M20 41 v-5" stroke-width="1.4"></path><path d="M11 36 C8 30 9 23 15 20 C22 16.5 30 19 31 26 C31.8 32 27 36 20 36 Z" fill="#f1ecdd"></path><path d="M17 24 C22 21 28 23 29 28 C26 30 19 30 16 27 Z" fill="rgba(32,35,60,.18)" stroke="none"></path><path d="M15 20 C14 14 18 10 23 10 C27 10 30 13 30 17" fill="#f1ecdd"></path><path d="M30 16.5 L36 18 L30 19.5" fill="#c9a96a" stroke="rgba(32,35,60,.85)"></path><circle cx="25.5" cy="15" r="1.1" fill="rgba(32,35,60,.85)" stroke="none"></circle><path d="M16.5 11.5 C17 7.5 21 5.5 25 6.5 C28 7.2 29.5 9.5 29.5 11.5 L31.5 11.5 C32.2 11.5 32.2 12.8 31.5 12.8 L18 12.8 Z" fill="rgba(32,35,60,.75)" stroke="none"></path></svg>' },
-    { id: 'tug', name: 'The tug and tow', page: 'hello', where: 'crosses the sea footer towing the manifest barges, lantern lit', svg: '<svg width="40" height="34" viewBox="0 0 30 24"><path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path><path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path><path d="M15 3 L24 13 L15 13 Z" fill="#f0d9a8"></path><circle cx="15" cy="3" r="2.2" fill="#ffd166"></circle></svg>' },
-    { id: 'state-marks', name: 'The five states', page: 'hello · the chart', where: 'gauge corners ashore, mark icons at sea: moored, adrift, marooned, made port, smudged', svg: null, note: 'cut as one set. the icons live in TheChart.dc.html (ICONS and MINI) and the gauge corners in Hello.dc.html; bring the page to the bench.' },
-    { id: 'sea-swells', name: 'The footer swells', page: 'hello', where: 'three drifting crest lines closing the page (repeating pattern)', svg: '<svg viewBox="0 0 900 100" preserveAspectRatio="none"><path d="M0 50 Q112 26 225 50 T450 50 T675 50 T900 50 L900 100 L0 100 Z" fill="#131628"></path><path d="M0 50 Q112 26 225 50 T450 50 T675 50 T900 50" stroke="rgba(223,232,245,.45)" stroke-width="2.2" stroke-dasharray="11 7" fill="none"></path></svg>' },
   ];
 
   addFiles(fileList) {
@@ -2263,7 +2203,7 @@ class Component extends DCLogic {
   ];
 
   catLocMeta = [
-    { key: 'postcards', label: 'Postcards', hint: 'contact & homepage · when a card opens' },
+    { key: 'postcards', label: 'Postcards', hint: 'homepage · when a card opens' },
     { key: 'notes', label: 'Notes', hint: 'when a note opens' },
     { key: 'p404', label: 'The wreck', hint: 'heckling the boat on the 404' },
   ];
@@ -2865,10 +2805,9 @@ class Component extends DCLogic {
     const s = this.state;
     let draft;
     if (type === 'project') {
-      const gzOf = (p) => p.gazette || {};
       draft = idx == null
-        ? { title: '', cat: 'backend', tagsText: '', desc: '', body: '', moral: 'Moral: ', assistOn: false, assistOnly: false, assistHarness: '', assistModel: '', gzHeadline: '', gzDeck: '', gzDateline: '', gzP1: '', gzP2: '', gzCaption: '', facts: [], images: [], notes: [], caseStudy: '', to: '', from: '', year: '2026', img: null, stamp: this.randomStamp() }
-        : { ...s.projects[idx], tagsText: s.projects[idx].tags.join(', '), caseStudy: s.projects[idx].caseStudy || '', assistOn: !!s.projects[idx].assist, assistOnly: !!(s.projects[idx].assist || {}).only, assistHarness: (s.projects[idx].assist || {}).harness || '', assistModel: (s.projects[idx].assist || {}).model || '', gzHeadline: gzOf(s.projects[idx]).headline || '', gzDeck: gzOf(s.projects[idx]).deck || '', gzDateline: gzOf(s.projects[idx]).dateline || '', gzP1: gzOf(s.projects[idx]).p1 || '', gzP2: gzOf(s.projects[idx]).p2 || '', gzCaption: gzOf(s.projects[idx]).caption || '', facts: (s.projects[idx].facts || []).map((f) => ({ ...f })), notes: [...(s.projects[idx].notes || [])], images: (s.projects[idx].images || []).map((k) => (typeof k === 'string' ? { key: k, print: null } : { ...k })) };
+        ? { title: '', cat: 'backend', tagsText: '', desc: '', body: '', moral: 'Moral: ', assistOn: false, assistOnly: false, assistHarness: '', assistModel: '', facts: [], images: [], notes: [], caseStudy: '', to: '', from: '', year: '2026', img: null, stamp: this.randomStamp() }
+        : { ...s.projects[idx], tagsText: s.projects[idx].tags.join(', '), caseStudy: s.projects[idx].caseStudy || '', assistOn: !!s.projects[idx].assist, assistOnly: !!(s.projects[idx].assist || {}).only, assistHarness: (s.projects[idx].assist || {}).harness || '', assistModel: (s.projects[idx].assist || {}).model || '', facts: (s.projects[idx].facts || []).map((f) => ({ ...f })), notes: [...(s.projects[idx].notes || [])], images: (s.projects[idx].images || []).map((k) => (typeof k === 'string' ? { key: k, print: null } : { ...k })) };
     } else if (type === 'hobby') {
       draft = idx == null
         ? { name: '', service: '2026 · present', state: 'moored', coordLat: '58.20', coordLon: '-7.40', fromLat: '', fromLon: '', seasons: '1', gauge: '', bearing: '', lastLog: '', floats: '', offCourse: '', odds: '' }
@@ -2892,15 +2831,6 @@ class Component extends DCLogic {
         if (item.assistOnly) item.assist.only = true;
       } else delete item.assist;
       delete item.assistOn; delete item.assistHarness; delete item.assistModel; delete item.assistOnly;
-      const gz = {};
-      if ((item.gzHeadline || '').trim()) gz.headline = item.gzHeadline.trim();
-      if ((item.gzDeck || '').trim()) gz.deck = item.gzDeck.trim();
-      if ((item.gzDateline || '').trim()) gz.dateline = item.gzDateline.trim();
-      if ((item.gzP1 || '').trim()) gz.p1 = item.gzP1.trim();
-      if ((item.gzP2 || '').trim()) gz.p2 = item.gzP2.trim();
-      if ((item.gzCaption || '').trim()) gz.caption = item.gzCaption.trim();
-      if (Object.keys(gz).length) item.gazette = gz; else delete item.gazette;
-      delete item.gzHeadline; delete item.gzDeck; delete item.gzDateline; delete item.gzP1; delete item.gzP2; delete item.gzCaption;
       if (!item.status) item.status = 'draft';
       this.setState((s) => {
         const projects = [...s.projects];
@@ -3289,7 +3219,7 @@ class Component extends DCLogic {
       { id: 'watch', glyph: '☉', label: 'the watch desk', rule: true },
       { id: 'projects', glyph: '✺', label: 'the light list' },
       { id: 'hobbies', glyph: '✳', label: 'the wandering chart' },
-      { id: 'notes', glyph: '✎', label: 'writing desk' },
+      { id: 'notes', glyph: '✎', label: 'the log book' },
       { id: 'bench', glyph: '⚒', label: 'the tool bench' },
       { id: 'doodles', glyph: '✐', label: 'marginalia', rule: true },
       { id: 'figurehead', glyph: '♞', label: 'the carving shop' },
@@ -3590,11 +3520,6 @@ class Component extends DCLogic {
       setKeeper: (ev) => {
         const k = ev.target.dataset.key, v = ev.target.value;
         this.setState((st) => ({ keeper: { ...st.keeper, [k]: v } }));
-      },
-      gazette: s.gazette,
-      setGazette: (ev) => {
-        const k = ev.target.dataset.key, v = ev.target.value;
-        this.setState((st) => ({ gazette: { ...st.gazette, [k]: v } }));
       },
       // nav
       navItems: nav.map((n) => ({ ...n, hasRule: !!n.rule, style: this.navStyle(scr === n.id), chipStyle: this.navChipStyle(scr === n.id), onClick: () => this.setState({ screen: n.id, confirmDel: null }) })),

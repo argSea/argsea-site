@@ -290,7 +290,6 @@ a:hover { color:var(--ink); }
   .mem__card { animation:none; }
 }
 </style>
-<script src="./site-data.js"></script>
 </helmet>
 
 <div class="helm">
@@ -298,7 +297,7 @@ a:hover { color:var(--ink); }
     <div class="rail__head">
       <div class="rail__word"><b>Justin Smith</b></div>
       <div class="rail__role">Senior software engineer · Pittsburgh</div>
-      <div class="rail__sub">the light list · home waters<br>corrected to <span id="railDate"></span></div>
+      <div class="rail__sub">the light list · home waters<br>corrected to jul 2026</div>
     </div>
     <div class="rail__scroll" id="rail"></div>
     <div class="rail__foot"><button id="home">⊕ back to the fix</button><a class="ashore" href="Hello.dc.html">⌂ back ashore</a></div>
@@ -354,7 +353,6 @@ class Component extends DCLogic {
   }
 
   boot() {
-    if (!window.ARGSEA_DATA) { if (!this._dead) setTimeout(() => this.boot(), 120); return; }
     const self = this;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -557,70 +555,86 @@ class Component extends DCLogic {
         meta:[['Keepers','James Ducat · Thomas Marshall · Donald MacArthur'],
               ['Established','7 december 1899'],['Character','Fl(2) W 30s'],
               ['Automated','1971'],['Authority','Northern Lighthouse Board']] },
+
+      { id:'p1', group:'Projects', name:'The Great Un-monolithing', code:'Fl W 8s',
+        lat:58.50, lon:-7.06, char:{ period:8, spans:[[0,0.8]] }, plate:2,
+        title:'The Great Un-monolithing', cap:'The last of the monolith, going dark.',
+        body:['One giant app became 29 small, well-behaved services. Readers never noticed, which was the point.'],
+        meta:[['Ownership','design to operations, solo'],['Scale','29 services · ~2M visits a month'],['Result','the old stack went dark in 2025']] },
+      { id:'p2', group:'Projects', name:'Newsroom plumbing', code:'F W',
+        lat:58.02, lon:-7.02, char:{ period:0, spans:[] }, plate:4,
+        title:'Newsroom plumbing', cap:'Press night, from the machine floor.',
+        body:['The publishing workflow a real paper runs on, every day, deadlines and all.'],
+        meta:[['Ownership','shared, five years'],['Moral','if they never think about you, you did it right']] },
+      { id:'p3', group:'Projects', name:'100k good mornings', code:'Oc W 6s',
+        lat:58.61, lon:-7.42, char:{ period:6, spans:[[0,0.6],[1.7,6]] }, plate:0,
+        title:'100k good mornings', cap:'Sunrise, beaten by four minutes.',
+        body:['An automated newsletter that beats the sunrise into six figures of inboxes.'],
+        meta:[['Scale','100k+ subscribers'],['Moral','automation is kindness to your future self']] },
+      { id:'p4', group:'Projects', name:'Janus', code:'Iso G 3s',
+        lat:58.05, lon:-7.16, char:{ period:3, spans:[[0,1.5]] }, port:true, plate:1,
+        title:'Janus', cap:'Two workspaces, one window.',
+        body:['A GPU terminal with a split personality, named for the two-faced god of doorways.'],
+        meta:[['Stack','rust · wgpu · swash'],['Status','lit, and daily-driven']] },
+
+      { id:'h1', group:'Hobbies', name:'The home lab', code:'moored', lat:58.22, lon:-7.50,
+        wreck:true, icon:'moored', plate:3, title:'The home lab', cap:'The rack, mid-tweak. It is always mid-tweak.',
+        body:['Moored in the lee of Eilean Mòr, in sight of the keepers\u2019 light. Never left the harbour.'],
+        meta:[['Service','2021 · present'],['Seasons','5'],
+              ['Last log','"All lamps green. One tweak from perfect. Will fix tonight." · every entry, verbatim, since 2021'],
+              ['Still floats','everything. that is the whole point.'],
+              ['Odds','in port indefinitely'],
+              ['Notes','<button class="sheet__link" data-goto="j2">CachyOS, three months in</button>']] },
+      { id:'h2', group:'Hobbies', name:'Piano', code:'adrift', lat:58.42, lon:-7.12,
+        wreck:true, dim:true, icon:'adrift', plate:4, title:'Piano', cap:'Under its cover, judging me.',
+        body:['Last seen drifting off the north point, sails slack, no hand at the tiller.',
+              'Slipped its mooring the night it was "good enough" and drifted out on the tide.'],
+        meta:[['Service','2023 · 2024'],['Seasons','2'],
+              ['Last log','"Got through the piece with both hands tonight. Good enough." · final entry, unsigned'],
+              ['Still floats','one shaky recording the family still requests'],
+              ['Odds','likely · pending a child\u2019s curiosity']] },
+      { id:'h3', group:'Hobbies', name:'Music theory', code:'marooned', lat:58.06, lon:-7.34,
+        wreck:true, dim:true, icon:'marooned', plate:1, title:'Music theory', cap:'The circle of fifths, in a drawer.',
+        body:['Marooned on a small isle, the same sandbar the piano washed up on.',
+              'Went overboard the same night as the piano; the two washed up together.'],
+        meta:[['Service','2023 · 2024'],['Seasons','2'],
+              ['Last log','"The circle of fifths is just modular arithmetic wearing a cape." · margin note, underlined twice'],
+              ['Still floats','annotated chord charts, still in a drawer'],
+              ['Odds','rises with every tide the piano does']] },
+      { id:'h4', group:'Hobbies', name:'Game dev', code:'made port', lat:58.20, lon:-6.75,
+        wreck:true, port:true, icon:'port', plate:2, title:'Game dev', cap:'The cat is the boat. No further business.',
+        body:['Moored in a safe harbour, colours still flying. Came in on purpose.',
+              'Reached port, dropped anchor by choice, and ran the pennants up.'],
+        meta:[['Service','2020'],['Seasons','1'],
+              ['Last log','"Shipped. The cat is the boat. No further business." · last entry, signed with a flourish'],
+              ['Still floats','Meo Wave Race, complete and undefeated'],
+              ['Odds','slim · the logbook is already perfect']] },
+      { id:'h5', group:'Hobbies', name:'Running', code:'smudged', lat:57.99, lon:-7.02,
+        wreck:true, dim:true, icon:'ink', plate:0, title:'Running', cap:'The shoes. The shoes remain.',
+        body:['Coordinates smudged. An ink-well tipped across this one and never dried.',
+              'The only entry reads: "5k tomorrow, then every morning after."'],
+        meta:[['Service','one summer'],['Seasons','¼'],
+              ['Off course','an ink-well tipped over the chart and blotted the bearing to an unreadable smudge'],
+              ['Still floats','the shoes. the shoes remain.'],
+              ['Odds','spring keeps promising a fair wind']] },
+
+      { id:'j1', group:'Journal', name:'What re-architecting taught me', code:'jun 2026',
+        lat:58.67, lon:-7.08, wreck:true, icon:'bottle', plate:1,
+        title:'What re-architecting taught me about not architecting',
+        cap:'The whiteboard that won the argument.',
+        body:['Sometimes the best system design is the meeting where you talk everyone out of a new system.'],
+        meta:[['Filed','jun 2026']] },
+      { id:'j2', group:'Journal', name:'CachyOS, three months in', code:'apr 2026',
+        lat:57.99, lon:-6.90, wreck:true, icon:'bottle', plate:2, title:'CachyOS, three months in',
+        cap:'Three months of uptime, one distro.',
+        body:['A review from someone who will absolutely distro-hop again and lie about it.'],
+        meta:[['Filed','apr 2026']] },
+      { id:'j3', group:'Journal', name:'The queue is the product', code:'feb 2026',
+        lat:58.35, lon:-7.94, wreck:true, icon:'bottle', plate:0, title:'The queue is the product',
+        cap:'The queue, behaving, for now.',
+        body:['Notes on message queues after a decade of them quietly running the news.'],
+        meta:[['Filed','feb 2026']] }
     ];
-
-    /* every other mark prints from site-data; the chart keeps only their bearings */
-    const D = window.ARGSEA_DATA;
-    const slug = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    const cap1 = (w) => w.charAt(0).toUpperCase() + w.slice(1);
-    const colL = { white:'W', green:'G', red:'R' };
-    const charOf = (p) => 'fixed' === p.kind
-      ? { code:'F ' + colL[p.color], char:{ period:0, spans:[] } }
-      : 'flash' === p.kind ? { code:'Fl ' + colL[p.color] + ' ' + p.period + 's', char:{ period:p.period, spans:[[0,.8]] } }
-      : 'occult' === p.kind ? { code:'Oc ' + colL[p.color] + ' ' + p.period + 's', char:{ period:p.period, spans:[[0,p.period-.8]] } }
-      : { code:'Iso ' + colL[p.color] + ' ' + p.period + 's', char:{ period:p.period, spans:[[0,p.period/2]] } };
-
-    /* a light sails onto the chart when it gets a berth here; everything else about it is data */
-    const BERTHS = {
-      'The Great Un-monolithing': { lat:58.50, lon:-7.06, plate:2, cap:'The last of the monolith, going dark.' },
-      'Newsroom plumbing':        { lat:58.02, lon:-7.02, plate:4, cap:'Press night, from the machine floor.' },
-      '100k good mornings':       { lat:58.61, lon:-7.42, plate:0, cap:'Sunrise, beaten by four minutes.' },
-      'Janus':                    { lat:58.05, lon:-7.16, plate:1, cap:'Two workspaces, one window.', port:true },
-    };
-    (D.projects || []).forEach((p) => {
-      const berth = BERTHS[p.title];
-      if (!berth) return;
-      const c = charOf(p);
-      const meta = (p.facts || []).slice(0, 3).map((f) => [cap1(f.k), f.v]);
-      if (p.moral) meta.push(['Moral', p.moral.replace(/^Moral:\s*/i, '')]);
-      MARKS.push({ id:'p-' + slug(p.title), group:'Projects', name:p.title, code:c.code,
-        lat:berth.lat, lon:berth.lon, char:c.char, plate:berth.plate, port:!!berth.port,
-        dim:'dark' === p.status, title:p.title, cap:berth.cap, body:[p.desc], meta });
-    });
-
-    const HOBBY_DRESSING = {
-      'The home lab':  { plate:3, cap:'The rack, mid-tweak. It is always mid-tweak.' },
-      'Piano':         { plate:4, cap:'Under its cover, judging me.' },
-      'Music theory':  { plate:1, cap:'The circle of fifths, in a drawer.' },
-      'Game dev':      { plate:2, cap:'The cat is the boat. No further business.' },
-      'Running':       { plate:0, cap:'The shoes. The shoes remain.' },
-    };
-    const HOBBY_ICON = { moored:'moored', adrift:'adrift', marooned:'marooned', port:'port', inkspill:'ink' };
-    const HOBBY_CODE = { moored:'moored', adrift:'adrift', marooned:'marooned', port:'made port', inkspill:'smudged' };
-    (D.hobbies || []).forEach((h) => {
-      const dress = HOBBY_DRESSING[h.name] || { plate:0, cap:h.bearing };
-      const meta = [['Service', h.service], ['Seasons', h.seasons], ['Last log', h.lastLog],
-        ['Still floats', h.floats], ['Odds', h.odds]];
-      (h.notes || []).forEach((t) => meta.push(['Notes', `<button class="sheet__link" data-goto="j-${slug(t)}">${t}</button>`]));
-      MARKS.push({ id:'h-' + slug(h.name), group:'Hobbies', name:h.name,
-        code:HOBBY_CODE[h.state] || h.state, lat:h.coord.lat, lon:h.coord.lon, wreck:true,
-        dim:'moored' !== h.state && 'port' !== h.state, port:'port' === h.state,
-        icon:HOBBY_ICON[h.state] || 'adrift', plate:dress.plate,
-        title:h.name, cap:dress.cap, body:[h.bearing, h.offCourse], meta });
-    });
-
-    const JOURNAL_BERTHS = {
-      'What re-architecting taught me about not architecting': { lat:58.67, lon:-7.08, plate:1, cap:'The whiteboard that won the argument.' },
-      'CachyOS, three months in': { lat:57.99, lon:-6.90, plate:2, cap:'Three months of uptime, one distro.' },
-      'The queue is the product': { lat:58.35, lon:-7.94, plate:0, cap:'The queue, behaving, for now.' },
-    };
-    (D.journal || []).forEach((n) => {
-      const berth = JOURNAL_BERTHS[n.title];
-      if (!berth) return;
-      MARKS.push({ id:'j-' + slug(n.title), group:'Journal', name:n.title, code:n.date,
-        lat:berth.lat, lon:berth.lon, wreck:true, icon:'bottle', plate:berth.plate,
-        title:n.title, cap:berth.cap, body:[n.teaser], meta:[['Filed', n.date]] });
-    });
 
     /* stand-in photography, drawn rather than fetched */
     const SCENES = [
@@ -671,8 +685,6 @@ ${[...Array(6)].map((_,n)=>`<rect x='${tx-4}' y='${hz+n*(h-hz)/6+3}' width='${8+
     };
 
     /* build the marks and the list together */
-    const rd = document.getElementById('railDate');
-    if (rd) rd.textContent = new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' }).toLowerCase();
     const rail = document.getElementById('rail');
     const nodes = {};
     let lastGroup = '';
