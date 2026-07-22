@@ -18,14 +18,16 @@ test('the fixtures build keeps no watch: the headline stays, the now panel never
 	await expect(page.locator('.hero')).not.toHaveClass(/hero--watch/);
 });
 
-test('a kept watch renders the now panel: the letter and its signature, no abandoned line, no bearings chips', async ({ page }) => {
+test('a kept watch renders the now panel: the letter signs itself, no sig element, no abandoned line, no bearings chips', async ({ page }) => {
 	await page.goto(`${FEATURED_BUILD}/`);
 
 	await expect(page.locator('.hero')).toHaveClass(/hero--watch/);
 	const now = page.locator('.now');
 	await expect(now).toBeVisible();
 	await expect(now.locator('.now-head .tick')).toHaveText('A note from the keeper');
-	await expect(now.locator('.letter .sig')).toHaveText('- the mock keeper');
+	// the keeper signs his own work (2026-07-22 ruling): no component sig,
+	// the signature is whatever the letter's own content ends with
+	await expect(now.locator('.letter .sig')).toHaveCount(0);
 	await expect(now.locator('.letter p').first()).toContainText('ArcXP migration');
 	await expect(now.locator('.kept')).toHaveText('kept 15 jul');
 
