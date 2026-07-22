@@ -73,6 +73,19 @@ test('the flagship shot links into the light\'s own log', async ({ page }) => {
 	await expect(first.locator('.fulllog')).toHaveAttribute('href', `/projects/${flagshipFirst[0].slug}`);
 });
 
+test('the This-website flagship wears its assisted-by stamp, when it rides the flagship rows', async ({ page }) => {
+	// "This website" carries the canon assist (design/site-data.js), but under
+	// the current fixture order it isn't one of the top-3 flagship rows, and
+	// the register page wears no provenance chip yet (out of this fix's
+	// scope), so there's no rendered surface to assert against right now.
+	const onFlagship = flagTitles.includes('this website');
+	test.skip(!onFlagship, 'this website is order 5, outside the homepage\'s top-3 flagship rows, and the register carries no stamp yet: the stamp reaches no rendered surface under the current fixture');
+
+	await page.goto('/');
+	const row = page.locator('.flagship', { has: page.locator('.info b', { hasText: 'this website' }) });
+	await expect(row.locator('.tags .stamp')).toHaveText('assisted by opus 4.8');
+});
+
 test(`the journal shows its newest ${journalCount} entries`, async ({ page }) => {
 	await page.goto('/');
 	const cards = page.locator('.feat');
@@ -122,10 +135,13 @@ test('the sea footer\'s CTA and aside write to the keeper\'s email', async ({ pa
 	await expect(page.locator('.cta-aside a')).toHaveAttribute('href', 'mailto:hello@argsea.com');
 });
 
-test('the tug tows the manifest and doors into the workshop', async ({ page }) => {
+test('the tug tows the manifest decoratively: no door, no button role, no pointer', async ({ page }) => {
 	await page.goto('/');
 	const tow = page.locator('.tow');
-	await expect(tow).toHaveAttribute('href', '/helm');
+	await expect(tow).not.toHaveAttribute('href', /.*/);
+	await expect(tow).not.toHaveAttribute('role', /.*/);
+	await expect(tow).toHaveAttribute('title', 'the manifest, under tow');
+	expect(await tow.evaluate((el) => getComputedStyle(el).cursor)).not.toBe('pointer');
 	// the design copy fixture ships no stores drawers, so the manifest falls back to the canon's own barges
 	await expect(tow.locator('.barge')).toHaveCount(3);
 	await expect(tow.locator('.barge').first().locator('.crate')).toHaveText(['rust', 'python', 'typescript']);

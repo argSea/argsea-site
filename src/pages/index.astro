@@ -84,6 +84,11 @@ const flags = [...projects]
 			photo,
 			log:   project.hasLog ? `/projects/${project.slug}` : '/projects',
 			facts: project.facts ?? [],
+			// The provenance stamp (design/Hello.dc.html, Component.renderVals):
+			// absent assist means lit by hand, no chip; present means this text,
+			// lowercased, regardless of the `only` flag, since canon never wears
+			// a different line for AI-alone vs. AI-assisted on this page.
+			assistStamp: project.assist ? `assisted by ${(project.assist.model || project.assist.harness || 'ai').toLowerCase()}` : null,
 		};
 	});
 
@@ -252,7 +257,7 @@ const chartYears = projects.map((project) => project.firstLit);
 									</dl>
 								)}
 								{flag.project.moral && <p class="moral">{flag.project.moral}</p>}
-								<span class="tags">{flag.project.tags.map((tag) => <i>{tag}</i>)}</span>
+								<span class="tags">{flag.project.tags.map((tag) => <i>{tag}</i>)}{flag.assistStamp && <i class="stamp">{flag.assistStamp}</i>}</span>
 							</div>
 							<a class="fulllog" href={flag.log}>read the full log →</a>
 						</div>
@@ -438,8 +443,8 @@ const chartYears = projects.map((project) => project.firstLit);
 			</div>
 
 			<div class="boat-lane">
-				<!-- the tug is a real door, not a poke: it tows the manifest into the workshop -->
-				<a class="tow" href="/helm" title="the manifest, under tow" aria-label="the manifest, under tow: see the workshop">
+				<!-- the tug only tows the manifest for show; "set sail" in the hero is the one door to /helm -->
+				<div class="tow" title="the manifest, under tow" aria-label="the manifest, under tow">
 					<span class="boat">
 						<svg class="hull" width="40" height="34" viewBox="0 0 30 24" aria-hidden="true" data-bolted={boatSvg ? 'boat' : undefined}>
 							{boatSvg ? (
@@ -460,7 +465,7 @@ const chartYears = projects.map((project) => project.firstLit);
 							<span class="barge">{crates.map((crate) => <i class="crate">{crate}</i>)}</span>
 						</>
 					))}
-				</a>
+				</div>
 			</div>
 
 			<BottleBoat client:idle proverbs={proverbs} bottleSvg={bottleSvg} auto={true} />
@@ -1205,6 +1210,22 @@ const chartYears = projects.map((project) => project.firstLit);
 		font-style: normal;
 		border: 1px solid rgba(147, 160, 232, .22);
 		padding: 3px 9px;
+	}
+
+	/* the provenance chip: a distinct, more lit-up periwinkle than a plain tag's */
+	.stamp {
+		font-style: normal;
+		font-family: var(--font-mono);
+		font-size: 9.5px;
+		letter-spacing: .18em;
+		text-indent: .09em;
+		text-transform: uppercase;
+		padding: 3px 9px;
+		border-radius: 3px;
+		white-space: nowrap;
+		color: rgba(147, 160, 232, .75);
+		border: 1px solid rgba(147, 160, 232, .35);
+		background: rgba(147, 160, 232, .05);
 	}
 
 	/* ---------- notes: the featured entry ---------- */

@@ -66,6 +66,16 @@ export interface Light {
 	letter:       string; // single A-Z, morse only; '' otherwise
 }
 
+// A project's provenance: who lit this beacon. Absent means lit by hand;
+// present without `only` means lit with the help of AI; `only: true` means lit
+// by AI alone. The API only ever stores this when harness or model is
+// non-empty (caravan-meta contracts/2026-07-22-canon-fields-wire.md).
+export interface Assist {
+	harness: string;
+	model:   string;
+	only?:   boolean;
+}
+
 // One fact-row on the flagship card (capped at 4, 2x2) and the entry overlay
 // (all of them, up to the 6-item cap the data model itself holds to).
 export interface ProjectFact {
@@ -104,6 +114,7 @@ export interface Project {
 	light:        Light | null;   // nullable: null burns as the default fixed white
 	images:       string[] | null; // gallery media names, first print leads; null like tags, guard accordingly
 	gazette?:     ProjectGazette; // the gull post's story on this light, absent when it never made the paper
+	assist?:      Assist;         // who lit this beacon; absent = by hand
 	firstLit:     string;         // freeform year shown in the register
 	order:        number;        // the keeper's manual sort key; the API sends the list pre-sorted
 	wallPos:      WallPos | null; // pinned position on the projects page wall; null → not yet placed

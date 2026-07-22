@@ -47,8 +47,9 @@ test('the hero headline stays fused above the now panel, never a standalone sect
 // the render, same handoff every overlay island uses), so this proves the
 // egg reaches the now card rather than the director, which can't see it.
 test('with the eggs on and the watch kept, the cat can perch on the now card', async ({ page }) => {
-	// Math.random 0.3 pins hello.watch, index 2 of the 7 enabled hello spots
-	// (same pin e2e/gazette.spec.ts used for this spot before the rebuild)
+	// hello.watch is the homepage's only reachable spot (operator ruling
+	// 2026-07-22), so any Math.random pins it; seeded anyway to catch a
+	// regression that widens the pool back out.
 	await page.addInitScript(() => { Math.random = () => 0.3; });
 	await page.goto(`${FEATURED_BUILD}/`);
 
