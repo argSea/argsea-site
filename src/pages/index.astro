@@ -192,7 +192,6 @@ const chartYears = projects.map((project) => project.firstLit);
 					</div>
 					<div class="letter">
 						{watchParagraphs.map((paragraph) => <p>{paragraph}</p>)}
-						{keeper.signoff && <p class="sig">{keeper.signoff}</p>}
 					</div>
 				</aside>
 			)}
@@ -810,6 +809,18 @@ const chartYears = projects.map((project) => project.firstLit);
 		margin: 0;
 	}
 
+	/* the rest of the canon's base block: without the anchor rule, island and
+	   page links fall to UA colors (visited purple in a real browser) */
+	a {
+		text-decoration: none;
+		color: var(--peri);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--lamp);
+		outline-offset: 3px;
+	}
+
 	.wrap {
 		max-width: 1200px;
 		margin: 0 auto;
@@ -976,12 +987,6 @@ const chartYears = projects.map((project) => project.firstLit);
 		margin-top: 9px;
 	}
 
-	.letter .sig {
-		font-family: var(--font-display);
-		font-style: italic;
-		color: var(--text-soft);
-		font-size: 14px;
-	}
 
 	@keyframes morseHi {
 		0%, 4.9%   { opacity: 1; }
