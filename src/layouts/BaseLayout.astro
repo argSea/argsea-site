@@ -19,7 +19,7 @@ interface Props {
 	title:      string;
 	active:     'hello' | 'projects' | 'hobbies' | 'notes' | 'none';
 	quipKey:    QuipField;
-	nightWatch?: boolean; // the footer's night watch definition; hobbies and notes only
+	nightWatch?: boolean; // the footer's night watch definition; every page but the 404
 }
 
 const { title, active, quipKey, nightWatch = false } = Astro.props;

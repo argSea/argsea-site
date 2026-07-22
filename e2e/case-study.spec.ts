@@ -79,6 +79,13 @@ test('the archive figure ships a real print, not a broken glyph', async ({ page 
 		.toBeGreaterThan(0);
 });
 
+test('the footer carries the night watch definition', async ({ page }) => {
+	await page.goto(SLUG);
+	const definition = page.locator('.definition');
+	await expect(definition).toContainText('night watch');
+	await expect(definition).toContainText('this website, most evenings');
+});
+
 test('night falls over the log: a masked star layer sits behind the header', async ({ page }) => {
 	await page.goto(SLUG);
 

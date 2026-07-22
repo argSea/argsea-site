@@ -278,9 +278,11 @@ test('the footer no longer renders the argsea dictionary', async ({ page }) => {
 	await expect(page.locator('.site-footer__dict')).toHaveCount(0);
 });
 
-test('the projects footer carries no night watch definition', async ({ page }) => {
+test('the footer carries the night watch definition', async ({ page }) => {
 	await page.goto('/projects');
-	await expect(page.locator('.definition')).toHaveCount(0);
+	const definition = page.locator('.definition');
+	await expect(definition).toContainText('night watch');
+	await expect(definition).toContainText('this website, most evenings');
 });
 
 test('the provenance chip names the harness for an assisted light, and reads "by hand" for one without', async ({ page }) => {
