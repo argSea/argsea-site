@@ -224,7 +224,7 @@ export default function LightEntryOverlay({ project, signoff, notes = [], doodle
 								<span className="light-entry__title">{project.title}</span>
 								<div className="light-entry__status-row">
 									<span className="light-entry__meta-line">
-										<span className="light-entry__code">{codeFor(light)}</span> · est. <span className="light-entry__meta-value">{project.firstLit}</span> · district argsea
+										<span className="light-entry__code">{codeFor(light)}</span> · est. <span className="light-entry__meta-value">{project.firstLit}</span> · home waters
 									</span>
 									<span className={`status-pill ${dark ? 'status-pill--dark' : 'status-pill--lit'}`}>{dark ? `dark · ${light.extinguished}` : 'lit'}</span>
 								</div>

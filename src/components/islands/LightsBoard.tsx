@@ -167,7 +167,7 @@ export default function LightsBoard({ projects, notes, doodles, signoff, catEnab
 				<div className="register">
 					<div className="register__head">
 						<span className="register__head-label">The light list</span>
-						<span className="register__head-district">District · argsea</span>
+						<span className="register__head-district">District · home waters</span>
 					</div>
 					<div className="register__cols">
 						<span>no.</span><span /><span>light</span><span>characteristic</span><span>est.</span><span>status</span><span />

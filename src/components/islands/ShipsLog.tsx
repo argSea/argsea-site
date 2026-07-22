@@ -243,7 +243,7 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, signoff
 			<div style={{ padding: '6px clamp(16px,4vw,52px) clamp(20px,4vw,32px)', display: 'flex', justifyContent: 'center' }}>
 				<div style={{ position: 'relative', width: '100%', maxWidth: '1120px', animation: 'fadeUp .8s ease .28s both' }}>
 					<div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap', padding: '0 6px 10px' }}>
-						<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', letterSpacing: '.2em', color: '#8a93c4', textTransform: 'uppercase' }}>The wandering chart · argsea district</span>
+						<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', letterSpacing: '.2em', color: '#8a93c4', textTransform: 'uppercase' }}>The wandering chart · home waters</span>
 						<span className="shipslog__plotted" style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', letterSpacing: '.12em', color: '#5f6ec4', textTransform: 'uppercase' }}>{plottedLine}</span>
 					</div>
 
