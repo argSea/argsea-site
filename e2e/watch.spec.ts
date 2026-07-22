@@ -3,8 +3,10 @@
 // has always read off GET /1/watch. design/Hello.dc.html dropped the season
 // postcard rack that used to ride alongside the letter (no more watch.
 // postcardMediaId/postcard2MediaId on this page), so this file no longer
-// proves a rack; it proves the letter, its signature and abandoned line, and
-// the bearings chips.
+// proves a rack; it proves the letter and its signature. The imported round
+// (design/Hello.dc.html) also dropped the abandoned line and the bearings
+// chips from the render: watch.rotation/bearings still ride the wire, but
+// nothing on this page shows them anymore.
 import { test, expect } from '@playwright/test';
 
 const FEATURED_BUILD = 'http://127.0.0.1:4822';
@@ -16,23 +18,21 @@ test('the fixtures build keeps no watch: the headline stays, the now panel never
 	await expect(page.locator('.hero')).not.toHaveClass(/hero--watch/);
 });
 
-test('a kept watch renders the now panel: the letter, its signature, the abandoned line, and the bearings chips', async ({ page }) => {
+test('a kept watch renders the now panel: the letter and its signature, no abandoned line, no bearings chips', async ({ page }) => {
 	await page.goto(`${FEATURED_BUILD}/`);
 
 	await expect(page.locator('.hero')).toHaveClass(/hero--watch/);
 	const now = page.locator('.now');
 	await expect(now).toBeVisible();
-	await expect(now.locator('.letter .aband')).toHaveText('Out of the rotation on purpose: conference talks and the piano.');
+	await expect(now.locator('.now-head .tick')).toHaveText('A note from the keeper');
 	await expect(now.locator('.letter .sig')).toHaveText('- the mock keeper');
 	await expect(now.locator('.letter p').first()).toContainText('ArcXP migration');
 	await expect(now.locator('.kept')).toHaveText('kept 15 jul');
 
-	// the mock watch carries two bearings; kind "none" stays plain text, a
-	// "note" bearing steers to /notes
-	const chips = now.locator('.chips');
-	await expect(chips).toContainText('wrangling');
-	await expect(chips).toContainText('The ArcXP migration');
-	await expect(chips.locator('a[href="/notes"] b')).toHaveText('the journal');
+	// the mock watch still carries rotation/bearings on the wire; the imported
+	// round (design/Hello.dc.html) dropped both from the render
+	await expect(now.locator('.letter .aband')).toHaveCount(0);
+	await expect(now.locator('.chips')).toHaveCount(0);
 });
 
 test('the hero headline stays fused above the now panel, never a standalone section of its own', async ({ page }) => {
