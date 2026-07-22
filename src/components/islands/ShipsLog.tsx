@@ -12,6 +12,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactElement } from 'react';
 import type { Coord, Doodle, FigureheadDesign, Hobby, HobbyState, Note } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
+import { loadFlares, recordFlare } from '../../lib/flares';
 import { sightFlare, sightVisit } from '../../lib/sightings';
 import { useEscapeKey } from './useEscapeKey';
 import BoltedSvg from './BoltedSvg';
@@ -20,7 +21,6 @@ import JournalEntryOverlay from './JournalEntryOverlay';
 import './ShipsLog.css';
 
 const CLOSE_MS = 220;
-const FLARES_KEY = 'argsea-flares';
 
 // The chart's projection window and the two fixed marks that aren't hobbies:
 // the memorial's light and the uncharted "next hobby" slot.
@@ -132,33 +132,10 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 
 	const suggestionList = useMemo(() => ['???', ...suggestions], [suggestions]);
 
-	// Re-keyed from hobby.name to hobby.id (a rename used to orphan the count):
-	// each hobby's tally is its own stored id if present, else falls back to
-	// migrate whatever the old name key carried. Every other stored key rides
-	// along untouched, so a count is never dropped, and the migrated shape is
-	// written back once, only when it actually changed.
+	// The shared tally (src/lib/flares.ts) loads and migrates name keys to
+	// hobby.id in one pass; Helm reads and writes the same bucket.
 	useEffect(() => {
-		try {
-			const stored = JSON.parse(localStorage.getItem(FLARES_KEY) ?? '{}');
-			if (!stored || typeof stored !== 'object') {
-				return;
-			}
-			const migrated: Record<string, number> = { ...stored };
-			let changed = false;
-			for (const hobby of hobbies) {
-				const value = stored[hobby.id] ?? stored[hobby.name];
-				if (value !== undefined && migrated[hobby.id] !== value) {
-					migrated[hobby.id] = value;
-					changed = true;
-				}
-			}
-			setFlares(migrated);
-			if (changed) {
-				localStorage.setItem(FLARES_KEY, JSON.stringify(migrated));
-			}
-		} catch {
-			// a corrupt or blocked store just means no flare tally remembered
-		}
+		setFlares(loadFlares(hobbies));
 	}, [hobbies]);
 
 	// The ?bearing= contract: a journal entry's ◈ link lands here with the
@@ -208,20 +185,14 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 			return;
 		}
 		const hobby = hobbies[openIdx];
-		const next = { ...flares, [hobby.id]: (flares[hobby.id] ?? 0) + 1 };
 		clearTimeout(fireTimer.current);
-		setFlares(next);
+		setFlares(recordFlare(hobby.id, flares));
 		setFlaredNow((current) => ({ ...current, [hobby.id]: true }));
 		// drop the flare, then raise it fresh next frame so a re-fire restarts it
 		setFlareFiring(false);
 		requestAnimationFrame(() => setFlareFiring(true));
 		fireTimer.current = setTimeout(() => setFlareFiring(false), 2500);
 		sightFlare(hobby.id);
-		try {
-			localStorage.setItem(FLARES_KEY, JSON.stringify(next));
-		} catch {
-			// storage may be unavailable (private mode, quota); the card's line just won't survive a reload
-		}
 	};
 
 	const onHover = (index: number) => setHoverIdx(index);

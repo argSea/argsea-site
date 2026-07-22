@@ -78,10 +78,11 @@ test('sending a flare flips the sheet\'s line and the tally survives a reload, u
 	await page.locator('#fireFlare').click();
 	await expect(line).toHaveText('flare away · the keeper will see it');
 
-	// argsea-flares is the same localStorage key ShipsLog reads/writes, so a
-	// flare fired here tallies for both pages
+	// argsea-flares is the same localStorage key ShipsLog reads/writes, id-keyed
+	// (src/lib/flares.ts), so a flare fired here tallies for both pages
+	const homeLab = hobbies.find((h) => h.name === 'The home lab')!;
 	const stored = await page.evaluate(() => localStorage.getItem('argsea-flares'));
-	expect(JSON.parse(stored ?? '{}')).toEqual({ 'The home lab': 1 });
+	expect(JSON.parse(stored ?? '{}')).toEqual({ [homeLab.id]: 1 });
 
 	await page.reload();
 	await page.locator('.rail__item', { hasText: 'The home lab' }).click();
