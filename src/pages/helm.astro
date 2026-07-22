@@ -1,0 +1,47 @@
+---
+// The helm: a working Mercator chart of the Flannan grounds, transcribed
+// from design/TheChart.dc.html. Its own dark chart chrome, not the site's
+// nav/footer/tab bar, so it stands alone rather than under BaseLayout
+// (the gazette.astro precedent: fonts, then global.css, in the same order
+// every other page takes them, then the page's own styles repaint the body).
+// The chart's own rail replaces the site nav; "back ashore" is the way home.
+//
+// Data: projects/hobbies/notes/keeper feed the Helm island the way
+// BottleBoat/ShipsLog take their props; Helm.tsx joins them against the
+// mock's own page-local berth tables.
+import '@fontsource/gloock';
+import '@fontsource-variable/newsreader/standard.css';
+import '@fontsource-variable/newsreader/standard-italic.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../styles/global.css';
+
+import Helm from '../components/islands/Helm';
+import { getProjects, getHobbies, getNotes, getKeeperProfile } from '../lib/api';
+
+const projects = await getProjects();
+const hobbies = await getHobbies();
+const notes = await getNotes();
+const keeper = await getKeeperProfile();
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>The helm · argsea.com</title>
+	</head>
+	<body>
+		<Helm
+			client:load
+			projects={projects}
+			hobbies={hobbies}
+			notes={notes}
+			keeperName={keeper.name}
+			keeperTitle={keeper.title}
+			keeperLocation={keeper.location}
+		/>
+	</body>
+</html>
