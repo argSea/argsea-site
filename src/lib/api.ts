@@ -73,6 +73,19 @@ export interface ProjectFact {
 	fact:    string;
 }
 
+// A project's turn on the front page: the gull post runs some lights as
+// news, not just postcards. headline/p1 anchor the story; deck/dateline/p2/
+// caption fill in as the keeper wrote them. Optional: most projects never
+// make the paper.
+export interface ProjectGazette {
+	headline:  string;
+	deck?:     string;
+	dateline?: string;
+	p1:        string;
+	p2?:       string;
+	caption?:  string;
+}
+
 // Wire types mirror the argsea-site-api domain structs field-for-field.
 export interface Project {
 	id:           string;
@@ -90,6 +103,7 @@ export interface Project {
 	stamp?:       Stamp | null;  // absent → the design's default stamp
 	light:        Light | null;   // nullable: null burns as the default fixed white
 	images:       string[] | null; // gallery media names, first print leads; null like tags, guard accordingly
+	gazette?:     ProjectGazette; // the gull post's story on this light, absent when it never made the paper
 	firstLit:     string;         // freeform year shown in the register
 	order:        number;        // the keeper's manual sort key; the API sends the list pre-sorted
 	wallPos:      WallPos | null; // pinned position on the projects page wall; null → not yet placed
@@ -137,6 +151,7 @@ export interface Coord {
 export interface Hobby {
 	id:        string;
 	name:      string;
+	gauge?:    number;        // enthusiasm, self-assessed, suspiciously precise; homepage bars only
 	service:   string;        // freeform tenure, e.g. "2021 · present"
 	state:     HobbyState;
 	coord:     Coord | null;  // null = uncharted: in the log, off the chart
@@ -159,8 +174,10 @@ export interface Note {
 	body:          string;  // sanitized HTML
 	date:          string;  // freeform display string, e.g. "jun 2026"
 	conditions:    string;  // the log-style dek, e.g. "fog inland · desktop suspiciously calm"
+	wx?:           string;  // canon's weather line for the entry; not yet read by any page
 	doodleCaption: string;  // the handwritten quip beside the doodle; "" when there's no doodle
 	doodleId:      string | null;
+	doodle?:       string;  // canon's doodle name for the entry (e.g. "boat", "queue"); not yet read by any page
 	status:        Status;
 	publishedAt:   string;
 	createdAt:     string;
@@ -237,6 +254,14 @@ export interface StoreDrawer {
 	tools: string[];
 }
 
+// The gull post's front-page dressing: the volume line and the "presently
+// chasing" blurb the gazette page wears above the fold. Optional: an older
+// copy document may not carry it yet.
+export interface SiteGazette {
+	vol:       string;
+	presently: string;
+}
+
 // The "signal flags" singleton: the little lines of copy that fly over every
 // page, plus the smuggler's cove (easter-egg toggles and their content). All
 // text fields are plain text; the API does not sanitize them as HTML, so
@@ -258,6 +283,7 @@ export interface SiteCopy {
 	catSpots:       CatSpots;    // per-spot switch, keyed by the frozen spot ids
 	bottleProverbs: string[];    // emptied by the keeper = the bottle egg is off
 	lighthouses:    Lighthouse[]; // emptied = plain "last position: 404", no flip
+	gazette?:       SiteGazette; // the gazette page's masthead dressing; absent → the page's own approved copy
 	wallGhost?:     { x: number; y: number; rotation: number; enabled: boolean } | null; // the projects wall's ghost placard; null/absent → the page default position, enabled
 	updatedAt:      string;
 }

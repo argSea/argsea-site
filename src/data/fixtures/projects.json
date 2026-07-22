@@ -30,6 +30,14 @@
       "letter": ""
     },
     "images": ["first-screenshot.svg", "wiring.svg", "queue-depth.svg"],
+    "gazette": {
+      "headline": "Giant Monolith Quietly Dismantled; the Paper Never Misses a Day",
+      "deck": "29 small, well-behaved services now stand where one enormous application once feared nothing. Readers, by design, noticed nothing at all.",
+      "dateline": "from inside the cluster",
+      "p1": "The old system was one enormous application that did everything and feared nothing, least of all the keeper's weekends. It was taken apart piece by piece: a message queue in the middle, 29 services around it, Kubernetes herding the containers.",
+      "p2": "The success metric was silence. No reader ever noticed a thing. The paper published every single day while the engine was swapped mid-flight. The old stack was decommissioned in 2025, capability by capability, until one night there was nothing left to turn off.",
+      "caption": "The first screenshot, as archived at the station. The queue, not pictured, is the product."
+    },
     "firstLit": "2024",
     "order": 1,
     "wallPos": {
@@ -82,6 +90,11 @@
       "letter": ""
     },
     "images": ["station-photo.svg"],
+    "gazette": {
+      "headline": "City's Hidden Plumbing Holds, Again; Nobody Notices, Which Is the Point",
+      "p1": "Reporters write, editors edit, and somewhere between done and published lives an entire hidden city of pipes: APIs, storage, caching. A good chunk of that city was designed and built by the keeper, and it runs on deadlines that do not move for anybody.",
+      "caption": "The pipes beneath the newsroom."
+    },
     "firstLit": "2016",
     "order": 2,
     "wallPos": {
@@ -134,6 +147,10 @@
       "letter": ""
     },
     "images": null,
+    "gazette": {
+      "headline": "Newsletter Beats Sunrise Into 100,000 Inboxes; Cron Job Credits Ambition",
+      "p1": "Every morning, before coffee exists, an automated system assembles the day's news and delivers it to over 100,000 inboxes. It has done this more reliably than anyone gets out of bed. The fun part was making it boring: retries, queues, monitoring, and a healthy paranoia about 4am."
+    },
     "firstLit": "2018",
     "order": 3,
     "wallPos": {
@@ -462,5 +479,55 @@
     "publishedAt": "2026-07-01T12:00:07Z",
     "createdAt": "2026-07-01T12:00:07Z",
     "updatedAt": "2026-07-01T12:00:07Z"
+  },
+  {
+    "id": "fixture-project-10",
+    "title": "Janus",
+    "category": "tinkering",
+    "tags": [
+      "rust",
+      "wgpu",
+      "swash"
+    ],
+    "shortDesc": "A GPU terminal with a split personality, named for the two-faced god of doorways.",
+    "body": "<p>A GPU terminal emulator with two faces: one workspace for the newsroom, one for home, one window between them. Named for the god of doorways, because it is one.</p><p>Rust underneath, wgpu doing the drawing, swash shaping the glyphs. It renders the very logs the rest of this coast writes.</p>",
+    "moral": "Moral: build the room you live in.",
+    "postcardTo": "anyone who has ever needed two terminals and one brain",
+    "postcardFrom": "janus, minding both doors",
+    "postmarked": "2026–ongoing",
+    "slug": "janus",
+    "image": null,
+    "stamp": {
+      "shape": "rect",
+      "motif": "lighthouse",
+      "ink": "#f0d9a8"
+    },
+    "light": {
+      "kind": "iso",
+      "color": "green",
+      "period": 3,
+      "extinguished": "",
+      "letter": ""
+    },
+    "images": null,
+    "firstLit": "2026",
+    "order": 10,
+    "wallPos": {
+      "x": 12,
+      "y": 78,
+      "rotation": -1.1
+    },
+    "featured": false,
+    "facts": [
+      { "heading": "stack", "fact": "rust · wgpu · swash" },
+      { "heading": "status", "fact": "lit, and daily-driven" },
+      { "heading": "why", "fact": "I live in terminals. I may as well build the house." }
+    ],
+    "noteIds": [],
+    "flagship": false,
+    "status": "published",
+    "publishedAt": "2026-07-01T12:00:09Z",
+    "createdAt": "2026-07-01T12:00:09Z",
+    "updatedAt": "2026-07-01T12:00:09Z"
   }
 ]

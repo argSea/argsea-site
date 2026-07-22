@@ -2,6 +2,7 @@
   {
     "id": "fixture-hobby-1",
     "name": "The home lab",
+    "gauge": 94,
     "service": "2021 · present",
     "state": "moored",
     "coord": { "lat": 58.22, "lon": -7.50 },
@@ -18,6 +19,7 @@
   {
     "id": "fixture-hobby-2",
     "name": "Piano",
+    "gauge": 38,
     "service": "2023 · 2024",
     "state": "adrift",
     "coord": { "lat": 58.42, "lon": -7.12 },
@@ -35,6 +37,7 @@
   {
     "id": "fixture-hobby-3",
     "name": "Music theory",
+    "gauge": 51,
     "service": "2023 · 2024",
     "state": "marooned",
     "coord": { "lat": 58.06, "lon": -7.20 },
@@ -52,6 +55,7 @@
   {
     "id": "fixture-hobby-4",
     "name": "Game dev",
+    "gauge": 88,
     "service": "2020",
     "state": "port",
     "coord": { "lat": 58.20, "lon": -6.75 },
@@ -69,6 +73,7 @@
   {
     "id": "fixture-hobby-5",
     "name": "Running",
+    "gauge": 12,
     "service": "one summer",
     "state": "inkspill",
     "coord": { "lat": 57.92, "lon": -7.02 },

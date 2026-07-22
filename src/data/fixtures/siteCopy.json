@@ -49,5 +49,9 @@
     { "name": "Cape Hatteras", "pos": "35°15′N 75°32′W", "line": "the Graveyard of the Atlantic keeps a light on." },
     { "name": "Tourlitis", "pos": "37°50′N 24°57′E", "line": "a lighthouse on a stone stalk, straight out of a storybook." }
   ],
+  "gazette": {
+    "vol": "vol. XXXIX · harbor edition",
+    "presently": "wrangling the ArcXP migration (in flight, no page yet)"
+  },
   "updatedAt": "2026-07-04T12:00:00Z"
 }
