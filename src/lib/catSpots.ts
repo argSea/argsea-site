@@ -105,7 +105,17 @@ export function spotEnabled(spot: CatSpot, catPages: Toggles, catSpots: Toggles)
 }
 
 export function enabledSpots(page: CatPage, catPages: Toggles, catSpots: Toggles): CatSpot[] {
-	return CATALOG.filter((spot) => spot.page === page && spotEnabled(spot, catPages, catSpots));
+	const pool = CATALOG.filter((spot) => spot.page === page && spotEnabled(spot, catPages, catSpots));
+	// Operator ruling 2026-07-22 (homepage scope only): the keeper's landing
+	// dropped the watch/register page's chrome the other hello.* spots used to
+	// ride, and roosting on their new anchors (the flagship byline, the sea
+	// itself, the skills heading, the footer CTA) reads as the cat wandering
+	// the whole page rather than keeping the watch. Their ids stay in the
+	// catalog frozen and still toggleable, just never in the homepage's pool.
+	if ('hello' === page) {
+		return pool.filter((spot) => 'hello.watch' === spot.id);
+	}
+	return pool;
 }
 
 // One pick per page per view, memoized so the director and the overlay islands

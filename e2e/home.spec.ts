@@ -122,10 +122,13 @@ test('the sea footer\'s CTA and aside write to the keeper\'s email', async ({ pa
 	await expect(page.locator('.cta-aside a')).toHaveAttribute('href', 'mailto:hello@argsea.com');
 });
 
-test('the tug tows the manifest and doors into the workshop', async ({ page }) => {
+test('the tug tows the manifest decoratively: no door, no button role, no pointer', async ({ page }) => {
 	await page.goto('/');
 	const tow = page.locator('.tow');
-	await expect(tow).toHaveAttribute('href', '/helm');
+	await expect(tow).not.toHaveAttribute('href', /.*/);
+	await expect(tow).not.toHaveAttribute('role', /.*/);
+	await expect(tow).toHaveAttribute('title', 'the manifest, under tow');
+	expect(await tow.evaluate((el) => getComputedStyle(el).cursor)).not.toBe('pointer');
 	// the design copy fixture ships no stores drawers, so the manifest falls back to the canon's own barges
 	await expect(tow.locator('.barge')).toHaveCount(3);
 	await expect(tow.locator('.barge').first().locator('.crate')).toHaveText(['rust', 'python', 'typescript']);
