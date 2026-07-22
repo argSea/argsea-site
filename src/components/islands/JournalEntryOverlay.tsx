@@ -16,7 +16,6 @@ import './JournalEntryOverlay.css';
 interface Props {
 	note:        Note;
 	doodle:      Doodle | null;
-	signoff:     string;
 	foundIn?:     Project[]; // the lights that tie this note via their own noteIds; [] or absent hides the block entirely
 	foundHobbies?: Hobby[]; // the bearings that tie this note via their own noteIds; rendered in the same "found in" list, marked ◈
 	onStepInto?: (project: Project) => void; // step into the tower: close this entry, open the light in place. Absent falls back to the plain /projects link
@@ -34,7 +33,7 @@ function reducedMotion(): boolean {
 	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-export default function JournalEntryOverlay({ note, doodle, signoff, foundIn = [], foundHobbies = [], onStepInto, catHere = false, catDesigns, closeLabel = 'close ✕', onClose }: Props) {
+export default function JournalEntryOverlay({ note, doodle, foundIn = [], foundHobbies = [], onStepInto, catHere = false, catDesigns, closeLabel = 'close ✕', onClose }: Props) {
 	const [closing, setClosing] = useState(false);
 	const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -98,7 +97,6 @@ export default function JournalEntryOverlay({ note, doodle, signoff, foundIn = [
 							</div>
 						)}
 						<div className="letter__signrow">
-							<div className="letter__signature">{signoff}</div>
 							{doodle && (
 								<div className="letter__marginalia">
 									<DoodleSvg doodle={doodle} className="letter__doodle" />

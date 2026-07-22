@@ -21,7 +21,7 @@ const QUIPS: Record<CatContext, string[]> = {
 	wreck:     ['told you to turn left.', 'i would not have hit that.', 'a cat never runs aground.', 'nice parking, captain.', 'i saw the rocks. did you?', 'this is why i steer.', 'should have asked the cat.'],
 	header:    ['mrrp.', 'this is my page now.', 'you may look. briefly.', 'i live up here.', 'the lighthouse sent me.', 'mind the tail.'],
 	hero:      ['mrrp.', 'yes, that is the guy.', 'he does keep the lights on. i supervise.', 'hire him. i vouch. mostly.', 'the boxes-and-arrows are mine.'],
-	manifest:  ['mrrp.', 'you forgot to list me.', 'i am also a tool. i sit at the end of the line.', 'inventory looks fine. i counted.', 'one shelf now. easier to patrol.', 'the queue is mine now.'],
+	manifest:  ['mrrp.', 'you forgot to list me.', 'i am also a tool. kept in the tower.', 'inventory looks fine. i counted.', 'the queue is mine now.'],
 	ledger:    ['mrrp.', 'the compass points at me. correct.', 'i smudged the ink. it needed it.', 'every ship accounted for. i counted twice.', 'sea room held. i am sitting in it.'],
 	chart:     ['a sail, off the north point. maybe.', 'i keep watch for the ones that drift back.', 'none of them sank. i checked.', 'the boat always comes back. eventually.', 'one sail is overdue. i am counting.'],
 	watch:     ['mrrp.', 'i keep this watch too. from up here.', 'the log is current. i checked.', 'he writes it down. i live it.', 'nothing to report. the good kind.'],

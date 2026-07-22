@@ -37,7 +37,6 @@ function reducedMotion(): boolean {
 
 interface Props {
 	project:     Project;
-	signoff:     string;
 	notes?:      Note[]; // the full journal, so noteIds can resolve to real titles; [] if the caller has none loaded
 	doodles?:    Doodle[]; // the keeper's doodles, so a pulled-out note can draw its own by doodleId; [] if the caller has none loaded
 	catHere?:    boolean;
@@ -47,7 +46,7 @@ interface Props {
 	onClose:     () => void;
 }
 
-export default function LightEntryOverlay({ project, signoff, notes = [], doodles = [], catHere = false, catDesigns, coastLink = false, towerSvg = null, onClose }: Props) {
+export default function LightEntryOverlay({ project, notes = [], doodles = [], catHere = false, catDesigns, coastLink = false, towerSvg = null, onClose }: Props) {
 	const light = project.light ?? DEFAULT_LIGHT;
 	const dark = Boolean(light.extinguished);
 	const glow = glowFor(light);
@@ -161,6 +160,14 @@ export default function LightEntryOverlay({ project, signoff, notes = [], doodle
 	const showNudge = tiedNotes.length === 0 && !project.hasLog;
 	const facts = project.facts ?? [];
 
+	// The provenance chip's line (ProjectOverlay.dc.html's own ov.assistLine):
+	// absent assist means by hand; present means this text, harness/model
+	// joined and lowercased, regardless of the `only` flag (the mock never
+	// wears a different line for AI-alone vs. AI-assisted here either).
+	const assistLine = project.assist
+		? `this beacon was lit with the help of AI (${[project.assist.harness, project.assist.model].filter(Boolean).join(', ').toLowerCase()})`
+		: 'this beacon was lit by hand';
+
 	// Portaled to document.body so the backdrop sits in the root stacking
 	// context, same as HarborCatDirector's cat-mount, instead of being
 	// trapped under the cat inside .page's own context.
@@ -184,7 +191,6 @@ export default function LightEntryOverlay({ project, signoff, notes = [], doodle
 							{/* body is sanitized HTML from the API; rendered as-is by contract */}
 							<div className="light-entry__note-prose" dangerouslySetInnerHTML={{ __html: pulledNote.body }} />
 							<div className="light-entry__note-signrow">
-								<div className="light-entry__note-signature">{signoff}, keeper</div>
 								{pulledDoodle && (
 									<div className="light-entry__note-marginalia">
 										<DoodleSvg doodle={pulledDoodle} className="light-entry__note-doodle" />
@@ -256,6 +262,16 @@ export default function LightEntryOverlay({ project, signoff, notes = [], doodle
 							</div>
 						)}
 
+						<div className="light-entry__provenance">
+							<span className={`light-entry__chip${project.assist ? ' light-entry__chip--assist' : ' light-entry__chip--hand'}`}>
+								<svg width="10" height="13" viewBox="0 0 10 13" fill="none" className="light-entry__chip-flame" aria-hidden="true">
+									<path d="M5 1 C6.8 3.2 8 4.8 8 7 a3 3 0 1 1 -6 0 C2 4.8 3.2 3.2 5 1 Z" fill="currentColor" opacity=".9" />
+									<path d="M2 12 h6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+								</svg>
+								<span className="light-entry__chip-text">{assistLine}</span>
+							</span>
+						</div>
+
 						<div className="light-entry__cols">
 							<div className="light-entry__left">
 								{/* body is sanitized HTML from the API; rendered as-is by contract */}
@@ -300,7 +316,6 @@ export default function LightEntryOverlay({ project, signoff, notes = [], doodle
 
 						<div className="light-entry__final">
 							<span className="light-entry__moral">{project.moral}</span>
-							<span className="light-entry__signoff">{signoff}, the keeper</span>
 						</div>
 					</div>
 				</div>

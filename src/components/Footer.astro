@@ -5,19 +5,28 @@
 // field for that ad, the footer just no longer renders it. The socials come
 // from the keeper's profile; a cleared field drops its link rather than
 // shipping a dead href.
+//
+// The night watch definition (design/Hobbies.dc.html, design/Notes.dc.html)
+// is an optional left-side block, enabled only from those two pages.
 import { getKeeperProfile } from '../lib/api';
 
 interface Props {
-	quip: string;
+	quip:       string;
+	nightWatch?: boolean;
 }
 
-const { quip } = Astro.props;
+const { quip, nightWatch = false } = Astro.props;
 const keeper = await getKeeperProfile();
 
 // The profile stores socials as host paths ("github.com/argsea"); links need a scheme
 const withScheme = (link: string) => /^https?:\/\//.test(link) ? link : `https://${link}`;
 ---
-<footer class="site-footer">
+<footer class={nightWatch ? 'site-footer site-footer--split' : 'site-footer'}>
+	{nightWatch && (
+		<div class="definition">
+			<span class="definition__word">night watch</span> <span class="definition__ipa">/ˈnaɪt·wɒtʃ/ · noun</span> &nbsp;1. the hours nobody reads the news &nbsp;2. the shift that keeps it printable &nbsp;3. a sea of water, or of stars &nbsp;4. this website, most evenings
+		</div>
+	)}
 	<div class="site-footer__right">
 		<div class="socials">
 			{keeper.github && <a href={withScheme(keeper.github)}>github</a>}
@@ -25,7 +34,7 @@ const withScheme = (link: string) => /^https?:\/\//.test(link) ? link : `https:/
 			{keeper.email && <a href={`mailto:${keeper.email}`}>email</a>}
 		</div>
 		<div class="site-footer__meta">
-			<span class="copyright">© 2026 · Justin Smith</span>
+			<span class="copyright">© 2026 · the lighthouse</span>
 			<span class="quip">{quip}</span>
 		</div>
 	</div>
@@ -41,6 +50,34 @@ const withScheme = (link: string) => /^https?:\/\//.test(link) ? link : `https:/
 		gap: 16px 28px;
 		padding: 20px var(--gutter) 24px;
 		border-top: 1px solid rgba(150, 160, 220, .07);
+	}
+
+	.site-footer--split {
+		justify-content: space-between;
+	}
+
+	.definition {
+		flex: 1 1 240px;
+		max-width: 400px;
+		font-size: 11px;
+		line-height: 1.55;
+		color: #6b74a0;
+		font-style: italic;
+		text-wrap: pretty;
+	}
+
+	.definition__word {
+		font-family: var(--font-display);
+		font-style: normal;
+		font-size: 12.5px;
+		color: var(--text-body);
+	}
+
+	.definition__ipa {
+		font-family: var(--font-mono);
+		font-size: 10px;
+		font-style: normal;
+		color: var(--periwinkle-deep);
 	}
 
 	.site-footer__right {

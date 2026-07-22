@@ -6,7 +6,7 @@
 // never the chart.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ShipsLog from '../components/islands/ShipsLog';
-import { getHobbies, getSuggestions, getSiteCopy, getFigurehead, getCarvings, getNotes, getDoodles, getKeeperProfile } from '../lib/api';
+import { getHobbies, getSuggestions, getSiteCopy, getFigurehead, getCarvings, getNotes, getDoodles } from '../lib/api';
 import { boltedSvg } from '../lib/carvings';
 
 const hobbies = await getHobbies();
@@ -15,11 +15,9 @@ const copy = await getSiteCopy();
 const catDesigns = await getFigurehead();
 
 // The journal, so a bearing card can pull up a tied entry in place (the note
-// tie is the same noteIds convention a light uses); the sign-off is the
-// keeper's, for that pulled-up entry's foot.
+// tie is the same noteIds convention a light uses).
 const notes = await getNotes();
 const doodles = await getDoodles();
-const keeper = await getKeeperProfile();
 
 // The diorama's ten carving spots, resolved here because ShipsLog is an
 // island and can't reach src/lib/api.ts itself (the towerSvg precedent).
@@ -37,7 +35,7 @@ const bolted = {
 	sailTent:        boltedSvg('sail-tent', carvings),
 };
 ---
-<BaseLayout title="The ship's log · Justin Smith" active="hobbies" quipKey="quipHobbies">
+<BaseLayout title="The ship's log · Justin Smith" active="hobbies" quipKey="quipHobbies" nightWatch>
 	<section class="head">
 		<span class="head__kicker section-label fade-up fade-up--1">Hobbies · past and adrift</span>
 		<h1 class="head__title fade-up fade-up--2">Off course, not overboard</h1>
@@ -51,7 +49,6 @@ const bolted = {
 		suggestions={suggestions.map((s) => s.value)}
 		notes={notes}
 		doodles={doodles}
-		signoff={keeper.signoff}
 		catEnabled={copy.eggs.cat}
 		catPages={copy.catPages}
 		catSpots={copy.catSpots}

@@ -78,3 +78,11 @@ test('the archive figure ships a real print, not a broken glyph', async ({ page 
 		.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth))
 		.toBeGreaterThan(0);
 });
+
+test('night falls over the log: a masked star layer sits behind the header', async ({ page }) => {
+	await page.goto(SLUG);
+
+	const specks = page.locator('.cs-stars__specks');
+	await expect(specks).toBeAttached();
+	expect(await specks.evaluate((element) => getComputedStyle(element).maskImage || getComputedStyle(element).webkitMaskImage)).toContain('linear-gradient');
+});

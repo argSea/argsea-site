@@ -74,7 +74,6 @@ interface Props {
 	projects:    Project[];
 	notes:       Note[];
 	doodles:     Doodle[]; // the keeper's doodles, so a pulled-out note in the entry overlay can draw its own
-	signoff:     string;
 	catEnabled:  boolean;
 	catPages?:   Record<string, boolean>;
 	catSpots?:   Record<string, boolean>;
@@ -83,7 +82,7 @@ interface Props {
 	towerSvg?:   string | null;
 }
 
-export default function LightsBoard({ projects, notes, doodles, signoff, catEnabled, catPages, catSpots, catDesigns, boatSvg = null, towerSvg = null }: Props) {
+export default function LightsBoard({ projects, notes, doodles, catEnabled, catPages, catSpots, catDesigns, boatSvg = null, towerSvg = null }: Props) {
 	const [filter, setFilter] = useState<Filter>('all');
 	const [openId, setOpenId] = useState<string | null>(null);
 
@@ -190,7 +189,7 @@ export default function LightsBoard({ projects, notes, doodles, signoff, catEnab
 				</div>
 			</div>
 
-			{open && <LightEntryOverlay project={open} notes={notes} doodles={doodles} signoff={signoff} catHere={catHere} catDesigns={catDesigns} towerSvg={towerSvg} onClose={close} />}
+			{open && <LightEntryOverlay project={open} notes={notes} doodles={doodles} catHere={catHere} catDesigns={catDesigns} towerSvg={towerSvg} onClose={close} />}
 		</>
 	);
 }

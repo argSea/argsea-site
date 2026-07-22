@@ -167,3 +167,10 @@ test('reduced motion stills the chart', async ({ page }) => {
 	// the global kill-switch strips every animation under reduced motion
 	expect(await lamp.evaluate((el) => el.getAnimations().length)).toBe(0);
 });
+
+test('the footer carries the night watch definition', async ({ page }) => {
+	await page.goto('/hobbies');
+	const definition = page.locator('.definition');
+	await expect(definition).toContainText('night watch');
+	await expect(definition).toContainText('this website, most evenings');
+});

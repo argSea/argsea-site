@@ -110,7 +110,6 @@ interface Props {
 	suggestions: string[];
 	notes:       Note[]; // the full journal, so a bearing's noteIds resolve to real entries
 	doodles:     Doodle[];
-	signoff:     string;
 	catEnabled:  boolean;
 	catPages?:   Record<string, boolean>;
 	catSpots?:   Record<string, boolean>;
@@ -118,7 +117,7 @@ interface Props {
 	bolted:      DioramaCarvings;
 }
 
-export default function ShipsLog({ hobbies, suggestions, notes, doodles, signoff, catEnabled, catPages, catSpots, catDesigns, bolted }: Props) {
+export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnabled, catPages, catSpots, catDesigns, bolted }: Props) {
 	const [openIdx, setOpenIdx] = useState<number | null>(null);
 	const [closing, setClosing] = useState(false);
 	const [noteId, setNoteId] = useState<string | null>(null);
@@ -523,7 +522,6 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, signoff
 				<JournalEntryOverlay
 					note={openNote}
 					doodle={openNoteDoodle}
-					signoff={signoff}
 					closeLabel="back to the bearing ✕"
 					onClose={() => setNoteId(null)}
 				/>

@@ -167,6 +167,13 @@ test('the tug tows the manifest decoratively: no door, no button role, no pointe
 	await expect(tow.locator('.barge').first().locator('.crate')).toHaveText(['rust', 'python', 'typescript']);
 });
 
+test('every page\'s shared footer reads "the lighthouse", not the old byline', async ({ page }) => {
+	for (const path of ['/', '/projects', '/hobbies', '/notes', '/404.html', `/projects/${flagshipFirst[0].slug}`]) {
+		await page.goto(path);
+		await expect(page.locator('.copyright')).toHaveText('© 2026 · the lighthouse');
+	}
+});
+
 test('reduced motion stills the flagship lamp and freezes the tug in its resting berth', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/');

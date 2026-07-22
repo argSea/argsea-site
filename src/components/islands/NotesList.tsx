@@ -13,7 +13,6 @@ interface Props {
 	doodles:     Doodle[];
 	projects:    Project[]; // resolves each note's "found in" ties via project.noteIds
 	hobbies:     Hobby[];   // resolves each note's bearing ties via hobby.noteIds (the ◈ chart links)
-	signoff:     string;
 	catEnabled:  boolean;
 	catPages?:   Record<string, boolean>;
 	catSpots?:   Record<string, boolean>;
@@ -21,7 +20,7 @@ interface Props {
 	towerSvg?:   string | null; // tower-stub carving, resolved build-time by notes.astro; forwarded to the stepped-into light
 }
 
-export default function NotesList({ notes, doodles, projects, hobbies, signoff, catEnabled, catPages, catSpots, catDesigns, towerSvg }: Props) {
+export default function NotesList({ notes, doodles, projects, hobbies, catEnabled, catPages, catSpots, catDesigns, towerSvg }: Props) {
 	const [openId, setOpenId] = useState<string | null>(null);
 	const [lightId, setLightId] = useState<string | null>(null);
 
@@ -122,7 +121,6 @@ export default function NotesList({ notes, doodles, projects, hobbies, signoff, 
 				<JournalEntryOverlay
 					note={open}
 					doodle={openDoodle}
-					signoff={signoff}
 					foundIn={foundIn}
 					foundHobbies={foundHobbies}
 					onStepInto={stepInto}
@@ -137,7 +135,6 @@ export default function NotesList({ notes, doodles, projects, hobbies, signoff, 
 					project={openLight}
 					notes={notes}
 					doodles={doodles}
-					signoff={signoff}
 					catDesigns={catDesigns}
 					towerSvg={towerSvg}
 					onClose={closeLight}
