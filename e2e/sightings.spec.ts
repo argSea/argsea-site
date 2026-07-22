@@ -126,22 +126,19 @@ test('sending up a flare emits one flare with the hobby id, and re-firing it doe
 	expect(only(seen, 'flare')).toHaveLength(1);
 });
 
-test('poking the boat emits a bottle, and poking it again emits another with no dedupe', async ({ page }) => {
+test('the sea sends a bottle on its own schedule, and the next one counts again with no dedupe', async ({ page }) => {
 	const seen = await collect(page);
+	await page.clock.install();
 	await page.goto(`${ARMED}/`);
 
-	// the boat never stops sailing, so dispatch the click wherever it is now; it
-	// can fire before the island hydrates, so retry until a bottle actually drops
-	await expect(async () => {
-		await page.locator('.boat-track').dispatchEvent('click');
-		await expect(page.locator('.bottle-note')).toBeVisible({ timeout: 500 });
-	}).toPass();
-
+	// the sea drops on its own schedule now (BottleBoat's auto mode), not a
+	// poke; fast-forward past the first drop rather than waiting on it for real
+	await page.clock.fastForward(45000);
 	await expect.poll(() => only(seen, 'bottle').length).toBe(1);
 	expect(only(seen, 'bottle')[0]).toMatchObject({ kind: 'bottle', path: '/', subject: '', ref: '' });
 
-	// every poke serves a fresh bottle, so a second poke counts again with no guard
-	await page.locator('.boat-track').dispatchEvent('click');
+	// every drop is a fresh sighting, so the next one counts again with no guard
+	await page.clock.fastForward(45000);
 	await expect.poll(() => only(seen, 'bottle').length).toBe(2);
 });
 

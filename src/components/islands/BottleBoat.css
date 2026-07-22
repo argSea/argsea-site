@@ -151,3 +151,33 @@
 	0%   { opacity: .9; transform: scale(.4); }
 	100% { opacity: 0; transform: scale(1.6); }
 }
+
+/* --- the sea footer's own bottles: drifting on their own schedule, not poked --- */
+
+.bottle-drift {
+	position: absolute;
+	left: -40px;
+	z-index: 4;
+	pointer-events: none;
+	animation-name: bottleCarry;
+	animation-timing-function: linear;
+	animation-fill-mode: forwards;
+}
+
+@keyframes bottleCarry {
+	from { transform: translateX(0); }
+	to   { transform: translateX(calc(100vw + 80px)); }
+}
+
+.bottle-drift__glass-wrap {
+	pointer-events: auto;
+	cursor: pointer;
+	display: block;
+}
+
+/* .bottle-note (the poked note's own classes) sits absolutely inside
+   whichever wrapper hosts it; here that's the drifting bottle itself, so it
+   rises above the glass the same way it rises above the poked drop */
+.bottle-drift .bottle-note {
+	bottom: 30px;
+}

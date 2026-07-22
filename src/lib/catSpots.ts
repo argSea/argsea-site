@@ -38,21 +38,38 @@ export interface CatSpot {
 // overlay last, so a seeded Math.random can pin a known spot.
 export const CATALOG: CatSpot[] = [
 	{ id: 'hello.header',    page: 'hello',    pose: 'lying',   context: 'header',    overlay: false, menuGated: true, anchor: { selector: '.site-nav .links a.active', edge: 'top', align: 'center', dy: 16 } },
-	// The id stays frozen (admin contract) though the hero fused into the
-	// watch; the perch rode the headline to its new class.
-	{ id: 'hello.hero',      page: 'hello',    pose: 'perched', context: 'hero',      overlay: false, anchor: { selector: '.watch__headline',           edge: 'top',    align: 'left'   } },
-	// Anchorless: the watch panel's own mount (WatchCat.tsx) renders this pick
+	// The id stays frozen (admin contract) though the watch/register page gave
+	// way to the keeper's landing (design/Hello.dc.html); the perch rode along
+	// to the flagship register's own headline, still the page's hero content.
+	{ id: 'hello.hero',      page: 'hello',    pose: 'perched', context: 'hero',      overlay: false, anchor: { selector: '.flagship .info b',          edge: 'top',    align: 'left'   } },
+	// Anchorless: the now card's own mount (WatchCat.tsx) renders this pick
 	// with the record's quips, so the director stands down the way it does for
 	// overlay spots. An empty watch (no section built) leaves the pick catless
-	// for that view, same as any missing anchor.
+	// for that view, same as any missing anchor. This is the canon's own
+	// placement (design/Hello.dc.html perches HarborCat on the now card).
 	{ id: 'hello.watch',     page: 'hello',    pose: 'perched', context: 'watch',     overlay: false },
-	// The id stays frozen (admin contract) though the stores grid flattened
-	// onto the pre-footer ledge; the perch rode along to the end of the line.
-	{ id: 'hello.manifest',  page: 'hello',    pose: 'perched', context: 'manifest',  overlay: false, anchor: { selector: '.stores-ledge__line',         edge: 'top',    align: 'right'  } },
+	// The id stays frozen (admin contract) though the stores ledge gave way to
+	// the sea footer's own tug; the perch rode along to the manifest's crossing
+	// (the sea itself, not the tug's hull: a 110s infinite crossing never fires
+	// animationend, so the director would never re-measure it and the cat
+	// would drift out of sync with the boat).
+	{ id: 'hello.manifest',  page: 'hello',    pose: 'perched', context: 'manifest',  overlay: false, anchor: { selector: '.sea',                        edge: 'top',    align: 'right'  } },
 	// The id stays frozen (admin contract) though the graveyard motif gave way
-	// to the chart strip; the perch and its lines moved with the redesign.
-	{ id: 'hello.graveyard', page: 'hello',    pose: 'perched', context: 'ledger',    overlay: false, anchor: { selector: '.panel--chart .panel__pills', edge: 'top', align: 'right' } },
-	{ id: 'hello.contact',   page: 'hello',    pose: 'perched', context: 'contact',   overlay: false, anchor: { selector: '.contact__headline',         edge: 'top',    align: 'center' } },
+	// to the skills gag's own hobbies section; the perch rode along to its
+	// heading rather than the gauge grid itself, which swaps a hidden fake
+	// grid for the real one (display, not a class, so the director would
+	// never know to re-measure once the swap moved the target out from under it).
+	{ id: 'hello.graveyard', page: 'hello',    pose: 'perched', context: 'ledger',    overlay: false, anchor: { selector: '#hobby-title',                edge: 'top', align: 'right' } },
+	// The id stays frozen (admin contract) though the contact band gave way to
+	// the sea footer's own CTA; the perch rode along to its headline.
+	{ id: 'hello.contact',   page: 'hello',    pose: 'perched', context: 'contact',   overlay: false, anchor: { selector: '.berth .big',                 edge: 'top',    align: 'center' } },
+	// The id stays frozen (admin contract); the postcard rack it perched on is
+	// gone and nothing on the keeper's landing opens an equivalent overlay
+	// anymore, so no island ever checks for this pick. It stays in the pool
+	// (unreachable, not disabled): the director already renders nothing for
+	// any overlay-spot pick, so this just costs the page a cat on however
+	// often the random pick happens to land here, same as it would for any
+	// disabled spot.
 	{ id: 'hello.postcard',  page: 'hello',    pose: 'perched', context: 'postcard',  overlay: true },
 
 	{ id: 'projects.header',    page: 'projects', pose: 'lying',   context: 'header', overlay: false, menuGated: true, anchor: { selector: '.site-nav .links a.active', edge: 'top', align: 'center', dy: 16 } },

@@ -19,6 +19,8 @@ export type CarvingSpot =
 	| 'morse-seal'
 	| 'panel-rose'
 	| 'fleet-wake'
+	// the keeper's landing (design/Hello.dc.html): the hero's morse-doodle
+	| 'hero-doodle'
 	// the wandering chart (the diorama boat/wake are their own swap points on
 	// purpose, never the v1 boat/boat-wake spots, even though the geometry
 	// matches today; the Flannan memorial trio is deliberately not a spot)

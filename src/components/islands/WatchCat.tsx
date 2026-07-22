@@ -5,11 +5,13 @@
 // use; its lines come from the watch record, not a built-in context set.
 // bubbleSide is forced left like the mock: the dateline sits to the right.
 //
-// The Gull Post finale rides along here too: ten pokes deliver the finale
-// line, then the page phases to paper (a fixed cream wash, the mock's
-// gazettePhase) before navigating to /gazette. Reduced motion never sets an
-// inline opacity of its own, so the kill-switch's animation:none leaves the
-// wash at its default full opacity rather than stuck invisible.
+// The Gull Post finale used to ride along here too (ten pokes, the finale
+// line, a phase to paper before navigating to /gazette): retired by operator
+// ruling 2026-07-21 (caravan-meta docs/argsea-identity.md: "the Gull Post has
+// one door: the roosting gull; the cat's ten-poke finale retired"). The
+// finale prop below defaults off so a poke here only ever pops a quip; the
+// wiring stays (HarborCat's finale/onFinale are a shared mechanism, not this
+// component's to delete) in case some other surface still wants it.
 import { useEffect, useState } from 'react';
 import HarborCat from './HarborCat';
 import { pageCatPick, type CatSpot } from '../../lib/catSpots';
@@ -27,9 +29,10 @@ interface Props {
 	catPages?:   Record<string, boolean>;
 	catSpots?:   Record<string, boolean>;
 	catDesigns?: FigureheadDesign[];
+	finale?:     boolean; // retired 2026-07-21; off unless a caller opts back in
 }
 
-export default function WatchCat({ quips, catPages, catSpots, catDesigns }: Props) {
+export default function WatchCat({ quips, catPages, catSpots, catDesigns, finale = false }: Props) {
 	// The pick only exists after mount: it's a per-page-view client decision
 	// (a fresh load can move the cat), so the build must not freeze one
 	// build-time pick into the static HTML for every visitor.
@@ -54,9 +57,9 @@ export default function WatchCat({ quips, catPages, catSpots, catDesigns }: Prop
 	return (
 		<>
 			<div className="cat-mount watch-cat-mount">
-				<HarborCat pose="perched" context="watch" bubbleSide="left" quips={quips} designs={catDesigns} finale={GULL_FINALE} onFinale={() => setGazette(true)} />
+				<HarborCat pose="perched" context="watch" bubbleSide="left" quips={quips} designs={catDesigns} finale={finale ? GULL_FINALE : undefined} onFinale={finale ? () => setGazette(true) : undefined} />
 			</div>
-			{gazette && (
+			{finale && gazette && (
 				<div className="watch-cat__gazette-phase">
 					<span className="watch-cat__gazette-line">the morning edition · inbound by gull</span>
 				</div>

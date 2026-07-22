@@ -1,154 +1,168 @@
-// Homepage (fixtures build): selected work is the light-list register (ruled
-// rows, never cards) with the flagship first, a row opens the shared Light
-// List entry, the coast beacons wayfind down to a row, the ten-poke cat cues
-// the Gull Post, and the contact surfaces render the keeper fixture.
+// Homepage (fixtures build, no watch kept): the keeper's landing (design/
+// Hello.dc.html). The hero headline always renders; the "now" panel only
+// when a watch is kept (proven against the mock in e2e/watch.spec.ts). Three
+// flagship rows (the flagship flag first, then the next two by order, never
+// by the featured flag), the journal's newest three, and the wandering
+// chart's two highest gauges plus its lowest, worn behind the skills gag.
+// Counts are derived from the checked-in fixture, never pinned literally,
+// same house rule e2e/projects.spec.ts established.
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
+import type { Hobby, Note, Project } from '../src/lib/api';
 
-// The fixture register: the flagship first, then the two other projects
-// flagged featured, in order
-const REGISTER_TITLES = ['The Great Un-monolithing', 'Newsroom plumbing', '100k good mornings'];
+const fixture = <T,>(name: string): T => JSON.parse(
+	readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'fixtures', `${name}.json`), 'utf8'),
+);
 
-test('the register shows the flagship row plus the featured trio’s other two', async ({ page }) => {
+const projects = fixture<Project[]>('projects');
+const notes = fixture<Note[]>('notes');
+const hobbies = fixture<Hobby[]>('hobbies');
+
+// The flagship sort: the flagship flag floats first, the rest stay in their
+// already-order-sorted place; the register's real no. is order * 2, gapped.
+const sorted = [...projects].sort((a, b) => a.order - b.order);
+const flagshipFirst = [...sorted].sort((a, b) => (b.flagship ? 1 : 0) - (a.flagship ? 1 : 0)).slice(0, 3);
+const flagTitles = flagshipFirst.map((p) => p.title.toLowerCase());
+const flagNos = flagshipFirst.map((p) => String(p.order * 2).padStart(3, '0'));
+
+const journalCount = Math.min(3, notes.length);
+
+const gauged = hobbies.filter((h): h is Hobby & { gauge: number } => h.gauge != null).sort((a, b) => b.gauge - a.gauge);
+const gaugePicks = gauged.slice(0, 2);
+if (gauged.length > 2) gaugePicks.push(gauged[gauged.length - 1]);
+
+test('the hero headline, kicker, and pitch read the copy singleton', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.locator('.home-register .home-register__title')).toHaveText(REGISTER_TITLES);
-	// The flagship row carries the "lit" seal rather than a card's flagship pill
-	await expect(page.locator('.home-register__row--flagship .home-register__seal')).toContainText('lit');
+	await expect(page.locator('.hero .role')).toHaveText('Justin Smith · senior software engineer, Pittsburgh PA');
+	await expect(page.locator('.hero h1')).toHaveText('I help keep the lights on behind the news.');
+	await expect(page.locator('.hero .pitch')).toContainText('29 services');
+	await expect(page.locator('.hero .doors a', { hasText: 'set sail' })).toHaveAttribute('href', '/helm');
+	await expect(page.locator('.hero .doors a', { hasText: 'say hello' })).toHaveAttribute('href', 'mailto:hello@argsea.com');
 });
 
-test('the homepage register row opens the Light List entry', async ({ page }) => {
+test('the fixtures build ships no watch: the headline stands, the now panel never renders', async ({ page }) => {
 	await page.goto('/');
-	await page.locator('.home-register .home-register__row').first().click();
-
-	const overlay = page.locator('.overlay-card');
-	await expect(overlay).toBeVisible();
-	await expect(overlay.locator('.light-entry__title')).toHaveText('The Great Un-monolithing');
+	await expect(page.locator('.hero h1')).toBeVisible();
+	await expect(page.locator('.now')).toHaveCount(0);
+	await expect(page.locator('.hero')).not.toHaveClass(/hero--watch/);
 });
 
-test('contact band and footer read the keeper fixture', async ({ page }) => {
+test(`the flagship rows show the flagship flag first, then the next ${flagTitles.length - 1} by order, never by the featured flag`, async ({ page }) => {
 	await page.goto('/');
-	await expect(page.locator('.contact__actions a').first()).toHaveAttribute('href', 'mailto:hello@argsea.com');
-
-	const socials = page.locator('.site-footer .socials a');
-	await expect(socials).toHaveCount(3);
-	await expect(socials.nth(0)).toHaveAttribute('href', 'https://github.com/argsea');
-	await expect(socials.nth(1)).toHaveAttribute('href', 'https://linkedin.com/in/argsea');
-	await expect(socials.nth(2)).toHaveAttribute('href', 'mailto:hello@argsea.com');
+	await expect(page.locator('.flagship .info b')).toHaveText(flagTitles);
+	await expect(page.locator('.flagship .archive')).toHaveText(flagNos.map((no) => `from the station archive · no. ${no}`));
+	// zig-zags: the second row flips sides, the first and third don't
+	await expect(page.locator('.flagship').nth(0)).not.toHaveClass(/flip/);
+	await expect(page.locator('.flagship').nth(1)).toHaveClass(/flip/);
 });
 
-test('the journal strip shows the newest notes and links out to /notes', async ({ page }) => {
+test('a flagship row carries its facts and the real characteristic code', async ({ page }) => {
 	await page.goto('/');
-	const rows = page.locator('.journal-strip__row');
-	await expect(rows).toHaveCount(3);
-	await expect(rows.first().locator('.journal-strip__title')).toHaveText('What re-architecting taught me about not architecting');
-	await expect(rows.first()).toHaveAttribute('href', '/notes');
+	const first = page.locator('.flagship').first();
+	await expect(first.locator('.frow')).toHaveCount(flagshipFirst[0].facts?.length ?? 0);
+	await expect(first.locator('.frow').first().locator('dt')).toHaveText(flagshipFirst[0].facts![0].heading);
+	await expect(first.locator('.fl-facts')).toContainText('Fl W 8s');
 });
 
-test('the flagship row carries its facts, capped at four in a 2x2 grid', async ({ page }) => {
+test('the flagship shot links into the light\'s own log', async ({ page }) => {
 	await page.goto('/');
-	const facts = page.locator('.home-register__facts .home-register__facts-row');
-	await expect(facts).toHaveCount(4);
-	await expect(facts.first().locator('.home-register__facts-label')).toHaveText('ownership');
+	const first = page.locator('.flagship').first();
+	await expect(first.locator('.shot')).toHaveAttribute('href', `/projects/${flagshipFirst[0].slug}`);
+	await expect(first.locator('.fulllog')).toHaveAttribute('href', `/projects/${flagshipFirst[0].slug}`);
 });
 
-test('the register head carries the corrected-to line and the flagship its notation', async ({ page }) => {
+test(`the journal shows its newest ${journalCount} entries`, async ({ page }) => {
 	await page.goto('/');
-	// corrected to the newest journal entry's date (jun 2026)
-	await expect(page.locator('.home-register__head-label')).toContainText('corrected to jun 2026');
-	// the flagship lamp column shows the real characteristic code, no "· lit" suffix (that lives in the seal)
-	await expect(page.locator('.home-register__row--flagship .home-register__notation')).toHaveText('Fl W 8s');
+	const cards = page.locator('.feat');
+	await expect(cards).toHaveCount(journalCount);
+	await expect(cards.first().locator('.feat-main b')).toHaveText(notes[0].title);
+	for (const href of await cards.evaluateAll((els) => els.map((el) => el.getAttribute('href')))) {
+		expect(href).toBe('/notes');
+	}
 });
 
-test('the coast beacons wayfind: the flagship beacon scrolls to no. 002 and flares its lamp', async ({ page }) => {
+test('a journal card with a tied doodle shows it; one without shows none', async ({ page }) => {
 	await page.goto('/');
-	const beacon = page.locator('.wave-wayfinder[data-wf-target="light-002"]');
-	await expect(beacon).toHaveText(/no\. 002 · flagship/);
-	await beacon.click();
-	// the row it points at exists and carries the arrival hooks the flare toggles
-	const row = page.locator('#light-002');
-	await expect(row).toHaveCount(1);
-	await expect(row.locator('[data-lamp]')).toHaveCount(1);
-	await expect(row.locator('[data-num]')).toHaveCount(1);
+	const withDoodle = notes.findIndex((note) => note.doodleId);
+	const withoutDoodle = notes.findIndex((note) => !note.doodleId);
+	expect(withDoodle).toBeGreaterThanOrEqual(0);
+	expect(withoutDoodle).toBeGreaterThanOrEqual(0);
+	await expect(page.locator('.feat').nth(withDoodle).locator('.feat-doodle')).toHaveCount(1);
+	await expect(page.locator('.feat').nth(withoutDoodle).locator('.feat-doodle')).toHaveCount(0);
 });
 
-test('the wayfinder dots wear the mock\'s own tiers: flagship big, featured smaller, the chart periwinkle', async ({ page }) => {
+test(`the wandering chart picks its two highest gauges then its lowest, ${gaugePicks.length} in all`, async ({ page }) => {
 	await page.goto('/');
-	const dotStyle = (target: string) => page
-		.locator(`.wave-wayfinder[data-wf-target="${target}"] .wave-wayfinder__dot`)
-		.evaluate((el) => {
-			const s = getComputedStyle(el);
-			return { width: s.width, background: s.backgroundColor };
-		});
-
-	// flagship: 7px white; featured: 6px white; the chart: 6px #5f6ec4
-	expect(await dotStyle('light-002')).toEqual({ width: '7px', background: 'rgb(255, 255, 255)' });
-	expect(await dotStyle('light-004')).toEqual({ width: '6px', background: 'rgb(255, 255, 255)' });
-	expect(await dotStyle('chart-log')).toEqual({ width: '6px', background: 'rgb(95, 110, 196)' });
+	const cards = page.locator('.gauge.rv');
+	await expect(cards).toHaveCount(gaugePicks.length);
+	await expect(cards.locator('.gtop b')).toHaveText(gaugePicks.map((h) => h.name.toLowerCase()));
+	await expect(cards.first()).toHaveAttribute('href', `/hobbies?bearing=${encodeURIComponent(gaugePicks[0].name)}`);
+	await expect(page.locator('#hobbies-real .gauge')).toHaveCount(gaugePicks.length);
 });
 
-test('the home mount\'s overlay carries the coast link; the projects mount does not', async ({ page }) => {
+test('the skills gag: the fake grid is stamped from a template, invisible to a plain read of the static HTML', async ({ page }) => {
+	const html = await (await page.request.get('/')).text();
+	expect(html).not.toContain('javascript</b><span class="gstate">Expert');
+	expect(html).toContain('id="skills-fake-tpl"');
 	await page.goto('/');
-	await page.locator('.home-register .home-register__row').first().click();
-
-	const overlay = page.locator('.overlay-card');
-	const coastLink = overlay.locator('.light-entry__coastlink-link');
-	await expect(coastLink).toHaveText('the whole coast →');
-	await expect(coastLink).toHaveAttribute('href', '/projects');
+	// the template is stamped client-side, so the fake grid only exists once JS runs
+	await expect(page.locator('#skills-fake .gauge')).toHaveCount(12);
 });
 
-test('the footer dictionary drops trailing periods and mono-treats only "argc"', async ({ page }) => {
+test('the gull post link sits on the page, aimed at /gazette', async ({ page }) => {
 	await page.goto('/');
-	const dict = page.locator('.site-footer__dict');
-	await expect(dict).toContainText("1. the Argo, but for one 2. argc, but forever 3. a sea of water, or of stars 4. what a method signature becomes if I'm not supervised");
-	await expect(dict.locator('.site-footer__argc')).toHaveText('argc');
+	await expect(page.locator('#gull-mark')).toHaveAttribute('href', '/gazette');
 });
 
-test('the journal strip spells the entry count as a word', async ({ page }) => {
+test('the sea footer\'s CTA and aside write to the keeper\'s email', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.locator('.journal-strip__vol')).toHaveText('log book · vol. 2026 · three entries of many');
+	await expect(page.locator('.cta-doors .primary')).toHaveAttribute('href', 'mailto:hello@argsea.com');
+	await expect(page.locator('.cta-aside a')).toHaveAttribute('href', 'mailto:hello@argsea.com');
 });
 
-// The ship's log preview: the wandering hobbies (anything not moored or in
-// port) become chart pills tagged lowercase-name · state, the state read from
-// the same stateMeta the chart uses (its first segment, so "adrift", not the
-// full gloss). Piano leads the wandering set.
-test('the ship\'s log preview pills read lowercase name and state', async ({ page }) => {
+test('the tug tows the manifest and doors into the workshop', async ({ page }) => {
 	await page.goto('/');
-	const pills = page.locator('.chart-pill');
-	await expect(pills.first()).toHaveText('piano · adrift');
+	const tow = page.locator('.tow');
+	await expect(tow).toHaveAttribute('href', '/helm');
+	// the design copy fixture ships no stores drawers, so the manifest falls back to the canon's own barges
+	await expect(tow.locator('.barge')).toHaveCount(3);
+	await expect(tow.locator('.barge').first().locator('.crate')).toHaveText(['rust', 'python', 'typescript']);
 });
 
-test('the flagship snapshot ships a real print, not a broken glyph', async ({ page }) => {
+test('reduced motion stills the flagship lamp and freezes the tug in its resting berth', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/');
 
-	const img = page.locator('.home-register__snapshot img');
-	await expect(img).toHaveAttribute('src', '/media/images/first-screenshot.svg');
-	await expect
-		.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth))
-		.toBeGreaterThan(0);
+	const core = page.locator('.flagship').first().locator('.light-badge__core');
+	await expect(core).toBeVisible();
+	expect(await core.evaluate((el) => el.getAnimations().length)).toBe(0);
+
+	await expect(page.locator('.rv').first()).toHaveCSS('opacity', '1');
+	const tow = await page.locator('.tow').evaluate((el) => getComputedStyle(el).transform);
+	expect(tow).not.toBe('none');
 });
 
-test('the home journal overlay steps into the tower', async ({ page }) => {
+test('the sea sends a bottled proverb on its own schedule, no boat to poke', async ({ page }) => {
+	await page.clock.install();
 	await page.goto('/');
+	await expect(page.locator('.boat-track')).toHaveCount(0);
 
-	// JournalStripDirector hydrates on idle: before it attaches, a row click
-	// falls through to its /notes href. Retry (re-homing on a stray nav) until
-	// the click is caught and the entry opens in place.
-	await expect(async () => {
-		if (!page.url().endsWith('/')) {
-			await page.goto('/');
-		}
-		await page.locator('.journal-strip__row').first().click();
-		await expect(page.locator('.overlay-card.letter')).toBeVisible({ timeout: 500 });
-	}).toPass();
+	await page.clock.fastForward(45000);
+	// the bottle keeps drifting (a real CSS animation, not something the fake
+	// clock touches), so it never sits still for a real click; dispatch it
+	// instead, same idiom the never-stops-sailing tug/boat specs already use
+	const glass = page.locator('.bottle-drift__glass-wrap').first();
+	await expect(glass).toBeVisible();
+	await glass.dispatchEvent('click');
 
-	const towerLink = page.locator('.overlay-card.letter .letter__found-in-link[title="step into the tower"]');
-	await expect(towerLink).toBeVisible();
-	await towerLink.click();
+	const note = page.locator('.bottle-note');
+	await expect(note).toBeVisible();
+	const siteCopy = fixture<{ bottleProverbs: string[] }>('siteCopy');
+	const proverb = await note.locator('.bottle-note__proverb').textContent();
+	expect(siteCopy.bottleProverbs).toContain(proverb);
 
-	await expect(page.locator('.overlay-card.letter')).toHaveCount(0);
-	const light = page.locator('.overlay-card.light-entry');
-	await expect(light.locator('.light-entry__title')).toHaveText('The Great Un-monolithing');
-
-	// the stepped-into light is the home mount's, so it carries the coast link too
-	await expect(light.locator('.light-entry__coastlink-link')).toHaveText('the whole coast →');
+	await note.dispatchEvent('click');
+	await expect(note).toHaveCount(0);
 });

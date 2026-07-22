@@ -1,17 +1,19 @@
-/* The rack perch, verbatim to Hello.dc.html: paws on the first print's top
- * edge, set in from the frame's right corner. */
+/* The now card's own perch, verbatim to design/Hello.dc.html: the cat rides
+ * the top-left corner of the letter panel, dipping down into the card. */
 
 .watch-cat-mount {
-	top: -48px;
-	right: 28px;
-	width: 50px;
-	height: 58px;
+	top: -42px;
+	left: 18px;
+	width: 52px;
+	height: 60px;
 }
 
 /* The ten-poke finale: the page phases to paper before the Gull Post loads
-   (Hello.dc.html's gazettePhase). No inline opacity outside the animation, so
-   reduced motion's animation:none leaves this at its default full opacity
-   instead of stuck invisible. */
+   (Hello.dc.html's gazettePhase). Retired 2026-07-21 (WatchCat.tsx's finale
+   prop defaults off), so this rule currently never paints; kept for whichever
+   caller opts back in, rather than deleted along with the wiring. No inline
+   opacity outside the animation, so reduced motion's animation:none leaves
+   this at its default full opacity instead of stuck invisible. */
 .watch-cat__gazette-phase {
 	position: fixed;
 	inset: 0;

@@ -11,29 +11,27 @@ import { test, expect } from '@playwright/test';
 
 const FALLBACK_BUILD = 'http://127.0.0.1:4823';
 
-test('the bolted bottle renders the carved shape, the unbolted boat stays built-in', async ({ page }) => {
+test('the bolted bottle renders the carved shape, the tug\'s hull stays built-in', async ({ page }) => {
+	await page.clock.install();
 	await page.goto(`${FALLBACK_BUILD}/`);
-	// The boat never stops sailing, so a real click would wait forever for it
-	// to hold still; dispatch the click at wherever it is right now (same
-	// idiom as e2e/delights.spec.ts's own bottle-drop spec). The dispatch can
-	// also fire before the island hydrates, so no bottle drops; retry until
-	// it does (same idiom as e2e/delights.spec.ts:26).
-	const bottle = page.locator('.bottle');
-	await expect(async () => {
-		await page.locator('.boat-track').dispatchEvent('click');
-		await expect(bottle).toBeVisible({ timeout: 500 });
-	}).toPass();
+
+	// The sea sends bottles on its own schedule (design/Hello.dc.html's
+	// initBottles, adapted onto BottleBoat's auto mode); fast-forward past the
+	// first drop rather than waiting on it for real.
+	await page.clock.fastForward(45000);
+	const bottle = page.locator('.bottle-drift .bottle').first();
+	await expect(bottle).toBeVisible();
 	await expect(bottle).toHaveAttribute('data-bolted', 'bottle');
 	// The mock's jar carving is a rect + circle; the built-in is two rects and
 	// a path, never a circle.
 	await expect(bottle.locator('circle')).toHaveCount(1);
 	await expect(bottle.locator('path')).toHaveCount(0);
 
-	// The boat sits right beside it and carries no bolt in this build: its
-	// built-in three-path hull renders exactly as it always has.
-	const boat = page.locator('.boat');
-	expect(await boat.getAttribute('data-bolted')).toBeNull();
-	await expect(boat.locator('path')).toHaveCount(3);
+	// The tug's hull carries no bolt in this build: its built-in three-path
+	// hull renders exactly as it always has.
+	const hull = page.locator('.tow .hull');
+	expect(await hull.getAttribute('data-bolted')).toBeNull();
+	await expect(hull.locator('path')).toHaveCount(3);
 });
 
 test('a tower-stub carving without the lamp anchor swaps the shape and holds the light steady', async ({ page }) => {
@@ -67,14 +65,15 @@ test('a tower-stub carving without the lamp anchor swaps the shape and holds the
 	}).toPass();
 });
 
-test('a bolted carving reaches the hello page: the panel rose swaps to the carved tile', async ({ page }) => {
+test('a bolted carving reaches the hello page: the hero doodle swaps to the carved plank', async ({ page }) => {
 	await page.goto(`${FALLBACK_BUILD}/`);
-	// The mock tile is a lone rect; the built-in rose is circles and paths,
-	// never a rect.
-	const rose = page.locator('.panel__rose');
-	await expect(rose).toHaveAttribute('data-bolted', 'panel-rose');
-	await expect(rose.locator('rect')).toHaveCount(1);
-	await expect(rose.locator('circle')).toHaveCount(0);
+	// The mock plank is a lone rect; the built-in doodle is paths and a circle,
+	// never a rect. The mock watch is kept, so the now panel (and its doodle)
+	// renders on this build.
+	const doodle = page.locator('.now .doodle');
+	await expect(doodle).toHaveAttribute('data-bolted', 'hero-doodle');
+	await expect(doodle.locator('rect')).toHaveCount(1);
+	await expect(doodle.locator('circle')).toHaveCount(0);
 });
 
 test('a bolted carving reaches the wandering chart: the sea serpent swaps to the carved plank', async ({ page }) => {
@@ -117,11 +116,14 @@ test('a bolted carving reaches the Gull Post: the delivery gull swaps to the car
 });
 
 test('the fixtures build bolts nothing: every promoted spot renders its built-in art', async ({ page }) => {
-	// baseURL serves the fixtures build; its carvings all carry boltedTo null
+	// baseURL serves the fixtures build; its carvings all carry boltedTo null.
+	// The fixtures build never keeps a watch, so the hero doodle never mounts
+	// here; the wandering chart's gauge marks are this page's other bolted
+	// spots, and the home lab (the highest gauge) leads with a moored mark.
 	await page.goto('/');
-	const rose = page.locator('.panel__rose');
-	expect(await rose.getAttribute('data-bolted')).toBeNull();
-	await expect(rose.locator('circle')).toHaveCount(3);
+	const mooredMark = page.locator('.gauge .mk svg').first();
+	expect(await mooredMark.getAttribute('data-bolted')).toBeNull();
+	await expect(mooredMark.locator('rect')).toHaveCount(1);
 
 	await page.goto('/hobbies');
 	await expect(page.locator('.shipslog__chart')).toBeVisible();
