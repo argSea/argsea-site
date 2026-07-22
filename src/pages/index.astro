@@ -12,7 +12,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BottleBoat from '../components/islands/BottleBoat';
 import LightBadge from '../components/islands/LightBadge';
-import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getNotes, getDoodles, getCarvings, getWatch, type Hobby, type HobbyState } from '../lib/api';
+import WatchCat from '../components/islands/WatchCat';
+import { getProjects, getSiteCopy, getKeeperProfile, getHobbies, getNotes, getDoodles, getCarvings, getWatch, getFigurehead, type Hobby, type HobbyState } from '../lib/api';
 import { boltedSvg, innerMarkup } from '../lib/carvings';
 import { codeFor, registryNo, DEFAULT_LIGHT } from '../lib/lightChar';
 import { mediaUrl } from '../lib/media';
@@ -25,6 +26,7 @@ const hobbies = await getHobbies();
 const doodles = await getDoodles();
 const watch = await getWatch();
 const carvings = await getCarvings();
+const catDesigns = await getFigurehead();
 
 const heroDoodleSvg = boltedSvg('hero-doodle', carvings);
 const mooredLampSvg = boltedSvg('moored-lamp', carvings);
@@ -179,6 +181,10 @@ const chartYears = projects.map((project) => project.firstLit);
 
 			{watchKept && (
 				<aside class="now rv" style="--d:.2s">
+					{/* the now card's own perch (design/Hello.dc.html: pose=perched, bubble=left); the
+					    catalog's hello.watch spot is anchorless by design, so this mount owns the render
+					    the same way an overlay island does, carrying the watch's own quips */}
+					{copy.eggs.cat && <WatchCat client:idle quips={watch.quips} catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />}
 					<!-- carving spot: hero-doodle -->
 					<svg class="doodle" data-carving="hero-doodle" width="72" height="86" viewBox="0 0 72 86" fill="none" aria-hidden="true" style="top:-77px" data-bolted={heroDoodleSvg ? 'hero-doodle' : undefined}>
 						{heroDoodleSvg ? (

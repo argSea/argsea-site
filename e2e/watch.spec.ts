@@ -41,3 +41,25 @@ test('the hero headline stays fused above the now panel, never a standalone sect
 	// one hero section total: the headline and the now panel share it, side by side
 	await expect(page.locator('.hero')).toHaveCount(1);
 });
+
+// design/Hello.dc.html perches HarborCat on the now card (pose=perched,
+// bubble=left). hello.watch is anchorless in the catalog (WatchCat.tsx owns
+// the render, same handoff every overlay island uses), so this proves the
+// egg reaches the now card rather than the director, which can't see it.
+test('with the eggs on and the watch kept, the cat can perch on the now card', async ({ page }) => {
+	// Math.random 0.3 pins hello.watch, index 2 of the 7 enabled hello spots
+	// (same pin e2e/gazette.spec.ts used for this spot before the rebuild)
+	await page.addInitScript(() => { Math.random = () => 0.3; });
+	await page.goto(`${FEATURED_BUILD}/`);
+
+	const mount = page.locator('.watch-cat-mount');
+	await expect(mount).toBeVisible();
+	await expect(mount.locator('.harbor-cat--perched.harbor-cat--watch')).toBeVisible();
+
+	// canon's own placement: the cat rides the now card's top-left corner
+	const catBox = (await mount.boundingBox())!;
+	const nowBox = (await page.locator('.now').boundingBox())!;
+	expect(catBox.y).toBeLessThan(nowBox.y);
+	expect(catBox.y + catBox.height).toBeGreaterThan(nowBox.y);
+	expect(Math.abs(catBox.x - nowBox.x)).toBeLessThan(40);
+});
