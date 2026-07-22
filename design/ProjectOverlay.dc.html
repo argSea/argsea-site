@@ -93,7 +93,7 @@ image-slot{display:block;width:100%;height:100%}
             <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:8px">
               <span style="font-family:'Gloock',serif;font-size:clamp(26px,4.5vw,34px);color:#f2f4fd;line-height:1.1">{{ ov.title }}</span>
               <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#8a93c4;text-transform:uppercase">{{ ov.code }} · est. {{ ov.est }} · district argsea</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#8a93c4;text-transform:uppercase">{{ ov.code }} · est. {{ ov.est }} · home waters</span>
                 <span style="{{ ov.pillStyle }}">{{ ov.pillLabel }}</span>
               </div>
               <span style="font-size:15.5px;font-style:italic;color:#8f9be0;line-height:1.5">{{ ov.decoded }}</span>
@@ -266,7 +266,7 @@ class Component extends DCLogic {
     }
     const ov = {
       title: p.title, est: p.est, details1: p.details1, details2: p.details2, moral: p.moral,
-      headLine: no ? `The Light List · No. ${no}` : 'The Light List · district argsea',
+      headLine: no ? `The Light List · No. ${no}` : 'The Light List · home waters',
       code: this.codeFor(p),
       decoded: this.decode(p),
       pillLabel: pl.label, pillStyle: pl.style,
