@@ -10,6 +10,7 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Gloock&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<script src="./site-data.js"></script>
 <style>
 html{background:#e7e0cd}
 body{margin:0;background:#ece5d2;font-family:'Newsreader',serif;color:#20233c}
@@ -23,9 +24,9 @@ image-slot{display:block;width:100%;height:100%;color:#8a7f63}
 
     <!-- folio line -->
     <div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid rgba(32,35,60,.55);padding-bottom:7px">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#5c5644">vol. XXXIX · harbor edition</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#5c5644">friday, july 17, 2026</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#5c5644">wx: light steady · no incidents</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#5c5644">{{ vol }}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#5c5644">{{ printedOn }}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#5c5644">wx: {{ wx }}</span>
     </div>
 
     <!-- masthead -->
@@ -52,38 +53,42 @@ image-slot{display:block;width:100%;height:100%;color:#8a7f63}
       <a href="Contact.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase">Harbor Contact</a>
     </div>
 
-    <!-- front page: lead + rail -->
+    <!-- front page: lead + rail · everything below prints from site-data -->
+    <sc-if value="{{ hasLead }}" hint-placeholder-val="{{ true }}">
     <div style="display:grid;grid-template-columns:minmax(0,2.6fr) minmax(0,1fr);gap:0;border-bottom:1px solid rgba(32,35,60,.55)">
 
-      <!-- lead story -->
+      <!-- lead story: the flagship light, rewritten by the newsroom -->
       <div style="padding:22px 26px 24px 0;border-right:1px solid rgba(32,35,60,.35);display:flex;flex-direction:column;gap:14px">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8a6d3b">the light list · no. 002 · flagship</span>
-        <div style="font-family:'Gloock',serif;font-size:clamp(28px,4.6vw,46px);line-height:1.08;text-wrap:balance">Giant Monolith Quietly Dismantled; the Paper Never Misses a Day</div>
-        <div style="font-size:19px;font-style:italic;line-height:1.45;color:#494e70;text-wrap:pretty">29 small, well-behaved services now stand where one enormous application once feared nothing. Readers, by design, noticed nothing at all.</div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8a6d3b">{{ lead.kicker }}</span>
+        <div style="font-family:'Gloock',serif;font-size:clamp(28px,4.6vw,46px);line-height:1.08;text-wrap:balance">{{ lead.headline }}</div>
+        <div style="font-size:19px;font-style:italic;line-height:1.45;color:#494e70;text-wrap:pretty">{{ lead.deck }}</div>
         <div style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;border-top:1px solid rgba(32,35,60,.25);border-bottom:1px solid rgba(32,35,60,.25);padding:6px 0">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#5c5644">By the Keeper</span>
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8a7f63">reporting from inside the cluster · est. 2024, ongoing</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8a7f63">{{ lead.byline2 }}</span>
         </div>
         <div style="display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap">
           <div style="flex:1.2 1 300px;min-width:0;display:flex;flex-direction:column;gap:14px">
-            <div style="font-size:16.5px;line-height:1.65;text-wrap:pretty">The old system was one enormous application that did everything and feared nothing, least of all the keeper's weekends. It was taken apart piece by piece: a message queue in the middle, 29 services around it, Kubernetes herding the containers.</div>
-            <div style="font-size:16.5px;line-height:1.65;text-wrap:pretty">The success metric was silence. No reader ever noticed a thing. The paper published every single day while the engine was swapped mid-flight. The old stack was decommissioned in 2025, capability by capability, until one night there was nothing left to turn off.</div>
-            <div style="font-size:15px;font-style:italic;color:#494e70">Moral: the best migrations are the boring ones.</div>
-            <a href="CaseStudy.dc.html?light=the-great-un-monolithing" style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.06em">continued in the full log → page 002</a>
+            <div style="font-size:16.5px;line-height:1.65;text-wrap:pretty">{{ lead.p1 }}</div>
+            <div style="font-size:16.5px;line-height:1.65;text-wrap:pretty">{{ lead.p2 }}</div>
+            <sc-if value="{{ lead.hasMoral }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:15px;font-style:italic;color:#494e70">{{ lead.moral }}</div>
+            </sc-if>
+            <a href="{{ lead.log }}" style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.06em">continued in the full log → page {{ lead.no }}</a>
           </div>
           <div style="flex:1 1 240px;max-width:340px;display:flex;flex-direction:column;gap:16px">
-            <div style="display:flex;flex-direction:column;gap:7px">
-              <div style="width:100%;aspect-ratio:3/2;overflow:hidden;background:#ddd5c0;border:1px solid rgba(32,35,60,.35)">
-                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="proj-the-great-un-monolithing-img-first-screenshot" shape="rect" placeholder="the first screenshot · drop it here" style="display:block;width:100%;height:100%" hint-size="100%,200px"></x-import>
+            <sc-if value="{{ lead.hasImage }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:7px">
+                <div style="width:100%;aspect-ratio:3/2;overflow:hidden;background:#ddd5c0;border:1px solid rgba(32,35,60,.35)">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ lead.slotId }}" shape="rect" placeholder="the first screenshot · drop it here" style="display:block;width:100%;height:100%" hint-size="100%,200px"></x-import>
+                </div>
+                <span style="font-size:13px;font-style:italic;color:#5c5644;line-height:1.45">{{ lead.caption }}</span>
               </div>
-              <span style="font-size:13px;font-style:italic;color:#5c5644;line-height:1.45">The first screenshot, as archived at the station. The queue, not pictured, is the product.</span>
-            </div>
+            </sc-if>
             <div style="border:1px solid rgba(32,35,60,.45);padding:14px 16px;display:flex;flex-direction:column;gap:9px;background:rgba(32,35,60,.04)">
               <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5c5644;border-bottom:1px solid rgba(32,35,60,.3);padding-bottom:7px">by the numbers</span>
-              <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a6d3b">ownership</span><span style="font-size:14.5px;line-height:1.4">design to operations, solo</span></div>
-              <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a6d3b">scale</span><span style="font-size:14.5px;line-height:1.4">29 services · ~2M visits a month</span></div>
-              <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a6d3b">constraint</span><span style="font-size:14.5px;line-height:1.4">the paper came out every day, mid-migration</span></div>
-              <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a6d3b">result</span><span style="font-size:14.5px;line-height:1.4">the old stack went dark in 2025</span></div>
+              <sc-for list="{{ lead.facts }}" as="fc" hint-placeholder-count="4">
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a6d3b">{{ fc.k }}</span><span style="font-size:14.5px;line-height:1.4">{{ fc.v }}</span></div>
+              </sc-for>
             </div>
           </div>
         </div>
@@ -93,59 +98,57 @@ image-slot{display:block;width:100%;height:100%;color:#8a7f63}
       <div style="padding:22px 0 24px 24px;display:flex;flex-direction:column;gap:20px">
         <div style="display:flex;flex-direction:column;gap:12px">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5c5644;border-bottom:2px solid rgba(32,35,60,.7);padding-bottom:6px">from the keeper's journal</span>
-          <a href="Notes.dc.html" style="display:flex;flex-direction:column;gap:3px;color:inherit">
-            <span style="font-family:'Gloock',serif;font-size:17.5px;line-height:1.25;color:#20233c">What re-architecting taught me about not architecting</span>
-            <span style="font-size:13.5px;font-style:italic;color:#5c5644">jun 2026 · sometimes the best system design is the meeting where you talk everyone out of a new system.</span>
-          </a>
-          <a href="Notes.dc.html" style="display:flex;flex-direction:column;gap:3px;color:inherit;border-top:1px dotted rgba(32,35,60,.4);padding-top:10px">
-            <span style="font-family:'Gloock',serif;font-size:17.5px;line-height:1.25;color:#20233c">CachyOS, three months in</span>
-            <span style="font-size:13.5px;font-style:italic;color:#5c5644">apr 2026 · a review from someone who will absolutely distro-hop again and lie about it.</span>
-          </a>
-          <a href="Notes.dc.html" style="display:flex;flex-direction:column;gap:3px;color:inherit;border-top:1px dotted rgba(32,35,60,.4);padding-top:10px">
-            <span style="font-family:'Gloock',serif;font-size:17.5px;line-height:1.25;color:#20233c">The queue is the product</span>
-            <span style="font-size:13.5px;font-style:italic;color:#5c5644">feb 2026 · notes on message queues after a decade of them quietly running the news.</span>
-          </a>
+          <sc-for list="{{ rail }}" as="n" hint-placeholder-count="3">
+            <a href="Notes.dc.html" style="{{ n.style }}">
+              <span style="font-family:'Gloock',serif;font-size:17.5px;line-height:1.25;color:#20233c">{{ n.title }}</span>
+              <span style="font-size:13.5px;font-style:italic;color:#5c5644">{{ n.sub }}</span>
+            </a>
+          </sc-for>
         </div>
         <div style="display:flex;flex-direction:column;gap:10px">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5c5644;border-bottom:2px solid rgba(32,35,60,.7);padding-bottom:6px">notices · the current watch</span>
-          <div style="font-size:14.5px;line-height:1.6">The keeper is presently <span style="font-style:italic">wrangling the ArcXP migration</span> (in flight, no page yet), <a href="Notes.dc.html" style="font-style:italic">logging in the journal</a>, and <a href="Hobbies.dc.html" style="font-style:italic">tinkering with the home lab</a>. The light remains lit. The lighthouse cat was unavailable for comment.</div>
+          <div style="font-size:14.5px;line-height:1.6">The keeper is presently <span style="font-style:italic">{{ presently }}</span>, <a href="Notes.dc.html" style="font-style:italic">logging in the journal</a>, and <a href="Hobbies.dc.html" style="font-style:italic">tinkering with {{ tinker }}</a>. The light remains lit. The lighthouse cat was unavailable for comment.</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5c5644;border-bottom:2px solid rgba(32,35,60,.7);padding-bottom:6px">classified · hobbies</span>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.7;color:#3b3f5e">PIANO, adrift. Answers to no one. Reward if returned. · MUSIC THEORY, marooned, last seen near the circle of fifths. · GAME DEV, made port 2020, retired undefeated. · RUNNING, bearing smudged, ink never dried.</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.7;color:#3b3f5e">{{ classifieds }}</div>
           <a href="Hobbies.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em">the full wandering chart →</a>
+        </div>
+        <!-- filler ad · the domain, defined; the only place the word gets to explain itself -->
+        <div style="border:1px solid rgba(32,35,60,.45);padding:12px 14px;display:flex;flex-direction:column;gap:6px;background:rgba(32,35,60,.03)">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#8a7f63">advertisement · run every edition, unpaid</span>
+          <div style="font-size:13px;line-height:1.6;font-style:italic;color:#494e70"><span style="font-family:'Gloock',serif;font-style:normal;font-size:14px;color:#20233c">argsea</span> <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-style:normal;color:#5c5644">/ˈɑːrɡ·siː/ · noun</span> &nbsp;1. the Argo, but for one &nbsp;2. <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-style:normal">argc</span>, but forever &nbsp;3. a sea of water, or of stars &nbsp;4. what a method signature becomes if I'm not supervised</div>
         </div>
       </div>
     </div>
 
-    <!-- below the fold: two stories -->
+    <!-- below the fold: the next two lit lights -->
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0;border-bottom:1px solid rgba(32,35,60,.55)">
-      <div style="padding:20px 26px 24px 0;border-right:1px solid rgba(32,35,60,.35);display:flex;flex-direction:column;gap:11px">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8a6d3b">the light list · no. 004 · est. 2016</span>
-        <div style="font-family:'Gloock',serif;font-size:clamp(22px,3vw,28px);line-height:1.15;text-wrap:balance">City's Hidden Plumbing Holds, Again; Nobody Notices, Which Is the Point</div>
-        <div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
-          <div style="flex:none;width:150px;display:flex;flex-direction:column;gap:5px">
-            <div style="width:100%;aspect-ratio:4/3;overflow:hidden;background:#ddd5c0;border:1px solid rgba(32,35,60,.35)">
-              <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="proj-newsroom-plumbing-img-station-photo" shape="rect" placeholder="drop here" style="display:block;width:100%;height:100%" hint-size="100%,110px"></x-import>
+      <sc-for list="{{ fold }}" as="s" hint-placeholder-count="2">
+        <div style="{{ s.style }}">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8a6d3b">{{ s.kicker }}</span>
+          <div style="font-family:'Gloock',serif;font-size:clamp(22px,3vw,28px);line-height:1.15;text-wrap:balance">{{ s.headline }}</div>
+          <div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+            <sc-if value="{{ s.hasImage }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:none;width:150px;display:flex;flex-direction:column;gap:5px">
+                <div style="width:100%;aspect-ratio:4/3;overflow:hidden;background:#ddd5c0;border:1px solid rgba(32,35,60,.35)">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ s.slotId }}" shape="rect" placeholder="drop here" style="display:block;width:100%;height:100%" hint-size="100%,110px"></x-import>
+                </div>
+                <span style="font-size:12px;font-style:italic;color:#5c5644;line-height:1.4">{{ s.caption }}</span>
+              </div>
+            </sc-if>
+            <div style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:10px">
+              <div style="font-size:15.5px;line-height:1.6;text-wrap:pretty">{{ s.p1 }}</div>
+              <sc-if value="{{ s.hasMoral }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:14px;font-style:italic;color:#494e70">{{ s.moral }}</div>
+              </sc-if>
+              <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em">see the light →</a>
             </div>
-            <span style="font-size:12px;font-style:italic;color:#5c5644;line-height:1.4">The pipes beneath the newsroom.</span>
-          </div>
-          <div style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:10px">
-            <div style="font-size:15.5px;line-height:1.6;text-wrap:pretty">Reporters write, editors edit, and somewhere between done and published lives an entire hidden city of pipes: APIs, storage, caching. A good chunk of that city was designed and built by the keeper, and it runs on deadlines that do not move for anybody.</div>
-            <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em">see the light →</a>
           </div>
         </div>
-      </div>
-      <div style="padding:20px 0 24px 26px;display:flex;flex-direction:column;gap:11px">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8a6d3b">the light list · no. 006 · est. 2018</span>
-        <div style="font-family:'Gloock',serif;font-size:clamp(22px,3vw,28px);line-height:1.15;text-wrap:balance">Newsletter Beats Sunrise Into 100,000 Inboxes; Cron Job Credits Ambition</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="font-size:15.5px;line-height:1.6;text-wrap:pretty">Every morning, before coffee exists, an automated system assembles the day's news and delivers it to over 100,000 inboxes. It has done this more reliably than anyone gets out of bed. The fun part was making it boring: retries, queues, monitoring, and a healthy paranoia about 4am.</div>
-          <div style="font-size:14px;font-style:italic;color:#494e70">Moral: automation is just kindness to your future self, scheduled.</div>
-          <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em">see the light →</a>
-        </div>
-      </div>
+      </sc-for>
     </div>
+    </sc-if>
 
     <!-- foot folio -->
     <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:12px">
@@ -157,5 +160,87 @@ image-slot{display:block;width:100%;height:100%;color:#8a7f63}
   </div>
 </div>
 </x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount() {
+    this.disposers = [];
+    if (!window.ARGSEA_DATA) {
+      const poll = setInterval(() => { if (window.ARGSEA_DATA) { clearInterval(poll); this.forceUpdate(); } }, 200);
+      this.disposers.push(() => clearInterval(poll));
+    }
+  }
+  componentWillUnmount() {
+    (this.disposers || []).forEach((fn) => fn());
+  }
+
+  renderVals() {
+    const D = window.ARGSEA_DATA || {};
+    const gz = D.gazette || {};
+    const projs = D.projects || [];
+    const journal = D.journal || [];
+    const slug = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const g = (p) => p.gazette || {};
+    const indexed = projs.map((p, i) => ({ p, no: ('00' + (i + 1) * 2).slice(-3) }));
+
+    // the lead is whichever light flies the flagship pennant
+    const fi = indexed.find(({ p }) => p.flagship) || indexed[0];
+    const lead = fi ? {
+      no: fi.no,
+      kicker: 'the light list · no. ' + fi.no + (fi.p.flagship ? ' · flagship' : ''),
+      headline: g(fi.p).headline || fi.p.title,
+      deck: g(fi.p).deck || fi.p.desc,
+      byline2: 'reporting ' + (g(fi.p).dateline || 'from the station') + ' · est. ' + fi.p.est + (fi.p.status === 'lit' ? ', ongoing' : ''),
+      p1: g(fi.p).p1 || fi.p.details1 || '',
+      p2: g(fi.p).p2 || fi.p.details2 || '',
+      moral: fi.p.moral || '', hasMoral: !!fi.p.moral,
+      hasImage: !!(fi.p.images || []).length,
+      slotId: 'proj-' + slug(fi.p.title) + '-img-' + ((fi.p.images || [])[0] || 'first-screenshot'),
+      caption: g(fi.p).caption || '',
+      log: 'CaseStudy.dc.html?light=' + slug(fi.p.title),
+      facts: fi.p.facts || [],
+    } : { facts: [] };
+
+    const rail = journal.slice(0, 3).map((n, i) => ({
+      title: n.title,
+      sub: n.date + ' · ' + String(n.teaser || '').charAt(0).toLowerCase() + String(n.teaser || '').slice(1),
+      style: 'display:flex;flex-direction:column;gap:3px;color:inherit' + (i ? ';border-top:1px dotted rgba(32,35,60,.4);padding-top:10px' : ''),
+    }));
+
+    const stateLabels = { moored: 'moored', adrift: 'adrift', marooned: 'marooned', port: 'made port', inkspill: 'bearing smudged' };
+    // the classifieds sell what each hobby left behind; the moored one is not for sale
+    const classifieds = (D.hobbies || [])
+      .filter((h) => h.state !== 'moored')
+      .map((h) => h.name.toUpperCase() + ', ' + (stateLabels[h.state] || h.state) + '. ' + String(h.floats || '').split(' · ')[0])
+      .join(' · ');
+    const ranked = (D.hobbies || []).filter((h) => h.gauge != null).sort((a, b) => b.gauge - a.gauge);
+    const tinker = ranked.length ? ranked[0].name.toLowerCase() : 'the home lab';
+
+    const fold = indexed
+      .filter(({ p }) => !p.flagship && p.status === 'lit')
+      .slice(0, 2)
+      .map(({ p, no }, i) => ({
+        kicker: 'the light list · no. ' + no + ' · est. ' + p.est,
+        headline: g(p).headline || p.title,
+        p1: g(p).p1 || p.details1 || '',
+        moral: p.moral || '', hasMoral: !!p.moral,
+        hasImage: !!(p.images || []).length,
+        slotId: 'proj-' + slug(p.title) + '-img-' + ((p.images || [])[0] || 'first-screenshot'),
+        caption: g(p).caption || '',
+        style: i ? 'padding:20px 0 24px 26px;display:flex;flex-direction:column;gap:11px'
+                 : 'padding:20px 26px 24px 0;border-right:1px solid rgba(32,35,60,.35);display:flex;flex-direction:column;gap:11px',
+      }));
+
+    const printedOn = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toLowerCase();
+    return {
+      hasLead: !!fi,
+      vol: gz.vol || 'vol. XXXIX · harbor edition',
+      printedOn,
+      wx: (journal[0] && journal[0].wx) || 'unrecorded · presumed fine',
+      lead, rail, classifieds, tinker, fold,
+      presently: gz.presently || 'keeping the light',
+    };
+  }
+}
+</script>
 </body>
 </html>
