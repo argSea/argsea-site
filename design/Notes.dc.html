@@ -82,6 +82,13 @@ a:hover{color:#e8ebfa}
         <div style="display:flex;flex-direction:column;padding:8px clamp(16px,3vw,34px) 6px clamp(38px,5vw,52px)">
           <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
             <div onClick="{{ n.onClick }}" style="position:relative;display:grid;grid-template-columns:112px 1fr;gap:clamp(12px,2.5vw,24px);padding:26px 10px 26px 12px;border-bottom:1.5px solid rgba(110,100,75,.18);cursor:pointer;transition:background .2s,transform .2s" style-hover="background:rgba(60,55,110,.05);transform:translateX(5px)">
+              <!-- marginalia: the row's own doodle, faint in the journal's left margin -->
+              <sc-if value="{{ n.marginDiagram }}" hint-placeholder-val="{{ false }}">
+                <span aria-hidden="true" style="position:absolute;left:-34px;top:50%;width:26px;height:26px;opacity:.35;transform:translateY(-50%) rotate(-2deg)"><svg width="26" height="26" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="3" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg></span>
+              </sc-if>
+              <sc-if value="{{ n.marginBoat }}" hint-placeholder-val="{{ false }}">
+                <span aria-hidden="true" style="position:absolute;left:-34px;top:50%;width:26px;height:26px;opacity:.35;transform:translateY(-50%) rotate(-2deg)"><svg width="26" height="26" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path></svg></span>
+              </sc-if>
               <div style="display:flex;flex-direction:column;gap:7px;border-right:1.5px solid rgba(181,106,106,.4);padding:2px 12px 2px 0">
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#7d7357">{{ n.date }}</span>
                 <sc-if value="{{ n.wxShown }}" hint-placeholder-val="{{ true }}">
@@ -180,16 +187,22 @@ a:hover{color:#e8ebfa}
 
   <!-- footer -->
   <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 28px;padding:26px clamp(20px,5vw,52px) 24px">
-    <div style="flex:1 1 240px;max-width:400px;font-size:11px;line-height:1.55;color:#6b74a0;font-style:italic;text-wrap:pretty"><span style="font-family:'Gloock',serif;font-style:normal;font-size:12.5px;color:#a5aed4">night watch</span> <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-style:normal;color:#5f6ec4">/ˈnaɪt·wɒtʃ/ · noun</span> &nbsp;1. the hours nobody reads the news &nbsp;2. the shift that keeps it printable &nbsp;3. a sea of water, or of stars &nbsp;4. this website, most evenings</div>
+    <div style="flex:1 1 240px;max-width:400px;font-size:11px;line-height:1.55;color:#6b74a0;font-style:italic;text-wrap:pretty"><span style="font-family:'Gloock',serif;font-style:normal;font-size:12.5px;color:#a5aed4">argsea</span> <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-style:normal;color:#5f6ec4">/ˈɑːrɡ·siː/ · noun</span> &nbsp;1. the Argo, but for one &nbsp;2. <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-style:normal">argc</span>, but forever &nbsp;3. a sea of water, or of stars &nbsp;4. what a method signature becomes if I'm not supervised</div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
       <div style="display:flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:11px"><a href="#" style="color:#93a0e8">github</a><a href="#" style="color:#93a0e8">linkedin</a><a href="mailto:hello@argsea.com" style="color:#93a0e8">email</a></div>
       <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">© 2026 · the lighthouse</span>
-        <span style="font-size:12.5px;color:#8f9be0;font-style:italic">Written by a human, edited by deadline.</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5f6ec4">© 2026 · Written by a human, edited by deadline.</span>
       </div>
     </div>
   </div>
 </div>
+  <!-- the wandering gull, roosted -->
+  <a href="Hello Gazette.dc.html" title="the gull post" aria-label="a passing gull with news" style="position:fixed;right:14px;top:30vh;z-index:20;display:block;color:rgba(147,160,232,.55)">
+    <svg width="38" height="26" viewBox="0 0 38 26" fill="none" aria-hidden="true">
+      <path d="M3 14 Q10 6 19 12 Q28 6 35 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"></path>
+      <path d="M14 20 q5 -3 10 0" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".5" fill="none"></path>
+    </svg>
+  </a>
   <!-- mobile bottom tab bar · shown ≤600 (ratified 1b nav) · hidden on desktop -->
   <div data-mob-tabs style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(15,18,32,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(150,160,220,.16);padding:7px 4px calc(4px + env(safe-area-inset-bottom));font-family:'IBM Plex Mono',monospace">
     <a href="Hello.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;color:#93a0e8">
@@ -239,6 +252,8 @@ class Component extends DCLogic {
       ...n,
       wxShown: wxOn,
       onClick: () => this.setState({ openIdx: i }),
+      marginDiagram: n.doodle === 'diagram',
+      marginBoat: n.doodle === 'boat',
     }));
     const openN = this.state.openIdx == null ? null : this.notesData[this.state.openIdx];
     const open = openN ? {
