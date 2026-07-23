@@ -81,7 +81,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
       </form>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4;text-align:center">// tokens expire. whimsy doesn't.</span>
     </div>
-    <div style="position:absolute;bottom:22px;left:0;right:0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · the lighthouse · back office</div>
+    <div style="position:absolute;bottom:22px;left:0;right:0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · argsea.com · back office</div>
   </div>
 </sc-if>
 
@@ -540,7 +540,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                 </div>
                 <div style="background:#161a2c;border:1px solid rgba(150,160,220,.18);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px;transform:rotate(-.3deg);transition:transform .25s" style-hover="transform:rotate(0deg)">
                   <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
-                    <span style="font-family:'Gloock',serif;font-size:19px;color:#f0f2fc">the lamp room</span>
+                    <span style="font-family:'Gloock',serif;font-size:19px;color:#f0f2fc">argsea</span>
                     <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5f6ec4">/ˈɑːrɡ·siː/ · noun · the dictionary entry</span>
                   </div>
                   <textarea data-key="dict" value="{{ copy.dict }}" onChange="{{ setCopy }}" rows="4" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.6;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
@@ -715,6 +715,17 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
                   <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.13em;color:#f0d9a8;text-transform:uppercase">how the office sees you</span>
                   <span style="font-size:15.5px;color:#dde1f0;line-height:1.6">"{{ greeting }}, <span style="color:#f0d9a8">{{ keeperName }}</span>."</span>
                   <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4">// greetings, the footer, and note sign-offs all read from these papers.</span>
+                </div>
+                <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the gull post · masthead</span>
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">volume line</span>
+                    <input type="text" data-key="gazetteVol" value="{{ copy.gazetteVol }}" onChange="{{ setCopy }}" placeholder="vol. XXXIX · harbor edition" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+                  </label>
+                  <label style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">notices · the keeper is presently...</span>
+                    <textarea data-key="gazettePresently" value="{{ copy.gazettePresently }}" onChange="{{ setCopy }}" rows="2" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:10px 12px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+                  </label>
                 </div>
               </div>
             </div>
@@ -1170,7 +1181,7 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
 
       <!-- footer -->
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:20px clamp(22px,4vw,52px) 22px;border-top:1px solid rgba(150,160,220,.1)">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · the lighthouse · back office</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">© 2026 · argsea.com · back office</span>
         <span onClick="{{ nextProverb }}" title="crack another proverb" style="font-size:15px;color:#8f9be0;font-style:italic;cursor:pointer;user-select:none;transition:color .2s" style-hover="color:#f0d9a8">{{ proverb }} ↻</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4">signed in as {{ keeperName }} · jwt, allegedly</span>
       </div>
@@ -1221,6 +1232,34 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">moral of the story</span>
             <input type="text" data-field="moral" value="{{ draft.moral }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
           </label>
+          <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:#93a0e8;text-transform:uppercase">the gull post · how the paper runs this story</span>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">headline</span>
+              <input type="text" data-field="gazetteHeadline" value="{{ draft.gazetteHeadline }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#f0f2fc;font-family:'Gloock',serif;font-size:18px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">deck · the italic line under the headline</span>
+              <textarea data-field="gazetteDeck" value="{{ draft.gazetteDeck }}" onChange="{{ setField }}" rows="2" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;line-height:1.55;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">dateline · reporting ...</span>
+              <input type="text" data-field="gazetteDateline" value="{{ draft.gazetteDateline }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#c3cbf2;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">first paragraph · third person, the newsroom's voice</span>
+              <textarea data-field="gazetteP1" value="{{ draft.gazetteP1 }}" onChange="{{ setField }}" rows="3" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.6;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">second paragraph</span>
+              <textarea data-field="gazetteP2" value="{{ draft.gazetteP2 }}" onChange="{{ setField }}" rows="3" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-size:15px;line-height:1.6;outline:none;resize:vertical" style-focus="border-color:rgba(240,217,168,.6)"></textarea>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">photo caption</span>
+              <input type="text" data-field="gazetteCaption" value="{{ draft.gazetteCaption }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            </label>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;line-height:1.7">// all optional. anything left empty, the paper prints from the register line and the entry instead.</span>
+          </div>
           <div style="border:1.5px dashed rgba(150,160,220,.25);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
             <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">provenance · who lit this beacon</span>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -1483,8 +1522,8 @@ input[data-ink-slider]::-moz-range-thumb{width:11px;height:11px;border-radius:50
             <input type="text" data-field="teaser" value="{{ draft.teaser }}" onChange="{{ setField }}" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
           </label>
           <label style="display:flex;flex-direction:column;gap:6px">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">margin weather · sea state, mood</span>
-            <input type="text" data-field="wx" value="{{ draft.wx }}" onChange="{{ setField }}" placeholder="light steady · no incidents" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">conditions · the day's weather</span>
+            <input type="text" data-field="wx" value="{{ draft.wx }}" onChange="{{ setField }}" placeholder="squally, low visibility" style="width:100%;box-sizing:border-box;background:#131728;border:1px solid rgba(150,160,220,.25);border-radius:8px;padding:11px 13px;color:#dde1f0;font-family:'Newsreader',serif;font-style:italic;font-size:15px;outline:none" style-focus="border-color:rgba(240,217,168,.6)">
           </label>
           <label style="display:flex;flex-direction:column;gap:6px">
             <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#5f6ec4;text-transform:uppercase">the entry itself</span>
@@ -2012,15 +2051,17 @@ class Component extends DCLogic {
         body: '' },
     ],
     copy: {
-      quipHello: 'The boats run on schedule. Ish.',
-      quipProjects: 'Every project was, at some point, a terrible idea that worked.',
+      quipHello: 'The light runs on schedule. Ish.',
+      quipProjects: 'A light is just a promise you keep every night.',
       quipHobbies: 'Flowers welcome. Watering optional.',
       quipNotes: 'Written by a human, edited by deadline.',
       quip404: 'You are the first person to find this exact wrong URL. Probably.',
+      gazetteVol: 'vol. XXXIX · harbor edition',
+      gazettePresently: 'wrangling the ArcXP migration (in flight, no page yet)',
       heroKicker: 'JUSTIN SMITH · SENIOR SOFTWARE ENGINEER, PITTSBURGH PA',
       heroHeadline: 'I help keep the lights on behind the news.',
       heroBody: 'Backend engineering at the Post-Gazette: building, planning, a healthy amount of boxes-and-arrows. Dad the rest of the time. Serial picker-upper of hobbies.',
-      dict: '1. the Argo, but for one. 2. argc, but forever. 3. a sea of water, or of stars. 4. informal · what a method signature becomes if I\u2019m not supervised.',
+      dict: '1. the Argo, but for one 2. argc, but forever 3. a sea of water, or of stars 4. what a method signature becomes if I\'m not supervised',
       bottleProverbs: [
         'A migration nobody notices is a migration done right.',
         'The queue does not care about your deadline. Respect it anyway.',
@@ -3219,7 +3260,7 @@ class Component extends DCLogic {
       { id: 'watch', glyph: '☉', label: 'the watch desk', rule: true },
       { id: 'projects', glyph: '✺', label: 'the light list' },
       { id: 'hobbies', glyph: '✳', label: 'the wandering chart' },
-      { id: 'notes', glyph: '✎', label: 'the log book' },
+      { id: 'notes', glyph: '✎', label: 'writing desk' },
       { id: 'bench', glyph: '⚒', label: 'the tool bench' },
       { id: 'doodles', glyph: '✐', label: 'marginalia', rule: true },
       { id: 'figurehead', glyph: '♞', label: 'the carving shop' },
