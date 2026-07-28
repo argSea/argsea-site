@@ -26,6 +26,11 @@ a:hover{color:#e8ebfa}
 @keyframes chopBack{0%{background-position-x:0}100%{background-position-x:64px}}
 @keyframes placardIn{from{opacity:0;transform:translateY(18px) rotate(-1.2deg)}to{opacity:1;transform:translateY(0) rotate(-1deg)}}
 @keyframes gullFly{0%{transform:translate(0,0)}50%{transform:translate(40px,-16px)}100%{transform:translate(80px,4px)}}
+/* the ghost light: slow spectral breathing with the occasional guttering flicker */
+@keyframes ghostBreathe{0%,100%{opacity:.09}3%,6%{opacity:.14}11%{opacity:.1}34%{opacity:.13}42%{opacity:.09}60%{opacity:.11}87%,90%{opacity:.145}93%{opacity:.09}}
+/* a faint glow where its lamp would be, sweeping like a tired beam */
+@keyframes paneFlicker{0%,2.9%{opacity:0}3%,4.4%{opacity:.85}4.5%,5.9%{opacity:.1}6%,10.9%{opacity:1}11%,12.9%{opacity:.15}13%,33.9%{opacity:0}34%,36.4%{opacity:.7}36.5%,37.4%{opacity:0}37.5%,38.9%{opacity:.9}39%,39.9%{opacity:.05}40%,41.9%{opacity:.75}42%,59.9%{opacity:0}60%,64.9%{opacity:.3}65%,67.9%{opacity:.25}68%,69.9%{opacity:.3}70%,86.9%{opacity:0}87%,89.4%{opacity:1}89.5%,89.9%{opacity:.1}90%,92.9%{opacity:.95}93%,100%{opacity:0}}
+@keyframes ghostLamp{0%,2.9%{opacity:0}3%,5.9%{opacity:.35}6%,10.9%{opacity:.45}11%,12.9%{opacity:.08}13%,33.9%{opacity:0}34%,41.9%{opacity:.3}42%,59.9%{opacity:0}60%,69.9%{opacity:.12}70%,86.9%{opacity:0}87%,92.9%{opacity:.42}93%,100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 /* phone line · 600 (the site's nav breakpoint). the wide-register tier is 880. no third line. */
 @media(max-width:600px){
@@ -59,7 +64,7 @@ a:hover{color:#e8ebfa}
   </div>
 
   <!-- run aground -->
-  <div style="position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:clamp(40px,7vw,72px) clamp(20px,5vw,52px) 0;overflow:hidden">
+  <div style="position:relative;isolation:isolate;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:clamp(40px,7vw,72px) clamp(20px,5vw,52px) 0;overflow:hidden">
 
     <!-- chart ambience · a nautical chart at rest, standing in for the canvas the live page draws -->
     <svg aria-hidden="true" style="position:absolute;inset:0;z-index:-1;pointer-events:none" width="100%" height="100%" viewBox="0 0 800 420" preserveAspectRatio="xMidYMid slice" fill="none">
@@ -83,6 +88,13 @@ a:hover{color:#e8ebfa}
         <text x="0" y="-18" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="rgba(147,160,232,.25)">N</text>
       </g>
     </svg>
+
+    <!-- the light, still burning over the shoals · keeper's own drawing -->
+    <div aria-hidden="true" style="position:absolute;right:4%;bottom:-2%;z-index:-1;height:78%;max-height:560px;aspect-ratio:1533/2014;pointer-events:none">
+      <img src="lighthouse-art-clean.svg" alt="" style="display:block;width:100%;height:100%;opacity:.11;mask-image:linear-gradient(180deg,black 62%,transparent 96%);-webkit-mask-image:linear-gradient(180deg,black 62%,transparent 96%);animation:ghostBreathe 13s linear infinite">
+      <img src="lighthouse-lamp.svg" alt="" style="position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 0 6px rgba(240,217,168,.8));opacity:0;animation:paneFlicker 13s linear infinite">
+      <div style="position:absolute;left:50.4%;top:17%;width:34%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,217,168,.4),rgba(240,217,168,.1) 45%,transparent 70%);filter:blur(12px);animation:ghostLamp 13s linear infinite"></div>
+    </div>
 
     <!-- wreck pin · static stand-in for the live pathname readout -->
     <div aria-hidden="true" style="position:absolute;left:6%;bottom:20%;z-index:-1;pointer-events:none;display:flex;flex-direction:column;gap:2px">

@@ -22,6 +22,7 @@
   --paper:#191d33; --paper-deep:#12162a;
   --ink:#f0f2fc; --ink-body:#a5aed4; --ink-soft:#7a83ad;
   --green:#6fca97;
+  --sheet-w:min(452px,45vw);
   --f-display:'Newsreader','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
   --f-body:'Newsreader',Georgia,'Times New Roman',serif;
   --f-mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
@@ -50,11 +51,30 @@ a:hover { color:var(--ink); }
   text-transform:uppercase; color:#8f9be0; margin-top:7px; }
 .rail__sub { font-family:var(--f-mono); font-size:9.5px; letter-spacing:.13em;
   text-transform:uppercase; color:var(--peri-deep); margin-top:7px; line-height:1.7; }
+.rail__find { display:block; margin-top:13px; }
+.rail__find input { width:100%; box-sizing:border-box; padding:8px 11px; color:var(--ink);
+  background:rgba(147,160,232,.07); border:1px solid rgba(var(--brass),.3);
+  font-family:var(--f-mono); font-size:11px; letter-spacing:.04em; }
+.rail__find input::placeholder { color:var(--peri-deep); }
+.rail__find input:focus { outline:none; border-color:rgba(var(--brass),.7);
+  background:rgba(147,160,232,.11); }
+.rail__caret { display:inline-block; width:11px; font-size:12px; line-height:1;
+  color:rgba(var(--brass),.95); transition:transform .18s, color .18s; }
+.rail__group:hover .rail__caret { color:var(--lamp); }
+.rail__group[data-collapsed] .rail__caret { transform:rotate(-90deg); }
+/* [hidden] loses to the display rules above, so say it here */
+.rail__item[hidden], .rail__group[hidden] { display:none; }
+.rail__count { font-family:var(--f-mono); font-size:9px; color:var(--peri-deep); }
+.rail__empty { padding:20px; font-family:var(--f-mono); font-size:9.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--peri-deep); }
 .rail__scroll { flex:1; overflow-y:auto; padding:4px 0 14px; scrollbar-width:thin;
   scrollbar-color:rgba(var(--brass),.35) transparent; }
 .rail__group { display:flex; align-items:center; gap:9px; padding:16px 20px 7px;
   font-family:var(--f-mono); font-size:9px; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--peri-deep); }
+  color:var(--peri-deep); cursor:pointer; user-select:none; background:none; border:0;
+  width:100%; text-align:left; }
+.rail__group > span { display:flex; align-items:center; gap:7px; }
+.rail__group:hover { color:#a9b3e4; }
 .rail__group::after { content:''; flex:1; height:1px; background:rgba(var(--brass),.24); }
 .rail__item { position:relative; display:grid; grid-template-columns:14px 1fr auto; gap:11px;
   align-items:baseline; width:100%; text-align:left; padding:9px 20px; background:none;
@@ -204,15 +224,21 @@ a:hover { color:var(--ink); }
 .scale__bar i { flex:1; }
 .scale__bar i:nth-child(odd) { background:rgba(var(--brass),.65); }
 
-/* ---------- the readout ---------- */
-.readout { position:absolute; z-index:5; left:16px; bottom:16px; display:flex; gap:14px;
+/* ---------- the bottom band: readout and hint share one row, so they cannot meet ---------- */
+/* the hint is a first-run affordance: once the sheet is out it has done its job and
+   steps aside entirely, so its width is never the residue of two other elements */
+.band { position:absolute; z-index:6; left:16px; right:16px; bottom:16px; display:flex;
+  align-items:flex-end; gap:14px; pointer-events:none; }
+.sea:has(.sheet[data-open]) .note { display:none; }
+.band > * { pointer-events:auto; }
+.readout { position:relative; z-index:5; display:flex; gap:14px; flex:none;
   font-family:var(--f-mono); font-size:10px; letter-spacing:.07em;
   background:rgba(7,11,22,.82); border:1px solid rgba(var(--brass),.3); padding:8px 13px; }
 .readout b { color:rgba(var(--brass),.65); font-weight:400; }
 .readout span { color:var(--amber); }
 
 /* ---------- the sheet ---------- */
-.sheet { position:absolute; z-index:7; right:0; top:0; bottom:0; width:min(452px,45vw);
+.sheet { position:absolute; z-index:7; right:0; top:0; bottom:0; width:var(--sheet-w);
   color:var(--ink); overflow-y:auto; padding:34px 36px 44px;
   border-left:1px solid rgba(var(--brass),.55);
   background-image:
@@ -236,6 +262,22 @@ a:hover { color:var(--ink); }
   letter-spacing:.03em; }
 .sheet__plate { display:block; width:100%; aspect-ratio:16/9; overflow:hidden; margin-bottom:8px;
   border:1px solid rgba(var(--brass),.3); }
+.sheet__plate image-slot { display:block; width:100%; height:100%; }
+.sheet__doodle { display:flex; align-items:center; justify-content:center; width:100%;
+  aspect-ratio:16/9; margin-bottom:8px; border:1px solid rgba(var(--brass),.3);
+  background:linear-gradient(180deg,#f1ecdd,#e6dfcc); }
+.sheet__doodle svg { width:50%; height:auto; }
+.sheet__links { display:flex; gap:18px; flex-wrap:wrap; margin-top:18px; }
+.sheet__links a { font-family:var(--f-mono); font-size:11px; color:var(--amber);
+  border-bottom:1px solid rgba(var(--brass),.4); padding-bottom:2px; }
+.sheet__links a:hover { border-bottom-color:var(--amber); }
+/* provenance is a fact, not a sticker · the one fact set in brass (matches the light list) */
+.sheet__built { display:flex; align-items:baseline; gap:10px; margin:-8px 0 16px; }
+.sheet__built span { font-family:var(--f-mono); font-size:9.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:#c6a052; flex:none; }
+.sheet__built i { font-family:var(--f-body); font-size:13px; font-style:italic; color:var(--ink); }
+.sheet__built u { flex:1; min-width:14px; height:1px; text-decoration:none; align-self:center;
+  background:repeating-linear-gradient(90deg,rgba(198,160,82,.5) 0 4px,transparent 4px 9px); }
 .sheet__plate img { display:block; width:100%; height:100%; object-fit:cover; }
 .sheet__cap { display:block; font-family:var(--f-mono); font-size:9.5px; color:var(--ink-soft);
   margin-bottom:17px; }
@@ -274,10 +316,12 @@ a:hover { color:var(--ink); }
   border-radius:999px; transition:.2s; }
 .mem__close:hover { background:rgba(var(--brass),.14); color:var(--lamp); }
 
-.note { position:fixed; z-index:8; left:50%; bottom:14px; transform:translateX(-50%);
+/* the hint rides the same row as the readout, never claiming more than it needs */
+.note { position:relative; z-index:8; flex:0 1 auto; min-width:22ch; margin-left:auto; text-align:right;
+  white-space:normal;
   font-family:var(--f-mono); font-size:9.5px; letter-spacing:.09em; color:var(--peri-dim);
   background:rgba(7,11,22,.82); border:1px solid rgba(var(--brass),.22); padding:6px 14px;
-  pointer-events:none; white-space:nowrap; transition:opacity .6s ease; }
+  pointer-events:none; transition:opacity .6s ease; }
 .note[data-done] { opacity:0; }
 
 @media (max-width:900px) {
@@ -291,6 +335,7 @@ a:hover { color:var(--ink); }
 }
 </style>
 <script src="./site-data.js"></script>
+<script src="./image-slot.js"></script>
 </helmet>
 
 <div class="helm">
@@ -299,6 +344,7 @@ a:hover { color:var(--ink); }
       <div class="rail__word"><b>Justin Smith</b></div>
       <div class="rail__role">Senior software engineer · Pittsburgh</div>
       <div class="rail__sub">the light list · home waters<br>corrected to <span id="railDate"></span></div>
+      <label class="rail__find"><input id="railFind" type="search" placeholder="search the chart" autocomplete="off" aria-label="search the chart"></label>
     </div>
     <div class="rail__scroll" id="rail"></div>
     <div class="rail__foot"><button id="home">⊕ back to the fix</button><a class="ashore" href="Hello.dc.html">⌂ back ashore</a></div>
@@ -306,9 +352,12 @@ a:hover { color:var(--ink); }
 
   <div class="sea" id="sea">
     <div class="plane" id="plane"><div class="plane__paper"></div></div>
-    <div class="readout">
-      <span><b>lat</b> <span id="rLat">·</span></span>
-      <span><b>long</b> <span id="rLon">·</span></span>
+    <div class="band">
+      <div class="readout">
+        <span><b>lat</b> <span id="rLat">·</span></span>
+        <span><b>long</b> <span id="rLon">·</span></span>
+      </div>
+      <div class="note">click a light in the list · the chart sails to it · drag the water to wander</div>
     </div>
     <aside class="sheet" id="sheet" aria-live="polite">
       <button class="sheet__x" id="sheetX" aria-label="Close">✕</button>
@@ -339,8 +388,6 @@ a:hover { color:var(--ink); }
 </div>
 
 <div class="gaz" id="gaz"><div class="gaz__frame"><button class="gaz__x" id="gazX" aria-label="Close">✕</button><iframe id="gazIf" title="the Gull Post"></iframe></div></div>
-
-<div class="note">click a light in the list · the chart sails to it · drag the water to wander</div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:820}}">
 class Component extends DCLogic {
@@ -362,7 +409,7 @@ class Component extends DCLogic {
     const D2R = Math.PI / 180, R2D = 180 / Math.PI;
     const mercY = lat => Math.log(Math.tan(Math.PI / 4 + lat * D2R / 2)) * R2D;
 
-    const WEST = -8.30, EAST = -6.10, SOUTH = 57.95, NORTH = 58.70;
+    const WEST = -8.30, EAST = -6.10, SOUTH = 57.80, NORTH = 58.70;
     const PPD = 710;
     const W = Math.round((EAST - WEST) * PPD);
     const H = Math.round((mercY(NORTH) - mercY(SOUTH)) * PPD);
@@ -388,7 +435,7 @@ class Component extends DCLogic {
     const LEWIS = [
       [-6.10,58.70],[-6.26,58.515],[-6.45,58.42],[-6.53,58.36],[-6.70,58.31],[-6.79,58.28],
       [-6.85,58.22],[-6.95,58.21],[-7.02,58.20],[-7.05,58.235],[-7.06,58.16],[-7.10,58.11],
-      [-7.05,58.02],[-6.90,57.95],[-6.10,57.95]
+      [-7.05,58.02],[-6.92,57.92],[-6.78,57.80],[-6.10,57.80]
     ];
     const FLANNANS = [
       { n:'Eilean Mòr',        lat:58.2882, lon:-7.5872, r:5 },
@@ -432,7 +479,7 @@ class Component extends DCLogic {
       add('line', { x1:px, y1:0, x2:px, y2:H,
         stroke:`rgba(198,160,82,${major ? .3 : .13})`, 'stroke-width': major ? 1.1 : .8 });
     }
-    for (let lat = 57.9; lat <= 58.75; lat += 1/6) {
+    for (let lat = 57.75; lat <= 58.75; lat += 1/6) {
       const py = y(lat); if (py < 0 || py > H) continue;
       const major = Math.abs(lat - Math.round(lat)) < 1e-6;
       add('line', { x1:0, y1:py, x2:W, y2:py,
@@ -490,7 +537,7 @@ class Component extends DCLogic {
       el.className = cls; el.style.left = px + 'px'; el.style.top = py + 'px';
       el.innerHTML = html; plane.appendChild(el); return el;
     };
-    for (let lat = 58.0; lat <= 58.7; lat += 1/6) {
+    for (let lat = 57.85; lat <= 58.7; lat += 1/6) {
       const py = y(lat); if (py < 14 || py > H - 14) continue;
       put('gr__lab', 8, py - 13, dms(lat, 'lat'));
     }
@@ -542,7 +589,7 @@ class Component extends DCLogic {
     /* the lights: every lamp runs off one clock */
     const MARKS = [
       { id:'fix', group:'Now', name:'The current watch', code:'kept 19 jul', lat:58.335, lon:-7.30,
-        char:null, plate:0,
+        char:null, plate:0, slot:'chart-current-watch',
         title:'Three weeks in, the paper still came out every morning.',
         cap:'The lamp room, 04:20. The pager stayed quiet.',
         body:['Nobody noticed the migration. That was the entire point of doing it that way, and it is the only review I actually wanted.',
@@ -570,22 +617,79 @@ class Component extends DCLogic {
       : 'occult' === p.kind ? { code:'Oc ' + colL[p.color] + ' ' + p.period + 's', char:{ period:p.period, spans:[[0,p.period-.8]] } }
       : { code:'Iso ' + colL[p.color] + ' ' + p.period + 's', char:{ period:p.period, spans:[[0,p.period/2]] } };
 
+    /* CAP · the keeper's office sets how many marks each group may print here
+       (ARGSEA_DATA.chartCap). Hundreds of lights would silt up the water. */
+    const CAP = Math.max(1, Number(D.chartCap) || 40);
+
+    /* HOME LIGHT · the site keeps its lamp on Flannan, so every other beacon is measured
+       out from this rock. The coast panel in the admin is the view from this window:
+       x sweeps the bearing left to right, y is how far out a light sits (top of the
+       panel = down on the horizon, bottom = close in under the gallery). */
+    const HOME = { lat:58.2882, lon:-7.5872 };
+    const LONK = Math.cos(58.3 * D2R);
+    const clampTo = (p) => ({
+      lat: Math.max(SOUTH + 0.03, Math.min(NORTH - 0.03, p.lat)),
+      lon: Math.max(WEST + 0.07, Math.min(EAST - 0.07, p.lon)),
+    });
+    const outFrom = (azDeg, dist) => clampTo({
+      lat: HOME.lat + dist * Math.cos(azDeg * D2R),
+      lon: HOME.lon + (dist * Math.sin(azDeg * D2R)) / LONK,
+    });
+
+    /* mock-side illustration only: the two prototypes share a browser, so the chart can
+       read what the admin's coast panel last dragged. In production a berth arrives on
+       the wire (the chart-berths contract), never out of the visitor's localStorage. */
+    let wallPos = {};
+    try { wallPos = JSON.parse(localStorage.getItem('argsea-admin-wallpos') || '{}') || {}; } catch (e) {}
+    const fromCoast = (xy) => (xy && Number.isFinite(xy.x) && Number.isFinite(xy.y))
+      ? outFrom((xy.x / 100) * 320 - 160, 0.10 + (1 - xy.y / 100) * 0.32)
+      : null;
+
+    /* nothing goes unplotted: a mark with no bearing anywhere drops anchor on a
+       deterministic ring around the home light, same spot every visit */
+    const hashOf = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; } return h; };
+    const scatter = (seed, near, far) => {
+      const h = hashOf(seed);
+      return outFrom((h % 3600) / 10, near + (((h >>> 11) % 997) / 997) * (far - near));
+    };
+
     /* a light sails onto the chart when it gets a berth here; everything else about it is data */
+    /* ADMIN NOTE · a mark's `chart: { lat, lon, plate, cap }` in site-data.js wins over
+       everything; next comes the coast position dragged in the admin; then the tables
+       below; then the scatter, so every light prints one way or another. */
     const BERTHS = {
       'The Great Un-monolithing': { lat:58.50, lon:-7.06, plate:2, cap:'The last of the monolith, going dark.' },
       'Newsroom plumbing':        { lat:58.02, lon:-7.02, plate:4, cap:'Press night, from the machine floor.' },
       '100k good mornings':       { lat:58.61, lon:-7.42, plate:0, cap:'Sunrise, beaten by four minutes.' },
       'Janus':                    { lat:58.05, lon:-7.16, plate:1, cap:'Two workspaces, one window.', port:true },
     };
-    (D.projects || []).forEach((p) => {
-      const berth = BERTHS[p.title];
-      if (!berth) return;
+
+    /* a placeholder like '#' is not a source: the link prints only for a real URL */
+    const sourceOf = (p) => (/^https?:\/\//.test(p.repo || '') ? p.repo : null);
+    (D.projects || []).slice(0, CAP).forEach((p) => {
+      const table = BERTHS[p.title] || {};
+      const at = clampTo((p.chart && Number.isFinite(p.chart.lat)) ? p.chart
+        : fromCoast(wallPos[p.title])
+        || (Number.isFinite(table.lat) ? table : null)
+        || scatter('p:' + p.title, 0.15, 0.40));
       const c = charOf(p);
-      const meta = (p.facts || []).slice(0, 3).map((f) => [cap1(f.k), f.v]);
+      const meta = (p.facts || []).map((f) => [cap1(f.k), f.v]);
+      if (p.tags && p.tags.length) meta.push(['Made of', p.tags.join(' · ')]);
+      (p.notes || []).forEach((t) => meta.push(['Notes', `<button class="sheet__link" data-goto="j-${slug(t)}">${t}</button>`]));
       if (p.moral) meta.push(['Moral', p.moral.replace(/^Moral:\s*/i, '')]);
+      const key = (p.images || [])[0];
+      const source = sourceOf(p);
       MARKS.push({ id:'p-' + slug(p.title), group:'Projects', name:p.title, code:c.code,
-        lat:berth.lat, lon:berth.lon, char:c.char, plate:berth.plate, port:!!berth.port,
-        dim:'dark' === p.status, title:p.title, cap:berth.cap, body:[p.desc], meta });
+        lat:at.lat, lon:at.lon, char:c.char, plate:(p.chart || table).plate || 0, port:!!table.port,
+        dim:'dark' === p.status, title:p.title, cap:(p.chart || table).cap || p.desc,
+        body:[p.desc, p.details1, p.details2].filter(Boolean), meta,
+        slot: 'proj-' + slug(p.title) + '-img-' + (key ? (typeof key === 'string' ? key : key.key) : 'first-screenshot'),
+        links: [ p.caseStudy ? ['read the full log →', 'CaseStudy.dc.html?light=' + slug(p.title)] : null,
+                 source ? ['source →', source] : null ].filter(Boolean),
+        made: p.assist ? (p.assist.only
+          ? 'by ' + (p.assist.harness || 'AI') + ', checked by hand'
+          : 'by hand, with ' + (p.assist.harness || 'AI') + ' alongside') : 'by hand',
+        madeTitle: p.assist ? [p.assist.harness, p.assist.model].filter(Boolean).join(' ') : '' });
     });
 
     const HOBBY_DRESSING = {
@@ -597,13 +701,14 @@ class Component extends DCLogic {
     };
     const HOBBY_ICON = { moored:'moored', adrift:'adrift', marooned:'marooned', port:'port', inkspill:'ink' };
     const HOBBY_CODE = { moored:'moored', adrift:'adrift', marooned:'marooned', port:'made port', inkspill:'smudged' };
-    (D.hobbies || []).forEach((h) => {
-      const dress = HOBBY_DRESSING[h.name] || { plate:0, cap:h.bearing };
-      const meta = [['Service', h.service], ['Seasons', h.seasons], ['Last log', h.lastLog],
-        ['Still floats', h.floats], ['Odds', h.odds]];
+    (D.hobbies || []).slice(0, CAP).forEach((h) => {
+      const dress = h.chart || HOBBY_DRESSING[h.name] || { plate:0, cap:h.bearing };
+      const meta = [['Service', h.service], ['Seasons', h.seasons], ['Enthusiasm', (h.gauge || 0) + '% · self-assessed'],
+        ['Last log', h.lastLog], ['Still floats', h.floats], ['Odds', h.odds]];
       (h.notes || []).forEach((t) => meta.push(['Notes', `<button class="sheet__link" data-goto="j-${slug(t)}">${t}</button>`]));
+      const seat = clampTo(h.coord || {});
       MARKS.push({ id:'h-' + slug(h.name), group:'Hobbies', name:h.name,
-        code:HOBBY_CODE[h.state] || h.state, lat:h.coord.lat, lon:h.coord.lon, wreck:true,
+        code:HOBBY_CODE[h.state] || h.state, lat:seat.lat, lon:seat.lon, wreck:true,
         dim:'moored' !== h.state && 'port' !== h.state, port:'port' === h.state,
         icon:HOBBY_ICON[h.state] || 'adrift', plate:dress.plate,
         title:h.name, cap:dress.cap, body:[h.bearing, h.offCourse], meta });
@@ -614,13 +719,25 @@ class Component extends DCLogic {
       'CachyOS, three months in': { lat:57.99, lon:-6.90, plate:2, cap:'Three months of uptime, one distro.' },
       'The queue is the product': { lat:58.35, lon:-7.94, plate:0, cap:'The queue, behaving, for now.' },
     };
-    (D.journal || []).forEach((n) => {
-      const berth = JOURNAL_BERTHS[n.title];
-      if (!berth) return;
+    (D.journal || []).slice(0, CAP).forEach((n) => {
+      const at = (n.chart && Number.isFinite(n.chart.lat)) ? n.chart : (JOURNAL_BERTHS[n.title] || null);
+      const put = clampTo(at || scatter('j:' + n.title, 0.07, 0.23));
+      const meta = [['Filed', n.date]];
+      if (n.wx) meta.push(['Weather', n.wx]);
       MARKS.push({ id:'j-' + slug(n.title), group:'Journal', name:n.title, code:n.date,
-        lat:berth.lat, lon:berth.lon, wreck:true, icon:'bottle', plate:berth.plate,
-        title:n.title, cap:berth.cap, body:[n.teaser], meta:[['Filed', n.date]] });
+        lat:put.lat, lon:put.lon, wreck:true, icon:'bottle', plate:(at || {}).plate || 0,
+        title:n.title, cap:(at || {}).cap || n.doodleCaption || n.teaser,
+        body:[n.teaser, n.p1, n.p2, n.p3].filter(Boolean), meta,
+        doodle:n.doodle || null, doodleCap:n.doodleCaption || '' });
     });
+
+    /* the keeper's own doodles, lifted from the journal margins */
+    const DOODLES = {
+      diagram: '<rect x="28" y="10" width="44" height="34" rx="1" stroke-dasharray="5 4"></rect><path d="M19 51 L81 5" stroke-width="1.9"></path>',
+      boat: '<path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path>',
+      queue: '<rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path>',
+    };
+    const doodlePlate = (kind) => `<span class="sheet__doodle"><svg viewBox="${'queue' === kind ? '0 0 110 50' : '0 0 100 62'}" fill="none" stroke="#3b3f5e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${DOODLES[kind] || ''}</svg></span>`;
 
     /* stand-in photography, drawn rather than fetched */
     const SCENES = [
@@ -676,18 +793,26 @@ ${[...Array(6)].map((_,n)=>`<rect x='${tx-4}' y='${hz+n*(h-hz)/6+3}' width='${8+
     const rail = document.getElementById('rail');
     const nodes = {};
     let lastGroup = '';
+    const railGroups = {};
     MARKS.forEach(m => {
       if (!m.egg && m.group !== lastGroup) {
-        const g = document.createElement('div');
-        g.className = 'rail__group'; g.innerHTML = `<span>${m.group}</span>`;
-        rail.appendChild(g); lastGroup = m.group;
+        const g = document.createElement('button');
+        g.className = 'rail__group'; g.dataset.groupHead = m.group;
+        g.innerHTML = `<span><i class="rail__caret">▾</i>${m.group}</span><i class="rail__count" aria-hidden="true"></i>`;
+        g.addEventListener('click', () => {
+          if (g.hasAttribute('data-collapsed')) g.removeAttribute('data-collapsed');
+          else g.setAttribute('data-collapsed', '');
+          applyRail();
+        });
+        rail.appendChild(g); railGroups[m.group] = g; lastGroup = m.group;
       }
       const cls = (m.wreck ? ' is-wreck' : '') + (m.dim ? ' is-dim' : '') +
                   (m.port ? ' is-port' : '') + (m.memorial ? ' is-memorial' : '');
       let b = null;
       if (!m.egg) {
         b = document.createElement('button');
-        b.className = 'rail__item' + cls; b.dataset.id = m.id;
+        b.className = 'rail__item' + cls; b.dataset.id = m.id; b.dataset.group = m.group;
+        b.dataset.find = (m.name + ' ' + m.code + ' ' + m.group).toLowerCase();
         b.innerHTML = `<span class="rail__glyph">${m.icon && MINI[m.icon] ? MINI[m.icon] : '<i></i>'}</span>
           <span class="rail__name">${m.name}</span><span class="rail__code">${m.code}</span>`;
         b.addEventListener('click', () => goTo(m.id));
@@ -704,6 +829,34 @@ ${[...Array(6)].map((_,n)=>`<rect x='${tx-4}' y='${hz+n*(h-hz)/6+3}' width='${8+
       plane.appendChild(el);
       nodes[m.id] = { mark:el, row:b, flare:el.querySelector('.mk__flare'), data:m };
     });
+
+    /* the rail folds: a group header hides its own items, the search box hides the rest.
+       Both funnel through here so they can never disagree. */
+    const railFind = document.getElementById('railFind');
+    const railEmpty = document.createElement('div');
+    railEmpty.className = 'rail__empty'; railEmpty.hidden = true;
+    railEmpty.textContent = 'no marks by that name';
+    rail.appendChild(railEmpty);
+    const applyRail = () => {
+      const q = (railFind && railFind.value || '').trim().toLowerCase();
+      const shown = {};
+      rail.querySelectorAll('.rail__item').forEach((it) => {
+        const g = railGroups[it.dataset.group];
+        const folded = g && g.hasAttribute('data-collapsed') && !q;
+        const hit = !q || it.dataset.find.includes(q);
+        it.hidden = folded || !hit;
+        if (hit) shown[it.dataset.group] = (shown[it.dataset.group] || 0) + 1;
+      });
+      Object.keys(railGroups).forEach((name) => {
+        const g = railGroups[name];
+        const n = shown[name] || 0;
+        g.hidden = q ? !n : false;
+        g.querySelector('.rail__count').textContent = n ? n : '';
+      });
+      railEmpty.hidden = !q || Object.keys(shown).length > 0;
+    };
+    if (railFind) railFind.addEventListener('input', applyRail);
+    applyRail();
 
     /* signal flares · root for a hobby; the keeper's office reads the tally */
     let flares = {};
@@ -778,10 +931,14 @@ ${[...Array(6)].map((_,n)=>`<rect x='${tx-4}' y='${hz+n*(h-hz)/6+3}' width='${8+
       sheetBody.innerHTML =
         `<div class="sheet__k">${m.group}</div><h2>${m.title}</h2>
          <div class="sheet__pos">${dms(m.lat,'lat')} &nbsp;·&nbsp; ${dms(m.lon,'lon')}${m.char ? ' &nbsp;·&nbsp; ' + m.code : ''}</div>
-         <span class="sheet__plate"><img src="${plateArt(m.plate)}" alt="${m.cap}"></span>
+         ${m.made ? `<div class="sheet__built" title="${m.madeTitle || ''}"><span>built</span><i>${m.made}</i><u></u></div>` : ''}
+         ${m.doodle && DOODLES[m.doodle] ? doodlePlate(m.doodle) : `<span class="sheet__plate">${m.slot
+            ? `<image-slot id="${m.slot}" placeholder="drop a print"></image-slot>`
+            : `<img src="${plateArt(m.plate)}" alt="${m.cap}">`}</span>`}
          <span class="sheet__cap">${m.cap}</span>
          ${m.body.map(p => `<p>${p}</p>`).join('')}
          ${m.meta ? `<dl>${m.meta.map(([k,v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}
+         ${m.links && m.links.length ? `<div class="sheet__links">${m.links.map(([t,h]) => `<a href="${h}"${/^https?:/.test(h) ? ' target="_blank" rel="noopener"' : ''}>${t}</a>`).join('')}</div>` : ''}
          ${m.group === 'Hobbies' ? `<p style="margin-top:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px"><button class="sheet__flare" id="fireFlare"><svg width="13" height="15" viewBox="0 0 13 15" fill="none"><path d="M6.5 14 V6" stroke="#c6a052" stroke-width="1.3" stroke-linecap="round"/><path d="M6.5 1 L8 4.5 L6.5 3.5 L5 4.5 Z" fill="#ff6a52"/></svg>send up a flare</button><span class="sheet__flareline" id="flareLine">${flares[m.name] ? 'flare away · the keeper will see it' : 'send one up to root for this one'}</span></p>` : ''}
          ${m.memorial ? '<p style="margin-top:18px"><button class="mem__close" id="openMem" style="color:#c9a86a;border-color:rgba(154,123,58,.5)">read the memorial</button></p>' : ''}`;
       const om = document.getElementById('openMem');

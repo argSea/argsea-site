@@ -33,27 +33,29 @@ image-slot{display:block;width:100%;height:100%}
 <sc-if value="{{ ov }}" hint-placeholder-val="{{ false }}">
   <div onClick="{{ close }}" style="{{ ov.backdropStyle }}">
     <div onClick="{{ stopProp }}" style="{{ ov.wrapStyle }}">
-      <dc-import name="HarborCat" context="lightwatch" hint-size="64px,74px" style="position:absolute;top:-50px;left:34px;width:64px;height:74px;z-index:3"></dc-import>
+      <sc-if value="{{ showCat }}" hint-placeholder-val="{{ true }}">
+        <dc-import name="HarborCat" context="lightwatch" hint-size="64px,74px" style="position:absolute;top:-50px;left:34px;width:64px;height:74px;z-index:3"></dc-import>
+      </sc-if>
 
       <!-- the note, pulled out of the log (in-place swap) -->
       <sc-if value="{{ note }}" hint-placeholder-val="{{ false }}">
         <div style="{{ paperAnim }}">
-        <div style="max-height:86vh;overflow:auto;background:linear-gradient(180deg,#f1ecdd,#eae3d1);border-radius:6px 12px 12px 6px;box-shadow:0 30px 80px rgba(0,0,0,.65)">
+        <div style="max-height:90vh;overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(110,100,75,.45) transparent;background:linear-gradient(180deg,#f1ecdd,#eae3d1);border-radius:6px 12px 12px 6px;box-shadow:0 30px 80px rgba(0,0,0,.65),inset 0 -16px 20px -16px rgba(60,50,30,.5)">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px clamp(20px,4vw,32px);border-bottom:1.5px dashed rgba(110,100,75,.35)">
-            <span onClick="{{ tuckBack }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#8a7f63;text-transform:uppercase;transition:color .2s" style-hover="color:#262a45">← tuck it back into no. {{ no }}</span>
-            <span onClick="{{ close }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#7d7357;padding:6px 12px;border:1px solid rgba(110,100,75,.4);border-radius:999px;transition:all .2s" style-hover="color:#262a45;border-color:rgba(60,55,80,.6)">close ✕</span>
+            <span onClick="{{ tuckBack }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#6b6248;text-transform:uppercase;transition:color .2s" style-hover="color:#262a45">← tuck it back into no. {{ no }}</span>
+            <span onClick="{{ close }}" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#625a42;padding:6px 12px;border:1px solid rgba(110,100,75,.4);border-radius:999px;transition:all .2s" style-hover="color:#262a45;border-color:rgba(60,55,80,.6)">close ✕</span>
           </div>
           <div style="padding:clamp(24px,5vw,36px);display:flex;flex-direction:column;gap:16px">
             <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:-6px">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#8a7f63;text-transform:uppercase">Journal entry · {{ note.date }}</span>
-              <sc-if value="{{ note.wx }}" hint-placeholder-val="{{ false }}"><span style="font-size:14.5px;font-style:italic;color:#9b8f6d">{{ note.wx }}</span></sc-if>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#6b6248;text-transform:uppercase">Journal entry · {{ note.date }}</span>
+              <sc-if value="{{ note.wx }}" hint-placeholder-val="{{ false }}"><span style="font-size:14.5px;font-style:italic;color:#726949">{{ note.wx }}</span></sc-if>
             </div>
             <div style="font-family:'Gloock',serif;font-size:clamp(24px,4vw,30px);color:#20233c;line-height:1.2">{{ note.title }}</div>
             <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ note.p1 }}</div>
             <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ note.p2 }}</div>
             <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ note.p3 }}</div>
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap">
-              <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#8a7f63;margin-top:8px">- j, keeper</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6b6248;margin-top:8px">- j, keeper</div>
               <sc-if value="{{ note.hasDoodle }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;margin-top:-4px;padding-right:6px;transform:rotate(-2deg)">
                   <sc-if value="{{ note.doodleDiagram }}" hint-placeholder-val="{{ false }}">
@@ -65,11 +67,11 @@ image-slot{display:block;width:100%;height:100%}
                   <sc-if value="{{ note.doodleQueue }}" hint-placeholder-val="{{ false }}">
                     <svg width="104" height="48" viewBox="0 0 110 50" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path></svg>
                   </sc-if>
-                  <span style="font-size:13px;font-style:italic;color:#8a7f63">{{ note.doodleCaption }}</span>
+                  <span style="font-size:13px;font-style:italic;color:#6b6248">{{ note.doodleCaption }}</span>
                 </div>
               </sc-if>
             </div>
-            <div style="border-top:1.5px dashed rgba(110,100,75,.3);padding-top:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a39876">found tucked into the log of {{ ov.title }}</div>
+            <div style="border-top:1.5px dashed rgba(110,100,75,.3);padding-top:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6b6248">found tucked into the log of {{ ov.title }}</div>
           </div>
         </div>
         </div>
@@ -77,10 +79,10 @@ image-slot{display:block;width:100%;height:100%}
 
       <sc-if value="{{ noteClosed }}" hint-placeholder-val="{{ true }}">
       <div style="{{ logAnim }}">
-      <div style="max-height:86vh;overflow:auto;background:linear-gradient(180deg,#191d33,#12162a);border-radius:8px;border:1px solid rgba(150,160,220,.2);box-shadow:0 30px 80px rgba(0,0,0,.65),inset 0 0 0 1px rgba(240,217,168,.06)">
+      <div style="max-height:90vh;overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(150,160,220,.4) transparent;background:linear-gradient(180deg,#191d33,#12162a);border-radius:8px;border:1px solid rgba(150,160,220,.2);box-shadow:0 30px 80px rgba(0,0,0,.65),inset 0 0 0 1px rgba(240,217,168,.06),inset 0 -16px 22px -16px rgba(0,0,0,.85)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(20px,4vw,32px) 12px;border-bottom:1px solid rgba(150,160,220,.14)">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#8a93c4;text-transform:uppercase">{{ ov.headLine }}</span>
-          <span onClick="{{ close }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#93a0e8;padding:6px 12px;border:1px solid rgba(150,160,220,.3);border-radius:999px;transition:all .2s" style-hover="color:#e8ebfa;border-color:rgba(240,217,168,.5)">close ✕</span>
+          <span onClick="{{ close }}" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#93a0e8;padding:6px 12px;border:1px solid rgba(150,160,220,.3);border-radius:999px;transition:all .2s" style-hover="color:#e8ebfa;border-color:rgba(240,217,168,.5)">close ✕</span>
         </div>
         <div style="padding:clamp(20px,4vw,32px);display:flex;flex-direction:column;gap:20px">
           <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
@@ -97,11 +99,18 @@ image-slot{display:block;width:100%;height:100%}
                 <span style="{{ ov.pillStyle }}">{{ ov.pillLabel }}</span>
               </div>
               <span style="font-size:15.5px;font-style:italic;color:#8f9be0;line-height:1.5">{{ ov.decoded }}</span>
+              <sc-if value="{{ ov.made }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:baseline;gap:11px;margin-top:3px" title="{{ ov.madeTitle }}">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#c6a052;flex:none">built</span>
+                  <span style="font-family:'Newsreader',serif;font-size:14.5px;font-style:italic;color:#c8cef0;line-height:1.45">{{ ov.made }}</span>
+                  <span style="flex:1;min-width:16px;height:1px;align-self:center;background:repeating-linear-gradient(90deg,rgba(198,160,82,.55) 0 4px,transparent 4px 9px)"></span>
+                </div>
+              </sc-if>
             </div>
           </div>
           <sc-if value="{{ ov.noteLinks }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-top:1px solid rgba(150,160,220,.14);padding-top:14px">
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase;flex:none">notes found here</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#8a93c4;text-transform:uppercase;flex:none">notes found here</span>
               <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
                 <sc-for list="{{ ov.noteLinks }}" as="nl" hint-placeholder-count="2">
                   <span onClick="{{ nl.onOpen }}" title="pull it out and read it" style="font-size:15px;font-style:italic;color:#93a0e8;line-height:1.45;cursor:pointer;transition:color .2s" style-hover="color:#f0d9a8">✎ {{ nl.title }} →</span>
@@ -110,29 +119,28 @@ image-slot{display:block;width:100%;height:100%}
             </div>
           </sc-if>
           <sc-if value="{{ ov.nudge }}" hint-placeholder-val="{{ false }}">
-            <div style="border-top:1px solid rgba(150,160,220,.14);padding-top:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5f6ec4;font-style:italic">no notes here yet. the keeper has been meaning to.</div>
+            <div style="border-top:1px solid rgba(150,160,220,.14);padding-top:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a93c4;font-style:italic">no notes here yet. the keeper has been meaning to.</div>
           </sc-if>
           <sc-if value="{{ ov.factRows }}" hint-placeholder-val="{{ false }}">
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 26px;border-top:1px solid rgba(150,160,220,.14);padding:16px 0 4px">
               <sc-for list="{{ ov.factRows }}" as="fx" hint-placeholder-count="4">
                 <div style="display:flex;flex-direction:column;gap:3px">
-                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#5f6ec4;text-transform:uppercase">{{ fx.k }}</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#8a93c4;text-transform:uppercase">{{ fx.k }}</span>
                   <span style="font-size:15px;color:#c8cef0;line-height:1.45">{{ fx.v }}</span>
                 </div>
               </sc-for>
             </div>
           </sc-if>
-          <div style="display:flex;padding:4px 0 14px">
-            <sc-if value="{{ ov.assistAI }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(127,212,168,.4);border-radius:4px;padding:5px 10px;background:rgba(127,212,168,.06)"><svg width="10" height="13" viewBox="0 0 10 13" fill="none" style="flex:none"><path d="M5 1 C6.8 3.2 8 4.8 8 7 a3 3 0 1 1 -6 0 C2 4.8 3.2 3.2 5 1 Z" fill="#7fd4a8" opacity=".9"></path><path d="M2 12 h6" stroke="#7fd4a8" stroke-width="1.2" stroke-linecap="round"></path></svg><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#a9e5c5">{{ ov.assistLine }}</span></span></sc-if>
-            <sc-if value="{{ ov.assistHand }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(240,217,168,.4);border-radius:4px;padding:5px 10px;background:rgba(240,217,168,.05)"><svg width="10" height="13" viewBox="0 0 10 13" fill="none" style="flex:none"><path d="M5 1 C6.8 3.2 8 4.8 8 7 a3 3 0 1 1 -6 0 C2 4.8 3.2 3.2 5 1 Z" fill="#f0d9a8" opacity=".9"></path><path d="M2 12 h6" stroke="#f0d9a8" stroke-width="1.2" stroke-linecap="round"></path></svg><span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#e8d9b0">{{ ov.assistLine }}</span></span></sc-if>
-          </div>
           <div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start;border-top:1px solid rgba(150,160,220,.14);padding-top:18px">
             <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
               <div style="font-size:16.5px;line-height:1.7;color:#c8cef0">{{ ov.details1 }}</div>
               <div style="font-size:16.5px;line-height:1.7;color:#c8cef0">{{ ov.details2 }}</div>
-              <div style="display:flex;gap:20px;flex-wrap:wrap">
+              <div style="display:flex;gap:22px;flex-wrap:wrap;align-items:baseline;margin-top:6px">
                 <sc-if value="{{ ov.caseHref }}" hint-placeholder-val="{{ false }}">
-                  <a href="{{ ov.caseHref }}" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0d9a8">read the full log →</a>
+                  <a href="{{ ov.caseHref }}" style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:#f0d9a8;border-bottom:1px solid rgba(240,217,168,.35);padding-bottom:2px;transition:border-color .2s" style-hover="border-color:rgba(240,217,168,.8)">read the full log →</a>
+                </sc-if>
+                <sc-if value="{{ ov.repoHref }}" hint-placeholder-val="{{ false }}">
+                  <a href="{{ ov.repoHref }}" target="_blank" rel="noopener" title="the plans, as drawn" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#93a0e8">source →</a>
                 </sc-if>
                 <sc-if value="{{ ov.coastLink }}" hint-placeholder-val="{{ false }}">
                   <a href="Projects.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#93a0e8">the whole coast →</a>
@@ -145,7 +153,7 @@ image-slot{display:block;width:100%;height:100%}
                   <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ ov.slotId }}" shape="rect" placeholder="a photo from the station" style="display:block;width:100%;height:130px" hint-size="100%,130px"></x-import>
                 </div>
               </div>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5f6ec4;text-align:center">from the station archive</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a93c4;text-align:center">from the station archive</span>
               <sc-if value="{{ ov.thumbs }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;padding-top:2px">
                   <sc-for list="{{ ov.thumbs }}" as="th" hint-placeholder-count="3">
@@ -157,12 +165,12 @@ image-slot{display:block;width:100%;height:100%}
                   </sc-for>
                 </div>
               </sc-if>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a6d3b;text-align:center">{{ ov.tagsText }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#c6a052;text-align:center;border-top:1px solid rgba(150,160,220,.12);padding-top:8px;margin-top:2px">{{ ov.tagsText }}</span>
             </div>
           </div>
           <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;border-top:1px solid rgba(150,160,220,.14);padding-top:14px">
-            <span style="font-size:15px;color:#8f9be0;font-style:italic">{{ ov.moral }}</span>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#5f6ec4;font-style:italic">- j, the keeper</span>
+            <span style="font-size:15.5px;color:#a8b2e8;font-style:italic;line-height:1.5;border-left:2px solid rgba(240,217,168,.35);padding-left:13px">{{ ov.moral }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#8a93c4;font-style:italic">- j, the keeper</span>
           </div>
         </div>
       </div>
@@ -259,7 +267,7 @@ class Component extends DCLogic {
 
   renderVals() {
     const p = this.light;
-    if (!p) return { ov: null, close: () => {}, stopProp: (e) => e.stopPropagation() };
+    if (!p) return { ov: null, showCat: false, close: () => {}, stopProp: (e) => e.stopPropagation() };
     const pl = this.pill(p);
     const closing = this.props.closing ?? false;
     let no = this.props.no;
@@ -282,11 +290,15 @@ class Component extends DCLogic {
         return p.facts ? Object.entries(p.facts).map(([k, v]) => ({ k, v })) : null;
       })(),
       caseHref: p.caseStudy ? 'CaseStudy.dc.html?light=' + this.slug(p.title) : null,
-      assistAI: !!p.assist, assistHand: !p.assist,
-      assistLine: p.assist
-        ? 'this beacon was lit with the help of AI (' + [p.assist.harness, p.assist.model].filter(Boolean).join(', ').toLowerCase() + ')'
-        : 'this beacon was lit by hand',
-      slotId: (p.images && p.images[0]) ? 'proj-' + this.slug(p.title) + '-img-' + (typeof p.images[0] === 'string' ? p.images[0] : p.images[0].key) : 'proj-' + this.slug(p.title),
+      /* a placeholder like '#' is not a source: the link prints only for a real URL */
+      repoHref: /^https?:\/\//.test(p.repo || '') ? p.repo : null,
+      hasStamp: !!p.assist,
+      made: p.assist ? (p.assist.only
+        ? 'by ' + (p.assist.harness || 'AI') + ', checked by hand'
+        : 'by hand, with ' + (p.assist.harness || 'AI') + ' alongside') : 'by hand',
+      madeTitle: p.assist ? [p.assist.harness, p.assist.model].filter(Boolean).join(' ') : '',
+      slotId: (() => { const k = (p.images || [])[0];
+        return 'proj-' + this.slug(p.title) + '-img-' + (k ? (typeof k === 'string' ? k : k.key) : 'first-screenshot'); })(),
       thumbs: (() => {
         const keys = (p.images || []).slice(1).map((k) => (typeof k === 'string' ? k : k.key)).filter(Boolean);
         if (!keys.length) return null;
@@ -303,6 +315,7 @@ class Component extends DCLogic {
     const note = rawNote ? { ...rawNote, hasDoodle: !!rawNote.doodle, doodleDiagram: rawNote.doodle === 'diagram', doodleBoat: rawNote.doodle === 'boat', doodleQueue: rawNote.doodle === 'queue' } : null;
     return {
       ov,
+      showCat: this.props.cat ?? true,
       note,
       noteClosed: !note,
       no,

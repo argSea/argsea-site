@@ -68,11 +68,18 @@ h1,h2,h3,p{margin:0}
 /* ---------- shared section chrome ---------- */
 .wrap{max-width:1200px;margin:0 auto;padding:0 var(--gutter);position:relative;z-index:2}
 .sec{padding:clamp(40px,7vh,84px) 0 0}
+/* rhythm: 01 runs wide, 02 pulls into a narrow column, 03 packs dense */
+.sec-narrow{padding-top:clamp(58px,10vh,116px)}
+.sec-narrow .sec-head,.sec-narrow .feat{max-width:860px;margin-left:auto;margin-right:auto}
+.sec-narrow .feat{margin-bottom:14px}
+.sec-dense .gauges{gap:11px}
 .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:clamp(18px,3vh,30px)}
 .sec-head h2{font-family:var(--font-display);font-size:clamp(21px,2.4vw,27px);color:var(--text-head)}
 .sec-head .tick{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--text-dim)}
 .sec-head .rule{flex:1;height:1px;background:rgba(var(--brass),.22);align-self:center}
+.sec-head .lore{font-family:var(--font-display);font-style:italic;
+  font-size:clamp(13px,1.3vw,15px);color:var(--text-dim)}
 
 /* ---------- reveals: everything clicks into place ---------- */
 .rv{opacity:0;transform:translateY(16px)}
@@ -91,9 +98,72 @@ h1,h2,h3,p{margin:0}
 .hero .doors a{border-bottom:1px solid rgba(147,160,232,.35);padding-bottom:2px;
   transition:color .18s ease,border-color .18s ease}
 .hero .doors a:hover{color:var(--text-nav);border-color:var(--gold)}
+/* the two doors are not equal: the resume leads, the chart is a detour */
+.hero .doors .lead{color:var(--gold);border-bottom-color:rgba(240,217,168,.5)}
+.hero .doors .quiet{color:var(--text-dim);border-bottom-color:rgba(147,160,232,.18)}
+.hero .doors .quiet i{font-style:normal}
+.hero .doors .quiet:hover{color:var(--text-soft);border-bottom-color:rgba(147,160,232,.3)}
+
+/* the chart door: shows the thing instead of promising it. A cropped scrap of the
+   real chart, labelled plainly, so a recruiter can skip it and everyone else bites. */
+.chartdoor{display:grid;grid-template-columns:1fr auto;align-items:end;gap:14px;
+  position:relative;overflow:hidden;margin-top:26px;padding:15px 17px;min-height:104px;
+  background:linear-gradient(180deg,#141833,#10142a);
+  border:1px solid rgba(var(--brass),.3);
+  transition:border-color .25s ease,box-shadow .25s ease}
+.chartdoor:hover{border-color:rgba(var(--brass),.62);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.chartdoor .cd-plane{position:absolute;inset:0;pointer-events:none;opacity:.62;
+  transition:opacity .25s ease}
+.chartdoor:hover .cd-plane{opacity:1}
+.chartdoor .cd-plane svg{display:block;width:100%;height:100%}
+/* the same paper grain the sea chart and the wandering chart use */
+.chartdoor .cd-plane::after{content:"";position:absolute;inset:0;opacity:.45;mix-blend-mode:overlay;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+.chartdoor .cd-mk{position:absolute;width:4px;height:4px;border-radius:50%;
+  background:var(--peri, #93a0e8);box-shadow:0 0 6px rgba(147,160,232,.5);
+  animation:cdTwinkle 5.2s ease-in-out infinite}
+/* twinkle: a star's own unsteadiness, not a fade · size and glow move together */
+@keyframes cdTwinkle{
+  0%,100%{opacity:.45;transform:scale(.82);box-shadow:0 0 3px rgba(147,160,232,.3)}
+  18%{opacity:1;transform:scale(1.18);box-shadow:0 0 11px rgba(147,160,232,.85)}
+  30%{opacity:.6;transform:scale(.92);box-shadow:0 0 5px rgba(147,160,232,.4)}
+  46%{opacity:.95;transform:scale(1.1);box-shadow:0 0 9px rgba(147,160,232,.7)}
+  64%{opacity:.5;transform:scale(.86);box-shadow:0 0 4px rgba(147,160,232,.32)}}
+.chartdoor .cd-mk.wreck{border-radius:0;width:3.5px;height:3.5px;background:none;
+  border:1px solid rgba(147,160,232,.75);box-shadow:none;
+  animation:cdWreckTwinkle 6.6s ease-in-out infinite}
+@keyframes cdWreckTwinkle{
+  0%,100%{opacity:.35;transform:rotate(45deg) scale(.9)}
+  22%{opacity:.95;transform:rotate(45deg) scale(1.12)}
+  40%{opacity:.5;transform:rotate(45deg) scale(.95)}
+  58%{opacity:.85;transform:rotate(45deg) scale(1.05)}}
+.chartdoor .cd-mk.lit{width:5px;height:5px;background:var(--gold);
+  box-shadow:0 0 10px rgba(240,217,168,.85);animation:cdWink 4.4s ease-in-out infinite}
+@keyframes cdWink{0%,72%,100%{opacity:.35}80%,92%{opacity:1}}
+/* idle: the whole plane luminates on a slow tide, so the chart looks lit from within */
+.chartdoor .cd-plane{animation:cdLuminate 11s ease-in-out infinite}
+@keyframes cdLuminate{0%,100%{opacity:.5;filter:brightness(.92) saturate(.95)}
+  50%{opacity:.86;filter:brightness(1.14) saturate(1.08)}}
+.chartdoor:hover .cd-plane{animation:none}
+@media(prefers-reduced-motion:reduce){
+  .chartdoor .cd-plane,.chartdoor .cd-mk,.chartdoor .cd-mk.lit{animation:none}
+  .chartdoor .cd-mk.wreck{animation:none;transform:rotate(45deg)}
+}
+.chartdoor .cd-text{position:relative;display:flex;flex-direction:column;gap:5px;min-width:0}
+.chartdoor .cd-kick{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold)}
+.chartdoor .cd-sub{font-family:var(--font-body);font-size:14.5px;font-style:italic;
+  color:var(--text-soft);line-height:1.45;text-wrap:pretty}
+.chartdoor .cd-go{position:relative;flex:none;font-family:var(--font-mono);font-size:12px;
+  letter-spacing:.06em;color:var(--text-dim);white-space:nowrap;
+  border-bottom:1px solid rgba(147,160,232,.28);padding-bottom:2px;transition:color .2s ease,border-color .2s ease}
+.chartdoor:hover .cd-go{color:var(--text-nav);border-bottom-color:var(--gold)}
+@media(max-width:560px){
+  .chartdoor{grid-template-columns:1fr;align-items:start;gap:10px}
+}
 
 .now{background:rgba(26,30,51,.55);border:1px solid rgba(var(--brass),.28);
-  padding:24px 26px;position:relative;backdrop-filter:blur(2px)}
+  padding:46px 26px 24px;position:relative;backdrop-filter:blur(2px)}
 .now .tick{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--text-dim)}
 .now ul{margin:14px 0 0;padding:0;list-style:none}
@@ -102,7 +172,7 @@ h1,h2,h3,p{margin:0}
 .now li:first-child{border-top:0;padding-top:0}
 .now li b{color:var(--gold);font-weight:normal;font-family:var(--font-mono);font-size:13px}
 /* the doodle is a carving spot: replace data-carving="hero-doodle" in the shop */
-.now .doodle{position:absolute;top:-56px;right:-14px;opacity:.85}
+.now .doodle{position:absolute;top:-44px;right:-14px;opacity:.85}
 .now-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .now .kept{font-family:var(--font-mono);font-size:11px;color:var(--text-dim)}
 .letter{margin-top:12px}
@@ -173,17 +243,18 @@ h1,h2,h3,p{margin:0}
 .flagship.flip .info{grid-area:1/1/2/7;align-items:flex-start;text-align:left}
 .flagship .shot{grid-area:1/1/2/9;display:block;aspect-ratio:16/9;position:relative;overflow:hidden;
   background:#0d0f1c;border:1px solid rgba(147,160,232,.16);border-radius:5px;
-  filter:grayscale(1) contrast(.92) brightness(.85);
-  transition:filter .35s ease,border-color .3s ease}
-.flagship .shot:hover{filter:none;border-color:rgba(var(--brass),.7)}
-.flagship .shot image-slot{display:block;width:100%;height:100%}
+  transition:border-color .3s ease}
+.flagship .shot:hover{border-color:rgba(var(--brass),.7)}
+.flagship .shot image-slot{display:block;width:100%;height:100%;
+  filter:grayscale(1) contrast(.85) brightness(.5);transition:filter .35s ease}
+.flagship .shot:hover image-slot{filter:none}
 .flagship .shot image-slot::part(frame){border-radius:4px;overflow:hidden}
 .flagship .shot image-slot::part(image){border-radius:4px}
 .flagship .info{grid-area:1/7/2/13;z-index:2;display:flex;flex-direction:column;align-items:flex-end;
   gap:12px;text-align:right;pointer-events:none}
 .flagship .info > *{pointer-events:auto}
 .flagship .info b{font-family:var(--font-mono);font-size:20px;color:var(--gold);font-weight:normal}
-.flagship .fbox{position:relative;background:rgba(26,30,51,.92);border:1px solid rgba(var(--brass),.32);
+.flagship .fbox{position:relative;overflow:hidden;background:rgba(26,30,51,.92);border:1px solid rgba(var(--brass),.32);
   padding:20px 22px;text-align:left;box-shadow:0 18px 44px rgba(0,0,0,.45);backdrop-filter:blur(2px)}
 .lit-stamp{position:absolute;bottom:10px;right:10px;width:56px;height:56px;border-radius:50%;
   border:1.5px dashed rgba(240,217,168,.5);transform:rotate(8deg);
@@ -195,11 +266,13 @@ h1,h2,h3,p{margin:0}
   color:rgba(240,217,168,.7)}
 .flagship .archive{position:absolute;top:100%;left:0;margin-top:9px;font-family:var(--font-mono);
   font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim)}
-.stamps{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.stamp{font-style:normal;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.18em;
-  text-indent:.09em;text-transform:uppercase;padding:3px 9px;border-radius:3px;white-space:nowrap}
-.stamp{color:rgba(147,160,232,.75);border:1px solid rgba(147,160,232,.35);
-  background:rgba(147,160,232,.05)}
+/* the maker's line: provenance is a fact, not a sticker · the one fact set in brass */
+.made{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin:1px 0 -1px}
+.flagship.flip .made{justify-content:flex-start}
+.made .lbl{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gold);flex:none}
+.made .val{font-family:var(--font-body);font-size:14.5px;font-style:italic;
+  color:var(--text-soft);line-height:1.45}
 .flagship .fulllog{font-family:var(--font-mono);font-size:12.5px;color:var(--peri);
   border-bottom:1px solid rgba(147,160,232,.35);padding-bottom:2px;
   transition:color .18s ease,border-color .18s ease}
@@ -274,6 +347,8 @@ h1,h2,h3,p{margin:0}
   100%{clip-path:inset(0 0 0 0);transform:none;filter:none}
 }
 @media(prefers-reduced-motion:reduce){.glitching{animation:none}}
+@keyframes backdropIn{from{opacity:0}to{opacity:1}}
+@keyframes cardIn{from{opacity:0;transform:rotate(1.5deg) translateY(34px) scale(.97)}to{opacity:1;transform:none}}
 
 /* ---------- hobbies ---------- */
 .shore-note{font-family:var(--font-display);font-style:italic;color:var(--text-dim);
@@ -343,7 +418,8 @@ h1,h2,h3,p{margin:0}
   max-width:54ch;margin-top:18px}
 .cta-doors{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:28px;
   font-family:var(--font-mono);font-size:13.5px}
-.cta-doors a{padding:13px 26px;transition:color .18s ease,background .18s ease,border-color .18s ease}
+.cta-doors a{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;
+  min-height:46px;padding:13px 26px;transition:color .18s ease,background .18s ease,border-color .18s ease}
 .cta-doors .primary{background:var(--gold);color:#1a1e33;border:1px solid var(--gold)}
 .cta-doors .primary:hover{background:#f6e4bc;border-color:#f6e4bc}
 .cta-doors .ghost{border:1px solid rgba(147,160,232,.35);color:var(--text-soft)}
@@ -365,6 +441,7 @@ h1,h2,h3,p{margin:0}
 @keyframes drift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 .boat-lane{position:absolute;left:0;right:0;bottom:74px;height:0;z-index:3}
+.boat{position:relative}
 .tow{position:absolute;bottom:0;left:0;display:flex;flex-direction:row-reverse;align-items:flex-end;gap:0;
   animation:crossing 110s linear infinite}
 @keyframes crossing{from{transform:translateX(-105vw)}to{transform:translateX(105vw)}}
@@ -395,16 +472,16 @@ h1,h2,h3,p{margin:0}
   animation:carriedOut var(--dur,52s) linear forwards}
 .bottle-drift .glass{display:block;animation:bob 4.6s ease-in-out infinite;opacity:.8}
 @keyframes carriedOut{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 80px))}}
-.note{position:absolute;bottom:46px;left:50%;width:230px;margin-left:-115px;
-  background:linear-gradient(180deg,#f2edde,#e9e3d0);color:#33302a;padding:14px 16px 12px;
+.note{position:absolute;bottom:26px;left:50%;width:230px;margin-left:-115px;
+  background:linear-gradient(180deg,#f2edde,#e9e3d0);color:#33302a;padding:12px 16px 10px;
   box-shadow:0 14px 34px rgba(0,0,0,.45);pointer-events:auto;cursor:pointer;
   animation:noterise .6s cubic-bezier(.2,.9,.3,1.15) .55s backwards}
 @keyframes noterise{from{opacity:0;transform:translateY(26px) rotate(-2deg)}
   to{opacity:1;transform:translateY(0) rotate(0)}}
 .note .kick{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;
   text-transform:uppercase;color:#8a7d55}
-.note .pv{font-family:var(--font-display);font-style:italic;font-size:14.5px;line-height:1.45;
-  margin-top:6px}
+.note .pv{font-family:var(--font-body);font-style:italic;font-size:14px;line-height:1.5;
+  margin-top:5px}
 .note .foot{display:flex;justify-content:space-between;margin-top:9px;
   font-family:var(--font-mono);font-size:10px;color:#8a7d55}
 .note .nib{position:absolute;bottom:-6px;left:50%;width:12px;height:12px;margin-left:-6px;
@@ -421,20 +498,25 @@ h1,h2,h3,p{margin:0}
 .gull-mark:hover span{opacity:1}
 
 /* ---------- responsive ---------- */
+@media(max-width:1100px){
+}
 @media(max-width:840px){
   .hero{grid-template-columns:1fr;gap:34px}
   .flag{grid-template-columns:1fr}
   .flag .media{border-right:0;border-bottom:1px solid rgba(147,160,232,.14);min-height:180px}
-  .now .doodle{top:-30px;right:10px}
+  .now .doodle{top:-46px;right:2px}
   .feat{grid-template-columns:1fr}
   .feat-doodle{align-items:flex-start;padding:0}
   .log a{grid-template-columns:86px 1fr}
   .log .marg{display:none}
-  .links{display:none}
+  .site-nav{flex-wrap:wrap}
+  .links{width:100%;gap:16px;font-size:12px;padding-top:2px}
+  .links a{padding:6px 0}
   .flagship,.flagship.flip{display:block}
   .flagship.flip .info{align-items:flex-start;text-align:left}
   .flagship .shot{margin-bottom:14px}
   .flagship .info{align-items:flex-start;text-align:left}
+  .flagship .made{justify-content:flex-start}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -484,15 +566,39 @@ h1,h2,h3,p{margin:0}
         pagers go off.
       </p>
       <div class="doors rv" style="--d:.24s">
-        <a href="resume.pdf" target="_blank" rel="noopener">resume ↗</a>
-        <a href="TheChart.dc.html">set sail</a>
+        <a class="lead" href="resume.pdf" target="_blank" rel="noopener">resume ↗</a>
+        <a class="quiet" href="Projects.dc.html">the light list</a>
       </div>
+
+      <a class="chartdoor rv" style="--d:.32s" href="TheChart.dc.html">
+        <span class="cd-plane" aria-hidden="true">
+          <svg viewBox="0 0 340 104" preserveAspectRatio="none" fill="none">
+            <path d="M0 26 H340 M0 52 H340 M0 78 H340" stroke="rgba(147,160,232,.14)" stroke-width=".7"></path>
+            <path d="M46 0 V104 M112 0 V104 M178 0 V104 M244 0 V104 M310 0 V104" stroke="rgba(147,160,232,.1)" stroke-width=".7"></path>
+            <path d="M0 88 q34 -7 62 2 q30 10 58 -3 q26 -11 52 1" stroke="rgba(95,110,196,.4)" stroke-width="1"></path>
+            <path d="M258 104 q16 -22 44 -30 q22 -6 38 -22 V104 Z" fill="rgba(95,110,196,.13)" stroke="rgba(147,160,232,.28)" stroke-width=".8"></path>
+            <path d="M96 62 L150 40 L214 46 L268 30" stroke="rgba(240,217,168,.3)" stroke-width=".8" stroke-dasharray="4 5"></path>
+          </svg>
+          <i class="cd-mk lit" style="left:28%;top:38%"></i>
+          <i class="cd-mk" style="left:44%;top:24%;animation-delay:-1.3s"></i>
+          <i class="cd-mk" style="left:63%;top:44%;animation-delay:-2.9s"></i>
+          <i class="cd-mk" style="left:79%;top:29%;animation-delay:-4.1s"></i>
+          <i class="cd-mk wreck" style="left:16%;top:64%;animation-delay:-1.8s"></i>
+          <i class="cd-mk wreck" style="left:52%;top:72%;animation-delay:-3.7s"></i>
+          <i class="cd-mk wreck" style="left:70%;top:62%;animation-delay:-5.5s"></i>
+        </span>
+        <span class="cd-text">
+          <span class="cd-kick">the sea chart</span>
+          <span class="cd-sub">Every project, hobby and log entry plotted as a light in home waters. Built for no reason at all.</span>
+        </span>
+        <span class="cd-go">wander ↗</span>
+      </a>
     </div>
 
     <aside class="now rv" style="--d:.2s">
       <dc-import name="HarborCat" pose="perched" context="hero" bubble="left" hint-size="52px,60px" style="position: absolute; top: -42px; left: 18px; width: 52px; height: 60px; z-index: 3"></dc-import>
       <!-- carving spot: hero-doodle. Swap this SVG in the carving shop. -->
-      <svg class="doodle" data-carving="hero-doodle" width="72" height="86" viewBox="0 0 72 86" fill="none" aria-hidden="true" style="top: -77px">
+      <svg class="doodle" data-carving="hero-doodle" width="72" height="86" viewBox="0 0 72 86" fill="none" aria-hidden="true">
         <path d="M28 78 C29 60 30 42 31 30 L41 30 C42 44 43 60 44 78" stroke="#93a0e8" stroke-width="1.6" stroke-linecap="round"></path>
         <path d="M29 44 L43 43 M28.5 58 L43.5 57" stroke="#93a0e8" stroke-width="1.4" stroke-linecap="round"></path>
         <path d="M31 30 L29 22 L43 22 L41 30" stroke="#93a0e8" stroke-width="1.6" stroke-linejoin="round"></path>
@@ -517,11 +623,11 @@ h1,h2,h3,p{margin:0}
 
   <!-- ================= projects ================= -->
   <section class="sec">
-    <div class="sec-head rv"><span class="tick">01</span><h2>Projects</h2><span class="rule"></span></div>
+    <div class="sec-head rv"><span class="tick">01</span><h2>Projects</h2><i class="lore">lights I keep burning</i><span class="rule"></span></div>
 
     <sc-for list="{{ flags }}" as="f" hint-placeholder-count="4">
       <div class="flagship rv {{ f.flip }}">
-        <a class="shot" href="Projects.dc.html" aria-label="{{ f.title }}">
+        <a class="shot" href="Projects.dc.html" onClick="{{ f.onOpen }}" aria-label="{{ f.title }}">
           <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ f.slotId }}" placeholder="drop a screenshot" hint-size="100%,340px" style="width:100%;height:100%"></x-import>
           <span class="archive">from the station archive · no. {{ f.no }}</span>
         </a>
@@ -530,25 +636,28 @@ h1,h2,h3,p{margin:0}
           <b>{{ f.title }}</b>
           <div class="fbox">
             <p>{{ f.desc }}</p>
+            <sc-if value="{{ f.made }}" hint-placeholder-val="{{ false }}">
+              <div class="made" title="{{ f.madeTitle }}"><span class="lbl">built</span><span class="val">{{ f.made }}</span></div>
+            </sc-if>
             <dl class="facts">
               <sc-for list="{{ f.facts }}" as="fc" hint-placeholder-count="2">
                 <div class="frow"><dt>{{ fc.k }}</dt><dd>{{ fc.v }}</dd></div>
               </sc-for>
             </dl>
             <sc-if value="{{ f.hasMoral }}" hint-placeholder-val="{{ false }}"><p class="moral">{{ f.moral }}</p></sc-if>
-            <span class="tags"><sc-for list="{{ f.tags }}" as="tg" hint-placeholder-count="3"><i>{{ tg }}</i></sc-for><sc-for list="{{ f.stamps }}" as="st" hint-placeholder-count="1"><i class="stamp">{{ st.t }}</i></sc-for></span>
+            <span class="tags"><sc-for list="{{ f.tags }}" as="tg" hint-placeholder-count="3"><i>{{ tg }}</i></sc-for></span>
           </div>
-          <a class="fulllog" href="{{ f.log }}">read the full log →</a>
+          <sc-if value="{{ f.hasLog }}" hint-placeholder-val="{{ true }}"><a class="fulllog" href="{{ f.log }}">read the full log →</a></sc-if>
         </div>
       </div>
     </sc-for>
   </section>
 
   <!-- ================= notes ================= -->
-  <section class="sec">
-    <div class="sec-head rv"><span class="tick">02</span><h2>Notes</h2><span class="rule"></span></div>
+  <section class="sec sec-narrow">
+    <div class="sec-head rv"><span class="tick">02</span><h2>Notes</h2><i class="lore">pages from the log</i><span class="rule"></span></div>
     <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
-      <a class="feat rv" href="Notes.dc.html">
+      <a class="feat rv" href="Notes.dc.html" onClick="{{ n.onOpen }}">
         <div class="feat-main">
           <span class="feat-kick">from the journal · {{ n.wx }}</span>
           <b>{{ n.title }}</b>
@@ -557,7 +666,7 @@ h1,h2,h3,p{margin:0}
         </div>
         <div class="feat-doodle">
           <sc-if value="{{ n.diagram }}" hint-placeholder-val="{{ false }}">
-            <svg width="120" height="73" viewBox="0 0 100 62" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg>
+            <svg width="120" height="73" viewBox="0 0 100 62" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1" stroke-dasharray="5 4"></rect><path d="M19 51 L81 5" stroke-width="1.9"></path></svg>
           </sc-if>
           <sc-if value="{{ n.boat }}" hint-placeholder-val="{{ false }}">
             <svg width="125" height="78" viewBox="0 0 100 62" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path></svg>
@@ -572,29 +681,14 @@ h1,h2,h3,p{margin:0}
   </section>
 
   <!-- ================= hobbies ================= -->
-  <section class="sec">
-    <div class="sec-head rv"><span class="tick">03</span><h2 id="hobbyTitle">Skills</h2><span class="rule"></span></div>
-    <!-- the fake skills live in a template so crawlers and parsers only ever read the truth -->
-    <template id="skillsFakeTpl">
-      <div class="gauge in"><span class="gtop"><b>javascript</b><span class="gstate">Expert</span></span><span class="gbar"><span class="gfill" style="width:95%"></span></span><span class="gmeta"><span>10+ years</span><span class="gnum-fake">95%</span></span></div>
-      <div class="gauge in"><span class="gtop"><b>react</b><span class="gstate">Expert</span></span><span class="gbar"><span class="gfill" style="width:92%"></span></span><span class="gmeta"><span>8 years</span><span class="gnum-fake">92%</span></span></div>
-      <div class="gauge in"><span class="gtop"><b>typescript</b><span class="gstate">Expert</span></span><span class="gbar"><span class="gfill" style="width:93%"></span></span><span class="gmeta"><span>7 years</span><span class="gnum-fake">93%</span></span></div>
-      <div class="gauge in"><span class="gtop"><b>node.js</b><span class="gstate">Advanced</span></span><span class="gbar"><span class="gfill" style="width:90%"></span></span><span class="gmeta"><span>9 years</span><span class="gnum-fake">90%</span></span></div>
-      <div class="gauge in"><span class="gtop"><b>python</b><span class="gstate">Expert</span></span><span class="gbar"><span class="gfill" style="width:94%"></span></span><span class="gmeta"><span>10+ years</span><span class="gnum-fake">94%</span></span></div>
-      <div class="gauge in"><span class="gtop"><b>aws</b><span class="gstate">Advanced</span></span><span class="gbar"><span class="gfill" style="width:88%"></span></span><span class="gmeta"><span>6 years</span><span class="gnum-fake">88%</span></span></div>
-      <div class="gauge in"><span class="gtop"><b>docker</b><span class="gstate">Advanced</span></span><span class="gbar"><span class="gfill" style="width:91%"></span></span><span class="gmeta"><span>7 years</span><span class="gnum-fake">91%</span></span></div>
-      <div class="gauge in"><span class="gtop"><b>kubernetes</b><span class="gstate">Advanced</span></span><span class="gbar"><span class="gfill" style="width:87%"></span></span><span class="gmeta"><span>5 years</span><span class="gnum-fake">87%</span></span></div>
-      <div class="gauge in"><span class="gtop"><b>ci/cd</b><span class="gstate">Expert</span></span><span class="gbar"><span class="gfill" style="width:92%"></span></span><span class="gmeta"><span>8 years</span><span class="gnum-fake">92%</span></span></div>
-      <div class="gauge in"><span class="gtop"><b>agile methodologies</b><span class="gstate">Expert</span></span><span class="gbar"><span class="gfill" style="width:97%"></span></span><span class="gmeta"><span>10+ years</span><span class="gnum-fake">97%</span></span></div>
-      <div class="gauge in"><span class="gtop"><b>communication</b><span class="gstate">Expert</span></span><span class="gbar"><span class="gfill" style="width:98%"></span></span><span class="gmeta"><span>lifelong</span><span class="gnum-fake">98%</span></span></div>
-      <div class="gauge in"><span class="gtop"><b>synergy</b><span class="gstate">Thought Leader</span></span><span class="gbar"><span class="gfill" style="width:99%"></span></span><span class="gmeta"><span>unbroken</span><span class="gnum-fake">99%</span></span></div>
-    </template>
+  <section class="sec sec-dense">
+    <div class="sec-head rv"><span class="tick">03</span><h2 id="hobbyTitle">Skills</h2><i class="lore" id="hobbyLore">measured, ranked, certified</i><span class="rule"></span></div>
     <div class="skills-fake gauges" id="skillsFake" aria-hidden="true"></div>
     <div class="hobbies-real" id="hobbiesReal" style="display:none">
     <p class="shore-note">Measured in enthusiasm, not competence. Self-assessed. Suspiciously precise.</p>
     <div class="gauges">
       <sc-for list="{{ hobbies }}" as="h" hint-placeholder-count="5">
-        <a class="gauge rv" href="{{ h.href }}">
+        <a class="gauge rv" href="{{ h.href }}" onClick="{{ h.onOpen }}">
           <span class="gmark" aria-hidden="true">
             <sc-if value="{{ h.isMoored }}" hint-placeholder-val="{{ false }}">
               <span class="mk"><svg width="26" height="30" viewBox="0 0 26 30" fill="none"><path d="M13 2 L17 9 L9 9 Z" fill="#f0d9a8" style="animation: lampPulse 4s ease-in-out infinite"></path><rect x="10" y="9" width="6" height="14" fill="none" stroke="#93a0e8" stroke-width="1.4"></rect><path d="M10 13 h6 M10 17 h6" stroke="#93a0e8" stroke-width="1.4"></path></svg><span class="isle"></span></span>
@@ -635,10 +729,6 @@ h1,h2,h3,p{margin:0}
       <a class="primary" href="mailto:hello@argsea.com">say hello →</a>
       <a class="ghost" href="Projects.dc.html">see the work first</a>
     </div>
-    <div class="row rv" style="--d:.28s">
-      <a href="Hello.dc.html">hello</a><a href="Projects.dc.html">projects</a><a href="Hobbies.dc.html">hobbies</a>
-      <a href="Notes.dc.html">notes</a><a href="resume.pdf" target="_blank" rel="noopener">resume ↗</a>
-    </div>
   </div>
 
   <div class="sea" id="sea">
@@ -654,6 +744,9 @@ h1,h2,h3,p{margin:0}
     <div class="boat-lane">
       <div class="tow" id="tow" title="the manifest, under tow" aria-label="the manifest, under tow">
         <span class="boat">
+          <sc-if value="{{ catAboard }}" hint-placeholder-val="{{ false }}">
+            <dc-import name="HarborCat" pose="perched" context="chart" quips="surf's fine.|i am the figurehead.|do not tell the lighthouse." hint-size="26px,30px" style="position:absolute;left:7px;bottom:15px;width:26px;height:30px;z-index:4"></dc-import>
+          </sc-if>
           <svg class="hull" width="40" height="34" viewBox="0 0 30 24" aria-hidden="true">
             <path d="M4 15 L26 15 L21 22 L9 22 Z" fill="#93a0e8"></path>
             <path d="M15 15 V3" stroke="#5f6ec4" stroke-width="1.5"></path>
@@ -678,6 +771,102 @@ h1,h2,h3,p{margin:0}
   </div>
 </footer>
 
+<!-- overlay: the light-list entry (shared component) -->
+<sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+  <dc-import name="ProjectOverlay" light="{{ open }}" no="{{ openNo }}" closing="{{ closing }}" cat="{{ false }}" on-close="{{ closeOverlay }}" hint-size="100%,300px"></dc-import>
+</sc-if>
+
+<!-- overlay: a journal entry, up close (same paper as Notes) -->
+<sc-if value="{{ jopen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeNote }}" style="position:fixed;inset:0;background:rgba(8,10,20,.72);backdrop-filter:blur(5px);z-index:50;display:flex;align-items:center;justify-content:center;padding:clamp(14px,4vw,40px);animation:backdropIn .25s ease both">
+    <div onClick="{{ stopProp }}" style="position:relative;width:min(680px,100%);animation:cardIn .35s ease both">
+      <div style="max-height:90vh;overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(110,100,75,.45) transparent;background:linear-gradient(180deg,#f1ecdd,#eae3d1);border-radius:6px 12px 12px 6px;box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 -16px 20px -16px rgba(60,50,30,.5)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(20px,4vw,32px);border-bottom:1.5px dashed rgba(110,100,75,.35)">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#6b6248;text-transform:uppercase">Journal entry · {{ jopen.date }}</span>
+          <span onClick="{{ closeNote }}" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#625a42;padding:6px 12px;border:1px solid rgba(110,100,75,.4);border-radius:999px;transition:all .2s" style-hover="color:#262a45;border-color:rgba(60,55,80,.6)">close ✕</span>
+        </div>
+        <div style="padding:clamp(24px,5vw,36px);display:flex;flex-direction:column;gap:16px">
+          <sc-if value="{{ jopen.hasWx }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:14.5px;font-style:italic;color:#726949;margin-bottom:-6px">{{ jopen.wx }}</div>
+          </sc-if>
+          <div style="font-family:'Gloock',serif;font-size:clamp(24px,4vw,30px);color:#20233c;line-height:1.2">{{ jopen.title }}</div>
+          <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ jopen.p1 }}</div>
+          <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ jopen.p2 }}</div>
+          <div style="font-size:17px;line-height:1.7;color:#3b3f5e">{{ jopen.p3 }}</div>
+          <sc-if value="{{ jopen.lightLinks }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-top:1.5px dashed rgba(110,100,75,.3);padding-top:14px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#6b6248;text-transform:uppercase;flex:none">found in</span>
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <sc-for list="{{ jopen.lightLinks }}" as="lk" hint-placeholder-count="1">
+                  <span onClick="{{ lk.onOpen }}" title="{{ lk.hint }}" style="font-size:15px;font-style:italic;color:#6b6390;line-height:1.45;cursor:pointer;transition:color .2s" style-hover="color:#6a5a2a">{{ lk.mark }} {{ lk.title }} →</span>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6b6248;margin-top:8px">- j, keeper</div>
+            <sc-if value="{{ jopen.hasDoodle }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;margin-top:-4px;padding-right:6px;transform:rotate(-2deg)">
+                <sc-if value="{{ jopen.doodleDiagram }}" hint-placeholder-val="{{ false }}">
+                  <svg width="96" height="58" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round"><rect x="28" y="10" width="44" height="34" rx="1"></rect><path d="M28 10 L72 44 M72 10 L28 44"></path></svg>
+                </sc-if>
+                <sc-if value="{{ jopen.doodleBoat }}" hint-placeholder-val="{{ false }}">
+                  <svg width="100" height="62" viewBox="0 0 100 62" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 44 L30 54 L66 54 L76 44 Z"></path><path d="M46 12 V44"></path><path d="M48 14 L70 40 L48 40 Z"></path><path d="M14 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0 q8 5 16 0"></path></svg>
+                </sc-if>
+                <sc-if value="{{ jopen.doodleQueue }}" hint-placeholder-val="{{ false }}">
+                  <svg width="104" height="48" viewBox="0 0 110 50" fill="none" stroke="#454a70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="16" height="16" rx="1"></rect><rect x="38" y="18" width="16" height="16" rx="1"></rect><rect x="64" y="18" width="16" height="16" rx="1"></rect><path d="M86 26 H100"></path><path d="M96 21 L102 26 L96 31"></path></svg>
+                </sc-if>
+                <span style="font-size:13px;font-style:italic;color:#6b6248">{{ jopen.doodleCaption }}</span>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- overlay: a hobby's last known bearing (same paper as the wandering chart) -->
+<sc-if value="{{ hopen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeHobby }}" style="position:fixed;inset:0;background:rgba(8,10,20,.72);backdrop-filter:blur(5px);z-index:50;display:flex;align-items:center;justify-content:center;padding:clamp(14px,4vw,40px);animation:backdropIn .25s ease both">
+    <div onClick="{{ stopProp }}" style="position:relative;width:min(620px,100%);animation:cardIn .35s ease both">
+      <div style="max-height:90vh;overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(110,100,75,.45) transparent;background:linear-gradient(180deg,#f1ecdd,#eae3d1);border-radius:6px 12px 12px 6px;box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 -16px 20px -16px rgba(60,50,30,.5)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px clamp(20px,4vw,30px);border-bottom:1.5px dashed rgba(110,100,75,.35)">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#6b6248;text-transform:uppercase">Last known bearing</span>
+          <span onClick="{{ closeHobby }}" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#625a42;padding:5px 11px;border:1px solid rgba(110,100,75,.4);border-radius:999px;transition:all .2s" style-hover="color:#262a45;border-color:rgba(60,55,80,.6)">close ✕</span>
+        </div>
+        <div style="padding:clamp(22px,4vw,32px);display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap">
+            <span style="font-family:'Gloock',serif;font-size:clamp(23px,3.8vw,28px);color:#20233c">{{ hopen.name }}</span>
+            <span style="{{ hopen.pillStyle }}">{{ hopen.stateLabel }}</span>
+          </div>
+          <div style="font-size:16px;font-style:italic;line-height:1.65;color:#3b3f5e;border-left:2px solid rgba(110,100,75,.3);padding-left:14px">{{ hopen.lastLog }}</div>
+          <div style="display:grid;grid-template-columns:max-content 1fr;gap:10px 16px;font-size:15px;line-height:1.55;color:#3b3f5e;align-items:baseline">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#6b6248;text-transform:uppercase">how it went off course</span><span>{{ hopen.offCourse }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#6b6248;text-transform:uppercase">what still floats</span><span>{{ hopen.floats }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#6b6248;text-transform:uppercase">odds of return</span><span style="color:#6a5a2a">{{ hopen.odds }}</span>
+          </div>
+          <sc-if value="{{ hopen.noteLinks }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-top:1.5px dashed rgba(110,100,75,.3);padding-top:12px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#6b6248;text-transform:uppercase;flex:none">logged in the journal</span>
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <sc-for list="{{ hopen.noteLinks }}" as="nl" hint-placeholder-count="1">
+                  <span onClick="{{ nl.onOpen }}" title="read the entry" style="font-size:15px;font-style:italic;color:#6b6390;line-height:1.45;cursor:pointer;transition:color .2s" style-hover="color:#6a5a2a">✷ {{ nl.title }} →</span>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1.5px dashed rgba(110,100,75,.3);padding-top:12px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6b6248">position · {{ hopen.coord }} · logged {{ hopen.service }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6a5a2a">- the keeper, still hoping</span>
+          </div>
+          <a href="{{ hopen.chartHref }}" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6b6390">see it on the wandering chart →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 <!-- footer -->
 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 28px;padding:26px clamp(20px,5vw,52px) 24px;border-top:1px solid rgba(150,160,220,.12)">
   <div style="flex:1 1 240px;max-width:400px;font-size:11px;line-height:1.55;color:#6b74a0;font-style:italic;text-wrap:pretty"><span style="font-family:'Gloock',serif;font-style:normal;font-size:12.5px;color:#a5aed4">argsea</span> <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-style:normal;color:#5f6ec4">/ˈɑːrɡ·siː/ · noun</span> &nbsp;1. the Argo, but for one &nbsp;2. <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-style:normal">argc</span>, but forever &nbsp;3. a sea of water, or of stars &nbsp;4. what a method signature becomes if I'm not supervised</div>
@@ -693,6 +882,15 @@ h1,h2,h3,p{margin:0}
 class Component extends DCLogic {
   componentDidMount() {
     this.disposers = [];
+    this._escOv = (e) => {
+      if (e.key !== 'Escape') return;
+      const s = this.state || {};
+      if (s.jNote) this.closeNote();
+      else if (s.hobbyOpen) this.closeHobby();
+      else if (s.open) this.closeOverlay();
+    };
+    window.addEventListener('keydown', this._escOv);
+    this.disposers.push(() => window.removeEventListener('keydown', this._escOv));
     this.initDataDom();
     this.stampFakeSkills();
     this.initWindow();
@@ -749,12 +947,59 @@ class Component extends DCLogic {
 
   /* ---------- the fake skills only exist once JS is running ---------- */
   stampFakeSkills() {
-    const tpl = document.getElementById('skillsFakeTpl');
     const host = document.getElementById('skillsFake');
-    if (tpl && host) host.appendChild(tpl.content.cloneNode(true));
+    if (!host || host.childNodes.length) return;
+    // the resume-shaped lie, built in JS so parsers only ever read the truth
+    const rows = [
+      ['javascript', 'Expert', 95, '10+ years'], ['react', 'Expert', 92, '8 years'],
+      ['typescript', 'Expert', 93, '7 years'], ['node.js', 'Advanced', 90, '9 years'],
+      ['python', 'Expert', 94, '10+ years'], ['aws', 'Advanced', 88, '6 years'],
+      ['docker', 'Advanced', 91, '7 years'], ['kubernetes', 'Advanced', 87, '5 years'],
+      ['ci/cd', 'Expert', 92, '8 years'], ['agile methodologies', 'Expert', 97, '10+ years'],
+      ['communication', 'Expert', 98, 'lifelong'], ['synergy', 'Thought Leader', 99, 'unbroken'],
+    ];
+    host.innerHTML = rows.map(([n, s, p, y]) =>
+      '<div class="gauge in"><span class="gtop"><b>' + n + '</b><span class="gstate">' + s + '</span></span>' +
+      '<span class="gbar"><span class="gfill" style="width:' + p + '%"></span></span>' +
+      '<span class="gmeta"><span>' + y + '</span><span class="gnum-fake">' + p + '%</span></span></div>').join('');
   }
 
+  // the cat lives in the Now card; now and then it rides the passing boat instead
+  catAboard = Math.random() < 0.35;
+
+  hobbyMeta = {
+    moored:   { label: 'moored · home waters', c: '150,120,40', ink: '#6b5518' },
+    adrift:   { label: 'adrift · lost at sea', c: '90,100,170', ink: '#3d4680' },
+    marooned: { label: 'marooned', c: '90,100,170', ink: '#3d4680' },
+    port:     { label: 'made port', c: '60,120,90', ink: '#2c6446' },
+    inkspill: { label: 'bearing smudged', c: '90,95,140', ink: '#464b74' },
+  };
+  hobbyPill(state) {
+    const m = this.hobbyMeta[state] || { c: '90,100,170', ink: '#3d4680' };
+    return {
+      fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.1em', textTransform: 'uppercase',
+      padding: '3px 10px', borderRadius: '999px', whiteSpace: 'nowrap', flex: 'none',
+      color: m.ink, border: `1px ${state === 'moored' ? 'dashed' : 'solid'} rgba(${m.c},0.5)`,
+      background: `rgba(${m.c},0.12)`,
+    };
+  }
+  fmtCoord(c) {
+    if (!c) return '';
+    const dm = (v, pos, neg) => { const a = Math.abs(v); const d = Math.floor(a); const m = Math.round((a - d) * 60); return d + '\u00b0' + String(m).padStart(2, '0') + '\u2032' + (v >= 0 ? pos : neg); };
+    return dm(c.lat, 'N', 'S') + ' ' + dm(c.lon, 'E', 'W');
+  }
+  closeNote = () => this.setState({ jNote: null });
+  closeHobby = () => this.setState({ hobbyOpen: null });
+
+  closeOverlay = () => {
+    const s = this.state || {};
+    if (s.ovClosing || !s.open) return;
+    this.setState({ ovClosing: true });
+    setTimeout(() => this.setState({ open: null, ovClosing: false }), 220);
+  };
+
   renderVals() {
+    const st = this.state || {};
     const projs = ((window.ARGSEA_DATA || {}).projects) || [];
     const colL = { white: 'W', green: 'G', red: 'R' };
     const slug = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -763,9 +1008,14 @@ class Component extends DCLogic {
       .sort((a, b) => (b.p.flagship ? 1 : 0) - (a.p.flagship ? 1 : 0))
       .slice(0, 3).map(({ p, no }, i) => ({
         no, flip: i % 2 ? 'flip' : '',
-        slotId: 'proj-' + slug(p.title) + '-img-first-screenshot',
-        log: 'CaseStudy.dc.html?light=' + slug(p.title),
-        stamps: p.assist ? [{ t: 'assisted by ' + (p.assist.model || p.assist.harness || 'ai').toLowerCase() }] : [],
+        onOpen: (e) => { e.preventDefault(); this.setState({ open: p, openNo: no, ovClosing: false }); },
+        slotId: (() => { const k = (p.images || [])[0];
+          return 'proj-' + slug(p.title) + '-img-' + (k ? (typeof k === 'string' ? k : k.key) : 'first-screenshot'); })(),
+        log: 'CaseStudy.dc.html?light=' + slug(p.title), hasLog: !!p.caseStudy,
+        made: p.assist ? (p.assist.only
+          ? 'by ' + (p.assist.harness || 'AI') + ', checked by hand'
+          : 'by hand, with ' + (p.assist.harness || 'AI') + ' alongside') : 'by hand',
+        madeTitle: p.assist ? [p.assist.harness, p.assist.model].filter(Boolean).join(' ') : '',
         title: p.title.toLowerCase(), desc: p.desc, est: p.est,
         kind: p.kind, period: p.period, color: p.color, lit: p.status,
         char: p.kind === 'fixed'
@@ -777,8 +1027,36 @@ class Component extends DCLogic {
     const journal = ((window.ARGSEA_DATA || {}).journal) || [];
     const notes = journal.slice(0, 3).map((n) => ({
       wx: n.wx, title: n.title, teaser: n.teaser, caption: n.doodleCaption,
-      diagram: n.doodle === 'diagram', boat: n.doodle === 'boat', queue: n.doodle === 'queue'
+      diagram: n.doodle === 'diagram', boat: n.doodle === 'boat', queue: n.doodle === 'queue',
+      onOpen: (e) => { e.preventDefault(); this.setState({ jNote: n }); }
     }));
+    const jn = st.jNote || null;
+    const jopen = jn ? {
+      ...jn, hasWx: !!jn.wx, hasDoodle: !!jn.doodle,
+      doodleDiagram: jn.doodle === 'diagram', doodleBoat: jn.doodle === 'boat', doodleQueue: jn.doodle === 'queue',
+      lightLinks: (() => {
+        const hits = projs.filter((p) => (p.notes || []).includes(jn.title)).map((p) => ({
+          title: p.title, mark: '\u2737', hint: 'step into the tower',
+          onOpen: () => { const idx = projs.indexOf(p); this.setState({ jNote: null, open: p, openNo: ('00' + (idx + 1) * 2).slice(-3), ovClosing: false }); },
+        }));
+        const hh = (((window.ARGSEA_DATA || {}).hobbies) || []).filter((hb) => (hb.notes || []).includes(jn.title)).map((hb) => ({
+          title: hb.name, mark: '\u25c8', hint: 'its last known bearing',
+          onOpen: () => this.setState({ jNote: null, hobbyOpen: hb }),
+        }));
+        const all = hits.concat(hh);
+        return all.length ? all : null;
+      })(),
+    } : null;
+    const hb = st.hobbyOpen || null;
+    const hopen = hb ? {
+      name: hb.name, coord: this.fmtCoord(hb.coord), service: hb.service, lastLog: hb.lastLog,
+      offCourse: hb.offCourse, floats: hb.floats, odds: hb.odds,
+      stateLabel: (this.hobbyMeta[hb.state] || {}).label || hb.state, pillStyle: this.hobbyPill(hb.state),
+      chartHref: 'Hobbies.dc.html?bearing=' + encodeURIComponent(hb.name),
+      noteLinks: (hb.notes && hb.notes.length) ? hb.notes.map((t) => ({
+        title: t, onOpen: () => { const n = journal.find((x) => x.title === t); this.setState({ hobbyOpen: null, jNote: n || null }); },
+      })) : null,
+    } : null;
     const stateLabels = { moored: 'moored', adrift: 'adrift', marooned: 'marooned', port: 'made port', inkspill: 'bearing smudged' };
     const verdict = (g) => g >= 90 ? 'As good as it gets, according to me.'
       : g >= 80 ? 'Peaked. Retired undefeated.'
@@ -799,9 +1077,11 @@ class Component extends DCLogic {
       gauge: h.gauge || 0, pct: (h.gauge || 0) + '%', lastLog: h.lastLog,
       isMoored: h.state === 'moored', isAdrift: h.state === 'adrift', isMarooned: h.state === 'marooned',
       isPort: h.state === 'port', isInkspill: h.state === 'inkspill',
-      href: 'Hobbies.dc.html?bearing=' + encodeURIComponent(h.name)
+      href: 'Hobbies.dc.html?bearing=' + encodeURIComponent(h.name),
+      onOpen: (e) => { e.preventDefault(); this.setState({ hobbyOpen: h }); }
     }));
-    return { flags, notes, hobbies };
+    return { flags, notes, hobbies, open: st.open || null, openNo: st.openNo || '', closing: !!st.ovClosing, closeOverlay: this.closeOverlay,
+      jopen, hopen, closeNote: this.closeNote, closeHobby: this.closeHobby, catAboard: this.catAboard, stopProp: (e) => e.stopPropagation() };
   }
 
   /* ---------- the skills section is a lie ---------- */
@@ -815,6 +1095,8 @@ class Component extends DCLogic {
       fake.style.display = 'none';
       real.style.display = '';
       title.textContent = 'Hobbies';
+      const lore = document.getElementById('hobbyLore');
+      if (lore) lore.textContent = 'off watch, still afloat';
       // replay the gauge reveal now that it is actually visible
       real.querySelectorAll('.gauge').forEach((g) => {
         g.classList.remove('in');
@@ -825,21 +1107,18 @@ class Component extends DCLogic {
         real.querySelectorAll('.gauge').forEach((g) => g.classList.add('in'));
       }));
     };
-    if (calm) { swap(); return; }
     let done = false;
     const io = new IntersectionObserver((es) => {
       if (done || !es.some((e) => e.isIntersecting)) return;
       done = true;
       io.disconnect();
       const t1 = setTimeout(() => {
-        fake.classList.add('glitching');
-        title.classList.add('glitching');
+        if (!calm) { fake.classList.add('glitching'); title.classList.add('glitching'); }
         const t2 = setTimeout(() => {
           swap();
           title.classList.remove('glitching');
           void title.offsetWidth;
-          title.classList.add('glitching');
-          real.classList.add('glitching');
+          if (!calm) { title.classList.add('glitching'); real.classList.add('glitching'); }
           const t3 = setTimeout(() => {
             title.classList.remove('glitching');
             real.classList.remove('glitching');
