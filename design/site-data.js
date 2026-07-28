@@ -18,6 +18,13 @@
 // Provenance: assist: { harness, model } on a project means keeper + AI together
 // (Me + AI stamps); add only: true for AI-built-solo (AI stamp alone); absent
 // means lit by hand (Me stamp alone). Pages render all three states.
+// repo: '<url>' on a project adds a "source →" link in the entry overlay's link
+// row; absent renders no link, and neither does a placeholder like '#'.
+// chart: { lat, lon, plate, cap } gives a light (or hobby, or journal entry) a berth on
+// TheChart.dc.html: lat/lon place the mark, plate picks a drawn stand-in plate (0-4, ignored
+// once a real print is dropped in the admin), cap is the plate's caption. Present here = the
+// mark appears; absent = the chart falls back to its own table, which is the last piece of
+// chart dressing the keeper's office does not own yet.
 window.ARGSEA_DATA = {
   // the keeper's journal · single source; Notes and Hello render it, the light
   // overlay reads a note out of the tower's log (project.notes ties by title)
@@ -185,6 +192,8 @@ window.ARGSEA_DATA = {
     { title: 'Meo Wave Race', cat: 'games', color: 'green', kind: 'flash', period: 4, est: '2020', status: 'dark', disco: '2020',
       desc: 'A cat/boat racing game for the CS50 final. The cat is the boat. Lit once, brilliantly, then retired.',
       tags: ['unity', 'c#', 'blender'],
+      repo: '#',
+      chart: { lat: 58.44, lon: -7.72, plate: 2, cap: 'The cat, mid-wave, undefeated.' },
       facts: [
         { k: 'made for', v: 'the CS50 final' },
         { k: 'scope', v: 'modeling, shaders, physics · one person' },
@@ -197,6 +206,8 @@ window.ARGSEA_DATA = {
     { title: 'This website', cat: 'this website', color: 'white', kind: 'iso', period: 3, est: '2026', status: 'lit',
       desc: "The light you're standing in. Its characteristic changes without notice, by order of the keeper.",
       tags: ['meta', 'html', 'whimsy'],
+      repo: '#',
+      chart: { lat: 58.2955, lon: -7.5310, plate: 1, cap: 'The lamp room. You are standing in it.' },
       assist: { harness: 'Claude Code', model: 'Opus 4.8' },
       facts: [
         { k: 'version', v: 'v2 of n, n unbounded' },
@@ -232,4 +243,18 @@ window.ARGSEA_DATA = {
       details2: 'It was decommissioned in 2025, capability by capability, until one night there was nothing left to turn off. No wake. The queue drained, the DNS flipped, and the coast got quieter.',
       moral: 'Moral: a good platform is measured by what it lets you turn off.' },
   ],
+  // the name, defined · the footer gag. edited in the keeper's office; the home
+  // page reads copy.dict (numbered senses) and copy.colophon (the sign-off line).
+  // chartCap: how many marks each group may print on TheChart. The office sets it;
+  // hundreds of lights would silt up the water.
+  chartCap: 40,
+  copy: {
+    dict: [
+      'the Argo! on the sea.',
+      'argc, C++.',
+      'a sea of water, or of stars.',
+      'informal: what a method signature becomes if I\u2019m not supervised.',
+    ],
+    colophon: 'The boat runs on a schedule. Ish',
+  },
 };
