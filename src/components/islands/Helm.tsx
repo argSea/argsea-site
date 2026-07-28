@@ -13,11 +13,10 @@
 // part of this port: it isn't named in the ported feature list and gazette.astro
 // is off limits to this slice.
 import { useEffect, useRef, useState } from 'react';
-import type { Hobby, Light, Note, Project } from '../../lib/api';
+import type { Hobby, HobbyState, Light, Note, Project } from '../../lib/api';
 import { loadFlares, recordFlare } from '../../lib/flares';
 import { DEFAULT_LIGHT, codeFor, timeline, type Timeline } from '../../lib/lightChar';
 import { sightFlare } from '../../lib/sightings';
-import { BERTHS, HOBBY_CODE, HOBBY_DRESSING, HOBBY_ICON, JOURNAL_BERTHS } from './helmBerths';
 import './Helm.css';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -134,12 +133,20 @@ function charFor(light: Light): { code: string; char: Timeline } {
 	return { code: codeFor(light), char: timeline(light) };
 }
 
+// The hobby state vocabulary: which glyph a state flies and what the rail
+// prints under its name. Design layer, like ICONS/MINI below, so it stays
+// page-local rather than riding in on the wire.
+const HOBBY_ICON: Record<HobbyState, string> = { moored: 'moored', adrift: 'adrift', marooned: 'marooned', port: 'port', inkspill: 'ink' };
+const HOBBY_CODE: Record<HobbyState, string> = { moored: 'moored', adrift: 'adrift', marooned: 'marooned', port: 'made port', inkspill: 'smudged' };
+
 function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[]): Mark[] {
 	const marks: Mark[] = [FIX_MARK, FLANNAN_MARK];
 
 	projects.forEach((p) => {
-		const berth = BERTHS[p.title];
-		if (!berth) {
+		// Charted means coord non-null, on every chartable: the placement rides
+		// on the record now, so a rename can't silently unberth a light the way
+		// the retired title-keyed tables let it.
+		if (!p.coord) {
 			return;
 		}
 		const c = charFor(p.light ?? DEFAULT_LIGHT);
@@ -149,11 +156,11 @@ function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[]): Mark[
 		}
 		marks.push({
 			id: 'p-' + slug(p.title), group: 'Projects', name: p.title, code: c.code,
-			lat: berth.lat, lon: berth.lon, char: c.char, plate: berth.plate, port: !!berth.port,
+			lat: p.coord.lat, lon: p.coord.lon, char: c.char, plate: p.plate,
 			// The mock's dim signal was p.status === 'dark' (its own demo data);
 			// the live contract's equivalent is a light that's been extinguished.
 			dim: !!p.light?.extinguished,
-			title: p.title, cap: berth.cap, body: [p.shortDesc], meta,
+			title: p.title, cap: p.cap, body: [p.shortDesc], meta,
 		});
 	});
 
@@ -163,7 +170,6 @@ function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[]): Mark[
 		if (!h.coord) {
 			return;
 		}
-		const dress = HOBBY_DRESSING[h.name] ?? { plate: 0, cap: h.bearing };
 		const meta: [string, string][] = [['Service', h.service], ['Seasons', h.seasons], ['Last log', h.lastLog], ['Still floats', h.floats], ['Odds', h.odds]];
 		// The mock's h.notes was a list of titles; the live contract ties notes
 		// by stable id (noteIds), so each id resolves to its real title here.
@@ -177,20 +183,19 @@ function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[]): Mark[
 			id: 'h-' + slug(h.name), group: 'Hobbies', name: h.name,
 			code: HOBBY_CODE[h.state], lat: h.coord.lat, lon: h.coord.lon, wreck: true,
 			dim: h.state !== 'moored' && h.state !== 'port', port: h.state === 'port',
-			icon: HOBBY_ICON[h.state], plate: dress.plate,
-			title: h.name, cap: dress.cap, body: [h.bearing, h.offCourse], meta,
+			icon: HOBBY_ICON[h.state], plate: h.plate,
+			title: h.name, cap: h.cap, body: [h.bearing, h.offCourse], meta,
 		});
 	});
 
 	notes.forEach((n) => {
-		const berth = JOURNAL_BERTHS[n.title];
-		if (!berth) {
+		if (!n.coord) {
 			return;
 		}
 		marks.push({
 			id: 'j-' + slug(n.title), group: 'Journal', name: n.title, code: n.date,
-			lat: berth.lat, lon: berth.lon, wreck: true, icon: 'bottle', plate: berth.plate,
-			title: n.title, cap: berth.cap, body: [n.teaser], meta: [['Filed', n.date]],
+			lat: n.coord.lat, lon: n.coord.lon, wreck: true, icon: 'bottle', plate: n.plate,
+			title: n.title, cap: n.cap, body: [n.teaser], meta: [['Filed', n.date]],
 		});
 	});
 
