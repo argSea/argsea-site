@@ -27,14 +27,33 @@ test('a kept watch renders the now panel: the letter signs itself, no sig elemen
 	await expect(now.locator('.now-head .tick')).toHaveText('A note from the keeper');
 	// the keeper signs his own work (2026-07-22 ruling): no component sig,
 	// the signature is whatever the letter's own content ends with
-	await expect(now.locator('.letter .sig')).toHaveCount(0);
-	await expect(now.locator('.letter p').first()).toContainText('ArcXP migration');
+	await expect(now.locator('.now-letter .sig')).toHaveCount(0);
+	await expect(now.locator('.now-letter p').first()).toContainText('ArcXP migration');
 	await expect(now.locator('.kept')).toHaveText('kept 15 jul');
 
 	// the mock watch still carries rotation/bearings on the wire; the imported
 	// round (design/Hello.dc.html) dropped both from the render
-	await expect(now.locator('.letter .aband')).toHaveCount(0);
+	await expect(now.locator('.now-letter .aband')).toHaveCount(0);
 	await expect(now.locator('.chips')).toHaveCount(0);
+});
+
+// The journal overlay ships on this page and its CSS import is global, so its
+// unscoped .letter rule (manila letter-paper, width:100%) paints anything here
+// carrying that name. The note's block hangs off the now card's name instead;
+// this pins the collision closed if either side reaches for `letter` again.
+test('the keeper note reads on the card, never on the overlay\'s letter-paper', async ({ page }) => {
+	await page.goto(`${FEATURED_BUILD}/`);
+
+	const letter = page.locator('.now .now-letter');
+	await expect(letter).toBeVisible();
+	await expect(page.locator('.now .letter')).toHaveCount(0);
+
+	const paint = await letter.evaluate((el) => {
+		const style = getComputedStyle(el);
+		return { color: style.backgroundColor, image: style.backgroundImage };
+	});
+	expect(paint.color).toBe('rgba(0, 0, 0, 0)');
+	expect(paint.image).toBe('none');
 });
 
 test('the hero headline stays fused above the now panel, never a standalone section of its own', async ({ page }) => {

@@ -239,7 +239,10 @@ const chartYears = projects.map((project) => project.firstLit);
 						<span class="tick">A note from the keeper</span>
 						{keptLine && <span class="kept">{keptLine}</span>}
 					</div>
-					<div class="letter">
+					{/* hangs off the now card's name, never the bare `letter`: the journal
+					    overlay ships on this page and its CSS import is global, so a bare
+					    `.letter` here takes the overlay's manila letter-paper. */}
+					<div class="now-letter">
 						{watchParagraphs.map((paragraph) => <p>{paragraph}</p>)}
 					</div>
 				</aside>
@@ -436,10 +439,6 @@ const chartYears = projects.map((project) => project.firstLit);
 			<div class="cta-doors rv" style="--d:.18s">
 				<a class="primary" href={`mailto:${keeper.email}`}>say hello →</a>
 				<a class="ghost" href="/projects">see the work first</a>
-			</div>
-			<div class="row rv" style="--d:.28s">
-				<a href="/">hello</a><a href="/projects">projects</a><a href="/hobbies">hobbies</a>
-				<a href="/notes">notes</a><a href="/resume.pdf">resume ↗</a>
 			</div>
 		</div>
 
@@ -1237,11 +1236,11 @@ const chartYears = projects.map((project) => project.firstLit);
 		color: var(--text-dim);
 	}
 
-	.letter {
+	.now-letter {
 		margin-top: 12px;
 	}
 
-	.letter p {
+	.now-letter p {
 		color: var(--text-body);
 		font-size: 13.5px;
 		line-height: 1.62;
@@ -1936,28 +1935,6 @@ const chartYears = projects.map((project) => project.firstLit);
 	.cta-doors .ghost:hover {
 		border-color: rgba(198, 160, 82, .6);
 		color: var(--text-nav);
-	}
-
-	.berth .row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 14px 30px;
-		align-items: baseline;
-		justify-content: center;
-		margin-top: clamp(30px, 5vh, 48px);
-		font-family: var(--font-mono);
-		font-size: 13px;
-	}
-
-	.berth .row a {
-		border-bottom: 1px solid rgba(147, 160, 232, .3);
-		padding-bottom: 2px;
-		transition: color .18s ease, border-color .18s ease;
-	}
-
-	.berth .row a:hover {
-		color: var(--text-nav);
-		border-color: var(--gold);
 	}
 
 	.sea {
