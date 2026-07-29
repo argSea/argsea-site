@@ -63,10 +63,15 @@ const MOCK_WATCH = {
 // on the one project no other spec's assertions depend on, proving the
 // null-guards hold end to end rather than only against the checked-in
 // fixtures (which always carry real arrays).
+//
+// Order 7 also carries the AI-alone provenance (`assist.only`), the one state
+// the shipped fixtures deliberately never claim: no real project of the
+// keeper's was built that way, and a false stamp is worse than an untested
+// branch. The mock is where the third built line gets proved.
 const projects = fixture('projects').map((project) => ({
 	...project,
 	featured: mode === 'featured' ? project.order >= 4 && project.order <= 6 : false,
-	...(project.order === 7 ? { facts: null, noteIds: null } : {}),
+	...(project.order === 7 ? { facts: null, noteIds: null, assist: { harness: 'Mock Harness', model: 'Mock Model', only: true } } : {}),
 }));
 
 // The fallback build also bolts carvings the shipped fixtures never do (they
@@ -141,6 +146,14 @@ const carvings = fixture('carvings').concat(mode === 'fallback' ? [{
 	boltedTo:  ['hero-doodle'],
 	createdAt: '2026-07-22T00:00:00Z',
 	updatedAt: '2026-07-22T00:00:00Z',
+}, {
+	id:        'mock-carving-ghost-tower',
+	name:      'Mock tower',
+	svg:       '<svg width="60" height="80" viewBox="0 0 60 80" fill="none"><rect x="20" y="12" width="20" height="56" fill="#7a83ad"></rect></svg>',
+	builtin:   false,
+	boltedTo:  ['ghost-light'],
+	createdAt: '2026-07-28T00:00:00Z',
+	updatedAt: '2026-07-28T00:00:00Z',
 }] : []);
 
 const routes = {

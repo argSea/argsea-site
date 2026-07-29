@@ -8,6 +8,7 @@ import type { Doodle, FigureheadDesign, Note, Project, WallPos } from '../../lib
 import { DEFAULT_LIGHT, codeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { pageCatPick } from '../../lib/catSpots';
 import { hasLampAnchor } from '../../lib/carvings';
+import { builtLine, builtTitle } from '../../lib/provenance';
 import { useLamp } from './useLamp';
 import LightEntryOverlay from './LightEntryOverlay';
 import BoltedSvg from './BoltedSvg';
@@ -402,6 +403,10 @@ function RegisterRow({ project, index, matches, hovered, onOpen, onHover, onUnho
 					<StatusPill dark={dark} year={light.extinguished} className="register__pill--mobile" />
 				</div>
 				<span className="register__desc" style={dark ? { color: '#767e9f' } : undefined}>{project.shortDesc}</span>
+				<span className="register__made" title={builtTitle(project.assist)}>
+					<span className="register__made-label">built</span>
+					<span className="register__made-value">{builtLine(project.assist)}</span>
+				</span>
 				<span className="register__mobile-char">{code} · est. {project.firstLit}</span>
 			</div>
 			<span className="register__code" style={{ color: dark ? '#7a83ad' : `rgb(${glow})` }}>{code}</span>

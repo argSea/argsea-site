@@ -397,53 +397,38 @@
 	font-style: italic;
 }
 
-/* --- provenance: a chip naming who lit this beacon (ProjectOverlay.dc.html) --- */
-.light-entry__provenance {
+/* --- provenance: the brass built row naming who lit this beacon (ProjectOverlay.dc.html) --- */
+.light-entry__made {
 	display: flex;
+	align-items: baseline;
+	gap: 11px;
 	padding: 4px 0 14px;
 }
 
-.light-entry__chip {
-	display: inline-flex;
-	align-items: center;
-	gap: 7px;
-	border-radius: 4px;
-	padding: 5px 10px;
-}
-
-.light-entry__chip--assist {
-	border: 1px solid rgba(127, 212, 168, .4);
-	background: rgba(127, 212, 168, .06);
-}
-
-.light-entry__chip--hand {
-	border: 1px solid rgba(240, 217, 168, .4);
-	background: rgba(240, 217, 168, .05);
-}
-
-.light-entry__chip-flame {
+.light-entry__made-label {
 	flex: none;
-}
-
-.light-entry__chip--assist .light-entry__chip-flame {
-	color: #7fd4a8;
-}
-
-.light-entry__chip--hand .light-entry__chip-flame {
-	color: #f0d9a8;
-}
-
-.light-entry__chip-text {
 	font-family: var(--font-mono);
 	font-size: 10.5px;
+	letter-spacing: .16em;
+	text-transform: uppercase;
+	color: #c6a052;
 }
 
-.light-entry__chip--assist .light-entry__chip-text {
-	color: #a9e5c5;
+.light-entry__made-value {
+	font-family: var(--font-body);
+	font-size: 14.5px;
+	font-style: italic;
+	line-height: 1.45;
+	color: #c8cef0;
 }
 
-.light-entry__chip--hand .light-entry__chip-text {
-	color: #e8d9b0;
+/* the dashed brass rule runs out from the line to the card edge, the mock's own tail */
+.light-entry__made-rule {
+	flex: 1;
+	min-width: 16px;
+	height: 1px;
+	align-self: center;
+	background: repeating-linear-gradient(90deg, rgba(198, 160, 82, .55) 0 4px, transparent 4px 9px);
 }
 
 /* --- the details column's link row: full log (caseStudy) + coast (home only) --- */

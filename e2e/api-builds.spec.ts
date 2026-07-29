@@ -64,3 +64,17 @@ test('a project with null facts/noteIds from the live API renders without crashi
 	await expect(overlay.locator('.light-entry__notes')).toHaveCount(0);
 	await expect(overlay.locator('.light-entry__nudge')).toBeVisible();
 });
+
+// The third provenance state, the one no shipped fixture claims: order 7 wears
+// `assist.only` in the mock, so the built line must read AI-alone rather than
+// collapsing into the AI-alongside wording (design/ProjectOverlay.dc.html).
+test('a light built by AI alone reads its own built line, in the register and in the entry', async ({ page }) => {
+	await page.goto(`${FEATURED_BUILD}/projects`);
+	const row = page.locator('#light-row-fixture-project-9');
+	await expect(row.locator('.register__made-value')).toHaveText('by Mock Harness, checked by hand');
+
+	await row.click();
+	const made = page.locator('.overlay-card .light-entry__made');
+	await expect(made.locator('.light-entry__made-value')).toHaveText('by Mock Harness, checked by hand');
+	await expect(made).toHaveAttribute('title', 'Mock Harness Mock Model');
+});

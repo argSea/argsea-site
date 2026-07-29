@@ -235,9 +235,14 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 						<span className="shipslog__plotted" style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', letterSpacing: '.12em', color: '#5f6ec4', textTransform: 'uppercase' }}>{plottedLine}</span>
 					</div>
 
-					<div data-chart="true" className="shipslog__chart" style={{ position: 'relative', height: 'clamp(430px,52vw,580px)', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(150,160,220,.22)', boxShadow: '0 18px 44px rgba(0,0,0,.45),inset 0 0 60px rgba(6,9,22,.6)', background: 'repeating-linear-gradient(0deg,rgba(147,160,232,.05) 0 1px,transparent 1px 74px),repeating-linear-gradient(90deg,rgba(147,160,232,.05) 0 1px,transparent 1px 74px),radial-gradient(120% 96% at 50% -6%,#17224c 0%,#0f1533 52%,#0a0e22 100%)' }}>
+					<div data-chart="true" className="shipslog__chart" style={{ position: 'relative', height: 'clamp(430px,52vw,580px)', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(198,160,82,.3)', boxShadow: '0 18px 44px rgba(0,0,0,.45),inset 0 0 60px rgba(6,9,22,.6)', background: 'repeating-linear-gradient(0deg,rgba(147,160,232,.05) 0 1px,transparent 1px 74px),repeating-linear-gradient(90deg,rgba(147,160,232,.05) 0 1px,transparent 1px 74px),radial-gradient(120% 96% at 50% -6%,#17224c 0%,#0f1533 52%,#0a0e22 100%)' }}>
 
 						<div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: .5, mixBlendMode: 'overlay', background: "url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22140%22%20height=%22140%22%3E%3Cfilter%20id=%22n%22%3E%3CfeTurbulence%20type=%22fractalNoise%22%20baseFrequency=%22.85%22%20numOctaves=%222%22/%3E%3CfeColorMatrix%20type=%22saturate%22%20values=%220%22/%3E%3C/filter%3E%3Crect%20width=%22140%22%20height=%22140%22%20filter=%22url(%23n)%22%20opacity=%22.5%22/%3E%3C/svg%3E')" }} />
+
+						{/* the coast itself · same land, same inks as the sea chart */}
+						<svg viewBox="0 0 100 60" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+							<path d="M74 60 q6 -13 17 -18 q7 -3 9 -12 V60 Z" fill="rgba(95,110,196,.13)" stroke="rgba(147,160,232,.28)" strokeWidth=".35" />
+						</svg>
 
 						{/* rhumb line network (portolan) */}
 						<svg viewBox="0 0 100 60" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', opacity: .5 }}>

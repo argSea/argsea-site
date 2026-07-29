@@ -38,6 +38,10 @@ export type CarvingSpot =
 	| 'gull'
 	| 'route-line'
 	| 'buoy'
+	// the ghost light standing over the shoals: the tower and its lamp pane are
+	// separate spots, since the pane is what guts and flickers on its own timing
+	| 'ghost-light'
+	| 'ghost-lamp'
 	// the phone-line tab bar (the hello tab rides lighthouse-logo)
 	| 'compass'
 	| 'notes-letter'
@@ -87,7 +91,12 @@ export function hasLampAnchor(svg: string | null): boolean {
 	return svg != null && svg.includes(LAMP_ANCHOR);
 }
 
-/** A raw svg string as a CSS `url('data:image/svg+xml,...')` value, for the two mounts (wave-line, boat-wake) that tile as a background rather than render inline. Full percent-encoding, unlike the built-ins' own hand-trimmed literals, since a bolted carving's content isn't ours to assume is URL-safe. */
+/** A raw svg string as a `data:image/svg+xml,...` URI, for the mounts that point at a file rather than render inline. Full percent-encoding, unlike the built-ins' own hand-trimmed literals, since a bolted carving's content isn't ours to assume is URL-safe. */
+export function svgDataUri(svg: string): string {
+	return `data:image/svg+xml,${encodeURIComponent(svg).replace(/'/g, '%27')}`;
+}
+
+/** A raw svg string as a CSS `url('data:image/svg+xml,...')` value, for the two mounts (wave-line, boat-wake) that tile as a background rather than render inline. */
 export function svgBackground(svg: string): string {
-	return `url('data:image/svg+xml,${encodeURIComponent(svg).replace(/'/g, '%27')}')`;
+	return `url('${svgDataUri(svg)}')`;
 }

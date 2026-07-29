@@ -292,7 +292,6 @@ class Component extends DCLogic {
       caseHref: p.caseStudy ? 'CaseStudy.dc.html?light=' + this.slug(p.title) : null,
       /* a placeholder like '#' is not a source: the link prints only for a real URL */
       repoHref: /^https?:\/\//.test(p.repo || '') ? p.repo : null,
-      hasStamp: !!p.assist,
       made: p.assist ? (p.assist.only
         ? 'by ' + (p.assist.harness || 'AI') + ', checked by hand'
         : 'by hand, with ' + (p.assist.harness || 'AI') + ' alongside') : 'by hand',

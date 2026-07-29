@@ -234,3 +234,23 @@ test('the 404 runs the chart-under-page ambience, and pins the path that ran it 
 	await expect(page.locator('.chart-wreck__kicker')).toHaveText('you ran aground at');
 	await expect(page.locator('.chart-wreck__path')).toHaveText('/404.html');
 });
+
+// The ghost light: the keeper's own tower standing off the shoals, its lamp
+// guttering on a 13s cycle (design/404.dc.html). Both halves ship as files.
+test('the 404 carries the ghost light, tower and lamp pane both', async ({ page }) => {
+	await page.goto('/404.html');
+	await expect(page.locator('.ghost__tower')).toHaveAttribute('src', '/lighthouse-art-clean.svg');
+	await expect(page.locator('.ghost__pane')).toHaveAttribute('src', '/lighthouse-lamp.svg');
+	await expect(page.locator('.ghost__halo')).toHaveCount(1);
+});
+
+test('reduced motion holds the ghost light steady instead of leaving it dark under a blazing halo', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/404.html');
+	for (const selector of ['.ghost__tower', '.ghost__pane', '.ghost__halo']) {
+		const running = await page.locator(selector).evaluate((el) => el.getAnimations().length);
+		expect(running).toBe(0);
+	}
+	await expect(page.locator('.ghost__pane')).toHaveCSS('opacity', '0.55');
+	await expect(page.locator('.ghost__halo')).toHaveCSS('opacity', '0.25');
+});

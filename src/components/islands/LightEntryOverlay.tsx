@@ -10,6 +10,7 @@ import type { Doodle, FigureheadDesign, Note, Project } from '../../lib/api';
 import { DEFAULT_LIGHT, codeFor, decodeFor, glowFor, registryNo } from '../../lib/lightChar';
 import { mediaUrl } from '../../lib/media';
 import { hasLampAnchor } from '../../lib/carvings';
+import { builtLine, builtTitle } from '../../lib/provenance';
 import { sightFlip, sightRead } from '../../lib/sightings';
 import { useLamp } from './useLamp';
 import { useEscapeKey } from './useEscapeKey';
@@ -160,14 +161,6 @@ export default function LightEntryOverlay({ project, notes = [], doodles = [], c
 	const showNudge = tiedNotes.length === 0 && !project.hasLog;
 	const facts = project.facts ?? [];
 
-	// The provenance chip's line (ProjectOverlay.dc.html's own ov.assistLine):
-	// absent assist means by hand; present means this text, harness/model
-	// joined and lowercased, regardless of the `only` flag (the mock never
-	// wears a different line for AI-alone vs. AI-assisted here either).
-	const assistLine = project.assist
-		? `this beacon was lit with the help of AI (${[project.assist.harness, project.assist.model].filter(Boolean).join(', ').toLowerCase()})`
-		: 'this beacon was lit by hand';
-
 	// Portaled to document.body so the backdrop sits in the root stacking
 	// context, same as HarborCatDirector's cat-mount, instead of being
 	// trapped under the cat inside .page's own context.
@@ -262,14 +255,10 @@ export default function LightEntryOverlay({ project, notes = [], doodles = [], c
 							</div>
 						)}
 
-						<div className="light-entry__provenance">
-							<span className={`light-entry__chip${project.assist ? ' light-entry__chip--assist' : ' light-entry__chip--hand'}`}>
-								<svg width="10" height="13" viewBox="0 0 10 13" fill="none" className="light-entry__chip-flame" aria-hidden="true">
-									<path d="M5 1 C6.8 3.2 8 4.8 8 7 a3 3 0 1 1 -6 0 C2 4.8 3.2 3.2 5 1 Z" fill="currentColor" opacity=".9" />
-									<path d="M2 12 h6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-								</svg>
-								<span className="light-entry__chip-text">{assistLine}</span>
-							</span>
+						<div className="light-entry__made" title={builtTitle(project.assist)}>
+							<span className="light-entry__made-label">built</span>
+							<span className="light-entry__made-value">{builtLine(project.assist)}</span>
+							<span className="light-entry__made-rule" aria-hidden="true" />
 						</div>
 
 						<div className="light-entry__cols">

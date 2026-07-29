@@ -41,9 +41,18 @@ test('the hero kicker and pitch read the copy singleton; the headline is the can
 	await expect(page.locator('.hero h1')).toContainText('behind the news.');
 	await expect(page.locator('.hero h1 br')).toHaveCount(1);
 	await expect(page.locator('.hero .pitch')).toContainText('29 services');
-	await expect(page.locator('.hero .doors a', { hasText: 'set sail' })).toHaveAttribute('href', '/helm');
-	// the imported round (design/Hello.dc.html) drops the hero's own "say hello" door
+	// the banked round makes the two doors unequal and moves the helm out of
+	// them onto the chart door below (design/Hello.dc.html)
+	await expect(page.locator('.hero .doors a.lead')).toHaveAttribute('href', '/resume.pdf');
+	await expect(page.locator('.hero .doors a.quiet')).toHaveAttribute('href', '/projects');
+	await expect(page.locator('.hero .doors a', { hasText: 'set sail' })).toHaveCount(0);
+	// the imported round drops the hero's own "say hello" door
 	await expect(page.locator('.hero .doors a', { hasText: 'say hello' })).toHaveCount(0);
+
+	const chartDoor = page.locator('.hero .chartdoor');
+	await expect(chartDoor).toHaveAttribute('href', '/helm');
+	await expect(chartDoor.locator('.cd-kick')).toHaveText('the sea chart');
+	await expect(chartDoor.locator('.cd-sub')).toContainText('Built for no reason at all.');
 });
 
 test('the fixtures build ships no watch: the headline stands, the now panel never renders', async ({ page }) => {
@@ -77,17 +86,17 @@ test('the flagship shot links into the light\'s own log', async ({ page }) => {
 	await expect(first.locator('.fulllog')).toHaveAttribute('href', `/projects/${flagshipFirst[0].slug}`);
 });
 
-test('the This-website flagship wears its assisted-by stamp, when it rides the flagship rows', async ({ page }) => {
-	// "This website" carries the canon assist (design/site-data.js), but under
-	// the current fixture order it isn't one of the top-3 flagship rows, and
-	// the register page wears no provenance chip yet (out of this fix's
-	// scope), so there's no rendered surface to assert against right now.
-	const onFlagship = flagTitles.includes('this website');
-	test.skip(!onFlagship, 'this website is order 5, outside the homepage\'s top-3 flagship rows, and the register carries no stamp yet: the stamp reaches no rendered surface under the current fixture');
-
+test('every flagship row wears its built line, and This website names its harness alongside the keeper', async ({ page }) => {
 	await page.goto('/');
+	// Canon prints a built row on every light, the by-hand ones included, so
+	// the count is the row count rather than the assisted subset.
+	await expect(page.locator('.flagship .made')).toHaveCount(flagTitles.length);
+
+	const onFlagship = flagTitles.includes('this website');
+	test.skip(!onFlagship, 'this website is order 5, outside the homepage\'s top-3 flagship rows: its assisted line reaches no rendered surface under the current fixture');
+
 	const row = page.locator('.flagship', { has: page.locator('.info b', { hasText: 'this website' }) });
-	await expect(row.locator('.tags .stamp')).toHaveText('assisted by opus 4.8');
+	await expect(row.locator('.made .val')).toHaveText('by hand, with Claude Code alongside');
 });
 
 test(`the journal shows its newest ${journalCount} entries`, async ({ page }) => {
