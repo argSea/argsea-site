@@ -249,9 +249,14 @@ const SHAPE_ATTRS: Record<string, string> = {
 function shapeMarkup(shape: FigureheadShape): string {
 	const attrs = Object.entries(shape)
 		.filter(([k, v]) => SHAPE_ATTRS[k] && v !== undefined)
-		.map(([k, v]) => `${SHAPE_ATTRS[k]}="${v}"`)
-		.join(' ');
-	return `<${shape.type} ${attrs}></${shape.type}>`;
+		.map(([k, v]) => `${SHAPE_ATTRS[k]}="${v}"`);
+	// origin is the one field that can't ride the attribute map: DoodleSvg writes
+	// it as a transform-origin in px, so parity means the same px pair here and
+	// not the raw comma-joined array a plain attribute would print.
+	if (shape.origin) {
+		attrs.push(`transform-origin="${shape.origin[0]}px ${shape.origin[1]}px"`);
+	}
+	return `<${shape.type} ${attrs.join(' ')}></${shape.type}>`;
 }
 const doodlePlate = (d: Doodle) =>
 	`<span class="sheet__doodle"><svg viewBox="${d.viewBox}" aria-hidden="true">${d.shapes.map(shapeMarkup).join('')}</svg></span>`;

@@ -86,6 +86,41 @@ test('the rail searches across every group and folds one group at a time', async
 	await expect(items).toHaveCount(railCount - chartedHobbies.length);
 });
 
+test('the chart is drawn on the ruled extent, south edge at 57.80', async ({ page }) => {
+	await page.goto('/helm');
+	// The plane's pixel height is the window's Mercator height: (mercY(58.70) -
+	// mercY(57.80)) * 710 px/degree. Pinning it numerically pins SOUTH, since
+	// nothing else feeds that number; the built island's old 57.95 gives 1014.
+	const plane = page.locator('#plane');
+	expect(await plane.evaluate((el) => (el as HTMLElement).offsetHeight)).toBe(1214);
+	expect(await plane.evaluate((el) => parseFloat((el as HTMLElement).style.marginTop))).toBeCloseTo(-607, 0);
+});
+
+test('a light\'s sheet sets its provenance in brass and links to its case log', async ({ page }) => {
+	await page.goto('/helm');
+
+	// Janus (fixture-project-10) carries an assist and no case log
+	const assisted = projects.find((p) => p.title === 'Janus')!;
+	await page.locator('.rail__item', { hasText: 'Janus' }).click();
+	await expect(page.locator('.sheet__built i')).toHaveText(`by hand, with ${assisted.assist!.harness} alongside`);
+	await expect(page.locator('.sheet__built')).toHaveAttribute('title', `${assisted.assist!.harness} ${assisted.assist!.model}`);
+	await expect(page.locator('.sheet__links a')).toHaveCount(0);
+
+	// the flagship (fixture-project-1) is by hand, and is the one fixture light
+	// with a published case log behind it
+	const byHand = projects.find((p) => p.id === 'fixture-project-1')!;
+	expect(byHand.assist).toBeUndefined();
+	await page.locator('.rail__item', { hasText: byHand.title }).click();
+	await expect(page.locator('.sheet__built i')).toHaveText('by hand');
+	await expect(page.locator('.sheet__links a')).toHaveAttribute('href', `/projects/${byHand.slug}`);
+});
+
+test('a hobby\'s sheet carries no provenance row: the built line is a light\'s own', async ({ page }) => {
+	await page.goto('/helm');
+	await page.locator('.rail__item', { hasText: 'The home lab' }).click();
+	await expect(page.locator('.sheet__built')).toHaveCount(0);
+});
+
 test('clicking a rail light sails the chart to it and opens its sheet', async ({ page }) => {
 	await page.goto('/helm');
 	const plane = page.locator('#plane');
