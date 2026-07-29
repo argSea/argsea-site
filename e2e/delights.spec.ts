@@ -235,6 +235,66 @@ test('the 404 runs the chart-under-page ambience, and pins the path that ran it 
 	await expect(page.locator('.chart-wreck__path')).toHaveText('/404.html');
 });
 
+// The low-tide sea (design/404.dc.html): three swell planes with the sand and
+// the furniture sandwiched between them. Depth is the whole delta, and depth is
+// exactly what an "it renders" assertion misses, so this reads the order out.
+//
+// The sequence is pinned rather than checked for sortedness: a layer that loses
+// its z-index computes 'auto', and a sortedness check reads that as NaN, which
+// slips through both a sort comparison and a uniqueness set. Pinned, a dropped
+// z-index is a mismatch.
+test('the shallows stack back water, sand, mid water, furniture, drifters, front water', async ({ page }) => {
+	await page.goto('/404.html');
+	const depth = async (selector: string) =>
+		Number(await page.locator(selector).first().evaluate((element) => getComputedStyle(element).zIndex));
+
+	const order = [];
+	for (const selector of ['.swell--back', '.sand', '.swell--mid', '.furniture', '.drifter', '.swell--front']) {
+		order.push(await depth(selector));
+	}
+	expect(order).toEqual([1, 2, 3, 4, 5, 7]);
+});
+
+// Reduced motion drops the pan, and a bottle whose position IS the pan would
+// pile up at the strip's left edge. Each one carries its resting spot as a base
+// `left` so the kill-switch parks it instead.
+test('reduced motion parks the drifting bottles across the shallows', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/404.html');
+
+	const drifters = page.locator('.drifter');
+	await expect(drifters).toHaveCount(3);
+
+	const lefts = await drifters.evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect().left));
+	expect(new Set(lefts).size).toBe(3);
+	for (const left of lefts) {
+		expect(left).toBeGreaterThan(0);
+	}
+});
+
+// The readout used to sit centered above the headline; canon pins it bottom
+// left in the scene, and the ruling closed the divergence canon-side.
+test('the run-aground readout sits in the scene\'s bottom left', async ({ page }) => {
+	await page.setViewportSize({ width: 1200, height: 800 });
+	await page.goto('/404.html');
+	const box = (await page.locator('.chart-wreck').boundingBox())!;
+	expect(box.x).toBeLessThan(600);
+	expect(box.y).toBeGreaterThan(400);
+});
+
+// The footer stands in the water: it takes the front swell's own fill, and that
+// swell's dashed crest is the waterline, so the footer's hairline has to go.
+test('the 404 footer stands in the water, with no hairline of its own', async ({ page }) => {
+	await page.goto('/404.html');
+	const footer = page.locator('.site-footer');
+	await expect(footer).toHaveCSS('background-color', 'rgb(17, 21, 43)');
+	await expect(footer).toHaveCSS('border-top-width', '0px');
+
+	// and nowhere else: the rule ships in the 404's own stylesheet
+	await page.goto('/');
+	await expect(page.locator('.site-footer')).toHaveCSS('border-top-width', '1px');
+});
+
 // The ghost light: the keeper's own tower standing off the shoals, its lamp
 // guttering on a 13s cycle (design/404.dc.html). Both halves ship as files.
 test('the 404 carries the ghost light, tower and lamp pane both', async ({ page }) => {
