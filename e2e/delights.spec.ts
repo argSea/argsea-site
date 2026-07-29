@@ -287,3 +287,32 @@ test('reduced motion holds the ghost light steady instead of leaving it dark und
 	await expect(page.locator('.ghost__pane')).toHaveCSS('opacity', '0.55');
 	await expect(page.locator('.ghost__halo')).toHaveCSS('opacity', '0.25');
 });
+
+// The boat cat's positive path. The hello pool is [watch(65), boat(35)] against
+// a running total, so a pinned 0.9 falls past the watch's 65 and lands the boat;
+// 0.1 lands the watch. Pinning it is the only way to see this spot at all: left
+// to chance it shows up on a third of loads, which is a flake, not a test.
+test('the pinned boat spot puts the cat aboard the tug, and only there', async ({ page }) => {
+	await page.addInitScript(() => { Math.random = () => 0.9; });
+	await page.goto('/');
+
+	const cat = page.locator('.boat-cat-mount .harbor-cat');
+	await expect(cat).toHaveCount(1);
+	await expect(page.locator('.watch-cat-mount')).toHaveCount(0);
+
+	// Both boxes read in one synchronous pass: the tug crosses on a 110s
+	// animation, so two separate measurements would be taken at two positions
+	// and the containment check would be comparing different moments.
+	const aboard = await page.evaluate(() => {
+		const boat = document.querySelector('.boat')!.getBoundingClientRect();
+		const cat = document.querySelector('.boat-cat-mount')!.getBoundingClientRect();
+		return cat.left >= boat.left - 1 && cat.right <= boat.right + 1 && cat.bottom <= boat.bottom + 1;
+	});
+	expect(aboard).toBe(true);
+});
+
+test('the pinned watch spot leaves the tug empty', async ({ page }) => {
+	await page.addInitScript(() => { Math.random = () => 0.1; });
+	await page.goto('/');
+	await expect(page.locator('.boat-cat-mount .harbor-cat')).toHaveCount(0);
+});

@@ -17,7 +17,7 @@
 // mock's and survives as defensive tie-breaking.
 import { useEffect, useState } from 'react';
 import type { Doodle, Hobby, Note, Project } from '../../lib/api';
-import { STATE_META, fmtCoord, pillStyle } from '../../lib/bearings';
+import { STATE_META, fmtCoord, paperPillStyle } from '../../lib/bearings';
 import JournalEntryOverlay from './JournalEntryOverlay';
 import LightEntryOverlay from './LightEntryOverlay';
 
@@ -131,34 +131,36 @@ export default function HomeOverlayDirector({ projects, notes, doodles, hobbies,
 }
 
 /**
- * The home page's bearing card (Hello.dc.html): the wandering chart's card
- * without the chart's own apparatus. No flare (the flare belongs to the chart
- * that tracks the hobby), no perched cat, and a real link out to the chart
- * instead, which is the one thing this card has that the chart's does not.
+ * The home page's bearing card, transcribed from Hello.dc.html's own block
+ * rather than adapted from the wandering chart's, which is a different card
+ * with different inks even where the structure rhymes. No flare (the flare
+ * belongs to the chart that tracks the hobby) and no perched cat; it keeps the
+ * keeper's sign-off and adds the standalone link out to the chart, the one
+ * thing this card has that the chart's own does not.
  */
 function BearingCard({ hobby, notes, onOpenNote, onClose }: { hobby: Hobby; notes: Note[]; onOpenNote: (note: Note) => void; onClose: () => void }) {
 	return (
 		<div className="bearing-card__backdrop" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(8,10,20,.72)', backdropFilter: 'blur(5px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(14px,4vw,40px)', animation: 'backdropIn .25s ease both' }}>
 			<div className="bearing-card" onClick={(event) => event.stopPropagation()} style={{ position: 'relative', width: 'min(620px,100%)', animation: 'cardIn .35s ease both' }}>
-				<div style={{ maxHeight: '86vh', overflow: 'auto', background: 'linear-gradient(180deg,#f1ecdd,#eae3d1)', borderRadius: '6px 12px 12px 6px', boxShadow: '0 30px 80px rgba(0,0,0,.6)' }}>
+				<div style={{ maxHeight: '90vh', overflow: 'auto', scrollbarWidth: 'thin', scrollbarColor: 'rgba(110,100,75,.45) transparent', background: 'linear-gradient(180deg,#f1ecdd,#eae3d1)', borderRadius: '6px 12px 12px 6px', boxShadow: '0 30px 80px rgba(0,0,0,.6),inset 0 -16px 20px -16px rgba(60,50,30,.5)' }}>
 					<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', padding: '16px clamp(20px,4vw,30px)', borderBottom: '1.5px dashed rgba(110,100,75,.35)' }}>
-						<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11.5px', letterSpacing: '.14em', color: '#8a7f63', textTransform: 'uppercase' }}>Last known bearing</span>
-						<button type="button" className="bearing-card__close" onClick={onClose} style={{ cursor: 'pointer', fontFamily: "'IBM Plex Mono', monospace", fontSize: '12.5px', color: '#7d7357', padding: '5px 11px', border: '1px solid rgba(110,100,75,.4)', borderRadius: '999px', background: 'none', transition: 'all .2s' }}>close ✕</button>
+						<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11.5px', letterSpacing: '.14em', color: '#6b6248', textTransform: 'uppercase' }}>Last known bearing</span>
+						<button type="button" className="bearing-card__close" onClick={onClose} style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '7px', whiteSpace: 'nowrap', fontFamily: "'IBM Plex Mono', monospace", fontSize: '12.5px', color: '#625a42', padding: '5px 11px', border: '1px solid rgba(110,100,75,.4)', borderRadius: '999px', background: 'none', transition: 'all .2s' }}>close ✕</button>
 					</div>
 					<div style={{ padding: 'clamp(22px,4vw,32px)', display: 'flex', flexDirection: 'column', gap: '14px' }}>
 						<div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' }}>
 							<span className="bearing-card__name" style={{ fontFamily: "'Gloock', serif", fontSize: 'clamp(23px,3.8vw,28px)', color: '#20233c' }}>{hobby.name}</span>
-							<span style={pillStyle(hobby.state, true)}>{STATE_META[hobby.state].label}</span>
+							<span style={paperPillStyle(hobby.state)}>{STATE_META[hobby.state].label}</span>
 						</div>
 						<div style={{ fontSize: '16px', fontStyle: 'italic', lineHeight: 1.65, color: '#3b3f5e', borderLeft: '2px solid rgba(110,100,75,.3)', paddingLeft: '14px' }}>{hobby.lastLog}</div>
 						<div style={{ display: 'grid', gridTemplateColumns: 'max-content 1fr', gap: '10px 16px', fontSize: '15px', lineHeight: 1.55, color: '#3b3f5e', alignItems: 'baseline' }}>
-							<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase' }}>how it went off course</span><span>{hobby.offCourse}</span>
-							<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase' }}>what still floats</span><span>{hobby.floats}</span>
-							<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase' }}>odds of return</span><span style={{ color: '#6a5a2a' }}>{hobby.odds}</span>
+							<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#6b6248', textTransform: 'uppercase' }}>how it went off course</span><span>{hobby.offCourse}</span>
+							<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#6b6248', textTransform: 'uppercase' }}>what still floats</span><span>{hobby.floats}</span>
+							<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#6b6248', textTransform: 'uppercase' }}>odds of return</span><span style={{ color: '#6a5a2a' }}>{hobby.odds}</span>
 						</div>
 						{notes.length > 0 && (
 							<div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', borderTop: '1.5px dashed rgba(110,100,75,.3)', paddingTop: '12px' }}>
-								<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase', flex: 'none' }}>logged in the journal</span>
+								<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#6b6248', textTransform: 'uppercase', flex: 'none' }}>logged in the journal</span>
 								<div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
 									{notes.map((note) => (
 										<button key={note.id} type="button" title="read the entry" className="bearing-card__note-link" onClick={() => onOpenNote(note)} style={{ fontFamily: "'Newsreader', serif", fontSize: '15px', fontStyle: 'italic', color: '#6b6390', lineHeight: 1.45, cursor: 'pointer', transition: 'color .2s', background: 'none', border: 'none', padding: 0, textAlign: 'left' }}>✷ {note.title} →</button>
@@ -167,9 +169,10 @@ function BearingCard({ hobby, notes, onOpenNote, onClose }: { hobby: Hobby; note
 							</div>
 						)}
 						<div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', borderTop: '1.5px dashed rgba(110,100,75,.3)', paddingTop: '12px' }}>
-							<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', color: '#a39876' }}>position · {hobby.coord ? fmtCoord(hobby.coord) : 'uncharted'} · logged {hobby.service}</span>
-							<a className="bearing-card__chart-link" href={`/hobbies?bearing=${encodeURIComponent(hobby.name)}`} style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: '#8a6d3b' }}>see it on the wandering chart →</a>
+							<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', color: '#6b6248' }}>position · {hobby.coord ? fmtCoord(hobby.coord) : 'uncharted'} · logged {hobby.service}</span>
+							<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: '#6a5a2a' }}>- the keeper, still hoping</span>
 						</div>
+						<a className="bearing-card__chart-link" href={`/hobbies?bearing=${encodeURIComponent(hobby.name)}`} style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: '#6b6390' }}>see it on the wandering chart →</a>
 					</div>
 				</div>
 			</div>

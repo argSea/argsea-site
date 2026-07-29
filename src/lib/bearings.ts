@@ -34,7 +34,31 @@ export function fmtCoord(c: Coord): string {
 	return dm(c.lat, 'N', 'S') + ' ' + dm(c.lon, 'E', 'W');
 }
 
-/** The state pill. `on` brightens it for a card over a backdrop; moored alone wears a dashed border. */
+// The same five states in paper inks. A bearing card is cream, not open water,
+// so the pill below washes out on it: these are the mock's own hobbyMeta values
+// (design/Hello.dc.html), dark enough to sit on paper. A second palette rather
+// than a lightness flag on the first, because the hues move too and not just
+// the value: moored goes brass-on-cream where the chart has lamp-gold-on-navy.
+const PAPER_META: Record<HobbyState, { c: string; ink: string }> = {
+	moored:   { c: '150,120,40', ink: '#6b5518' },
+	adrift:   { c: '90,100,170', ink: '#3d4680' },
+	marooned: { c: '90,100,170', ink: '#3d4680' },
+	port:     { c: '60,120,90',  ink: '#2c6446' },
+	inkspill: { c: '90,95,140',  ink: '#464b74' },
+};
+
+/** The state pill as it paints on a paper card. Moored alone wears a dashed border, same as the chart's. */
+export function paperPillStyle(state: HobbyState): CSSProperties {
+	const m = PAPER_META[state];
+	return {
+		fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.1em', textTransform: 'uppercase',
+		padding: '3px 10px', borderRadius: '999px', whiteSpace: 'nowrap', flex: 'none',
+		color: m.ink, border: `1px ${state === 'moored' ? 'dashed' : 'solid'} rgba(${m.c},0.5)`,
+		background: `rgba(${m.c},0.12)`,
+	};
+}
+
+/** The state pill over the chart's dark water. `on` brightens it for a card over a backdrop; moored alone wears a dashed border. */
 export function pillStyle(state: HobbyState, on: boolean): CSSProperties {
 	const m = STATE_META[state];
 	return {

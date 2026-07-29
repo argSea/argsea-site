@@ -2010,7 +2010,11 @@ const chartYears = projects.map((project) => project.firstLit);
 		to   { transform: translateX(105vw); }
 	}
 
+	/* The cat rides inside the boat, absolutely, so the boat has to be what it
+	   positions against. BottleBoat.css happens to set this too, but that rule
+	   belongs to the pokeable boat this page never renders. */
 	.boat {
+		position: relative;
 		display: block;
 	}
 
