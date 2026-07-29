@@ -64,3 +64,30 @@ test('a project with null facts/noteIds from the live API renders without crashi
 	await expect(overlay.locator('.light-entry__notes')).toHaveCount(0);
 	await expect(overlay.locator('.light-entry__nudge')).toBeVisible();
 });
+
+// The third provenance state, the one no shipped fixture claims: order 7 wears
+// `assist.only` in the mock, so the built line must read AI-alone rather than
+// collapsing into the AI-alongside wording (design/ProjectOverlay.dc.html).
+test('a light built by AI alone reads its own built line, in the register and in the entry', async ({ page }) => {
+	await page.goto(`${FEATURED_BUILD}/projects`);
+	const row = page.locator('#light-row-fixture-project-9');
+	await expect(row.locator('.register__made-value')).toHaveText('by Mock Harness, checked by hand');
+
+	await row.click();
+	const made = page.locator('.overlay-card .light-entry__made');
+	await expect(made.locator('.light-entry__made-value')).toHaveText('by Mock Harness, checked by hand');
+	await expect(made).toHaveAttribute('title', 'Mock Harness Mock Model');
+});
+
+// A copy document from before the chart door existed: the fallback mock serves
+// no chartDoor fields at all, and the door still reads its approved design copy
+// (the stores/gazette shape). Note this proves the behavior, not which of the
+// two layers supplied it: api.ts's fixture backfill runs first and would cover
+// this on its own, and the consumer fallback is what holds if the field is ever
+// dropped from the fixture too.
+test('with no chart-door copy on the wire the door still reads its design copy', async ({ page }) => {
+	await page.goto(`${FALLBACK_BUILD}/`);
+	const chartDoor = page.locator('.hero .chartdoor');
+	await expect(chartDoor.locator('.cd-kick')).toHaveText('the sea chart');
+	await expect(chartDoor.locator('.cd-sub')).toContainText('Built for no reason at all.');
+});

@@ -97,6 +97,21 @@ test('a bolted buoy without the lamp anchor swaps the shape and holds the blink 
 	expect(running).toBe(0);
 });
 
+test('a bolted carving reaches the 404\'s ghost light: the tower swaps to the carved shape, its lamp pane stays built-in', async ({ page }) => {
+	await page.goto(`${FALLBACK_BUILD}/404.html`);
+
+	// Both halves mount as files rather than inline drawings, so a swap shows
+	// up in the src, not in the child elements.
+	const tower = page.locator('.ghost__tower');
+	await expect(tower).toHaveAttribute('data-bolted', 'ghost-light');
+	expect(await tower.getAttribute('src')).toContain('data:image/svg+xml,');
+
+	// Nothing is bolted over the lamp pane, so it keeps pointing at the file
+	const pane = page.locator('.ghost__pane');
+	expect(await pane.getAttribute('data-bolted')).toBeNull();
+	await expect(pane).toHaveAttribute('src', '/lighthouse-lamp.svg');
+});
+
 test('a bolted carving reaches the tab bar below the phone line: the notes letter swaps to the carved dot', async ({ page }) => {
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto(`${FALLBACK_BUILD}/`);

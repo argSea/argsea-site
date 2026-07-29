@@ -654,6 +654,29 @@
 	text-wrap: pretty;
 }
 
+/* the maker's line, the register's one fact set in brass (design/Projects.dc.html) */
+.register__made {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 7px;
+	white-space: nowrap;
+}
+
+.register__made-label {
+	font-family: var(--font-mono);
+	font-size: 9px;
+	letter-spacing: .16em;
+	text-transform: uppercase;
+	color: #c6a052;
+}
+
+.register__made-value {
+	font-family: var(--font-body);
+	font-size: 12.5px;
+	font-style: italic;
+	color: #8f9be0;
+}
+
 .register__mobile-char {
 	display: none;
 	font-family: var(--font-mono);

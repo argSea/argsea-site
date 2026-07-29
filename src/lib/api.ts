@@ -293,6 +293,8 @@ export interface SiteCopy {
 	heroKicker:     string;
 	heroHeadline:   string;
 	heroBody:       string;
+	chartDoorKick?: string;      // the hero's chart door, kicker and blurb; absent → the approved design copy, like every other empty field
+	chartDoorBody?: string;
 	dict:           string;
 	stores?:        StoreDrawer[] | null; // the tool bench's drawers (≤4); absent/empty → the home page's approved design copy
 	eggs:           EggToggles;

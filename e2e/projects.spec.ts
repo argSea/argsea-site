@@ -288,25 +288,25 @@ test('the footer carries the argsea definition', async ({ page }) => {
 	await expect(definition).toContainText(siteCopy.dict);
 });
 
-test('the provenance chip names the harness for an assisted light, and reads "by hand" for one without', async ({ page }) => {
+test('the built row names the harness alongside the keeper for an assisted light, and reads "by hand" for one without', async ({ page }) => {
 	await page.goto('/projects');
 
-	// "This website" (fixture-project-4) carries the fixture assist
+	// "This website" carries the fixture assist, without `only`
 	const assisted = projects.find((project) => project.title === 'This website')!;
+	await expect(page.locator(`#light-row-${assisted.id} .register__made-value`))
+		.toHaveText(`by hand, with ${assisted.assist!.harness} alongside`);
 	await page.locator(`#light-row-${assisted.id}`).click();
-	const assistedChip = page.locator('.overlay-card .light-entry__chip');
-	await expect(assistedChip).toHaveClass(/light-entry__chip--assist/);
-	await expect(assistedChip.locator('.light-entry__chip-text')).toHaveText(
-		`this beacon was lit with the help of AI (${[assisted.assist!.harness, assisted.assist!.model].filter(Boolean).join(', ').toLowerCase()})`,
-	);
+	const assistedRow = page.locator('.overlay-card .light-entry__made');
+	await expect(assistedRow.locator('.light-entry__made-value'))
+		.toHaveText(`by hand, with ${assisted.assist!.harness} alongside`);
+	await expect(assistedRow).toHaveAttribute('title', `${assisted.assist!.harness} ${assisted.assist!.model}`);
 	await page.keyboard.press('Escape');
 	await expect(page.locator('.overlay-card')).toHaveCount(0);
 
 	// the flagship (fixture-project-1) carries no assist
 	const byHand = projects.find((project) => project.id === 'fixture-project-1')!;
 	expect(byHand.assist).toBeUndefined();
+	await expect(page.locator(`#light-row-${byHand.id} .register__made-value`)).toHaveText('by hand');
 	await page.locator(`#light-row-${byHand.id}`).click();
-	const handChip = page.locator('.overlay-card .light-entry__chip');
-	await expect(handChip).toHaveClass(/light-entry__chip--hand/);
-	await expect(handChip.locator('.light-entry__chip-text')).toHaveText('this beacon was lit by hand');
+	await expect(page.locator('.overlay-card .light-entry__made-value')).toHaveText('by hand');
 });

@@ -234,3 +234,56 @@ test('the 404 runs the chart-under-page ambience, and pins the path that ran it 
 	await expect(page.locator('.chart-wreck__kicker')).toHaveText('you ran aground at');
 	await expect(page.locator('.chart-wreck__path')).toHaveText('/404.html');
 });
+
+// The ghost light: the keeper's own tower standing off the shoals, its lamp
+// guttering on a 13s cycle (design/404.dc.html). Both halves ship as files.
+test('the 404 carries the ghost light, tower and lamp pane both', async ({ page }) => {
+	await page.goto('/404.html');
+	await expect(page.locator('.ghost__tower')).toHaveAttribute('src', '/lighthouse-art-clean.svg');
+	await expect(page.locator('.ghost__pane')).toHaveAttribute('src', '/lighthouse-lamp.svg');
+	await expect(page.locator('.ghost__halo')).toHaveCount(1);
+});
+
+// The three assertions above are all attribute-level, and attribute-level tests
+// stayed green through a round where the ghost never painted at all: every
+// ambient layer on this page sits at z-index -1, so without `isolation: isolate`
+// on .shallows the whole thing renders behind the page's own background. This
+// one samples pixels instead. Reduced motion freezes the ghost at its resting
+// pose, so the only variable left is whether it paints.
+test('the ghost light actually paints: its box changes when the ghost is taken away', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.setViewportSize({ width: 1200, height: 800 });
+	await page.goto('/404.html');
+
+	// Everything else in this corner arrives on its own JS schedule (a bottle
+	// drifting in, the cat picking its spot, the chart canvas painting), and any
+	// of it landing between the two shots would read as a difference the ghost
+	// did not cause. Reduced motion stills their animation but not their arrival,
+	// so they stand down and the control is the bare page background: exactly
+	// what the ghost renders behind when the stacking context is missing.
+	await page.addStyleTag({ content: '#window-scape, .bottle-drift, .bottle-drop, .cat-mount, .harbor-cat { display: none !important; }' });
+
+	const ghost = page.locator('.ghost');
+	const clip = (await ghost.boundingBox())!;
+	expect(clip.width).toBeGreaterThan(0);
+
+	// Twice with nothing changed: if these two differ the page is not stable
+	// enough for the comparison below to mean anything.
+	const painted = await page.screenshot({ clip });
+	expect(await page.screenshot({ clip })).toEqual(painted);
+
+	await ghost.evaluate((el: HTMLElement) => { el.style.display = 'none'; });
+	const withoutGhost = await page.screenshot({ clip });
+	expect(painted.equals(withoutGhost)).toBe(false);
+});
+
+test('reduced motion holds the ghost light steady instead of leaving it dark under a blazing halo', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/404.html');
+	for (const selector of ['.ghost__tower', '.ghost__pane', '.ghost__halo']) {
+		const running = await page.locator(selector).evaluate((el) => el.getAnimations().length);
+		expect(running).toBe(0);
+	}
+	await expect(page.locator('.ghost__pane')).toHaveCSS('opacity', '0.55');
+	await expect(page.locator('.ghost__halo')).toHaveCSS('opacity', '0.25');
+});

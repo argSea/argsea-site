@@ -1,9 +1,12 @@
 ---
 // 404: run aground. Centered "Notice to Mariners" copy above the grounded
 // scene: the listing boat on a sand-toned shoal, a warning buoy, a circling
-// gull, and two layers of choppy water. No lighthouse beam (cut by design
-// ruling, don't reintroduce it). The placard's "last position" is the light
-// list egg; the harbor cat heckles from the placard's top edge. Astro emits
+// gull, two layers of choppy water, and the ghost light standing off to the
+// right (design/404.dc.html): the keeper's own tower, barely there, its lamp
+// guttering. Still no sweeping beam (cut by design ruling, don't reintroduce
+// it); the ghost light never reaches past its own glass. The placard's "last
+// position" is the light list egg; the harbor cat heckles from the placard's
+// top edge. Astro emits
 // this as dist/404.html; serving it for unknown routes is nginx config at
 // cutover.
 //
@@ -17,18 +20,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import LightList from '../components/islands/LightList';
 import BottleBoat from '../components/islands/BottleBoat';
 import { getSiteCopy, getCarvings } from '../lib/api';
-import { boltedSvg, innerMarkup } from '../lib/carvings';
+import { boltedSvg, innerMarkup, svgDataUri } from '../lib/carvings';
 
 const copy = await getSiteCopy();
 const lighthouses = copy.eggs.lights ? copy.lighthouses : [];
 
-// This page's three carving spots: the gull, the route line, the buoy. The
-// wreck stays carved in place (salvage rights unresolved).
+// This page's carving spots: the gull, the route line, the buoy, and the ghost
+// light's two halves. The wreck stays carved in place (salvage rights
+// unresolved).
 const carvings = await getCarvings();
 const gullSvg = boltedSvg('gull', carvings);
 const routeSvg = boltedSvg('route-line', carvings);
 const buoySvg = boltedSvg('buoy', carvings);
 const bottleSvg = boltedSvg('bottle', carvings);
+
+// The ghost light's two halves mount as files, not inline drawings: the tower
+// is 400KB of path data and belongs in the cache rather than in every copy of
+// this page. A bolted carving rides the same mount as a data URI.
+const ghostLightSvg = boltedSvg('ghost-light', carvings);
+const ghostLampSvg = boltedSvg('ghost-lamp', carvings);
 
 // The smuggler's cove gate, same rule index.astro reads it by: an emptied
 // proverb list (or the egg off) leaves the sea quiet.
@@ -46,6 +56,13 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 		<div class="firefly ff-1"></div>
 		<div class="firefly ff-2"></div>
 		<div class="firefly ff-3"></div>
+
+		<!-- the light, still burning over the shoals · the keeper's own drawing -->
+		<div class="ghost" aria-hidden="true">
+			<img class="ghost__tower" src={ghostLightSvg ? svgDataUri(ghostLightSvg) : '/lighthouse-art-clean.svg'} alt="" data-bolted={ghostLightSvg ? 'ghost-light' : undefined} />
+			<img class="ghost__pane" src={ghostLampSvg ? svgDataUri(ghostLampSvg) : '/lighthouse-lamp.svg'} alt="" data-bolted={ghostLampSvg ? 'ghost-lamp' : undefined} />
+			<div class="ghost__halo"></div>
+		</div>
 
 		<div class="gull">
 			<svg width="26" height="10" viewBox="0 0 26 10" fill="none" data-bolted={gullSvg ? 'gull' : undefined}>
@@ -268,8 +285,15 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 </script>
 
 <style>
+	/*
+	 * isolation: isolate is load-bearing, not tidiness. Every ambient layer on
+	 * this page sits at z-index -1, and without a stacking context of its own
+	 * that means "behind the page's own background" rather than "behind the
+	 * copy": the ghost light paints under the body gradient and is never seen.
+	 */
 	.shallows {
 		position: relative;
+		isolation: isolate;
 		flex: 1;
 		display: flex;
 		flex-direction: column;
@@ -338,6 +362,117 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 	.ff-1 { left: 16%;  top: 14%; width: 4px; height: 4px; background: var(--gold);       box-shadow: 0 0 12px 3px rgba(240, 217, 168, .3);  animation: drift 12s ease-in-out infinite; }
 	.ff-2 { right: 18%; top: 22%; width: 3px; height: 3px; background: var(--periwinkle); box-shadow: 0 0 10px 3px rgba(147, 160, 232, .3);  animation: drift 15s ease-in-out 2s infinite; }
 	.ff-3 { left: 30%;  top: 26%; width: 3px; height: 3px; background: var(--periwinkle); box-shadow: 0 0 10px 3px rgba(147, 160, 232, .25); animation: drift 10s ease-in-out 1s infinite; }
+
+	/* ---------- the ghost light (design/404.dc.html) ---------- */
+
+	/*
+	 * The tower, the lamp pane and the halo all run the same 13s cycle, so the
+	 * pane's guttering and the halo's bloom land on the same beats: the tower
+	 * only breathes, the pane does the actual guttering, and the halo follows
+	 * it a step behind. Aspect ratio is the art's own 1533x2014.
+	 */
+	.ghost {
+		position: absolute;
+		right: 4%;
+		bottom: -2%;
+		z-index: -1;
+		height: 78%;
+		max-height: 560px;
+		aspect-ratio: 1533 / 2014;
+		pointer-events: none;
+	}
+
+	.ghost__tower {
+		display: block;
+		width: 100%;
+		height: 100%;
+		opacity: .11;
+		mask-image: linear-gradient(180deg, black 62%, transparent 96%);
+		-webkit-mask-image: linear-gradient(180deg, black 62%, transparent 96%);
+		animation: ghostBreathe 13s linear infinite;
+	}
+
+	.ghost__pane {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		filter: drop-shadow(0 0 6px rgba(240, 217, 168, .8));
+		animation: paneFlicker 13s linear infinite;
+	}
+
+	.ghost__halo {
+		position: absolute;
+		left: 50.4%;
+		top: 17%;
+		width: 34%;
+		aspect-ratio: 1;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		background: radial-gradient(circle, rgba(240, 217, 168, .4), rgba(240, 217, 168, .1) 45%, transparent 70%);
+		filter: blur(12px);
+		animation: ghostLamp 13s linear infinite;
+	}
+
+	@keyframes ghostBreathe {
+		0%, 100% { opacity: .09; }
+		3%, 6%   { opacity: .14; }
+		11%      { opacity: .1; }
+		34%      { opacity: .13; }
+		42%      { opacity: .09; }
+		60%      { opacity: .11; }
+		87%, 90% { opacity: .145; }
+		93%      { opacity: .09; }
+	}
+
+	@keyframes paneFlicker {
+		0%, 2.9%     { opacity: 0; }
+		3%, 4.4%     { opacity: .85; }
+		4.5%, 5.9%   { opacity: .1; }
+		6%, 10.9%    { opacity: 1; }
+		11%, 12.9%   { opacity: .15; }
+		13%, 33.9%   { opacity: 0; }
+		34%, 36.4%   { opacity: .7; }
+		36.5%, 37.4% { opacity: 0; }
+		37.5%, 38.9% { opacity: .9; }
+		39%, 39.9%   { opacity: .05; }
+		40%, 41.9%   { opacity: .75; }
+		42%, 59.9%   { opacity: 0; }
+		60%, 64.9%   { opacity: .3; }
+		65%, 67.9%   { opacity: .25; }
+		68%, 69.9%   { opacity: .3; }
+		70%, 86.9%   { opacity: 0; }
+		87%, 89.4%   { opacity: 1; }
+		89.5%, 89.9% { opacity: .1; }
+		90%, 92.9%   { opacity: .95; }
+		93%, 100%    { opacity: 0; }
+	}
+
+	/*
+	 * The kill-switch only stops animations, so the pane and the halo would
+	 * otherwise rest on their own declared opacity: a dark pane under a halo at
+	 * full strength. Rest them both mid-cycle instead, and the light just holds
+	 * steady rather than guttering.
+	 */
+	@media (prefers-reduced-motion: reduce) {
+		.ghost__pane { opacity: .55; }
+		.ghost__halo { opacity: .25; }
+	}
+
+	@keyframes ghostLamp {
+		0%, 2.9%   { opacity: 0; }
+		3%, 5.9%   { opacity: .35; }
+		6%, 10.9%  { opacity: .45; }
+		11%, 12.9% { opacity: .08; }
+		13%, 33.9% { opacity: 0; }
+		34%, 41.9% { opacity: .3; }
+		42%, 59.9% { opacity: 0; }
+		60%, 69.9% { opacity: .12; }
+		70%, 86.9% { opacity: 0; }
+		87%, 92.9% { opacity: .42; }
+		93%, 100%  { opacity: 0; }
+	}
 
 	.gull {
 		position: absolute;
