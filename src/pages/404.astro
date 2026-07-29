@@ -1,10 +1,11 @@
 ---
-// 404: run aground. Centered "Notice to Mariners" copy above the grounded
-// scene: the listing boat on a sand-toned shoal, a warning buoy, a circling
-// gull, two layers of choppy water, and the ghost light standing off to the
-// right (design/404.dc.html): the keeper's own tower, barely there, its lamp
-// guttering. Still no sweeping beam (cut by design ruling, don't reintroduce
-// it); the ghost light never reaches past its own glass. The placard's "last
+// 404: run aground at low tide. Centered "Notice to Mariners" copy above the
+// grounded scene: the listing boat on a sand-toned shoal, a warning buoy, a
+// circling gull, a full-bleed sea of three swell planes, and the ghost light
+// standing off to the right (design/404.dc.html): the keeper's own tower,
+// barely there, its lamp guttering. Still no sweeping beam (cut by design
+// ruling, don't reintroduce it); the ghost light never reaches past its own
+// glass. The placard's "last
 // position" is the light list egg; the harbor cat heckles from the placard's
 // top edge. Astro emits
 // this as dist/404.html; serving it for unknown routes is nginx config at
@@ -43,6 +44,15 @@ const ghostLampSvg = boltedSvg('ghost-lamp', carvings);
 // The smuggler's cove gate, same rule index.astro reads it by: an emptied
 // proverb list (or the egg off) leaves the sea quiet.
 const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
+
+// The bottles panning the shallows: scenery, not the cove's proverb bottles.
+// `rest` is where each one parks once the kill-switch drops the pan, staggered
+// so the three never bunch; the negative delays put them mid-crossing on load.
+const drifters = [
+	{ bottom: 16, rest: '20%', panDelay: '0s',   bobDelay: '0s',    tilt: -9 },
+	{ bottom: 24, rest: '55%', panDelay: '-15s', bobDelay: '-1.3s', tilt: 7 },
+	{ bottom: 12, rest: '82%', panDelay: '-31s', bobDelay: '-2.6s', tilt: -14 },
+];
 ---
 <BaseLayout title="404 · run aground · Justin Smith" active="none" quipKey="quip404">
 	<section class="shallows">
@@ -96,57 +106,105 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 			</div>
 		</div>
 
-		<!-- the grounded scene -->
+		<!-- the grounded scene, standing in the water: full-bleed sea, tide out -->
 		<div class="scene">
-			<div class="shoal"></div>
-			<div class="shoal-crest"></div>
+			<div class="swell swell--back"></div>
 
-			<!-- dotted route line that dies at the sand -->
-			<svg class="route" viewBox="0 0 300 70" fill="none" preserveAspectRatio="none" data-bolted={routeSvg ? 'route-line' : undefined}>
-				{routeSvg ? (
-					<Fragment set:html={innerMarkup(routeSvg)} />
-				) : (
-					<path d="M0 6 Q90 -8 170 34 T292 58" stroke="rgba(240,217,168,.5)" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round" fill="none" />
-				)}
-			</svg>
-			<div class="route-end"></div>
-
-			<div class="wreck">
-				<svg width="150" height="130" viewBox="0 0 150 130" fill="none" style="overflow:visible">
-					<!-- mast + snapped top -->
-					<path d="M75 66 V16" stroke="#5f6ec4" stroke-width="3" stroke-linecap="round" />
-					<path d="M75 16 L70 6" stroke="#5f6ec4" stroke-width="2.4" stroke-linecap="round" opacity=".8" />
-					<!-- torn sail -->
-					<path d="M75 20 L108 54 L75 54 Z" fill="#f0d9a8" opacity=".92" />
-					<path d="M92 38 L108 54 L96 54 Z" fill="#131628" />
-					<!-- hull -->
-					<path d="M18 66 L132 66 L112 96 L38 96 Z" fill="#93a0e8" />
-					<path d="M18 66 L132 66 L127 73 L23 73 Z" fill="#a9b4f0" />
-					<!-- planking -->
-					<path d="M34 80 h82 M40 88 h70" stroke="#5f6ec4" stroke-width="1.4" opacity=".55" />
-					<!-- a little cabin -->
-					<rect x="62" y="54" width="26" height="12" rx="1.5" fill="#5f6ec4" />
+			<!-- the sand goes behind the mid water, so the bank rises out of it -->
+			<div class="sand">
+				<div class="shoal"></div>
+				<div class="shoal-crest"></div>
+				<!-- the tideline the water left behind when it went out -->
+				<svg class="tideline" width="300" height="16" viewBox="0 0 300 16" fill="none" aria-hidden="true">
+					<path d="M20 12 Q150 2 280 12" stroke="rgba(223,232,245,.18)" stroke-width="1.6" stroke-dasharray="5 6" fill="none" />
+					<path d="M50 15 Q150 8 250 15" stroke="rgba(223,232,245,.1)" stroke-width="1.3" stroke-dasharray="4 7" fill="none" />
 				</svg>
 			</div>
 
-			<div class="buoy">
-				<svg width="30" height="46" viewBox="0 0 30 46" fill="none" style="overflow:visible" data-bolted={buoySvg ? 'buoy' : undefined}>
-					{buoySvg ? (
-						<Fragment set:html={innerMarkup(buoySvg)} />
+			<div class="swell swell--mid"></div>
+
+			<div class="furniture">
+				<!-- dotted route line that dies at the sand -->
+				<svg class="route" viewBox="0 0 300 70" fill="none" preserveAspectRatio="none" data-bolted={routeSvg ? 'route-line' : undefined}>
+					{routeSvg ? (
+						<Fragment set:html={innerMarkup(routeSvg)} />
 					) : (
-						<>
-							<ellipse class="buoy__lamp" cx="15" cy="8" rx="4" ry="4" fill="#f0d9a8" />
-							<path d="M15 12 V20" stroke="#5f6ec4" stroke-width="1.6" />
-							<path d="M6 22 L24 22 L21 40 L9 40 Z" fill="#c05a4a" />
-							<path d="M7.4 30 L22.6 30" stroke="#f0d9a8" stroke-width="4" />
-							<path d="M6 22 L24 22" stroke="#e8ebfa" stroke-width="1.4" opacity=".6" />
-						</>
+						<path d="M0 6 Q90 -8 170 34 T292 58" stroke="rgba(240,217,168,.5)" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round" fill="none" />
 					)}
 				</svg>
+				<div class="route-end"></div>
+
+				<div class="wreck">
+					<svg width="150" height="130" viewBox="0 0 150 130" fill="none" style="overflow:visible">
+						<!-- mast + snapped top -->
+						<path d="M75 66 V16" stroke="#5f6ec4" stroke-width="3" stroke-linecap="round" />
+						<path d="M75 16 L70 6" stroke="#5f6ec4" stroke-width="2.4" stroke-linecap="round" opacity=".8" />
+						<!-- torn sail -->
+						<path d="M75 20 L108 54 L75 54 Z" fill="#f0d9a8" opacity=".92" />
+						<path d="M92 38 L108 54 L96 54 Z" fill="#131628" />
+						<!-- hull -->
+						<path d="M18 66 L132 66 L112 96 L38 96 Z" fill="#93a0e8" />
+						<path d="M18 66 L132 66 L127 73 L23 73 Z" fill="#a9b4f0" />
+						<!-- planking -->
+						<path d="M34 80 h82 M40 88 h70" stroke="#5f6ec4" stroke-width="1.4" opacity=".55" />
+						<!-- a little cabin -->
+						<rect x="62" y="54" width="26" height="12" rx="1.5" fill="#5f6ec4" />
+					</svg>
+				</div>
+
+				<div class="buoy">
+					<svg width="30" height="46" viewBox="0 0 30 46" fill="none" style="overflow:visible" data-bolted={buoySvg ? 'buoy' : undefined}>
+						{buoySvg ? (
+							<Fragment set:html={innerMarkup(buoySvg)} />
+						) : (
+							<>
+								<ellipse class="buoy__lamp" cx="15" cy="8" rx="4" ry="4" fill="#f0d9a8" />
+								<path d="M15 12 V20" stroke="#5f6ec4" stroke-width="1.6" />
+								<path d="M6 22 L24 22 L21 40 L9 40 Z" fill="#c05a4a" />
+								<path d="M7.4 30 L22.6 30" stroke="#f0d9a8" stroke-width="4" />
+								<path d="M6 22 L24 22" stroke="#e8ebfa" stroke-width="1.4" opacity=".6" />
+							</>
+						)}
+					</svg>
+				</div>
+
+				<!-- a message bottle, afloat where the water still reaches -->
+				<div class="afloat">
+					<svg width="32" height="20" viewBox="0 0 40 24" fill="none" style="overflow:visible" data-bolted={bottleSvg ? 'bottle' : undefined}>
+						{bottleSvg ? (
+							<Fragment set:html={innerMarkup(bottleSvg)} />
+						) : (
+							<>
+								<rect x="6" y="7" width="28" height="11" rx="5.5" fill="rgba(147,160,232,.22)" stroke="#93a0e8" stroke-width="1.3" />
+								<rect x="33" y="9.5" width="5" height="6" rx="1.2" fill="#f0d9a8" />
+								<path d="M12 10 h14 M12 12.5 h11 M12 15 h13" stroke="#f0d9a8" stroke-width="1" stroke-linecap="round" opacity=".85" />
+							</>
+						)}
+					</svg>
+				</div>
 			</div>
 
-			<div class="chop chop--front"></div>
-			<div class="chop chop--back"></div>
+			<!-- bottles panning the shallows, between the mid water and the front -->
+			{drifters.map((drifter) => (
+				<div
+					class="drifter"
+					style={`bottom:${drifter.bottom}px;left:${drifter.rest};animation-delay:${drifter.panDelay},${drifter.bobDelay}`}
+				>
+					<svg width="32" height="20" viewBox="0 0 40 24" fill="none" style={`overflow:visible;transform:rotate(${drifter.tilt}deg)`} data-bolted={bottleSvg ? 'bottle' : undefined}>
+						{bottleSvg ? (
+							<Fragment set:html={innerMarkup(bottleSvg)} />
+						) : (
+							<>
+								<rect x="6" y="7" width="28" height="11" rx="5.5" fill="rgba(147,160,232,.22)" stroke="#93a0e8" stroke-width="1.3" />
+								<rect x="33" y="9.5" width="5" height="6" rx="1.2" fill="#f0d9a8" />
+								<path d="M12 10 h14 M12 12.5 h11 M12 15 h13" stroke="#f0d9a8" stroke-width="1" stroke-linecap="round" opacity=".85" />
+							</>
+						)}
+					</svg>
+				</div>
+			))}
+
+			<div class="swell swell--front"></div>
 		</div>
 
 		<BottleBoat client:idle proverbs={proverbs} bottleSvg={bottleSvg} auto={true} />
@@ -313,17 +371,16 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 		pointer-events: none;
 	}
 
+	/* Bottom-left in the scene, not centered over the headline (design ruling) */
 	.chart-wreck {
-		position: fixed;
-		left: 50%;
-		top: 18%;
+		position: absolute;
+		left: 6%;
+		bottom: 20%;
 		z-index: 1;
-		transform: translateX(-50%);
 		display: flex;
 		flex-direction: column;
-		align-items: center;
+		align-items: flex-start;
 		gap: 3px;
-		text-align: center;
 		pointer-events: none;
 	}
 
@@ -574,17 +631,95 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 
 	/* --- the grounded scene --- */
 
+	/*
+	 * Full-bleed against a padded, center-aligned column: align-self stretch
+	 * pins the box to the column's content edge, which is the fixed origin the
+	 * negative margin pulls from. Left to center alignment the browser would
+	 * spread the overflow itself and the margin would shift it a second time.
+	 *
+	 * The planes stack 1..7 among themselves, so the strip takes a stacking
+	 * context of its own: without it the front swell would paint over the sea's
+	 * drifting proverb bottles, which ride above the water on purpose.
+	 */
 	.scene {
 		position: relative;
-		width: min(720px, 94vw);
-		height: clamp(150px, 22vw, 200px);
+		align-self: stretch;
+		width: 100vw;
+		margin-left: calc(50% - 50vw);
+		height: clamp(170px, 24vw, 220px);
 		flex: none;
+		isolation: isolate;
+		z-index: 2;
+	}
+
+	/* The three swell planes, tide out: filled water with a dashed foam crest,
+	   1200px tiles rolling against each other (the homepage's own sea, cut to
+	   this page's depth order) */
+	.swell {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		background-repeat: repeat-x;
+		background-position-y: top;
+		background-size: 1200px 100%;
+		pointer-events: none;
+	}
+
+	.swell--back {
+		height: 104px;
+		z-index: 1;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='104'%3E%3Cpath d='M0 36 Q150 12 300 36 T600 36 T900 36 T1200 36 L1200 104 L0 104 Z' fill='%231d2240'/%3E%3Cpath d='M0 36 Q150 12 300 36 T600 36 T900 36 T1200 36' stroke='rgba(223,232,245,.18)' stroke-width='1.8' stroke-dasharray='7 5' fill='none'/%3E%3C/svg%3E");
+		animation: swellLeft 42s linear infinite;
+	}
+
+	.swell--mid {
+		height: 78px;
+		z-index: 3;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='78'%3E%3Cpath d='M0 28 Q150 9 300 28 T600 28 T900 28 T1200 28 L1200 78 L0 78 Z' fill='%23181c36'/%3E%3Cpath d='M0 28 Q150 9 300 28 T600 28 T900 28 T1200 28' stroke='rgba(223,232,245,.26)' stroke-width='2' stroke-dasharray='9 6' fill='none'/%3E%3C/svg%3E");
+		animation: swellRight 31s linear infinite;
+	}
+
+	/* Same fill the footer takes, so the water carries on under it unbroken */
+	.swell--front {
+		height: 54px;
+		z-index: 7;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='54'%3E%3Cpath d='M0 20 Q150 5 300 20 T600 20 T900 20 T1200 20 L1200 54 L0 54 Z' fill='%2311152b'/%3E%3Cpath d='M0 20 Q150 5 300 20 T600 20 T900 20 T1200 20' stroke='rgba(223,232,245,.38)' stroke-width='2.2' stroke-dasharray='11 7' fill='none'/%3E%3C/svg%3E");
+		animation: swellLeft 22s linear infinite;
+	}
+
+	@keyframes swellLeft {
+		to { background-position-x: -1200px; }
+	}
+
+	@keyframes swellRight {
+		to { background-position-x: 1200px; }
+	}
+
+	/* The sand behind the mid water, the furniture in front of it: the depth
+	   sandwich is what makes the bank read as rising out of the shallows */
+	.sand,
+	.furniture {
+		position: absolute;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: min(720px, 94vw);
+		height: 100%;
+	}
+
+	.sand {
+		z-index: 2;
+	}
+
+	.furniture {
+		z-index: 4;
 	}
 
 	/* Sand-toned shoal (design ruling: warm and desaturated so "shallows" reads) */
 	.shoal {
 		position: absolute;
-		bottom: 34px;
+		bottom: 22px;
 		left: 50%;
 		transform: translateX(-50%);
 		width: 64%;
@@ -596,13 +731,20 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 
 	.shoal-crest {
 		position: absolute;
-		bottom: 52px;
+		bottom: 40px;
 		left: 50%;
 		transform: translateX(-50%);
 		width: 40%;
 		height: 28px;
 		border-radius: 50%;
 		background: radial-gradient(ellipse at 50% 40%, #6e6248 0%, transparent 75%);
+	}
+
+	.tideline {
+		position: absolute;
+		bottom: 46px;
+		left: 50%;
+		transform: translateX(-50%);
 	}
 
 	.route {
@@ -632,7 +774,7 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 	 */
 	.wreck {
 		position: absolute;
-		bottom: 44px;
+		bottom: 26px;
 		left: 50%;
 		transform-origin: 50% 90%;
 		transform: translateX(-50%) rotate(15deg);
@@ -646,7 +788,7 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 
 	.buoy {
 		position: absolute;
-		bottom: 46px;
+		bottom: 18px;
 		right: 10%;
 		transform-origin: 50% 100%;
 		transform: rotate(-6deg);
@@ -667,33 +809,52 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 		50%      { opacity: 1; }
 	}
 
-	/* Choppy water in front, two layers drifting opposite ways */
-	.chop {
+	/* The bottle the water still reaches, riding the buoy's own bob */
+	.afloat {
 		position: absolute;
-		left: -2%;
-		width: 104%;
-		height: 20px;
+		bottom: 14px;
+		left: 15%;
+		transform-origin: 50% 100%;
+		transform: rotate(-6deg);
+		animation: buoyBob 3.4s ease-in-out 1.1s infinite;
 	}
 
-	.chop--front {
-		bottom: 8px;
-		background: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2264%22%20height=%2220%22%3E%3Cpath%20d=%22M0%2012%20Q%208%202,%2016%2012%20T%2032%2012%20T%2048%2012%20T%2064%2012%22%20stroke=%22rgba(147,160,232,0.45)%22%20stroke-width=%222%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;
-		animation: chop 5s linear infinite;
+	/*
+	 * The pan runs on `left`, so each bottle's resting spot is its own base
+	 * `left` (set inline) rather than a reduced-motion override: the kill-switch
+	 * drops the animation and the bottle is already parked where it belongs.
+	 * The per-bottle tilt sits on the svg, since the wrapper's transform is the
+	 * bob's to animate.
+	 */
+	.drifter {
+		position: absolute;
+		z-index: 5;
+		transform: rotate(-6deg);
+		animation: pan 46s linear infinite, bob 3.8s ease-in-out infinite;
 	}
 
-	.chop--back {
-		bottom: 0;
-		background: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2264%22%20height=%2220%22%3E%3Cpath%20d=%22M0%2012%20Q%208%204,%2016%2012%20T%2032%2012%20T%2048%2012%20T%2064%2012%22%20stroke=%22rgba(95,110,196,0.55)%22%20stroke-width=%222%22%20fill=%22none%22/%3E%3C/svg%3E') repeat-x;
-		animation: chopBack 7s linear infinite;
+	@keyframes pan {
+		from { left: -4%; }
+		to   { left: 102%; }
 	}
 
-	@keyframes chop {
-		0%   { background-position-x: 0; }
-		100% { background-position-x: -64px; }
+	@keyframes bob {
+		0%, 100% { transform: translateY(0) rotate(-6deg); }
+		50%      { transform: translateY(-5px) rotate(5deg); }
 	}
+</style>
 
-	@keyframes chopBack {
-		0%   { background-position-x: 0; }
-		100% { background-position-x: 64px; }
+<style is:global>
+	/*
+	 * The footer stands in the water: the front swell's fill carries on under
+	 * it and that swell's dashed crest is the waterline, so the shared footer's
+	 * own hairline would draw a second, wrong one. Global because the rule has
+	 * to reach into Footer.astro, and keyed off the shallows because that is
+	 * both what makes it true and what outweighs Footer.astro's own rule: a
+	 * bare .site-footer loses to the [data-astro-cid] scoping adds to it.
+	 */
+	.page .shallows ~ .site-footer {
+		background: #11152b;
+		border-top: none;
 	}
 </style>
