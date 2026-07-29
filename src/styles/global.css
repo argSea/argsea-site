@@ -10,6 +10,14 @@
  * requirement; keep it last so nothing re-enables motion after it.
  */
 
+/* the canon mocks are drawn under their own universal border-box reset, so the
+   paddings and heights copied out of them only compute right in this box model */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
 :root {
 	/* Colors */
 	--bg-top:           #11131f;
