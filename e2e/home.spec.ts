@@ -152,12 +152,12 @@ test('the sea footer\'s CTA writes to the keeper\'s email; the write-direct asid
 	await expect(page.locator('.cta-aside')).toHaveCount(0);
 });
 
-// The imported round (design/Hello.dc.html) drops contact and the github/
-// linkedin text links from the row; the shared footer strip below the sea
-// carries those now (Footer.astro's own .socials).
-test('the footer link row carries only hello/projects/hobbies/notes/resume', async ({ page }) => {
+// The canon's berth ends at .cta-doors and carries no link row of its own
+// (design/Hello.dc.html); its .berth .row rules are dead CSS with no markup.
+// The header nav and the shared footer strip below the sea carry those links.
+test('the berth carries no link row of its own', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.locator('.berth .row a')).toHaveText(['hello', 'projects', 'hobbies', 'notes', 'resume ↗']);
+	await expect(page.locator('.berth .row')).toHaveCount(0);
 });
 
 test('the footer carries the argsea definition', async ({ page }) => {
