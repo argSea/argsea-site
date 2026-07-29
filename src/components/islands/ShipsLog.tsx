@@ -1,7 +1,9 @@
 // The ship's log: the wandering chart and the log list below it. Every hobby is
 // a ship at its last known bearing, none of them sunk, some overdue. Marks
-// project off the chart window's lat/lon (proj/wakePath/fmtCoord, transcribed
-// from Hobbies.dc.html), a wake trails each hobby that slipped its mooring, the
+// project off the chart window's lat/lon (proj/wakePath here, transcribed from
+// Hobbies.dc.html; the state vocabulary and fmtCoord moved to lib/bearings.ts
+// once the home page's overlay layer started drawing bearing cards too), a wake
+// trails each hobby that slipped its mooring, the
 // Flannan Isle memorial keeps its real Fl(2) W 30s light as tribute, and the
 // bearing card lets a visitor send up a flare for an overdue one. Flares keep a
 // local tally for the card's own line (argsea-flares, the key the watch room
@@ -9,9 +11,10 @@
 // diorama's static art rides ten carving spots (BoltedSvg mounts; bolted markup
 // resolved build-time by hobbies.astro); the memorial trio and the computed
 // line-work are deliberately not spots.
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactElement } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import type { Coord, Doodle, FigureheadDesign, Hobby, HobbyState, Note } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
+import { STATE_META, fmtCoord, pillStyle } from '../../lib/bearings';
 import { loadFlares, recordFlare } from '../../lib/flares';
 import { sightFlare, sightVisit } from '../../lib/sightings';
 import { useEscapeKey } from './useEscapeKey';
@@ -30,20 +33,6 @@ const CLOSE_MS = 220;
 const CHART_WIN = { latTop: 58.70, latBot: 57.80, lonLeft: -8.30, lonRight: -6.10 };
 const MEMORIAL_COORD: Coord = { lat: 58.283, lon: -7.583 };
 const UNCHARTED_COORD: Coord = { lat: 57.86, lon: -6.68 };
-
-interface StateMeta {
-	label: string;
-	c:     string;  // the rgb triple the pill/wake tint from
-	solid: string;  // the flat hex the pill text/glyph paint
-}
-
-const STATE_META: Record<HobbyState, StateMeta> = {
-	moored:   { label: 'moored · home waters', c: '240,217,168', solid: '#f0d9a8' },
-	adrift:   { label: 'adrift · lost at sea', c: '147,160,232', solid: '#93a0e8' },
-	marooned: { label: 'marooned',             c: '147,160,232', solid: '#93a0e8' },
-	port:     { label: 'made port',            c: '111,202,151', solid: '#6fca97' },
-	inkspill: { label: 'bearing smudged',      c: '138,147,196', solid: '#8a93c4' },
-};
 
 // The bearing card's cat gets its own lines, not the chart lookout's set; both
 // perches carry the 'chart' context, transcribed from the Hobbies mock's overlay.
@@ -68,26 +57,6 @@ function wakePath(a: Coord, b: Coord) {
 		d:  `M${p1.x.toFixed(1)} ${p1.y.toFixed(1)} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`,
 		ox: p1.x.toFixed(1),
 		oy: p1.y.toFixed(1),
-	};
-}
-
-function fmtCoord(c: Coord): string {
-	const dm = (v: number, pos: string, neg: string) => {
-		const a = Math.abs(v);
-		const d = Math.floor(a);
-		const m = Math.round((a - d) * 60);
-		return d + '°' + String(m).padStart(2, '0') + '′' + (v >= 0 ? pos : neg);
-	};
-	return dm(c.lat, 'N', 'S') + ' ' + dm(c.lon, 'E', 'W');
-}
-
-function pillStyle(state: HobbyState, on: boolean): CSSProperties {
-	const m = STATE_META[state];
-	return {
-		fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.1em', textTransform: 'uppercase',
-		padding: '3px 10px', borderRadius: '999px', whiteSpace: 'nowrap', flex: 'none',
-		color: m.solid, border: `1px ${state === 'moored' ? 'dashed' : 'solid'} rgba(${m.c},${on ? 0.6 : 0.45})`,
-		background: `rgba(${m.c},${on ? 0.14 : 0.08})`,
 	};
 }
 

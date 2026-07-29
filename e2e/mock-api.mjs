@@ -156,13 +156,17 @@ const carvings = fixture('carvings').concat(mode === 'fallback' ? [{
 	updatedAt: '2026-07-28T00:00:00Z',
 }] : []);
 
-// The fallback build serves a copy document from before the chart door existed:
-// the two optional fields are absent, so the door must stand on the approved
-// design copy rather than rendering two empty spans.
+// The fallback build serves a copy document from before the chart door and the
+// section-head lore existed: every one of those optional fields is absent, so
+// each has to stand on its approved design copy rather than render an empty span.
 const siteCopy = { ...fixture('siteCopy') };
 if ('fallback' === mode) {
 	delete siteCopy.chartDoorKick;
 	delete siteCopy.chartDoorBody;
+	delete siteCopy.loreProjects;
+	delete siteCopy.loreNotes;
+	delete siteCopy.loreSkills;
+	delete siteCopy.loreHobbies;
 }
 
 const routes = {

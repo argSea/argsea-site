@@ -19,6 +19,7 @@ interface Props {
 	foundIn?:     Project[]; // the lights that tie this note via their own noteIds; [] or absent hides the block entirely
 	foundHobbies?: Hobby[]; // the bearings that tie this note via their own noteIds; rendered in the same "found in" list, marked ◈
 	onStepInto?: (project: Project) => void; // step into the tower: close this entry, open the light in place. Absent falls back to the plain /projects link
+	onOpenBearing?: (hobby: Hobby) => void; // the same handoff for a tied bearing. Absent falls back to the ?bearing= link out to the wandering chart
 	catHere?:    boolean;
 	catDesigns?: FigureheadDesign[];
 	closeLabel?: string; // the close pill's text; the hobbies page reads "back to the bearing ✕" since closing returns to the still-open bearing card
@@ -33,7 +34,7 @@ function reducedMotion(): boolean {
 	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-export default function JournalEntryOverlay({ note, doodle, foundIn = [], foundHobbies = [], onStepInto, catHere = false, catDesigns, closeLabel = 'close ✕', onClose }: Props) {
+export default function JournalEntryOverlay({ note, doodle, foundIn = [], foundHobbies = [], onStepInto, onOpenBearing, catHere = false, catDesigns, closeLabel = 'close ✕', onClose }: Props) {
 	const [closing, setClosing] = useState(false);
 	const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -87,11 +88,14 @@ export default function JournalEntryOverlay({ note, doodle, foundIn = [], foundH
 											? <button key={project.id} type="button" title="step into the tower" className="letter__found-in-link" onClick={() => onStepInto(project)}>✷ {project.title} →</button>
 											: <a key={project.id} href="/projects" title="a light on the coast · the full list" className="letter__found-in-link">✷ {project.title} →</a>
 									))}
-									{/* Hobbies hold notes too; their bearing cards live on the wandering
-									    chart, a different page, so these always navigate (the ?bearing=
-									    contract) rather than stepping in place. */}
+									{/* Hobbies hold notes too. Where the page draws its own bearing
+									    cards (the home overlay layer) these open in place; everywhere
+									    else the card lives on the wandering chart, a different page,
+									    so the link navigates on the ?bearing= contract instead. */}
 									{foundHobbies.map((hobby) => (
-										<a key={hobby.id} href={`/hobbies?bearing=${encodeURIComponent(hobby.name)}`} title="see its bearing on the wandering chart" className="letter__found-in-link">◈ {hobby.name} →</a>
+										onOpenBearing
+											? <button key={hobby.id} type="button" title="its last known bearing" className="letter__found-in-link" onClick={() => onOpenBearing(hobby)}>◈ {hobby.name} →</button>
+											: <a key={hobby.id} href={`/hobbies?bearing=${encodeURIComponent(hobby.name)}`} title="see its bearing on the wandering chart" className="letter__found-in-link">◈ {hobby.name} →</a>
 									))}
 								</div>
 							</div>

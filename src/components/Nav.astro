@@ -88,6 +88,26 @@ const links = [
 		font-size: 13px;
 	}
 
+	/* The links outgrow the brand's row before they outgrow the screen, so the
+	   header wraps to two rows here rather than letting the gap clamp squeeze
+	   them together. Above the phone line, so the tab bar below is untouched. */
+	@media (max-width: 840px) {
+		.site-nav {
+			flex-wrap: wrap;
+		}
+
+		.links {
+			width: 100%;
+			gap: 16px;
+			font-size: 12px;
+			padding-top: 2px;
+		}
+
+		.links a {
+			padding: 6px 0;
+		}
+	}
+
 	/* Below the phone line the desktop links give way to the bottom tab bar
 	   (TabBar.astro); only the compact resume link stays up top. Kept in sync
 	   with NAV_TABBAR_MAX in src/lib/catSpots.ts. */
