@@ -23,8 +23,11 @@ import './ShipsLog.css';
 const CLOSE_MS = 220;
 
 // The chart's projection window and the two fixed marks that aren't hobbies:
-// the memorial's light and the uncharted "next hobby" slot.
-const CHART_WIN = { latTop: 58.58, latBot: 57.80, lonLeft: -7.98, lonRight: -6.55 };
+// the memorial's light and the uncharted "next hobby" slot. The window is the
+// Helm's own extent now (chart-berths contract, amendment 3: the hobby band is
+// retired and every chartable shares one frame), which the admin's chart table
+// transcribes verbatim, so these four numbers stay clean to lift.
+const CHART_WIN = { latTop: 58.70, latBot: 57.80, lonLeft: -8.30, lonRight: -6.10 };
 const MEMORIAL_COORD: Coord = { lat: 58.283, lon: -7.583 };
 const UNCHARTED_COORD: Coord = { lat: 57.86, lon: -6.68 };
 

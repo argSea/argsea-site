@@ -24,16 +24,17 @@ test('the log lists one row per hobby, ordered by the keeper\'s key', async ({ p
 	await expect(page.locator('.shipslog__plotted')).toHaveText('5 hobbies plotted · none sunk');
 });
 
-test('marks project onto the chart at the mock\'s percentages for the fixture coords', async ({ page }) => {
+test('marks project onto the chart at the Helm frame\'s percentages for the fixture coords', async ({ page }) => {
 	await page.goto('/hobbies');
-	// The home lab sits at 58.22 N, 7.50 W; the chart window projects that to
-	// 33.57% across and 46.15% down (proj() in ShipsLog.tsx, from Hobbies.dc.html).
+	// The home lab sits at 58.22 N, 7.50 W; the chart window is the Helm's own
+	// extent now (8.30 to 6.10 west, 57.80 to 58.70 north), which projects that
+	// to 36.36% across and 53.33% down (proj() in ShipsLog.tsx).
 	const mark = page.locator('.shipslog__mark[data-hobby-id="fixture-hobby-1"]');
 	await expect(mark).toHaveCount(1);
 	const left = await mark.evaluate((el) => parseFloat((el as HTMLElement).style.left));
 	const top = await mark.evaluate((el) => parseFloat((el as HTMLElement).style.top));
-	expect(left).toBeCloseTo(33.57, 1);
-	expect(top).toBeCloseTo(46.15, 1);
+	expect(left).toBeCloseTo(36.36, 1);
+	expect(top).toBeCloseTo(53.33, 1);
 });
 
 test('every charted hobby gets a mark carrying its state; five states, five marks', async ({ page }) => {

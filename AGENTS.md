@@ -43,8 +43,8 @@ Read narrowly. Do not wander the repo.
 
 ## Repo Map
 - `astro.config.mjs`: static output + the React integration; nothing else.
-- `src/pages/`: the five routes: `index` (Hello), `projects`, `hobbies`,
-  `notes`, `404`.
+- `src/pages/`: `index` (Hello), `projects`, `projects/[slug]` (the case log),
+  `hobbies`, `notes`, `gazette`, `helm`, `404`.
 - `src/layouts/BaseLayout.astro`: shared shell: fonts, tokens, nav, footer.
 - `src/components/`: Astro chrome (`Nav`, `Footer`, `LighthouseMark`,
   `WaveDivider`).
@@ -91,7 +91,7 @@ or gets a plainer one. Full contract and vocabulary: caravan-meta
 `docs/argsea-identity.md`.
 
 ## Verification Rules
-- `npm run build`: must be green and emit all five pages into `dist/`.
+- `npm run build`: must be green and emit all eight pages into `dist/`.
 - `npm run check`: `astro check`, must report zero errors.
 - `npm run test:e2e`: the Playwright suite; bakes three static builds under
   `e2e-dist/` (fixtures, plus featured/fallback against `e2e/mock-api.mjs`)

@@ -1,6 +1,8 @@
 // The helm (fixtures build): the rail lists the watch pin plus every charted
 // published project, every charted hobby, and every charted published journal
-// entry, charted meaning the record carries a coord; a rail or
+// entry, charted meaning the record carries a coord; a sheet hangs the
+// entity's own lead print (or a note's doodle) with its caption, the rail
+// searches and folds, a rail or
 // chart click sails the boat and opens that mark's sheet, the Flannan
 // memorial opens from its own sheet and closes on Escape, a flare's tally
 // unifies with ShipsLog's own argsea-flares key, dragging the water pans the
@@ -32,6 +34,91 @@ test('the rail lists the watch pin, every charted project, every charted hobby, 
 	for (const project of chartedProjects) {
 		await expect(page.locator('.rail__item', { hasText: project.title })).toHaveCount(1);
 	}
+});
+
+test('a sheet hangs the entity\'s lead print, clamped to the last one pinned, with its caption', async ({ page }) => {
+	await page.goto('/helm');
+	// The home lab carries three prints and a plate of 3: the plate is clamped to
+	// the last print the keeper pinned rather than wrapping back round to the first
+	const homeLab = hobbies.find((h) => h.name === 'The home lab')!;
+	expect(homeLab.images).toHaveLength(3);
+	expect(homeLab.plate).toBe(3);
+
+	await page.locator('.rail__item', { hasText: 'The home lab' }).click();
+	await expect(page.locator('.sheet__plate img')).toHaveAttribute('src', '/media/images/rack-open.svg');
+	await expect(page.locator('.sheet__cap')).toHaveText(homeLab.cap);
+});
+
+test('a light with no gallery keeps the frame and the caption, and hangs no print', async ({ page }) => {
+	await page.goto('/helm');
+	const bare = projects.find((p) => p.title === '100k good mornings')!;
+	expect(bare.images).toBeNull();
+
+	await page.locator('.rail__item', { hasText: '100k good mornings' }).click();
+	await expect(page.locator('.sheet__plate')).toHaveCount(1);
+	await expect(page.locator('.sheet__plate img')).toHaveCount(0);
+	await expect(page.locator('.sheet__cap')).toHaveText(bare.cap);
+});
+
+test('a note flies its doodle where a light hangs a print', async ({ page }) => {
+	await page.goto('/helm');
+	await page.locator('.rail__item', { hasText: 'CachyOS, three months in' }).click();
+	await expect(page.locator('.sheet__doodle svg')).toHaveCount(1);
+	await expect(page.locator('.sheet__plate')).toHaveCount(0);
+});
+
+test('the rail searches across every group and folds one group at a time', async ({ page }) => {
+	await page.goto('/helm');
+	const items = page.locator('.rail__item:visible');
+	await expect(items).toHaveCount(railCount);
+
+	await page.locator('#railFind').fill('piano');
+	await expect(items).toHaveCount(1);
+	await expect(items.first()).toContainText('Piano');
+
+	await page.locator('#railFind').fill('no such light');
+	await expect(items).toHaveCount(0);
+	await expect(page.locator('.rail__empty')).toBeVisible();
+
+	await page.locator('#railFind').fill('');
+	await expect(items).toHaveCount(railCount);
+	await page.locator('.rail__group[data-group-head="Hobbies"]').click();
+	await expect(items).toHaveCount(railCount - chartedHobbies.length);
+});
+
+test('the chart is drawn on the ruled extent, south edge at 57.80', async ({ page }) => {
+	await page.goto('/helm');
+	// The plane's pixel height is the window's Mercator height: (mercY(58.70) -
+	// mercY(57.80)) * 710 px/degree. Pinning it numerically pins SOUTH, since
+	// nothing else feeds that number; the built island's old 57.95 gives 1014.
+	const plane = page.locator('#plane');
+	expect(await plane.evaluate((el) => (el as HTMLElement).offsetHeight)).toBe(1214);
+	expect(await plane.evaluate((el) => parseFloat((el as HTMLElement).style.marginTop))).toBeCloseTo(-607, 0);
+});
+
+test('a light\'s sheet sets its provenance in brass and links to its case log', async ({ page }) => {
+	await page.goto('/helm');
+
+	// Janus (fixture-project-10) carries an assist and no case log
+	const assisted = projects.find((p) => p.title === 'Janus')!;
+	await page.locator('.rail__item', { hasText: 'Janus' }).click();
+	await expect(page.locator('.sheet__built i')).toHaveText(`by hand, with ${assisted.assist!.harness} alongside`);
+	await expect(page.locator('.sheet__built')).toHaveAttribute('title', `${assisted.assist!.harness} ${assisted.assist!.model}`);
+	await expect(page.locator('.sheet__links a')).toHaveCount(0);
+
+	// the flagship (fixture-project-1) is by hand, and is the one fixture light
+	// with a published case log behind it
+	const byHand = projects.find((p) => p.id === 'fixture-project-1')!;
+	expect(byHand.assist).toBeUndefined();
+	await page.locator('.rail__item', { hasText: byHand.title }).click();
+	await expect(page.locator('.sheet__built i')).toHaveText('by hand');
+	await expect(page.locator('.sheet__links a')).toHaveAttribute('href', `/projects/${byHand.slug}`);
+});
+
+test('a hobby\'s sheet carries no provenance row: the built line is a light\'s own', async ({ page }) => {
+	await page.goto('/helm');
+	await page.locator('.rail__item', { hasText: 'The home lab' }).click();
+	await expect(page.locator('.sheet__built')).toHaveCount(0);
 });
 
 test('clicking a rail light sails the chart to it and opens its sheet', async ({ page }) => {
