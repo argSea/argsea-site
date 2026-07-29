@@ -152,6 +152,12 @@ test('the sea footer\'s CTA writes to the keeper\'s email; the write-direct asid
 	await expect(page.locator('.cta-aside')).toHaveCount(0);
 });
 
+test('the berth CTAs render at the canon mock\'s 46px, not content-box inflated', async ({ page }) => {
+	await page.goto('/');
+	const box = await page.locator('.cta-doors .primary').boundingBox();
+	expect(box?.height).toBe(46);
+});
+
 // The canon's berth ends at .cta-doors and carries no link row of its own
 // (design/Hello.dc.html); its .berth .row rules are dead CSS with no markup.
 // The header nav and the shared footer strip below the sea carry those links.
