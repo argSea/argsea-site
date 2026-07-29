@@ -32,6 +32,7 @@ export interface CatSpot {
 	overlay:    boolean;      // true → shows only when its overlay opens (the owning island renders it)
 	menuGated?: boolean;      // header spots: on desktop the director rides the nav link; below the tab-bar breakpoint the desktop nav is gone, so the spot stands down
 	anchor?:    CatAnchor;    // static spots only
+	weight?:    number;       // relative odds within its page's pool; absent = 1, so a pool of plain spots stays a flat pick
 }
 
 // Order is load-bearing for tests: each page lists its header first and its
@@ -47,7 +48,15 @@ export const CATALOG: CatSpot[] = [
 	// overlay spots. An empty watch (no section built) leaves the pick catless
 	// for that view, same as any missing anchor. This is the canon's own
 	// placement (design/Hello.dc.html perches HarborCat on the now card).
-	{ id: 'hello.watch',     page: 'hello',    pose: 'perched', context: 'watch',     overlay: false },
+	{ id: 'hello.watch',     page: 'hello',    pose: 'perched', context: 'watch',     overlay: false, weight: 65 },
+	// Anchorless for the same reason hello.watch is, and for one more: the sea
+	// footer's tug crosses on a 110s infinite transform, which never fires
+	// animationend, so a measured anchor would leave the cat drifting behind the
+	// boat (the same trap that moved hello.manifest off the hull). The tug's own
+	// markup mounts BoatCat instead, making the cat a child of the crossing, and
+	// the 35/65 split against hello.watch is the mock's own coin flip: the cat
+	// keeps the watch, and now and then it rides the passing boat instead.
+	{ id: 'hello.boat',      page: 'hello',    pose: 'perched', context: 'chart',     overlay: false, weight: 35 },
 	// The id stays frozen (admin contract) though the stores ledge gave way to
 	// the sea footer's own tug; the perch rode along to the manifest's crossing
 	// (the sea itself, not the tug's hull: a 110s infinite crossing never fires
@@ -112,10 +121,34 @@ export function enabledSpots(page: CatPage, catPages: Toggles, catSpots: Toggles
 	// itself, the skills heading, the footer CTA) reads as the cat wandering
 	// the whole page rather than keeping the watch. Their ids stay in the
 	// catalog frozen and still toggleable, just never in the homepage's pool.
+	// The boat joined the watch on 2026-07-28 (the banked round's catAboard):
+	// both are island-rendered perches on the page's own furniture, which is
+	// what the ruling above was protecting, so it still holds.
 	if ('hello' === page) {
-		return pool.filter((spot) => 'hello.watch' === spot.id);
+		return pool.filter((spot) => 'hello.watch' === spot.id || 'hello.boat' === spot.id);
 	}
 	return pool;
+}
+
+/**
+ * One spot out of the pool, by relative weight. An all-default pool (every
+ * weight absent, so every weight 1) lands on the same index a flat
+ * `Math.floor(random * length)` would, which is what keeps the seeded-random
+ * tests pinning the spots the catalog order promises them.
+ */
+function weightedPick(pool: CatSpot[]): CatSpot | null {
+	if (0 === pool.length) {
+		return null;
+	}
+	const total = pool.reduce((sum, spot) => sum + (spot.weight ?? 1), 0);
+	let roll = Math.random() * total;
+	for (const spot of pool) {
+		roll -= spot.weight ?? 1;
+		if (roll < 0) {
+			return spot;
+		}
+	}
+	return pool[pool.length - 1];
 }
 
 // One pick per page per view, memoized so the director and the overlay islands
@@ -125,8 +158,7 @@ const picks = new Map<CatPage, CatSpot | null>();
 
 export function pageCatPick(page: CatPage, catPages: Toggles, catSpots: Toggles): CatSpot | null {
 	if (!picks.has(page)) {
-		const pool = enabledSpots(page, catPages, catSpots);
-		picks.set(page, pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : null);
+		picks.set(page, weightedPick(enabledSpots(page, catPages, catSpots)));
 	}
 	return picks.get(page) ?? null;
 }

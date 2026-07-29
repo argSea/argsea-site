@@ -296,6 +296,10 @@ export interface SiteCopy {
 	heroBody:       string;
 	chartDoorKick?: string;      // the hero's chart door, kicker and blurb; absent → the approved design copy, like every other empty field
 	chartDoorBody?: string;
+	loreProjects?:  string;      // the italic aside in each home section head; absent → the approved design copy
+	loreNotes?:     string;
+	loreSkills?:    string;      // what the skills gag wears while it keeps a straight face
+	loreHobbies?:   string;      // and what it swaps to when the act drops
 	dict:           string;
 	stores?:        StoreDrawer[] | null; // the tool bench's drawers (≤4); absent/empty → the home page's approved design copy
 	eggs:           EggToggles;

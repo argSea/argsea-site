@@ -1,0 +1,11 @@
+/* The tug's foredeck, verbatim to design/Hello.dc.html: the cat sits on the
+ * hull's left shoulder, above it in the stack so the deck never clips a paw.
+ * .cat-mount is already positioned; these are its offsets within the boat. */
+
+.boat-cat-mount {
+	left: 7px;
+	bottom: 15px;
+	width: 26px;
+	height: 30px;
+	z-index: 4;
+}

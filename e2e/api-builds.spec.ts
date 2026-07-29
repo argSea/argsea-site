@@ -91,3 +91,13 @@ test('with no chart-door copy on the wire the door still reads its design copy',
 	await expect(chartDoor.locator('.cd-kick')).toHaveText('the sea chart');
 	await expect(chartDoor.locator('.cd-sub')).toContainText('Built for no reason at all.');
 });
+
+// The same shape as the chart door above, and the same caveat: api.ts's fixture
+// backfill runs first and would cover this on its own, so what this proves is
+// that a copy document predating the fields still reads the approved lore, not
+// which of the two layers supplied it.
+test('with no lore on the wire the section heads still read their design copy', async ({ page }) => {
+	await page.goto(`${FALLBACK_BUILD}/`);
+	await expect(page.locator('.sec .lore').first()).toHaveText('lights I keep burning');
+	await expect(page.locator('#hobby-lore')).toHaveText('measured, ranked, certified');
+});

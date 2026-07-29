@@ -12,6 +12,8 @@
 // dropped (the coast strip, the light-list register, the season print rack)
 // stay dropped: this is a from-scratch rebuild of the page, not a patch.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import BoatCat from '../components/islands/BoatCat';
+import HomeOverlayDirector from '../components/islands/HomeOverlayDirector';
 import BottleBoat from '../components/islands/BottleBoat';
 import LightBadge from '../components/islands/LightBadge';
 import WatchCat from '../components/islands/WatchCat';
@@ -33,6 +35,7 @@ const catDesigns = await getFigurehead();
 
 const heroDoodleSvg = boltedSvg('hero-doodle', carvings);
 const mooredLampSvg = boltedSvg('moored-lamp', carvings);
+const towerSvg = boltedSvg('tower-stub', carvings);
 const adriftBoatSvg = boltedSvg('adrift-boat', carvings);
 const maroonedPalmSvg = boltedSvg('marooned-palm', carvings);
 const portAnchorSvg = boltedSvg('port-anchor', carvings);
@@ -137,6 +140,14 @@ const barges = copy.stores && copy.stores.length > 0
 // wire field with the approved design copy standing behind it. The fixture
 // backfill in api.ts covers a document that simply predates the field; this
 // covers the door itself, which has no sensible empty state.
+// The section heads' italic asides, and the pair the skills gag swaps between:
+// the same shape the chart door uses, an optional wire field with the approved
+// design copy standing behind it.
+const loreProjects = copy.loreProjects || 'lights I keep burning';
+const loreNotes = copy.loreNotes || 'pages from the log';
+const loreSkills = copy.loreSkills || 'measured, ranked, certified';
+const loreHobbies = copy.loreHobbies || 'off watch, still afloat';
+
 const chartDoorKick = copy.chartDoorKick || 'the sea chart';
 const chartDoorBody = copy.chartDoorBody || 'Every project, hobby and log entry plotted as a light in home waters. Built for no reason at all.';
 
@@ -238,11 +249,11 @@ const chartYears = projects.map((project) => project.firstLit);
 		<!-- ================= 01 Projects: the flagship rows ================= -->
 		{flags.length > 0 && (
 			<section class="sec">
-				<div class="sec-head rv"><span class="tick">01</span><h2>Projects</h2><span class="rule"></span></div>
+				<div class="sec-head rv"><span class="tick">01</span><h2>Projects</h2><i class="lore">{loreProjects}</i><span class="rule"></span></div>
 
 				{flags.map((flag) => (
 					<div class:list={['flagship', 'rv', { flip: flag.flip }]}>
-						<a class:list={['shot', { 'shot--empty': !flag.photo }]} href={flag.log} aria-label={flag.project.title}>
+						<a class:list={['shot', { 'shot--empty': !flag.photo }]} href={flag.log} data-light-shot={flag.project.id} aria-label={flag.project.title}>
 							{/* a print that 404s hides itself and marks the frame empty, same "show empty paper, not a broken glyph" rule the register/overlay/case-study prints already follow */}
 							{flag.photo && <img src={mediaUrl(flag.photo)} alt={flag.project.title} loading="lazy" onerror="this.closest('.shot').classList.add('shot--empty');this.remove()" />}
 							<span class="archive">from the station archive · no. {flag.no}</span>
@@ -273,9 +284,9 @@ const chartYears = projects.map((project) => project.firstLit);
 		<!-- ================= 02 Notes: the journal's newest three ================= -->
 		{journal.length > 0 && (
 			<section class="sec sec-narrow">
-				<div class="sec-head rv"><span class="tick">02</span><h2>Notes</h2><span class="rule"></span></div>
+				<div class="sec-head rv"><span class="tick">02</span><h2>Notes</h2><i class="lore">{loreNotes}</i><span class="rule"></span></div>
 				{journal.map(({ note, doodle }) => (
-					<a class="feat rv" href="/notes">
+					<a class="feat rv" href="/notes" data-journal-card={note.id}>
 						<div class="feat-main">
 							<span class="feat-kick">from the journal · {note.conditions}</span>
 							<b>{note.title}</b>
@@ -308,7 +319,7 @@ const chartYears = projects.map((project) => project.firstLit);
 		<!-- ================= 03 Hobbies: worn behind the skills gag ================= -->
 		{hasGaugedHobbies && (
 			<section class="sec sec-dense">
-				<div class="sec-head rv"><span class="tick">03</span><h2 id="hobby-title">Skills</h2><span class="rule"></span></div>
+				<div class="sec-head rv"><span class="tick">03</span><h2 id="hobby-title">Skills</h2><i class="lore" id="hobby-lore" data-swap={loreHobbies}>{loreSkills}</i><span class="rule"></span></div>
 				<!-- the fake skills live in a template so crawlers and parsers only ever read the truth -->
 				<template id="skills-fake-tpl">
 					<div class="gauge in"><span class="gtop"><b>javascript</b><span class="gstate">Expert</span></span><span class="gbar"><span class="gfill" style="width:95%"></span></span><span class="gmeta"><span>10+ years</span><span class="gnum-fake">95%</span></span></div>
@@ -329,7 +340,7 @@ const chartYears = projects.map((project) => project.firstLit);
 					<p class="shore-note">Measured in enthusiasm, not competence. Self-assessed. Suspiciously precise.</p>
 					<div class="gauges">
 						{gaugeCards.map((card) => (
-							<a class="gauge rv" href={card.href}>
+							<a class="gauge rv" href={card.href} data-bearing-gauge={card.hobby.id}>
 								<span class="gmark" aria-hidden="true">
 									{'moored' === card.hobby.state && (
 										<span class="mk">
@@ -446,6 +457,7 @@ const chartYears = projects.map((project) => project.firstLit);
 				<!-- the tug only tows the manifest for show; the hero's chart door is the one door to /helm -->
 				<div class="tow" title="the manifest, under tow" aria-label="the manifest, under tow">
 					<span class="boat">
+						{copy.eggs.cat && <BoatCat client:idle catPages={copy.catPages} catSpots={copy.catSpots} catDesigns={catDesigns} />}
 						<svg class="hull" width="40" height="34" viewBox="0 0 30 24" aria-hidden="true" data-bolted={boatSvg ? 'boat' : undefined}>
 							{boatSvg ? (
 								<Fragment set:html={innerMarkup(boatSvg)} />
@@ -469,6 +481,9 @@ const chartYears = projects.map((project) => project.firstLit);
 			</div>
 
 			<BottleBoat client:idle proverbs={proverbs} bottleSvg={bottleSvg} auto={true} />
+			{/* the overlay layer over the three sections' static triggers; client:load
+			    because a click can land before an idle callback would have run */}
+			<HomeOverlayDirector client:load projects={projects} notes={allNotes} doodles={doodles} hobbies={hobbies} towerSvg={towerSvg} />
 
 			<div class="swell front">
 				<svg viewBox="0 0 900 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 50 Q112 26 225 50 T450 50 T675 50 T900 50 L900 100 L0 100 Z" fill="#131628"></path><path d="M0 50 Q112 26 225 50 T450 50 T675 50 T900 50" stroke="rgba(223,232,245,.45)" stroke-width="2.2" stroke-dasharray="11 7" fill="none"></path></svg>
@@ -559,12 +574,16 @@ const chartYears = projects.map((project) => project.firstLit);
 		const fake = document.getElementById('skills-fake');
 		const real = document.getElementById('hobbies-real');
 		const title = document.getElementById('hobby-title');
+		const lore = document.getElementById('hobby-lore');
 		if (!fake || !real || !title) return;
 		const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 		const swap = () => {
 			fake.style.display = 'none';
 			real.style.display = '';
 			title.textContent = 'Hobbies';
+			// The aside drops the act with the heading; its replacement rode in on
+			// the element so the gag never has to reach back to the copy singleton.
+			if (lore && lore.dataset.swap) lore.textContent = lore.dataset.swap;
 			real.querySelectorAll('.gauge').forEach((gauge) => {
 				gauge.classList.remove('in');
 				const n = gauge.querySelector<HTMLElement>('.gnum');
@@ -933,6 +952,13 @@ const chartYears = projects.map((project) => project.firstLit);
 		font-size: 11px;
 		letter-spacing: .18em;
 		text-transform: uppercase;
+		color: var(--text-dim);
+	}
+
+	.sec-head .lore {
+		font-family: var(--font-display);
+		font-style: italic;
+		font-size: clamp(13px, 1.3vw, 15px);
 		color: var(--text-dim);
 	}
 
@@ -1984,7 +2010,11 @@ const chartYears = projects.map((project) => project.firstLit);
 		to   { transform: translateX(105vw); }
 	}
 
+	/* The cat rides inside the boat, absolutely, so the boat has to be what it
+	   positions against. BottleBoat.css happens to set this too, but that rule
+	   belongs to the pokeable boat this page never renders. */
 	.boat {
+		position: relative;
 		display: block;
 	}
 

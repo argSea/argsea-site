@@ -228,3 +228,118 @@ test('the sea sends a bottled proverb on its own schedule, no boat to poke', asy
 	await note.dispatchEvent('click');
 	await expect(note).toHaveCount(0);
 });
+
+// ---------------------------------------------------------------------------
+// The overlay layer (design/Hello.dc.html): the three section triggers open
+// their subject in place instead of navigating away. Every trigger keeps a real
+// href, so these also pin that the click is intercepted rather than followed.
+// ---------------------------------------------------------------------------
+
+/** The skills gag hides the gauges until it drops the act; the bearing tests need them. */
+async function revealGauges(page: import('@playwright/test').Page) {
+	await page.locator('#skills-fake').scrollIntoViewIfNeeded();
+	await expect(page.locator('.gauge.rv').first()).toBeVisible({ timeout: 10000 });
+}
+
+test('a flagship shot opens the light in place instead of sailing off to its case log', async ({ page }) => {
+	await page.goto('/');
+	const shot = page.locator('[data-light-shot]').first();
+	// the trigger really does carry a navigable href: the interception is what
+	// this proves, so a passing test can never just be a dead link
+	await expect(shot).toHaveAttribute('href', /\/projects\//);
+
+	await shot.click();
+	await expect(page.locator('.light-entry-wrap')).toHaveCount(1);
+	await expect(page).toHaveURL(/\/$/);
+});
+
+test('a journal card opens the entry on its own paper, still on the home page', async ({ page }) => {
+	await page.goto('/');
+	const card = page.locator('[data-journal-card]').first();
+	await expect(card).toHaveAttribute('href', '/notes');
+
+	await card.click();
+	await expect(page.locator('.letter-wrap')).toHaveCount(1);
+	await expect(page).toHaveURL(/\/$/);
+});
+
+test('a gauge opens the hobby-s bearing card rather than the wandering chart', async ({ page }) => {
+	await page.goto('/');
+	await revealGauges(page);
+	const gauge = page.locator('[data-bearing-gauge]').first();
+	await expect(gauge).toHaveAttribute('href', /\/hobbies/);
+
+	await gauge.click();
+	await expect(page.locator('.bearing-card')).toHaveCount(1);
+	await expect(page.locator('.bearing-card__name')).toHaveText(gauged[0].name);
+	await expect(page).toHaveURL(/\/$/);
+});
+
+test('a modified click still sails off: the overlay layer only claims the plain one', async ({ page }) => {
+	await page.goto('/');
+	await page.locator('[data-light-shot]').first().click({ modifiers: ['Shift'] });
+	await expect(page.locator('.light-entry-wrap')).toHaveCount(0);
+});
+
+// The cross-links are a swap, never a stack: the entry that raised the link is
+// gone by the time its destination mounts. Two backdrops at once is the bug
+// this shape exists to prevent, so each arm asserts the source is gone.
+test('a journal entry steps into the light it was found in, and the entry stands down', async ({ page }) => {
+	await page.goto('/');
+	await page.locator('[data-journal-card="fixture-note-1"]').click();
+	await page.locator('.letter__found-in-link', { hasText: 'The Great Un-monolithing' }).click();
+
+	await expect(page.locator('.light-entry-wrap')).toHaveCount(1);
+	await expect(page.locator('.letter-wrap')).toHaveCount(0);
+});
+
+test('a journal entry crosses to the bearing it was logged against, and the entry stands down', async ({ page }) => {
+	await page.goto('/');
+	await page.locator('[data-journal-card="fixture-note-2"]').click();
+	await page.locator('.letter__found-in-link', { hasText: 'The home lab' }).click();
+
+	await expect(page.locator('.bearing-card')).toHaveCount(1);
+	await expect(page.locator('.letter-wrap')).toHaveCount(0);
+});
+
+test('a bearing card pulls up its logged entry, and the card stands down', async ({ page }) => {
+	await page.goto('/');
+	await revealGauges(page);
+	await page.locator('[data-bearing-gauge="fixture-hobby-1"]').click();
+	await page.locator('.bearing-card__note-link').first().click();
+
+	await expect(page.locator('.letter-wrap')).toHaveCount(1);
+	await expect(page.locator('.bearing-card')).toHaveCount(0);
+});
+
+test('Escape closes whichever overlay the layer is holding', async ({ page }) => {
+	await page.goto('/');
+	await page.locator('[data-journal-card]').first().click();
+	await expect(page.locator('.letter-wrap')).toHaveCount(1);
+
+	await page.keyboard.press('Escape');
+	await expect(page.locator('.letter-wrap')).toHaveCount(0);
+});
+
+test('the section heads wear their lore, and the skills gag swaps its aside with its heading', async ({ page }) => {
+	await page.goto('/');
+	await expect(page.locator('.sec .lore').first()).toHaveText(siteCopy.loreProjects);
+	await expect(page.locator('#hobby-lore')).toHaveText(siteCopy.loreSkills);
+
+	await revealGauges(page);
+	await expect(page.locator('#hobby-title')).toHaveText('Hobbies');
+	await expect(page.locator('#hobby-lore')).toHaveText(siteCopy.loreHobbies);
+});
+
+test('the nav wraps to a second row at the mock-s breakpoint instead of vanishing', async ({ page }) => {
+	await page.setViewportSize({ width: 820, height: 900 });
+	await page.goto('/');
+
+	const links = page.locator('.site-nav .links');
+	await expect(links).toBeVisible();
+
+	// wrapped, not squeezed: the links take a row of their own under the brand
+	const brand = await page.locator('.site-nav .brand').boundingBox();
+	const linkRow = await links.boundingBox();
+	expect(linkRow!.y).toBeGreaterThan(brand!.y + brand!.height - 1);
+});

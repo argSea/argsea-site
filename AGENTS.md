@@ -37,9 +37,11 @@ Read narrowly. Do not wander the repo.
 - Keep diffs reviewable and tied to the task.
 - Update durable docs only when architecture/contracts materially change.
 - Plain English in responses and session notes.
-- `design/` is a read-only reference: the `.dc.html` files are design-tool
-  prototypes, not production code. Extract copy/values from them; never
-  reuse their markup or `support.js`.
+- `design/` is the banked canon, read-only here: the `.dc.html` files are
+  ratified mocks the build implements against, not loose prototypes and not
+  production code. A delta between a banked mock and the build is a bug in
+  the build. Extract copy, values and structure from them; never reuse their
+  markup or `support.js`.
 
 ## Repo Map
 - `astro.config.mjs`: static output + the React integration; nothing else.
