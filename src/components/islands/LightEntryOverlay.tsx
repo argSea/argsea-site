@@ -228,6 +228,11 @@ export default function LightEntryOverlay({ project, notes = [], doodles = [], c
 									<span className={`status-pill ${dark ? 'status-pill--dark' : 'status-pill--lit'}`}>{dark ? `dark · ${light.extinguished}` : 'lit'}</span>
 								</div>
 								<span className="light-entry__decoded">{decodeFor(light)}</span>
+								<div className="light-entry__made" title={builtTitle(project.assist)}>
+									<span className="light-entry__made-label">built</span>
+									<span className="light-entry__made-value">{builtLine(project.assist)}</span>
+									<span className="light-entry__made-rule" aria-hidden="true" />
+								</div>
 							</div>
 						</div>
 
@@ -254,12 +259,6 @@ export default function LightEntryOverlay({ project, notes = [], doodles = [], c
 								))}
 							</div>
 						)}
-
-						<div className="light-entry__made" title={builtTitle(project.assist)}>
-							<span className="light-entry__made-label">built</span>
-							<span className="light-entry__made-value">{builtLine(project.assist)}</span>
-							<span className="light-entry__made-rule" aria-hidden="true" />
-						</div>
 
 						<div className="light-entry__cols">
 							<div className="light-entry__left">

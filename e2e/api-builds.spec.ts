@@ -78,3 +78,16 @@ test('a light built by AI alone reads its own built line, in the register and in
 	await expect(made.locator('.light-entry__made-value')).toHaveText('by Mock Harness, checked by hand');
 	await expect(made).toHaveAttribute('title', 'Mock Harness Mock Model');
 });
+
+// A copy document from before the chart door existed: the fallback mock serves
+// no chartDoor fields at all, and the door still reads its approved design copy
+// (the stores/gazette shape). Note this proves the behavior, not which of the
+// two layers supplied it: api.ts's fixture backfill runs first and would cover
+// this on its own, and the consumer fallback is what holds if the field is ever
+// dropped from the fixture too.
+test('with no chart-door copy on the wire the door still reads its design copy', async ({ page }) => {
+	await page.goto(`${FALLBACK_BUILD}/`);
+	const chartDoor = page.locator('.hero .chartdoor');
+	await expect(chartDoor.locator('.cd-kick')).toHaveText('the sea chart');
+	await expect(chartDoor.locator('.cd-sub')).toContainText('Built for no reason at all.');
+});

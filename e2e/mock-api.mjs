@@ -156,12 +156,21 @@ const carvings = fixture('carvings').concat(mode === 'fallback' ? [{
 	updatedAt: '2026-07-28T00:00:00Z',
 }] : []);
 
+// The fallback build serves a copy document from before the chart door existed:
+// the two optional fields are absent, so the door must stand on the approved
+// design copy rather than rendering two empty spans.
+const siteCopy = { ...fixture('siteCopy') };
+if ('fallback' === mode) {
+	delete siteCopy.chartDoorKick;
+	delete siteCopy.chartDoorBody;
+}
+
 const routes = {
 	'/1/project':                    projects,
 	'/1/caselog':                    fixture('caselogs'),
 	'/1/hobby':                      fixture('hobbies'),
 	'/1/note':                       fixture('notes'),
-	'/1/copy':                       fixture('siteCopy'),
+	'/1/copy':                       siteCopy,
 	'/1/watch':                      MOCK_WATCH,
 	'/1/user/mock-keeper/profile':   MOCK_KEEPER,
 	// Nothing published: both mock builds prove the cat's built-in fallback,

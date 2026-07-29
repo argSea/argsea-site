@@ -285,8 +285,15 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 </script>
 
 <style>
+	/*
+	 * isolation: isolate is load-bearing, not tidiness. Every ambient layer on
+	 * this page sits at z-index -1, and without a stacking context of its own
+	 * that means "behind the page's own background" rather than "behind the
+	 * copy": the ghost light paints under the body gradient and is never seen.
+	 */
 	.shallows {
 		position: relative;
+		isolation: isolate;
 		flex: 1;
 		display: flex;
 		flex-direction: column;

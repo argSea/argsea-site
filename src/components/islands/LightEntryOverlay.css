@@ -402,7 +402,7 @@
 	display: flex;
 	align-items: baseline;
 	gap: 11px;
-	padding: 4px 0 14px;
+	margin-top: 3px;
 }
 
 .light-entry__made-label {

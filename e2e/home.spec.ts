@@ -91,6 +91,10 @@ test('every flagship row wears its built line, and This website names its harnes
 	// Canon prints a built row on every light, the by-hand ones included, so
 	// the count is the row count rather than the assisted subset.
 	await expect(page.locator('.flagship .made')).toHaveCount(flagTitles.length);
+	// The wording itself, not just the row: the fixture's top-3 flagships all
+	// carry no assist, so every one of them reads the keeper-alone line.
+	await expect(page.locator('.flagship .made .lbl').first()).toHaveText('built');
+	await expect(page.locator('.flagship .made .val')).toHaveText(flagTitles.map(() => 'by hand'));
 
 	const onFlagship = flagTitles.includes('this website');
 	test.skip(!onFlagship, 'this website is order 5, outside the homepage\'s top-3 flagship rows: its assisted line reaches no rendered surface under the current fixture');
