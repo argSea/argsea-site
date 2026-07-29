@@ -48,10 +48,12 @@ const proverbs = copy.eggs.bottle ? copy.bottleProverbs : [];
 // The bottles panning the shallows: scenery, not the cove's proverb bottles.
 // `rest` is where each one parks once the kill-switch drops the pan, staggered
 // so the three never bunch; the negative delays put them mid-crossing on load.
+// The sizes carry the canon's own stagger, scaled off the bolted bottle's 32x20
+// rather than copied across: one size for all three flattens the depth read.
 const drifters = [
-	{ bottom: 16, rest: '20%', panDelay: '0s',   bobDelay: '0s',    tilt: -9 },
-	{ bottom: 24, rest: '55%', panDelay: '-15s', bobDelay: '-1.3s', tilt: 7 },
-	{ bottom: 12, rest: '82%', panDelay: '-31s', bobDelay: '-2.6s', tilt: -14 },
+	{ bottom: 16, rest: '20%', panDelay: '0s',   bobDelay: '0s',    tilt: -9,  width: 36, height: 22 },
+	{ bottom: 24, rest: '55%', panDelay: '-15s', bobDelay: '-1.3s', tilt: 7,   width: 30, height: 19 },
+	{ bottom: 12, rest: '82%', panDelay: '-31s', bobDelay: '-2.6s', tilt: -14, width: 39, height: 24 },
 ];
 ---
 <BaseLayout title="404 · run aground · Justin Smith" active="none" quipKey="quip404">
@@ -190,7 +192,7 @@ const drifters = [
 					class="drifter"
 					style={`bottom:${drifter.bottom}px;left:${drifter.rest};animation-delay:${drifter.panDelay},${drifter.bobDelay}`}
 				>
-					<svg width="32" height="20" viewBox="0 0 40 24" fill="none" style={`overflow:visible;transform:rotate(${drifter.tilt}deg)`} data-bolted={bottleSvg ? 'bottle' : undefined}>
+					<svg width={drifter.width} height={drifter.height} viewBox="0 0 40 24" fill="none" style={`overflow:visible;transform:rotate(${drifter.tilt}deg)`} data-bolted={bottleSvg ? 'bottle' : undefined}>
 						{bottleSvg ? (
 							<Fragment set:html={innerMarkup(bottleSvg)} />
 						) : (
@@ -395,7 +397,7 @@ const drifters = [
 	.chart-wreck__path {
 		font-family: var(--font-mono);
 		font-size: 11px;
-		color: rgba(240, 217, 168, .55);
+		color: var(--periwinkle);
 	}
 
 	/* faint stars: stacked radial-gradient specks with a mask fade (design/404.dc.html) */

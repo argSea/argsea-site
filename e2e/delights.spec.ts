@@ -238,6 +238,11 @@ test('the 404 runs the chart-under-page ambience, and pins the path that ran it 
 // The low-tide sea (design/404.dc.html): three swell planes with the sand and
 // the furniture sandwiched between them. Depth is the whole delta, and depth is
 // exactly what an "it renders" assertion misses, so this reads the order out.
+//
+// The sequence is pinned rather than checked for sortedness: a layer that loses
+// its z-index computes 'auto', and a sortedness check reads that as NaN, which
+// slips through both a sort comparison and a uniqueness set. Pinned, a dropped
+// z-index is a mismatch.
 test('the shallows stack back water, sand, mid water, furniture, drifters, front water', async ({ page }) => {
 	await page.goto('/404.html');
 	const depth = async (selector: string) =>
@@ -247,8 +252,7 @@ test('the shallows stack back water, sand, mid water, furniture, drifters, front
 	for (const selector of ['.swell--back', '.sand', '.swell--mid', '.furniture', '.drifter', '.swell--front']) {
 		order.push(await depth(selector));
 	}
-	expect(order).toEqual([...order].sort((a, b) => a - b));
-	expect(new Set(order).size).toBe(order.length);
+	expect(order).toEqual([1, 2, 3, 4, 5, 7]);
 });
 
 // Reduced motion drops the pan, and a bottle whose position IS the pan would
