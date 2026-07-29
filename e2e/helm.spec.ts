@@ -38,14 +38,14 @@ test('the rail lists the watch pin, every charted project, every charted hobby, 
 
 test('a sheet hangs the entity\'s lead print, clamped to the last one pinned, with its caption', async ({ page }) => {
 	await page.goto('/helm');
-	// The home lab carries two prints and a plate of 3: the plate is clamped to
+	// The home lab carries three prints and a plate of 3: the plate is clamped to
 	// the last print the keeper pinned rather than wrapping back round to the first
 	const homeLab = hobbies.find((h) => h.name === 'The home lab')!;
-	expect(homeLab.images).toHaveLength(2);
+	expect(homeLab.images).toHaveLength(3);
 	expect(homeLab.plate).toBe(3);
 
 	await page.locator('.rail__item', { hasText: 'The home lab' }).click();
-	await expect(page.locator('.sheet__plate img')).toHaveAttribute('src', '/media/images/rack-lit.svg');
+	await expect(page.locator('.sheet__plate img')).toHaveAttribute('src', '/media/images/rack-open.svg');
 	await expect(page.locator('.sheet__cap')).toHaveText(homeLab.cap);
 });
 
