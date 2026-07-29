@@ -17,11 +17,15 @@ import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 
 import Helm from '../components/islands/Helm';
-import { getProjects, getHobbies, getNotes, getKeeperProfile } from '../lib/api';
+import { getProjects, getHobbies, getNotes, getDoodles, getKeeperProfile } from '../lib/api';
 
 const projects = await getProjects();
 const hobbies = await getHobbies();
 const notes = await getNotes();
+
+// The journal's marginalia: a note's chart sheet flies its doodle where a
+// project or hobby hangs a print (an island can't reach src/lib/api.ts itself).
+const doodles = await getDoodles();
 const keeper = await getKeeperProfile();
 ---
 <!doctype html>
@@ -39,6 +43,7 @@ const keeper = await getKeeperProfile();
 			projects={projects}
 			hobbies={hobbies}
 			notes={notes}
+			doodles={doodles}
 			keeperName={keeper.name}
 			keeperTitle={keeper.title}
 			keeperLocation={keeper.location}

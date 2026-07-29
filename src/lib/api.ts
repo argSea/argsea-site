@@ -123,7 +123,7 @@ export interface Project {
 	noteIds:      string[] | null; // journal entries tied to this light, resolved at build time; null on a pre-contract document, guard accordingly
 	flagship:     boolean;       // the one Hello hero project; distinct from featured
 	coord:        Coord | null;  // null = uncharted: in the register, off the chart
-	plate:        number;        // the chart photo-plate index; the site resolves an unknown index to its fallback plate
+	plate:        number;        // the chart photo-plate index: which print leads the chart sheet, clamped to the last one pinned
 	cap:          string;        // the plate's caption; "" = no caption
 	status:       Status;
 	publishedAt:  string;
@@ -177,7 +177,8 @@ export interface Hobby {
 	floats:    string;        // "what still floats"
 	odds:      string;        // "odds of return", on the row and the card
 	tags?:     string[];      // the home strip's currently-learning side labels ("plex · htpc"); unused on the chart
-	plate:     number;        // the chart photo-plate index; the site resolves an unknown index to its fallback plate
+	images:    string[] | null; // gallery media names, first print leads, max six; Project.images' own semantics, and a cleared gallery reads back null, never []
+	plate:     number;        // the chart photo-plate index: which print leads the chart sheet, clamped to the last one pinned
 	cap:       string;        // the plate's caption; "" = no caption
 	order:     number;        // the keeper's manual sort key
 	noteIds:   string[] | null; // journal entries tucked into this bearing, resolved at build time by stable id (mirrors Project.noteIds, never title matching); null on a pre-contract document, guard accordingly
@@ -193,7 +194,7 @@ export interface Note {
 	doodleCaption: string;  // the handwritten quip beside the doodle; "" when there's no doodle
 	doodleId:      string | null;
 	coord:         Coord | null; // null = uncharted: in the journal, off the chart
-	plate:         number;       // the chart photo-plate index; the site resolves an unknown index to its fallback plate
+	plate:         number;       // on the wire for shape parity only: a note's chart sheet flies its doodle and ignores this
 	cap:           string;       // the plate's caption; "" = no caption
 	status:        Status;
 	publishedAt:   string;

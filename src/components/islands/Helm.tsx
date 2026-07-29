@@ -13,9 +13,10 @@
 // part of this port: it isn't named in the ported feature list and gazette.astro
 // is off limits to this slice.
 import { useEffect, useRef, useState } from 'react';
-import type { Hobby, HobbyState, Light, Note, Project } from '../../lib/api';
+import type { Doodle, FigureheadShape, Hobby, HobbyState, Light, Note, Project } from '../../lib/api';
 import { loadFlares, recordFlare } from '../../lib/flares';
 import { DEFAULT_LIGHT, codeFor, timeline, type Timeline } from '../../lib/lightChar';
+import { mediaUrl } from '../../lib/media';
 import { sightFlare } from '../../lib/sightings';
 import './Helm.css';
 
@@ -29,7 +30,7 @@ const D2R = Math.PI / 180;
 const R2D = 180 / Math.PI;
 const mercY = (lat: number) => Math.log(Math.tan(Math.PI / 4 + (lat * D2R) / 2)) * R2D;
 
-const WEST = -8.30, EAST = -6.10, SOUTH = 57.95, NORTH = 58.70;
+const WEST = -8.30, EAST = -6.10, SOUTH = 57.80, NORTH = 58.70;
 const PPD = 710;
 const W = Math.round((EAST - WEST) * PPD);
 const H = Math.round((mercY(NORTH) - mercY(SOUTH)) * PPD);
@@ -54,7 +55,7 @@ const cap1 = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
 const LEWIS: [number, number][] = [
 	[-6.10, 58.70], [-6.26, 58.515], [-6.45, 58.42], [-6.53, 58.36], [-6.70, 58.31], [-6.79, 58.28],
 	[-6.85, 58.22], [-6.95, 58.21], [-7.02, 58.20], [-7.05, 58.235], [-7.06, 58.16], [-7.10, 58.11],
-	[-7.05, 58.02], [-6.90, 57.95], [-6.10, 57.95],
+	[-7.05, 58.02], [-6.92, 57.92], [-6.78, 57.80], [-6.10, 57.80],
 ];
 const FLANNAN_ISLETS: { n: string; lat: number; lon: number; r: number }[] = [
 	{ n: 'Eilean Mòr', lat: 58.2882, lon: -7.5872, r: 5 },
@@ -86,10 +87,15 @@ interface Mark {
 	dim?:     boolean;
 	port?:    boolean;
 	plate:    number;
+	images?:  string[] | null; // the entity's gallery; plate picks which print leads the sheet
+	doodle?:  Doodle | null;   // a note's marginalia, which stands in for a plate entirely
 	title:    string;
 	cap:      string;
 	body:     string[];
 	meta?:    [string, string][];
+	made?:    string;          // the provenance line, projects only
+	madeTitle?: string;        // the harness/model behind that line, as a tooltip
+	links?:   [string, string][];
 }
 
 // The current-watch pin: not a project, hobby, or journal entry the API can
@@ -139,7 +145,17 @@ function charFor(light: Light): { code: string; char: Timeline } {
 const HOBBY_ICON: Record<HobbyState, string> = { moored: 'moored', adrift: 'adrift', marooned: 'marooned', port: 'port', inkspill: 'ink' };
 const HOBBY_CODE: Record<HobbyState, string> = { moored: 'moored', adrift: 'adrift', marooned: 'marooned', port: 'made port', inkspill: 'smudged' };
 
-function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[]): Mark[] {
+// The provenance line the sheet sets in brass: absent assist means the keeper
+// built it by hand, `only` means the harness built it and the keeper checked it.
+function madeLine(project: Project): string {
+	if (!project.assist) {
+		return 'by hand';
+	}
+	const harness = project.assist.harness || 'AI';
+	return project.assist.only ? `by ${harness}, checked by hand` : `by hand, with ${harness} alongside`;
+}
+
+function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[], doodles: Doodle[]): Mark[] {
 	const marks: Mark[] = [FIX_MARK, FLANNAN_MARK];
 
 	projects.forEach((p) => {
@@ -156,11 +172,15 @@ function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[]): Mark[
 		}
 		marks.push({
 			id: 'p-' + slug(p.title), group: 'Projects', name: p.title, code: c.code,
-			lat: p.coord.lat, lon: p.coord.lon, char: c.char, plate: p.plate,
+			lat: p.coord.lat, lon: p.coord.lon, char: c.char, plate: p.plate, images: p.images,
 			// The mock's dim signal was p.status === 'dark' (its own demo data);
 			// the live contract's equivalent is a light that's been extinguished.
 			dim: !!p.light?.extinguished,
 			title: p.title, cap: p.cap, body: [p.shortDesc], meta,
+			made: madeLine(p), madeTitle: [p.assist?.harness, p.assist?.model].filter(Boolean).join(' '),
+			// The mock's second link was a source repo; the wire carries no field
+			// for one, so the case log is the only link a live project can offer.
+			links: p.hasLog ? [['read the full log →', `/projects/${p.slug}`]] : [],
 		});
 	});
 
@@ -183,7 +203,7 @@ function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[]): Mark[
 			id: 'h-' + slug(h.name), group: 'Hobbies', name: h.name,
 			code: HOBBY_CODE[h.state], lat: h.coord.lat, lon: h.coord.lon, wreck: true,
 			dim: h.state !== 'moored' && h.state !== 'port', port: h.state === 'port',
-			icon: HOBBY_ICON[h.state], plate: h.plate,
+			icon: HOBBY_ICON[h.state], plate: h.plate, images: h.images,
 			title: h.name, cap: h.cap, body: [h.bearing, h.offCourse], meta,
 		});
 	});
@@ -195,6 +215,9 @@ function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[]): Mark[
 		marks.push({
 			id: 'j-' + slug(n.title), group: 'Journal', name: n.title, code: n.date,
 			lat: n.coord.lat, lon: n.coord.lon, wreck: true, icon: 'bottle', plate: n.plate,
+			// A note's sheet shows its doodle and ignores plate entirely; the
+			// doodle joins by stable id the way every other note surface does.
+			doodle: doodles.find((d) => d.id === n.doodleId) ?? null,
 			title: n.title, cap: n.cap, body: [n.teaser], meta: [['Filed', n.date]],
 		});
 	});
@@ -202,33 +225,45 @@ function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[]): Mark[
 	return marks;
 }
 
-// Stand-in photography, drawn rather than fetched (the mock's own choice: no
-// real media backs these plates).
-const SCENES: { sky: [string, string, string]; sea: string; t: number; moon: boolean }[] = [
-	{ sky: ['#2a3a63', '#6b6a86', '#c78f63'], sea: '#131a30', t: .72, moon: false },
-	{ sky: ['#101838', '#1d2b52', '#3d4a72'], sea: '#0b1024', t: .24, moon: true },
-	{ sky: ['#0b1024', '#16203f', '#2c3358'], sea: '#080d1e', t: .5, moon: true },
-	{ sky: ['#3b3054', '#7a5a6a', '#d79a6a'], sea: '#181a2c', t: .34, moon: false },
-	{ sky: ['#0d1428', '#243154', '#5b6c8e'], sea: '#0a1020', t: .62, moon: false },
-];
-function plateArt(i: number, w = 640, h = 360): string {
-	const s = SCENES[i % SCENES.length], hz = Math.round(h * .62), tx = Math.round(w * s.t);
-	return 'data:image/svg+xml,' + encodeURIComponent(
-		`<svg xmlns='${SVG_NS}' width='${w}' height='${h}'><defs>
-<linearGradient id='k' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='${s.sky[0]}'/>
-<stop offset='.62' stop-color='${s.sky[1]}'/><stop offset='1' stop-color='${s.sky[2]}'/></linearGradient>
-<radialGradient id='g'><stop offset='0' stop-color='#ffcf7d' stop-opacity='.95'/>
-<stop offset='1' stop-color='#ffcf7d' stop-opacity='0'/></radialGradient></defs>
-<rect width='${w}' height='${hz}' fill='url(#k)'/><rect y='${hz}' width='${w}' height='${h - hz}' fill='${s.sea}'/>
-${s.moon ? `<circle cx='${w * .78}' cy='${h * .2}' r='${h * .05}' fill='#f4efe0' opacity='.9'/>` : ''}
-${[...Array(9)].map((_, n) => `<circle cx='${(n * 71 + 33) % w}' cy='${(n * 37 + 18) % (hz - 24)}' r='1.3' fill='#fff' opacity='.5'/>`).join('')}
-<path d='M0 ${hz} L${w * .22} ${hz - h * .1} L${w * .42} ${hz - h * .04} L${w * .6} ${hz - h * .12} L${w * .82} ${hz - h * .03} L${w} ${hz - h * .08} L${w} ${hz} Z' fill='#070a14' opacity='.92'/>
-<rect x='${tx}' y='${hz - h * .3}' width='${Math.round(w * .022)}' height='${h * .3}' fill='#0a0d18'/>
-<circle cx='${tx + w * .011}' cy='${hz - h * .3}' r='${h * .085}' fill='url(#g)'/>
-<circle cx='${tx + w * .011}' cy='${hz - h * .3}' r='2.6' fill='#fff3d8'/>
-${[...Array(6)].map((_, n) => `<rect x='${tx - 4}' y='${hz + (n * (h - hz)) / 6 + 3}' width='${8 + n * 3}' height='1.4' fill='#ffcf7d' opacity='${.4 - n * .05}'/>`).join('')}
-</svg>`.replace(/\n/g, ''),
-	);
+// A plate is a real print now: `plate` picks which one of the entity's gallery
+// leads the sheet (chart-berths contract, amendment 3). The index is clamped
+// rather than wrapped, so a plate pointing past the end lands on the last
+// print the keeper actually pinned instead of walking back round to the first.
+const leadPrint = (m: Mark): string | null => {
+	const gallery = m.images ?? [];
+	if (!gallery.length) {
+		return null;
+	}
+	return gallery[Math.max(0, Math.min(gallery.length - 1, m.plate))];
+};
+
+// The doodle a note flies instead of a plate, drawn from stored shapes rather
+// than stored markup (the DoodleSvg contract; the sheet builds its DOM by hand,
+// so the same shapes are written as attributes here instead of as JSX props).
+const SHAPE_ATTRS: Record<string, string> = {
+	strokeWidth: 'stroke-width', linecap: 'stroke-linecap', linejoin: 'stroke-linejoin',
+	w: 'width', h: 'height', d: 'd', cx: 'cx', cy: 'cy', rx: 'rx', ry: 'ry',
+	x: 'x', y: 'y', x1: 'x1', y1: 'y1', x2: 'x2', y2: 'y2',
+	fill: 'fill', stroke: 'stroke', opacity: 'opacity',
+};
+function shapeMarkup(shape: FigureheadShape): string {
+	const attrs = Object.entries(shape)
+		.filter(([k, v]) => SHAPE_ATTRS[k] && v !== undefined)
+		.map(([k, v]) => `${SHAPE_ATTRS[k]}="${v}"`)
+		.join(' ');
+	return `<${shape.type} ${attrs}></${shape.type}>`;
+}
+const doodlePlate = (d: Doodle) =>
+	`<span class="sheet__doodle"><svg viewBox="${d.viewBox}" aria-hidden="true">${d.shapes.map(shapeMarkup).join('')}</svg></span>`;
+
+// The frame stays mounted whether or not a print hangs in it: blank paper and
+// the caption, never a broken glyph (the light-entry overlay's own pattern).
+function sheetPlate(m: Mark): string {
+	if (m.doodle) {
+		return doodlePlate(m.doodle);
+	}
+	const print = leadPrint(m);
+	return `<span class="sheet__plate">${print ? `<img src="${mediaUrl(print)}" alt="${m.cap}">` : ''}</span>`;
 }
 
 // The wandering chart's own marks, brought aboard. Wreck/moored/port/journal
@@ -257,12 +292,13 @@ interface Props {
 	projects:       Project[];
 	hobbies:        Hobby[];
 	notes:          Note[];
+	doodles:        Doodle[];
 	keeperName:     string;
 	keeperTitle:    string;
 	keeperLocation: string;
 }
 
-export default function Helm({ projects, hobbies, notes, keeperName, keeperTitle, keeperLocation }: Props) {
+export default function Helm({ projects, hobbies, notes, doodles, keeperName, keeperTitle, keeperLocation }: Props) {
 	const railRef = useRef<HTMLDivElement | null>(null);
 	const planeRef = useRef<HTMLDivElement | null>(null);
 	const [railDate, setRailDate] = useState('');
@@ -326,7 +362,7 @@ export default function Helm({ projects, hobbies, notes, keeperName, keeperTitle
 			const major = Math.abs(lon - Math.round(lon)) < 1e-6;
 			addEl(svg, 'line', { x1: px, y1: 0, x2: px, y2: H, stroke: `rgba(198,160,82,${major ? .3 : .13})`, 'stroke-width': major ? 1.1 : .8 });
 		}
-		for (let lat = 57.9; lat <= 58.75; lat += 1 / 6) {
+		for (let lat = 57.75; lat <= 58.75; lat += 1 / 6) {
 			const py = y(lat);
 			if (py < 0 || py > H) {
 				continue;
@@ -388,7 +424,7 @@ export default function Helm({ projects, hobbies, notes, keeperName, keeperTitle
 			el.innerHTML = html; plane.appendChild(el);
 			return el;
 		};
-		for (let lat = 58.0; lat <= 58.7; lat += 1 / 6) {
+		for (let lat = 57.85; lat <= 58.7; lat += 1 / 6) {
 			const py = y(lat);
 			if (py < 14 || py > H - 14) {
 				continue;
@@ -443,22 +479,57 @@ export default function Helm({ projects, hobbies, notes, keeperName, keeperTitle
 		plane.appendChild(scale);
 
 		/* the lights: every lamp runs off one clock */
-		const MARKS = buildMarks(projects, hobbies, notes);
+		const MARKS = buildMarks(projects, hobbies, notes, doodles);
 
 		/* build the marks and the list together */
 		const nodes: Record<string, { markEl: HTMLDivElement; rowEl: HTMLButtonElement | null; flareEl: HTMLElement; data: Mark }> = {};
 		let lastGroup = '';
+		const railGroups: Record<string, HTMLButtonElement> = {};
+
+		/* the rail folds: a group header hides its own items, the search box hides
+		   the rest. Both funnel through here so they can never disagree. A const
+		   arrow rather than a hoisted declaration, same reason goTo is one below. */
+		const railFind = document.getElementById('railFind') as HTMLInputElement | null;
+		const railEmpty = document.createElement('div');
+		railEmpty.className = 'rail__empty'; railEmpty.hidden = true;
+		railEmpty.textContent = 'no marks by that name';
+		const applyRail = () => {
+			const q = (railFind?.value ?? '').trim().toLowerCase();
+			const shown: Record<string, number> = {};
+			rail.querySelectorAll<HTMLButtonElement>('.rail__item').forEach((it) => {
+				const g = railGroups[it.dataset.group!];
+				const folded = !!g && g.hasAttribute('data-collapsed') && !q;
+				const hit = !q || it.dataset.find!.includes(q);
+				it.hidden = folded || !hit;
+				if (hit) {
+					shown[it.dataset.group!] = (shown[it.dataset.group!] || 0) + 1;
+				}
+			});
+			for (const name in railGroups) {
+				const n = shown[name] || 0;
+				railGroups[name].hidden = q ? !n : false;
+				railGroups[name].querySelector('.rail__count')!.textContent = n ? String(n) : '';
+			}
+			railEmpty.hidden = !q || Object.keys(shown).length > 0;
+		};
+
 		MARKS.forEach((m) => {
 			if (!m.egg && m.group !== lastGroup) {
-				const g = document.createElement('div');
-				g.className = 'rail__group'; g.innerHTML = `<span>${m.group}</span>`;
-				rail.appendChild(g); lastGroup = m.group;
+				const g = document.createElement('button');
+				g.className = 'rail__group'; g.dataset.groupHead = m.group;
+				g.innerHTML = `<span><i class="rail__caret">▾</i>${m.group}</span><i class="rail__count" aria-hidden="true"></i>`;
+				g.addEventListener('click', () => {
+					g.toggleAttribute('data-collapsed');
+					applyRail();
+				});
+				rail.appendChild(g); railGroups[m.group] = g; lastGroup = m.group;
 			}
 			const cls = (m.wreck ? ' is-wreck' : '') + (m.dim ? ' is-dim' : '') + (m.port ? ' is-port' : '') + (m.memorial ? ' is-memorial' : '');
 			let b: HTMLButtonElement | null = null;
 			if (!m.egg) {
 				b = document.createElement('button');
-				b.className = 'rail__item' + cls; b.dataset.id = m.id;
+				b.className = 'rail__item' + cls; b.dataset.id = m.id; b.dataset.group = m.group;
+				b.dataset.find = (m.name + ' ' + m.code + ' ' + m.group).toLowerCase();
 				b.innerHTML = `<span class="rail__glyph">${m.icon && MINI[m.icon] ? MINI[m.icon] : '<i></i>'}</span>
           <span class="rail__name">${m.name}</span><span class="rail__code">${m.code}</span>`;
 				b.addEventListener('click', () => goTo(m.id));
@@ -475,6 +546,10 @@ export default function Helm({ projects, hobbies, notes, keeperName, keeperTitle
 			plane.appendChild(el);
 			nodes[m.id] = { markEl: el, rowEl: b, flareEl: el.querySelector('.mk__flare')!, data: m };
 		});
+
+		rail.appendChild(railEmpty);
+		railFind?.addEventListener('input', applyRail);
+		applyRail();
 
 		/* signal flares: root for a hobby; the keeper's office reads the tally.
 		   The shared tally (src/lib/flares.ts) reads and writes the same
@@ -588,10 +663,12 @@ export default function Helm({ projects, hobbies, notes, keeperName, keeperTitle
 			sheetBodyEl.innerHTML =
 				`<div class="sheet__k">${m.group}</div><h2>${m.title}</h2>
          <div class="sheet__pos">${dms(m.lat, 'lat')} &nbsp;·&nbsp; ${dms(m.lon, 'lon')}${m.char ? ' &nbsp;·&nbsp; ' + m.code : ''}</div>
-         <span class="sheet__plate"><img src="${plateArt(m.plate)}" alt="${m.cap}"></span>
+         ${m.made ? `<div class="sheet__built" title="${m.madeTitle ?? ''}"><span>built</span><i>${m.made}</i><u></u></div>` : ''}
+         ${sheetPlate(m)}
          <span class="sheet__cap">${m.cap}</span>
          ${m.body.map((p) => `<p>${p}</p>`).join('')}
          ${m.meta ? `<dl>${m.meta.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}
+         ${m.links?.length ? `<div class="sheet__links">${m.links.map(([t, h]) => `<a href="${h}">${t}</a>`).join('')}</div>` : ''}
          ${m.group === 'Hobbies' ? `<p style="margin-top:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px"><button class="sheet__flare" id="fireFlare"><svg width="13" height="15" viewBox="0 0 13 15" fill="none"><path d="M6.5 14 V6" stroke="#c6a052" stroke-width="1.3" stroke-linecap="round"/><path d="M6.5 1 L8 4.5 L6.5 3.5 L5 4.5 Z" fill="#ff6a52"/></svg>send up a flare</button><span class="sheet__flareline" id="flareLine">${hobbyIdFor(m.name) && flares[hobbyIdFor(m.name)!] ? 'flare away · the keeper will see it' : 'send one up to root for this one'}</span></p>` : ''}
          ${m.memorial ? '<p style="margin-top:18px"><button class="mem__close" id="openMem" style="color:#c9a86a;border-color:rgba(154,123,58,.5)">read the memorial</button></p>' : ''}`;
 			const om = document.getElementById('openMem');
@@ -784,7 +861,7 @@ export default function Helm({ projects, hobbies, notes, keeperName, keeperTitle
 			window.removeEventListener('keydown', onKey);
 			window.removeEventListener('resize', onResize);
 		};
-	}, [projects, hobbies, notes]);
+	}, [projects, hobbies, notes, doodles]);
 
 	return (
 		<>
@@ -797,6 +874,7 @@ export default function Helm({ projects, hobbies, notes, keeperName, keeperTitle
 						    this reads from there instead. */}
 						<div className="rail__role">{keeperTitle} · {keeperLocation}</div>
 						<div className="rail__sub">the light list · home waters<br />corrected to <span id="railDate">{railDate}</span></div>
+						<label className="rail__find"><input id="railFind" type="search" placeholder="search the chart" autoComplete="off" aria-label="search the chart" /></label>
 					</div>
 					<div className="rail__scroll" id="rail" ref={railRef}></div>
 					<div className="rail__foot">
