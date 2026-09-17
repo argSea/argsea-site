@@ -221,6 +221,7 @@ export interface WatchBearing {
 // the front door collapses the whole section rather than render an empty box.
 export interface Watch {
 	id:               string;
+	title:            string;   // the chart sheet's headline; '' = the sheet's own fallback, the home never shows it
 	letter:           string;   // plain text; blank lines split paragraphs
 	rotation:         string;   // the italic "out of the rotation" line; '' = none
 	bearings:         WatchBearing[];
@@ -234,6 +235,7 @@ export interface Watch {
 // all collapse to, so every source agrees on the one collapse signal.
 const EMPTY_WATCH: Watch = {
 	id:               '',
+	title:            '',
 	letter:           '',
 	rotation:         '',
 	bearings:         [],
@@ -474,8 +476,9 @@ class ApiSource implements ContentSource {
 			// break the build at bearings.map, so normalize on arrival. The
 			// second-print field may not exist yet on an API predating the
 			// two-hook rack; absent reads exactly like an emptied string, the
-			// second hook bare, same as the first print's own guard.
-			return { ...doc, bearings: doc.bearings ?? [], quips: doc.quips ?? [], postcard2MediaId: doc.postcard2MediaId ?? '' };
+			// second hook bare, same as the first print's own guard. The title
+			// is the same story on an API predating it.
+			return { ...doc, title: doc.title ?? '', bearings: doc.bearings ?? [], quips: doc.quips ?? [], postcard2MediaId: doc.postcard2MediaId ?? '' };
 		} catch {
 			return EMPTY_WATCH;
 		}

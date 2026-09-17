@@ -8,7 +8,8 @@
 //
 // Data: projects/hobbies/notes/keeper feed the Helm island the way
 // BottleBoat/ShipsLog take their props; Helm.tsx charts the ones carrying a
-// coord and leaves the rest in the log.
+// coord and leaves the rest in the log. The current watch rides in too: its
+// pin is the one mark that isn't a record, and it opens on load.
 import '@fontsource/gloock';
 import '@fontsource-variable/newsreader/standard.css';
 import '@fontsource-variable/newsreader/standard-italic.css';
@@ -17,11 +18,12 @@ import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 
 import Helm from '../components/islands/Helm';
-import { getProjects, getHobbies, getNotes, getDoodles, getKeeperProfile } from '../lib/api';
+import { getProjects, getHobbies, getNotes, getDoodles, getKeeperProfile, getWatch } from '../lib/api';
 
 const projects = await getProjects();
 const hobbies = await getHobbies();
 const notes = await getNotes();
+const watch = await getWatch();
 
 // The journal's marginalia: a note's chart sheet flies its doodle where a
 // project or hobby hangs a print (an island can't reach src/lib/api.ts itself).
@@ -44,6 +46,7 @@ const keeper = await getKeeperProfile();
 			hobbies={hobbies}
 			notes={notes}
 			doodles={doodles}
+			watch={watch}
 			keeperName={keeper.name}
 			keeperTitle={keeper.title}
 			keeperLocation={keeper.location}

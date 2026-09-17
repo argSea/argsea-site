@@ -1,6 +1,7 @@
-// The helm (fixtures build): the rail lists the watch pin plus every charted
-// published project, every charted hobby, and every charted published journal
-// entry, charted meaning the record carries a coord; a sheet hangs the
+// The helm (fixtures build; the mock builds for a kept watch): the rail lists
+// the watch pin plus every charted published project, every charted hobby, and
+// every charted published journal entry, charted meaning the record carries a
+// coord; the watch pin's sheet reads the current watch; a sheet hangs the
 // entity's own lead print (or a note's doodle) with its caption, the rail
 // searches and folds, a rail or
 // chart click sails the boat and opens that mark's sheet, the Flannan
@@ -25,6 +26,11 @@ const chartedProjects = projects.filter((p) => p.status === 'published' && p.coo
 const chartedHobbies = hobbies.filter((h) => h.coord);
 const chartedNotes = notes.filter((n) => n.status === 'published' && n.coord);
 const railCount = 1 /* the watch pin */ + chartedProjects.length + chartedHobbies.length + chartedNotes.length;
+
+// The mock builds serve a kept watch (e2e/mock-api.mjs): featured carries a
+// title and charted bearings, fallback is a pre-title API steering at nothing
+const FEATURED_BUILD = 'http://127.0.0.1:4822';
+const FALLBACK_BUILD = 'http://127.0.0.1:4823';
 
 test('the rail lists the watch pin, every charted project, every charted hobby, and every charted note', async ({ page }) => {
 	expect(railCount).toBeGreaterThan(0);
@@ -65,6 +71,52 @@ test('a note flies its doodle where a light hangs a print', async ({ page }) => 
 	await page.locator('.rail__item', { hasText: 'CachyOS, three months in' }).click();
 	await expect(page.locator('.sheet__doodle svg')).toHaveCount(1);
 	await expect(page.locator('.sheet__plate')).toHaveCount(0);
+});
+
+test('the fixtures build keeps no watch: the chart still boots on the watch sheet, headed by the fallback, with a bare frame', async ({ page }) => {
+	await page.goto('/helm');
+	await expect(page.locator('#sheet')).toHaveAttribute('data-open', '');
+	await expect(page.locator('#sheetBody .sheet__k')).toHaveText('Now');
+	await expect(page.locator('#sheetBody h2')).toHaveText('A note from the keeper');
+	await expect(page.locator('.sheet__plate')).toHaveCount(1);
+	await expect(page.locator('.sheet__plate img')).toHaveCount(0);
+	await expect(page.locator('.sheet__cap')).toHaveText('');
+	await expect(page.locator('.rail__item[data-id="fix"] .rail__code')).toHaveText('');
+});
+
+test('a kept watch reads onto its sheet: title, kept line, postcard, season caption, letter, bearings, and what the keeper is avoiding', async ({ page }) => {
+	await page.goto(`${FEATURED_BUILD}/helm`);
+	const body = page.locator('#sheetBody');
+	await expect(body.locator('h2')).toHaveText('Three weeks in, the paper still came out every morning.');
+	await expect(page.locator('.rail__item[data-id="fix"] .rail__code')).toHaveText('kept 15 jul');
+	await expect(body.locator('.sheet__plate img')).toHaveAttribute('src', '/media/images/station-photo.svg');
+	await expect(body.locator('.sheet__cap')).toHaveText('from the season · jul 2026');
+	await expect(body.locator('p')).toHaveText([
+		'Most of my time right now goes to the ArcXP migration.',
+		'Dad the rest of the time, which is most of the time.',
+	]);
+
+	// wire order, then the rotation last
+	await expect(body.locator('dt')).toHaveText(['Building', 'Logging', 'Sanding', 'Avoiding']);
+	await expect(body.locator('dd')).toHaveText(['Janus', 'CachyOS, three months in', 'Woodworking', 'Out of the rotation on purpose: conference talks and the piano.']);
+
+	// a charted target links to its own mark; an uncharted hobby stays plain text
+	const rows = body.locator('dl div');
+	await expect(rows.nth(0).locator('.sheet__link')).toHaveAttribute('data-goto', 'p-janus');
+	await expect(rows.nth(1).locator('.sheet__link')).toHaveAttribute('data-goto', 'j-cachyos-three-months-in');
+	await expect(rows.nth(2).locator('.sheet__link')).toHaveCount(0);
+
+	await rows.nth(0).locator('.sheet__link').click();
+	await expect(body.locator('h2')).toHaveText('Janus');
+});
+
+test('a watch from an API before titles heads its sheet with the fallback, and bearings aimed at nothing stay plain text', async ({ page }) => {
+	await page.goto(`${FALLBACK_BUILD}/helm`);
+	const body = page.locator('#sheetBody');
+	await expect(body.locator('h2')).toHaveText('A note from the keeper');
+	await expect(body.locator('dt')).toHaveText(['Wrangling', 'Logging', 'Avoiding']);
+	await expect(body.locator('dd')).toHaveText(['The ArcXP migration', 'the journal', 'Out of the rotation on purpose: conference talks and the piano.']);
+	await expect(body.locator('.sheet__link')).toHaveCount(0);
 });
 
 test('the rail searches across every group and folds one group at a time', async ({ page }) => {
@@ -178,7 +230,7 @@ test('sending a flare flips the sheet\'s line and the tally survives a reload, u
 test('dragging the water pans the chart without sailing to a different mark', async ({ page }) => {
 	await page.goto('/helm');
 	// boot() opens the watch pin's sheet on load (goTo('fix')), same as canon
-	await expect(page.locator('#sheetBody h2')).toHaveText('Three weeks in, the paper still came out every morning.');
+	await expect(page.locator('#sheetBody h2')).toHaveText('A note from the keeper');
 	const plane = page.locator('#plane');
 	const before = await plane.evaluate((el) => getComputedStyle(el).transform);
 
@@ -192,7 +244,7 @@ test('dragging the water pans the chart without sailing to a different mark', as
 
 	expect(await plane.evaluate((el) => getComputedStyle(el).transform)).not.toBe(before);
 	// the drag panned the water, it didn't land on a mark and sail there
-	await expect(page.locator('#sheetBody h2')).toHaveText('Three weeks in, the paper still came out every morning.');
+	await expect(page.locator('#sheetBody h2')).toHaveText('A note from the keeper');
 });
 
 test('reduced motion stills the shared characteristic clock', async ({ page }) => {
