@@ -37,11 +37,21 @@ const MOCK_KEEPER = {
 // prove the second print (postcard2MediaId) renders below the first, and the
 // watch cat is present for the ten-poke Gull Post finale. The prints point at
 // committed test prints (e2e/test-prints, served by serve-dist.mjs).
+//
+// The featured watch carries a title and bearings steering at a charted light,
+// a charted note and an uncharted hobby, so the helm sheet proves which ones
+// link. The fallback watch stands in for an API from before the title: no
+// title field at all, and bearings that point at nothing on the chart.
 const MOCK_WATCH = {
 	id:               'mock-watch',
+	...('featured' === mode ? { title: 'Three weeks in, the paper still came out every morning.' } : {}),
 	letter:           'Most of my time right now goes to the ArcXP migration.\n\nDad the rest of the time, which is most of the time.',
 	rotation:         'Out of the rotation on purpose: conference talks and the piano.',
-	bearings:         [
+	bearings:         'featured' === mode ? [
+		{ verb: 'building', kind: 'light', targetId: 'fixture-project-10', name: 'Janus' },
+		{ verb: 'logging', kind: 'note', targetId: 'fixture-note-2', name: 'CachyOS, three months in' },
+		{ verb: 'sanding', kind: 'hobby', targetId: 'fixture-hobby-6', name: 'Woodworking' },
+	] : [
 		{ verb: 'wrangling', kind: 'none', targetId: '', name: 'The ArcXP migration' },
 		{ verb: 'logging', kind: 'note', targetId: '', name: 'the journal' },
 	],

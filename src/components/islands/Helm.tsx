@@ -13,7 +13,7 @@
 // part of this port: it isn't named in the ported feature list and gazette.astro
 // is off limits to this slice.
 import { useEffect, useRef, useState } from 'react';
-import type { Doodle, FigureheadShape, Hobby, HobbyState, Light, Note, Project } from '../../lib/api';
+import type { Doodle, FigureheadShape, Hobby, HobbyState, Light, Note, Project, Watch } from '../../lib/api';
 import { loadFlares, recordFlare } from '../../lib/flares';
 import { DEFAULT_LIGHT, codeFor, timeline, type Timeline } from '../../lib/lightChar';
 import { mediaUrl } from '../../lib/media';
@@ -98,19 +98,33 @@ interface Mark {
 	links?:   [string, string][];
 }
 
-// The current-watch pin: not a project, hobby, or journal entry the API can
-// resolve, so canon's own hardcoded pin ports over unchanged.
-const FIX_MARK: Mark = {
-	id: 'fix', group: 'Now', name: 'The current watch', code: 'kept 19 jul', lat: 58.335, lon: -7.30,
-	char: null, plate: 0,
-	title: 'Three weeks in, the paper still came out every morning.',
-	cap: 'The lamp room, 04:20. The pager stayed quiet.',
-	body: [
-		'Nobody noticed the migration. That was the entire point of doing it that way, and it is the only review I actually wanted.',
-		'I keep the systems a newsroom runs on: the publishing pipeline, the queues behind it, and the pager that goes off when either one develops opinions at three in the morning.',
-	],
-	meta: [['Reading', 'Designing Data-Intensive Applications'], ['Building', 'a terminal that keeps work and home apart'], ['Avoiding', 'the piano, still']],
-};
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+// The current-watch pin: the one mark that isn't a project, hobby, or journal
+// entry, so its berth stays fixed while its sheet reads the watch. `charted`
+// maps `kind:recordId` to the id buildMarks gave that record's mark, so a
+// bearing only links when its target is actually on the chart.
+function watchMark(watch: Watch, charted: Record<string, string>): Mark {
+	const kept = new Date(watch.keptAt);
+	const keptValid = !Number.isNaN(kept.getTime());
+	const meta: [string, string][] = watch.bearings.map((b) => {
+		const markId = charted[`${b.kind}:${b.targetId}`];
+		return [cap1(b.verb), markId ? `<button class="sheet__link" data-goto="${markId}">${b.name}</button>` : b.name];
+	});
+	if ('' !== watch.rotation.trim()) {
+		meta.push(['Avoiding', watch.rotation]);
+	}
+	return {
+		id: 'fix', group: 'Now', name: 'The current watch', code: keptValid ? `kept ${kept.getUTCDate()} ${MONTHS[kept.getUTCMonth()]}` : '',
+		lat: 58.335, lon: -7.30, char: null, plate: 0,
+		images: watch.postcardMediaId ? [watch.postcardMediaId] : null,
+		title: watch.title.trim() || 'A note from the keeper',
+		// The caption stamps itself from the save date, and only under a print
+		cap: watch.postcardMediaId && keptValid ? `from the season · ${MONTHS[kept.getUTCMonth()]} ${kept.getUTCFullYear()}` : '',
+		body: watch.letter.split(/\n\s*\n/).map((block) => block.trim()).filter((block) => '' !== block),
+		meta,
+	};
+}
 
 // The Flannan Isle memorial: a real lighthouse with a real historical
 // character (Fl(2) W 30s), not derived from any project/hobby/journal
@@ -155,8 +169,9 @@ function madeLine(project: Project): string {
 	return project.assist.only ? `by ${harness}, checked by hand` : `by hand, with ${harness} alongside`;
 }
 
-function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[], doodles: Doodle[]): Mark[] {
-	const marks: Mark[] = [FIX_MARK, FLANNAN_MARK];
+function buildMarks(watch: Watch, projects: Project[], hobbies: Hobby[], notes: Note[], doodles: Doodle[]): Mark[] {
+	const marks: Mark[] = [];
+	const charted: Record<string, string> = {};
 
 	projects.forEach((p) => {
 		// Charted means coord non-null, on every chartable: the placement rides
@@ -170,8 +185,9 @@ function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[], doodle
 		if (p.moral) {
 			meta.push(['Moral', p.moral.replace(/^Moral:\s*/i, '')]);
 		}
+		charted['light:' + p.id] = 'p-' + slug(p.title);
 		marks.push({
-			id: 'p-' + slug(p.title), group: 'Projects', name: p.title, code: c.code,
+			id: charted['light:' + p.id], group: 'Projects', name: p.title, code: c.code,
 			lat: p.coord.lat, lon: p.coord.lon, char: c.char, plate: p.plate, images: p.images,
 			// The mock's dim signal was p.status === 'dark' (its own demo data);
 			// the live contract's equivalent is a light that's been extinguished.
@@ -199,8 +215,9 @@ function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[], doodle
 				meta.push(['Notes', `<button class="sheet__link" data-goto="j-${slug(note.title)}">${note.title}</button>`]);
 			}
 		});
+		charted['hobby:' + h.id] = 'h-' + slug(h.name);
 		marks.push({
-			id: 'h-' + slug(h.name), group: 'Hobbies', name: h.name,
+			id: charted['hobby:' + h.id], group: 'Hobbies', name: h.name,
 			code: HOBBY_CODE[h.state], lat: h.coord.lat, lon: h.coord.lon, wreck: true,
 			dim: h.state !== 'moored' && h.state !== 'port', port: h.state === 'port',
 			icon: HOBBY_ICON[h.state], plate: h.plate, images: h.images,
@@ -212,8 +229,9 @@ function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[], doodle
 		if (!n.coord) {
 			return;
 		}
+		charted['note:' + n.id] = 'j-' + slug(n.title);
 		marks.push({
-			id: 'j-' + slug(n.title), group: 'Journal', name: n.title, code: n.date,
+			id: charted['note:' + n.id], group: 'Journal', name: n.title, code: n.date,
 			lat: n.coord.lat, lon: n.coord.lon, wreck: true, icon: 'bottle', plate: n.plate,
 			// A note's sheet shows its doodle and ignores plate entirely; the
 			// doodle joins by stable id the way every other note surface does.
@@ -222,7 +240,8 @@ function buildMarks(projects: Project[], hobbies: Hobby[], notes: Note[], doodle
 		});
 	});
 
-	return marks;
+	// The watch pin still leads the rail; it's built last only so it can see every charted record
+	return [watchMark(watch, charted), FLANNAN_MARK, ...marks];
 }
 
 // A plate is a real print now: `plate` picks which one of the entity's gallery
@@ -298,12 +317,13 @@ interface Props {
 	hobbies:        Hobby[];
 	notes:          Note[];
 	doodles:        Doodle[];
+	watch:          Watch;
 	keeperName:     string;
 	keeperTitle:    string;
 	keeperLocation: string;
 }
 
-export default function Helm({ projects, hobbies, notes, doodles, keeperName, keeperTitle, keeperLocation }: Props) {
+export default function Helm({ projects, hobbies, notes, doodles, watch, keeperName, keeperTitle, keeperLocation }: Props) {
 	const railRef = useRef<HTMLDivElement | null>(null);
 	const planeRef = useRef<HTMLDivElement | null>(null);
 	const [railDate, setRailDate] = useState('');
@@ -484,7 +504,7 @@ export default function Helm({ projects, hobbies, notes, doodles, keeperName, ke
 		plane.appendChild(scale);
 
 		/* the lights: every lamp runs off one clock */
-		const MARKS = buildMarks(projects, hobbies, notes, doodles);
+		const MARKS = buildMarks(watch, projects, hobbies, notes, doodles);
 
 		/* build the marks and the list together */
 		const nodes: Record<string, { markEl: HTMLDivElement; rowEl: HTMLButtonElement | null; flareEl: HTMLElement; data: Mark }> = {};
@@ -866,7 +886,7 @@ export default function Helm({ projects, hobbies, notes, doodles, keeperName, ke
 			window.removeEventListener('keydown', onKey);
 			window.removeEventListener('resize', onResize);
 		};
-	}, [projects, hobbies, notes, doodles]);
+	}, [projects, hobbies, notes, doodles, watch]);
 
 	return (
 		<>
