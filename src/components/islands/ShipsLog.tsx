@@ -5,16 +5,19 @@
 // once the home page's overlay layer started drawing bearing cards too), a wake
 // trails each hobby that slipped its mooring, the
 // Flannan Isle memorial keeps its real Fl(2) W 30s light as tribute, and the
-// bearing card lets a visitor send up a flare for an overdue one. Flares keep a
+// bearing card hangs the hobby's prints and lets a visitor send up a flare for
+// an overdue one. The log itself floats the still-moored ships to the top
+// behind a thin rule, one register throughout. Flares keep a
 // local tally for the card's own line (argsea-flares, the key the watch room
 // reads); the beacon is the real count, fired once per hobby per view. The
 // diorama's static art rides ten carving spots (BoltedSvg mounts; bolted markup
 // resolved build-time by hobbies.astro); the memorial trio and the computed
 // line-work are deliberately not spots.
-import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import type { Coord, Doodle, FigureheadDesign, Hobby, HobbyState, Note } from '../../lib/api';
 import { pageCatPick } from '../../lib/catSpots';
 import { STATE_META, fmtCoord, pillStyle } from '../../lib/bearings';
+import { mediaUrl } from '../../lib/media';
 import { loadFlares, recordFlare } from '../../lib/flares';
 import { sightFlare, sightVisit } from '../../lib/sightings';
 import { useEscapeKey } from './useEscapeKey';
@@ -37,6 +40,10 @@ const UNCHARTED_COORD: Coord = { lat: 57.86, lon: -6.68 };
 // The bearing card's cat gets its own lines, not the chart lookout's set; both
 // perches carry the 'chart' context, transcribed from the Hobbies mock's overlay.
 const BEARING_QUIPS = ['i read the log. twice.', 'it will drift back. probably.', 'mark a search. i will supervise.', 'the sea keeps what it likes.'];
+
+// The decorative thumb strip's per-index rotation, the same ProjectOverlay.dc.html
+// `rots` the light-entry overlay flies, cycling for a gallery beyond five thumbs.
+const THUMB_ROTATIONS = ['-2deg', '1.5deg', '-1deg', '2deg', '-1.6deg'];
 
 function proj(c: Coord) {
 	const w = CHART_WIN;
@@ -99,10 +106,28 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 	const [flaredNow, setFlaredNow] = useState<Record<string, boolean>>({});
 	const [flareFiring, setFlareFiring] = useState(false);
 	const [memorial, setMemorial] = useState(false);
+	// A print not yet pinned: a name whose fetch failed, because the print can be
+	// struck from the darkroom after the hobby referenced it. Tracked by name so
+	// the lead print and any thumb fail independently, and shared across cards so
+	// a name that already failed never re-requests on the next open.
+	const [failedPrints, setFailedPrints] = useState<Set<string>>(new Set());
 	const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 	const fireTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
 	const suggestionList = useMemo(() => ['???', ...suggestions], [suggestions]);
+
+	// The ships still at their moorings float to the top of the log; everything
+	// else arrives in the keeper's manual order and stays exactly as it came
+	// (getHobbies pre-sorts by `order`). A stable partition, not a five-state
+	// ranking, so the keeper's own arrangement survives inside each group. Every
+	// row keeps its index into `hobbies` because the chart marks, the hover
+	// highlight and the bearing card all key off that, never off log position.
+	const logRows = useMemo(() => {
+		const rows = hobbies.map((hobby, index) => ({ hobby, index }));
+		const moored = rows.filter((row) => 'moored' === row.hobby.state);
+		const rest = rows.filter((row) => 'moored' !== row.hobby.state);
+		return { rows: [...moored, ...rest], mooredCount: moored.length };
+	}, [hobbies]);
 
 	// The shared tally (src/lib/flares.ts) loads and migrates name keys to
 	// hobby.id in one pass; Helm reads and writes the same bucket.
@@ -195,6 +220,19 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 	// entry up over the still-open bearing card (the pin's "logged in the journal").
 	const openNoteIds = open?.noteIds ?? [];
 	const bearingNotes = open ? notes.filter((note) => openNoteIds.includes(note.id)) : [];
+
+	// The bearing's prints, the light-entry overlay's treatment brought across:
+	// up to six in all, the lead print plus up to five decorative thumbs, no
+	// click-to-swap. `plate` picks which one leads (Helm's own rule for a hobby),
+	// clamped rather than wrapped so a plate pointing past the end lands on the
+	// last print the keeper actually pinned instead of walking back round.
+	const gallery = open?.images ? open.images.slice(0, 6) : [];
+	const plateIdx = open && gallery.length ? Math.max(0, Math.min(gallery.length - 1, open.plate)) : 0;
+	const leadPrint = gallery[plateIdx];
+	const leadOk = Boolean(leadPrint) && !failedPrints.has(leadPrint);
+	const thumbs = gallery.filter((_, index) => index !== plateIdx);
+	const markFailed = (name: string) => setFailedPrints((current) => (current.has(name) ? current : new Set(current).add(name)));
+
 	const openNote = noteId === null ? null : notes.find((note) => note.id === noteId) ?? null;
 	const openNoteDoodle = openNote ? doodles.find((doodle) => doodle.id === openNote.doodleId) ?? null : null;
 
@@ -359,33 +397,39 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 					<span style={{ fontSize: '15px', color: '#5f6ec4', fontStyle: 'italic' }}>last known bearings</span>
 				</div>
 
-				{hobbies.map((hobby, index) => {
+				{logRows.rows.map(({ hobby, index }, position) => {
 					const meta = STATE_META[hobby.state];
+					// A rule, never a second section: one register with every ship in
+					// it, with the moored group marked off. An all-moored log would put
+					// the rule under the last row, so it only draws with rows below it.
+					const ruleBelow = position + 1 === logRows.mooredCount && logRows.mooredCount < logRows.rows.length;
 					return (
-						<div
-							key={hobby.id}
-							className="shipslog__row"
-							data-logrow
-							data-hobby-id={hobby.id}
-							onClick={() => openHobby(index)}
-							onMouseEnter={() => onHover(index)}
-							onMouseLeave={() => offHover(index)}
-							style={{ display: 'flex', gap: '18px', alignItems: 'center', padding: '18px 10px', borderTop: '1px solid rgba(150,160,220,.14)', cursor: 'pointer', transition: 'background .2s', background: hoverIdx === index ? 'rgba(147,160,232,.05)' : 'transparent', animation: 'fadeUp .5s ease backwards', animationDelay: `${(0.3 + index * 0.07).toFixed(2)}s` }}
-						>
-							<span style={pillStyle(hobby.state, false)}>{meta.label}</span>
-							<span data-logprose style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: '1 1 300px', minWidth: 0 }}>
-								<span style={{ display: 'flex', alignItems: 'baseline', gap: '11px', flexWrap: 'wrap' }}>
-									<span style={{ fontFamily: "'Gloock', serif", fontSize: 'clamp(19px,2.6vw,22px)', color: '#eef0fb', lineHeight: 1.2 }}>{hobby.name}</span>
-									<span className="shipslog__coord" data-hide-mobile style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', color: '#8a93c4' }}>◈ {hobby.coord ? fmtCoord(hobby.coord) : 'uncharted'}</span>
-									<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', color: '#5f6ec4' }}>{hobby.service}</span>
+						<Fragment key={hobby.id}>
+							<div
+								className="shipslog__row"
+								data-logrow
+								data-hobby-id={hobby.id}
+								onClick={() => openHobby(index)}
+								onMouseEnter={() => onHover(index)}
+								onMouseLeave={() => offHover(index)}
+								style={{ display: 'flex', gap: '18px', alignItems: 'center', padding: '18px 10px', borderTop: '1px solid rgba(150,160,220,.14)', cursor: 'pointer', transition: 'background .2s', background: hoverIdx === index ? 'rgba(147,160,232,.05)' : 'transparent', animation: 'fadeUp .5s ease backwards', animationDelay: `${(0.3 + position * 0.07).toFixed(2)}s` }}
+							>
+								<span style={pillStyle(hobby.state, false)}>{meta.label}</span>
+								<span data-logprose style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: '1 1 300px', minWidth: 0 }}>
+									<span style={{ display: 'flex', alignItems: 'baseline', gap: '11px', flexWrap: 'wrap' }}>
+										<span style={{ fontFamily: "'Gloock', serif", fontSize: 'clamp(19px,2.6vw,22px)', color: '#eef0fb', lineHeight: 1.2 }}>{hobby.name}</span>
+										<span className="shipslog__coord" data-hide-mobile style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', color: '#8a93c4' }}>◈ {hobby.coord ? fmtCoord(hobby.coord) : 'uncharted'}</span>
+										<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', color: '#5f6ec4' }}>{hobby.service}</span>
+									</span>
+									<span style={{ fontSize: '15px', fontStyle: 'italic', color: '#a5aed4', lineHeight: 1.5, textWrap: 'pretty' }}>{hobby.bearing}</span>
 								</span>
-								<span style={{ fontSize: '15px', fontStyle: 'italic', color: '#a5aed4', lineHeight: 1.5, textWrap: 'pretty' }}>{hobby.bearing}</span>
-							</span>
-							<span data-odds style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px', flex: 'none' }}>
-								<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10.5px', letterSpacing: '.1em', color: '#5f6ec4', textTransform: 'uppercase' }}>odds of return</span>
-								<span data-odds-val style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: hobby.state === 'inkspill' ? '#8a93c4' : hobby.state === 'port' ? '#7f8fb8' : '#c3cbf2', textAlign: 'right', maxWidth: '190px', lineHeight: 1.4 }}>{hobby.odds}</span>
-							</span>
-						</div>
+								<span data-odds style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px', flex: 'none' }}>
+									<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10.5px', letterSpacing: '.1em', color: '#5f6ec4', textTransform: 'uppercase' }}>odds of return</span>
+									<span data-odds-val style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', color: hobby.state === 'inkspill' ? '#8a93c4' : hobby.state === 'port' ? '#7f8fb8' : '#c3cbf2', textAlign: 'right', maxWidth: '190px', lineHeight: 1.4 }}>{hobby.odds}</span>
+								</span>
+							</div>
+							{ruleBelow && <div className="shipslog__moored-rule" aria-hidden="true" />}
+						</Fragment>
 					);
 				})}
 
@@ -423,6 +467,34 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 									<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase' }}>what still floats</span><span>{open.floats}</span>
 									<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase' }}>odds of return</span><span style={{ color: '#6a5a2a' }}>{open.odds}</span>
 								</div>
+								{gallery.length > 0 && (
+									<div className="shipslog__prints">
+										<div className={`shipslog__print${leadOk ? '' : ' shipslog__print--empty'}`}>
+											{leadOk ? (
+												<img src={mediaUrl(leadPrint)} alt={open.cap} onError={() => markFailed(leadPrint)} />
+											) : (
+												<div className="shipslog__print-paper" aria-hidden="true" />
+											)}
+										</div>
+										{open.cap && <span className="shipslog__print-cap">{open.cap}</span>}
+										{thumbs.length > 0 && (
+											<div className="shipslog__thumbs">
+												{thumbs.map((name, index) => {
+													const thumbOk = !failedPrints.has(name);
+													return (
+														<div key={name} className={`shipslog__thumb${thumbOk ? '' : ' shipslog__thumb--empty'}`} style={{ transform: `rotate(${THUMB_ROTATIONS[index % THUMB_ROTATIONS.length]})` }}>
+															{thumbOk ? (
+																<img src={mediaUrl(name)} alt="" onError={() => markFailed(name)} />
+															) : (
+																<div className="shipslog__thumb-paper" aria-hidden="true" />
+															)}
+														</div>
+													);
+												})}
+											</div>
+										)}
+									</div>
+								)}
 								{bearingNotes.length > 0 && (
 									<div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', borderTop: '1.5px dashed rgba(110,100,75,.3)', paddingTop: '12px' }}>
 										<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase', flex: 'none' }}>logged in the journal</span>
