@@ -1,27 +1,83 @@
 // The ship's log (fixtures build): hobbies plot onto the wandering chart at
 // their projected bearings, a wake trails the ones that slipped a mooring, an
-// uncharted hobby rides the log but never the chart, the Flannan memorial keeps
-// its real Fl(2) light, the bearing card reads a hobby's last log and sends up a
+// uncharted hobby rides the log but never the chart, the still-moored ships lead
+// the log behind a thin rule, the Flannan memorial keeps its real Fl(2) light,
+// the bearing card reads a hobby's last log, hangs its prints and sends up a
 // flare, and reduced motion stills the whole thing.
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
-import type { SiteCopy } from '../src/lib/api';
+import type { Hobby, SiteCopy } from '../src/lib/api';
 
 // Read (not import) the fixture: a JSON module import would need an import
 // attribute under Node's ESM loader, which the spec transform rejects
-const siteCopy: SiteCopy = JSON.parse(
-	readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'fixtures', 'siteCopy.json'), 'utf8'),
+const fixture = (name: string) => JSON.parse(
+	readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'fixtures', `${name}.json`), 'utf8'),
 );
 
-test('the log lists one row per hobby, ordered by the keeper\'s key', async ({ page }) => {
+const siteCopy: SiteCopy = fixture('siteCopy');
+const hobbies: Hobby[] = fixture('hobbies');
+const homeLab = hobbies.find((hobby) => 'The home lab' === hobby.name)!;
+
+test('the log lists one row per hobby, the moored one at the head of it', async ({ page }) => {
 	await page.goto('/hobbies');
 	const rows = page.locator('.shipslog__row');
 	await expect(rows).toHaveCount(6);
 	await expect(rows.first()).toContainText('The home lab');
 	// only the five charted hobbies count toward the header tally; the uncharted one does not
 	await expect(page.locator('.shipslog__plotted')).toHaveText('5 hobbies plotted · none sunk');
+});
+
+test('the moored group leads the log and the rest keeps the keeper\'s order', async ({ page }) => {
+	// The rule in full, derived from the fixture rather than hardcoded: sort by
+	// the keeper's key, float the moored ones, leave every other row where it was.
+	const byKey = [...hobbies].sort((a, b) => a.order - b.order);
+	// the fixture has to make a moored row actually travel, or this proves nothing
+	expect(byKey.findIndex((hobby) => 'moored' === hobby.state)).toBeGreaterThan(0);
+	const expected = [
+		...byKey.filter((hobby) => 'moored' === hobby.state),
+		...byKey.filter((hobby) => 'moored' !== hobby.state),
+	].map((hobby) => hobby.id);
+
+	await page.goto('/hobbies');
+	const ids = await page.locator('.shipslog__row').evaluateAll((rows) => rows.map((row) => row.getAttribute('data-hobby-id')));
+	expect(ids).toEqual(expected);
+});
+
+test('one thin rule closes off the moored group, and no second heading opens a section', async ({ page }) => {
+	await page.goto('/hobbies');
+	const mooredCount = hobbies.filter((hobby) => 'moored' === hobby.state).length;
+
+	// document order through the log: the rule lands straight after the last
+	// moored row, and there is exactly one of it
+	const sequence = await page.locator('.shipslog__row, .shipslog__moored-rule').evaluateAll(
+		(nodes) => nodes.map((node) => (node.classList.contains('shipslog__moored-rule') ? 'rule' : 'row')),
+	);
+	expect(sequence.filter((entry) => 'rule' === entry)).toHaveLength(1);
+	expect(sequence.indexOf('rule')).toBe(mooredCount);
+
+	// a rule, not a second section: it carries no heading of its own
+	await expect(page.locator('.shipslog__moored-rule')).toHaveText('');
+});
+
+test('a moored row that travelled still reaches its own hobby, on hover and on open', async ({ page }) => {
+	// The home lab sorts third by the keeper's key and first in the log, so a row
+	// wired to its log position instead of its place in the hobby list would light
+	// and open whatever sorts first by the key, which is the control below.
+	const byKey = [...hobbies].sort((a, b) => a.order - b.order);
+	expect(byKey[2].id).toBe(homeLab.id);
+
+	await page.goto('/hobbies');
+	const first = page.locator('.shipslog__row').first();
+	await expect(first).toHaveAttribute('data-hobby-id', homeLab.id);
+
+	await first.hover();
+	await expect(page.locator(`.shipslog__mark[data-hobby-id="${homeLab.id}"]`)).toHaveCSS('filter', 'brightness(1.18)');
+	await expect(page.locator(`.shipslog__mark[data-hobby-id="${byKey[0].id}"]`)).toHaveCSS('filter', 'none');
+
+	await first.click();
+	await expect(page.locator('.shipslog__bearing .shipslog__bearing-name')).toHaveText(homeLab.name);
 });
 
 test('marks project onto the chart at the Helm frame\'s percentages for the fixture coords', async ({ page }) => {
@@ -73,6 +129,55 @@ test('a mark opens the bearing card with its last log and its off-course fields'
 	await expect(card).toContainText('Slipped its mooring the night it was "good enough"');
 	await expect(card).toContainText('one shaky recording the family still requests');
 	await expect(card).toContainText('- the keeper, still hoping');
+});
+
+test('the bearing card hangs the plate-chosen lead print, its caption, and the rest as thumbs', async ({ page }) => {
+	// The home lab carries three prints and a plate of 3: clamped to the last one
+	// the keeper pinned rather than wrapping back round to the first (Helm's rule)
+	expect(homeLab.images).toHaveLength(3);
+	expect(homeLab.plate).toBe(3);
+
+	await page.goto('/hobbies?bearing=The%20home%20lab');
+	const card = page.locator('.shipslog__bearing');
+	await expect(card.locator('.shipslog__print img')).toHaveAttribute('src', '/media/images/rack-open.svg');
+	// the print is announced by the hobby it belongs to, so a hobby with no caption
+	// still names its print instead of reading as decorative
+	await expect(card.locator('.shipslog__print img')).toHaveAttribute('alt', homeLab.name);
+	await expect(card.locator('.shipslog__print-cap')).toHaveText(homeLab.cap);
+
+	const thumbs = card.locator('.shipslog__thumb img');
+	await expect(thumbs).toHaveCount(2);
+	await expect(thumbs.nth(0)).toHaveAttribute('src', '/media/images/rack-corner.svg');
+	await expect(thumbs.nth(1)).toHaveAttribute('src', '/media/images/rack-lit.svg');
+
+	// the strip is decorative: clicking a thumb never swaps the lead print
+	await card.locator('.shipslog__thumb').first().click();
+	await expect(card.locator('.shipslog__print img')).toHaveAttribute('src', '/media/images/rack-open.svg');
+});
+
+test('a bearing with no prints hangs no frame at all', async ({ page }) => {
+	const piano = hobbies.find((hobby) => 'Piano' === hobby.name)!;
+	expect(piano.images).toBeNull();
+
+	await page.goto('/hobbies');
+	await page.locator('.shipslog__row[data-hobby-id="fixture-hobby-2"]').click();
+	await expect(page.locator('.shipslog__bearing')).toBeVisible();
+	await expect(page.locator('.shipslog__prints')).toHaveCount(0);
+});
+
+test('a bearing print that 404s falls back to blank paper, caption and all', async ({ page }) => {
+	await page.route('**/media/images/rack-open.svg', (route) => route.fulfill({ status: 404, body: 'not found' }));
+	await page.goto('/hobbies?bearing=The%20home%20lab');
+
+	const card = page.locator('.shipslog__bearing');
+	const frame = card.locator('.shipslog__print');
+	await expect(frame).toHaveClass(/shipslog__print--empty/);
+	await expect(frame.locator('img')).toHaveCount(0);
+	await expect(card.locator('.shipslog__print-cap')).toHaveText(homeLab.cap);
+
+	// the thumbs fail independently of the lead print
+	await expect(card.locator('.shipslog__thumb--empty')).toHaveCount(0);
+	await expect(card.locator('.shipslog__thumb img')).toHaveCount(2);
 });
 
 test('the bearing card closes on Escape', async ({ page }) => {

@@ -117,6 +117,96 @@
 	to   { opacity: 0; transform: rotate(-1deg) translateY(22px) scale(.98); }
 }
 
+/* --- the moored group's dividing rule --- */
+
+/* One register with every ship in it, the ships still at their moorings marked
+ * off from the rest. A rule and nothing more: a heading here would read as a
+ * second section, which the log is deliberately not. */
+.shipslog__moored-rule {
+	height: 1px;
+	margin: 7px 10px;
+	background: linear-gradient(90deg, transparent, rgba(240, 217, 168, .45), transparent);
+}
+
+/* --- the bearing card's prints (the light-entry overlay's treatment, on
+ * cream instead of dark: the print keeps its own paper, so it carries a hair
+ * of ink at the edge to stay legible against the card) --- */
+
+.shipslog__prints {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 9px;
+	border-top: 1.5px dashed rgba(110, 100, 75, .3);
+	padding-top: 14px;
+}
+
+.shipslog__print {
+	width: min(320px, 100%);
+	background: #fdfcf8;
+	padding: 6px 6px 20px;
+	box-shadow: 0 8px 22px rgba(0, 0, 0, .28);
+	transform: rotate(-1.6deg);
+}
+
+.shipslog__print img {
+	display: block;
+	width: 100%;
+	height: 170px;
+	object-fit: cover;
+	background: #e6e2d6;
+}
+
+/* --- empty paper frame: the print's fetch failed (struck from the darkroom
+ * after the hobby cited it). The print's own paper already reads as blank; the
+ * slot just holds the img's box so nothing collapses or shifts. --- */
+.shipslog__print-paper {
+	display: block;
+	width: 100%;
+	height: 170px;
+	box-sizing: border-box;
+}
+
+.shipslog__print-cap {
+	font-family: 'IBM Plex Mono', monospace;
+	font-size: 11px;
+	color: #a39876;
+	text-align: center;
+}
+
+/* Decorative rotated prints, not a click-to-swap gallery: each thumb is a
+ * plain, unclickable print, same as the light entry's own strip. */
+.shipslog__thumbs {
+	display: flex;
+	gap: 7px;
+	flex-wrap: wrap;
+	justify-content: center;
+	padding-top: 2px;
+}
+
+.shipslog__thumb {
+	flex: none;
+	background: #fdfcf8;
+	padding: 3px 3px 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, .22);
+}
+
+.shipslog__thumb img {
+	display: block;
+	width: 56px;
+	height: 42px;
+	object-fit: cover;
+	background: #e6e2d6;
+}
+
+/* --- empty paper frame, same paper-slot treatment as .shipslog__print-paper --- */
+.shipslog__thumb-paper {
+	display: block;
+	width: 56px;
+	height: 42px;
+	box-sizing: border-box;
+}
+
 /* --- interactive hovers (the mock's style-hover, translated) --- */
 
 .shipslog__uncharted:hover { filter: brightness(1.25); }
