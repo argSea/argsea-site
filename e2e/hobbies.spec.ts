@@ -20,7 +20,7 @@ const siteCopy: SiteCopy = fixture('siteCopy');
 const hobbies: Hobby[] = fixture('hobbies');
 const homeLab = hobbies.find((hobby) => 'The home lab' === hobby.name)!;
 
-test('the log lists one row per hobby, ordered by the keeper\'s key', async ({ page }) => {
+test('the log lists one row per hobby, the moored one at the head of it', async ({ page }) => {
 	await page.goto('/hobbies');
 	const rows = page.locator('.shipslog__row');
 	await expect(rows).toHaveCount(6);
@@ -32,9 +32,9 @@ test('the log lists one row per hobby, ordered by the keeper\'s key', async ({ p
 test('the moored group leads the log and the rest keeps the keeper\'s order', async ({ page }) => {
 	// The rule in full, derived from the fixture rather than hardcoded: sort by
 	// the keeper's key, float the moored ones, leave every other row where it was.
-	// Note the fixtures carry a single moored hobby and it already sorts first, so
-	// this pins the rule without exercising a moored row that has to travel.
 	const byKey = [...hobbies].sort((a, b) => a.order - b.order);
+	// the fixture has to make a moored row actually travel, or this proves nothing
+	expect(byKey.findIndex((hobby) => 'moored' === hobby.state)).toBeGreaterThan(0);
 	const expected = [
 		...byKey.filter((hobby) => 'moored' === hobby.state),
 		...byKey.filter((hobby) => 'moored' !== hobby.state),
@@ -59,6 +59,25 @@ test('one thin rule closes off the moored group, and no second heading opens a s
 
 	// a rule, not a second section: it carries no heading of its own
 	await expect(page.locator('.shipslog__moored-rule')).toHaveText('');
+});
+
+test('a moored row that travelled still reaches its own hobby, on hover and on open', async ({ page }) => {
+	// The home lab sorts third by the keeper's key and first in the log, so a row
+	// wired to its log position instead of its place in the hobby list would light
+	// and open whatever sorts first by the key, which is the control below.
+	const byKey = [...hobbies].sort((a, b) => a.order - b.order);
+	expect(byKey[2].id).toBe(homeLab.id);
+
+	await page.goto('/hobbies');
+	const first = page.locator('.shipslog__row').first();
+	await expect(first).toHaveAttribute('data-hobby-id', homeLab.id);
+
+	await first.hover();
+	await expect(page.locator(`.shipslog__mark[data-hobby-id="${homeLab.id}"]`)).toHaveCSS('filter', 'brightness(1.18)');
+	await expect(page.locator(`.shipslog__mark[data-hobby-id="${byKey[0].id}"]`)).toHaveCSS('filter', 'none');
+
+	await first.click();
+	await expect(page.locator('.shipslog__bearing .shipslog__bearing-name')).toHaveText(homeLab.name);
 });
 
 test('marks project onto the chart at the Helm frame\'s percentages for the fixture coords', async ({ page }) => {
@@ -121,6 +140,9 @@ test('the bearing card hangs the plate-chosen lead print, its caption, and the r
 	await page.goto('/hobbies?bearing=The%20home%20lab');
 	const card = page.locator('.shipslog__bearing');
 	await expect(card.locator('.shipslog__print img')).toHaveAttribute('src', '/media/images/rack-open.svg');
+	// the print is announced by the hobby it belongs to, so a hobby with no caption
+	// still names its print instead of reading as decorative
+	await expect(card.locator('.shipslog__print img')).toHaveAttribute('alt', homeLab.name);
 	await expect(card.locator('.shipslog__print-cap')).toHaveText(homeLab.cap);
 
 	const thumbs = card.locator('.shipslog__thumb img');

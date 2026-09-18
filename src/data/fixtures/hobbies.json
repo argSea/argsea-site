@@ -1,25 +1,5 @@
 [
   {
-    "id": "fixture-hobby-1",
-    "name": "The home lab",
-    "gauge": 94,
-    "service": "2021 · present",
-    "state": "moored",
-    "coord": { "lat": 58.22, "lon": -7.50 },
-    "seasons": "5",
-    "bearing": "Moored in the lee of Eilean Mòr, in sight of the keepers’ light. Never left the harbor.",
-    "lastLog": "\"All lamps green. One tweak from perfect. Will fix tonight.\" · every log entry, verbatim, since 2021.",
-    "offCourse": "It never went off course. It is moored where I can watch it from the lamp room.",
-    "floats": "everything. that is the whole point.",
-    "odds": "in port indefinitely",
-    "tags": ["plex", "htpc"],
-    "images": ["rack-corner.svg", "rack-lit.svg", "rack-open.svg"],
-    "plate": 3,
-    "cap": "The rack, mid-tweak. It is always mid-tweak.",
-    "order": 1,
-    "noteIds": ["fixture-note-2"]
-  },
-  {
     "id": "fixture-hobby-2",
     "name": "Piano",
     "gauge": 38,
@@ -37,7 +17,7 @@
     "images": null,
     "plate": 4,
     "cap": "Under its cover, judging me.",
-    "order": 2,
+    "order": 1,
     "noteIds": []
   },
   {
@@ -58,8 +38,28 @@
     "images": null,
     "plate": 1,
     "cap": "The circle of fifths, in a drawer.",
-    "order": 3,
+    "order": 2,
     "noteIds": []
+  },
+  {
+    "id": "fixture-hobby-1",
+    "name": "The home lab",
+    "gauge": 94,
+    "service": "2021 · present",
+    "state": "moored",
+    "coord": { "lat": 58.22, "lon": -7.50 },
+    "seasons": "5",
+    "bearing": "Moored in the lee of Eilean Mòr, in sight of the keepers’ light. Never left the harbor.",
+    "lastLog": "\"All lamps green. One tweak from perfect. Will fix tonight.\" · every log entry, verbatim, since 2021.",
+    "offCourse": "It never went off course. It is moored where I can watch it from the lamp room.",
+    "floats": "everything. that is the whole point.",
+    "odds": "in port indefinitely",
+    "tags": ["plex", "htpc"],
+    "images": ["rack-corner.svg", "rack-lit.svg", "rack-open.svg"],
+    "plate": 3,
+    "cap": "The rack, mid-tweak. It is always mid-tweak.",
+    "order": 3,
+    "noteIds": ["fixture-note-2"]
   },
   {
     "id": "fixture-hobby-4",

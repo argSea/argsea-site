@@ -471,7 +471,7 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 									<div className="shipslog__prints">
 										<div className={`shipslog__print${leadOk ? '' : ' shipslog__print--empty'}`}>
 											{leadOk ? (
-												<img src={mediaUrl(leadPrint)} alt={open.cap} onError={() => markFailed(leadPrint)} />
+												<img src={mediaUrl(leadPrint)} alt={open.name} onError={() => markFailed(leadPrint)} />
 											) : (
 												<div className="shipslog__print-paper" aria-hidden="true" />
 											)}

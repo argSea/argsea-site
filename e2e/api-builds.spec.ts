@@ -41,7 +41,7 @@ test('wire hobbies render onto the ship\'s log through the API path', async ({ p
 	await page.goto(`${FEATURED_BUILD}/hobbies`);
 	await expect(page.locator('.shipslog__row')).toHaveCount(6);
 
-	// The home lab (order 1) leads the log and gets a moored mark on the chart
+	// The home lab (moored, order 3) floats to the head of the log and gets a moored mark on the chart
 	await expect(page.locator('.shipslog__mark[data-hobby-id="fixture-hobby-1"][data-state="moored"]')).toHaveCount(1);
 
 	// The uncharted hobby rides the log with an "uncharted" position, never a mark
