@@ -155,14 +155,22 @@ test('the bearing card hangs the plate-chosen lead print, its caption, and the r
 	await expect(card.locator('.shipslog__print img')).toHaveAttribute('src', '/media/images/rack-open.svg');
 });
 
-test('a bearing with no prints hangs no frame at all', async ({ page }) => {
+test('a bearing with no prints hangs blank paper in the keeper\'s voice', async ({ page }) => {
 	const piano = hobbies.find((hobby) => 'Piano' === hobby.name)!;
 	expect(piano.images).toBeNull();
+	// and it still carries a caption, which describes a plate nobody ever pinned
+	expect(piano.cap).not.toBe('');
 
 	await page.goto('/hobbies');
 	await page.locator('.shipslog__row[data-hobby-id="fixture-hobby-2"]').click();
-	await expect(page.locator('.shipslog__bearing')).toBeVisible();
-	await expect(page.locator('.shipslog__prints')).toHaveCount(0);
+
+	const card = page.locator('.shipslog__bearing');
+	await expect(card).toBeVisible();
+	const frame = card.locator('.shipslog__print');
+	await expect(frame).toHaveClass(/shipslog__print--empty/);
+	await expect(frame.locator('img')).toHaveCount(0);
+	await expect(card.locator('.shipslog__print-cap')).toHaveText('the keeper is slow with the ink');
+	await expect(card.locator('.shipslog__thumb')).toHaveCount(0);
 });
 
 test('a bearing print that 404s falls back to blank paper, caption and all', async ({ page }) => {
