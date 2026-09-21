@@ -169,6 +169,10 @@ test('a bearing with no prints hangs blank paper in the keeper\'s voice', async 
 	const frame = card.locator('.shipslog__print');
 	await expect(frame).toHaveClass(/shipslog__print--empty/);
 	await expect(frame.locator('img')).toHaveCount(0);
+	// the paper itself, not just the frame around it: strike the slot and the
+	// frame still carries its class, its caption and no image, so everything
+	// above this line stays green over a card with nothing hanging in it
+	await expect(frame.locator('.shipslog__print-paper')).toBeVisible();
 	await expect(card.locator('.shipslog__print-cap')).toHaveText('the keeper is slow with the ink');
 	await expect(card.locator('.shipslog__thumb')).toHaveCount(0);
 });
