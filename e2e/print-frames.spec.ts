@@ -4,6 +4,8 @@
 // whose fetch fails (a print struck from the darkroom after a project cited
 // it). Frame class/state is the assertion here, never naturalWidth: that's
 // the other specs' job, proving the loaded path against the e2e test prints.
+// The hobbies page's bearing card holds to the same rule on both triggers and
+// is proved in e2e/hobbies.spec.ts, beside the log it opens from, not here.
 import { test, expect } from '@playwright/test';
 
 test('the flagship shot renders empty when its print 404s', async ({ page }) => {

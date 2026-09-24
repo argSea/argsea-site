@@ -45,6 +45,11 @@ const BEARING_QUIPS = ['i read the log. twice.', 'it will drift back. probably.'
 // `rots` the light-entry overlay flies, cycling for a gallery beyond five thumbs.
 const THUMB_ROTATIONS = ['-2deg', '1.5deg', '-1deg', '2deg', '-1.6deg'];
 
+// The empty frame's caption, the page's own intro line lifted verbatim
+// (hobbies.astro) so a card with nothing pinned reads as the same joke the
+// visitor already met at the top of the page rather than a new one.
+const NO_PRINTS_CAP = 'the keeper is slow with the ink';
+
 function proj(c: Coord) {
 	const w = CHART_WIN;
 	return {
@@ -225,12 +230,16 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 	// up to six in all, the lead print plus up to five decorative thumbs, no
 	// click-to-swap. `plate` picks which one leads (Helm's own rule for a hobby),
 	// clamped rather than wrapped so a plate pointing past the end lands on the
-	// last print the keeper actually pinned instead of walking back round.
+	// last print the keeper actually pinned instead of walking back round. The
+	// frame stays hung either way, blank paper and a caption, same as every
+	// other print surface on the site; a card with nothing pinned flies the
+	// keeper's line instead of `cap`, which describes a plate that isn't there.
 	const gallery = open?.images ? open.images.slice(0, 6) : [];
 	const plateIdx = open && gallery.length ? Math.max(0, Math.min(gallery.length - 1, open.plate)) : 0;
 	const leadPrint = gallery[plateIdx];
 	const leadOk = Boolean(leadPrint) && !failedPrints.has(leadPrint);
 	const thumbs = gallery.filter((_, index) => index !== plateIdx);
+	const printCap = gallery.length ? open?.cap : NO_PRINTS_CAP;
 	const markFailed = (name: string) => setFailedPrints((current) => (current.has(name) ? current : new Set(current).add(name)));
 
 	const openNote = noteId === null ? null : notes.find((note) => note.id === noteId) ?? null;
@@ -467,34 +476,32 @@ export default function ShipsLog({ hobbies, suggestions, notes, doodles, catEnab
 									<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase' }}>what still floats</span><span>{open.floats}</span>
 									<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase' }}>odds of return</span><span style={{ color: '#6a5a2a' }}>{open.odds}</span>
 								</div>
-								{gallery.length > 0 && (
-									<div className="shipslog__prints">
-										<div className={`shipslog__print${leadOk ? '' : ' shipslog__print--empty'}`}>
-											{leadOk ? (
-												<img src={mediaUrl(leadPrint)} alt={open.name} onError={() => markFailed(leadPrint)} />
-											) : (
-												<div className="shipslog__print-paper" aria-hidden="true" />
-											)}
-										</div>
-										{open.cap && <span className="shipslog__print-cap">{open.cap}</span>}
-										{thumbs.length > 0 && (
-											<div className="shipslog__thumbs">
-												{thumbs.map((name, index) => {
-													const thumbOk = !failedPrints.has(name);
-													return (
-														<div key={name} className={`shipslog__thumb${thumbOk ? '' : ' shipslog__thumb--empty'}`} style={{ transform: `rotate(${THUMB_ROTATIONS[index % THUMB_ROTATIONS.length]})` }}>
-															{thumbOk ? (
-																<img src={mediaUrl(name)} alt="" onError={() => markFailed(name)} />
-															) : (
-																<div className="shipslog__thumb-paper" aria-hidden="true" />
-															)}
-														</div>
-													);
-												})}
-											</div>
+								<div className="shipslog__prints">
+									<div className={`shipslog__print${leadOk ? '' : ' shipslog__print--empty'}`}>
+										{leadOk ? (
+											<img src={mediaUrl(leadPrint)} alt={open.name} onError={() => markFailed(leadPrint)} />
+										) : (
+											<div className="shipslog__print-paper" aria-hidden="true" />
 										)}
 									</div>
-								)}
+									{printCap && <span className="shipslog__print-cap">{printCap}</span>}
+									{thumbs.length > 0 && (
+										<div className="shipslog__thumbs">
+											{thumbs.map((name, index) => {
+												const thumbOk = !failedPrints.has(name);
+												return (
+													<div key={name} className={`shipslog__thumb${thumbOk ? '' : ' shipslog__thumb--empty'}`} style={{ transform: `rotate(${THUMB_ROTATIONS[index % THUMB_ROTATIONS.length]})` }}>
+														{thumbOk ? (
+															<img src={mediaUrl(name)} alt="" onError={() => markFailed(name)} />
+														) : (
+															<div className="shipslog__thumb-paper" aria-hidden="true" />
+														)}
+													</div>
+												);
+											})}
+										</div>
+									)}
+								</div>
 								{bearingNotes.length > 0 && (
 									<div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', borderTop: '1.5px dashed rgba(110,100,75,.3)', paddingTop: '12px' }}>
 										<span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '.12em', color: '#8a7f63', textTransform: 'uppercase', flex: 'none' }}>logged in the journal</span>

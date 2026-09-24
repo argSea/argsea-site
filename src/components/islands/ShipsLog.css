@@ -157,9 +157,10 @@
 	background: #e6e2d6;
 }
 
-/* --- empty paper frame: the print's fetch failed (struck from the darkroom
- * after the hobby cited it). The print's own paper already reads as blank; the
- * slot just holds the img's box so nothing collapses or shifts. --- */
+/* --- empty paper frame, on either trigger: no print pinned at all, or one
+ * whose fetch failed (struck from the darkroom after the hobby cited it). The
+ * print's own paper already reads as blank; the slot just holds the img's box
+ * so nothing collapses or shifts. --- */
 .shipslog__print-paper {
 	display: block;
 	width: 100%;
